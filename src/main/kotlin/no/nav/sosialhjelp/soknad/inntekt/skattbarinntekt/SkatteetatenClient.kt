@@ -14,14 +14,11 @@ import no.nav.sosialhjelp.soknad.v2.register.fetchers.SkatteetatenException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.JacksonJsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
-import tools.jackson.databind.json.JsonMapper
-import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -31,17 +28,9 @@ class SkatteetatenClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    private val skatteetatenMapper: JsonMapper =
-        jacksonMapperBuilder()
-            .disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .build()
-
     private val skatteetatenWebClient: WebClient =
-        configureWebClientBuilder(webClientBuilder, createDefaultHttpClient())
+        webClientBuilder.configureWebClientBuilder(createDefaultHttpClient())
             .baseUrl(baseurl)
-            .codecs {
-                it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(skatteetatenMapper))
-            }
             .build()
 
     fun hentSkattbarinntekt(fnr: String): SkattbarInntekt {

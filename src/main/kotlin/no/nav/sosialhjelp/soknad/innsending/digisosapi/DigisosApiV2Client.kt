@@ -31,6 +31,8 @@ import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.http.MediaType.TEXT_PLAIN_VALUE
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.http.codec.json.JacksonJsonDecoder
+import org.springframework.http.codec.json.JacksonJsonEncoder
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
@@ -66,10 +68,12 @@ class DigisosApiV2Client(
 
     private val fiksWebClient =
         webClientBuilder
-            .clientConnector(
-                ReactorClientHttpConnector(fiksHttpClient),
-            )
-            .configureCodecs()
+            .clientConnector(ReactorClientHttpConnector(fiksHttpClient))
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+                it.defaultCodecs().jacksonJsonEncoder(JacksonJsonEncoder(sosialhjelpJsonMapper))
+                it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(sosialhjelpJsonMapper))
+            }
             .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .filter(MdcExchangeFilter)

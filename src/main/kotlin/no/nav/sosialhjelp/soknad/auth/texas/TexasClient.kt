@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.auth.texas
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.configureCodecs
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -10,10 +9,6 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
-import tools.jackson.databind.DeserializationFeature
-import tools.jackson.databind.SerializationFeature
-import tools.jackson.databind.json.JsonMapper
-import tools.jackson.module.kotlin.jacksonMapperBuilder
 
 @Component
 class TexasClient(
@@ -78,7 +73,6 @@ class TexasClient(
     private val texasWebClient: WebClient =
         webClientBuilder
             .defaultHeaders { it.contentType = MediaType.APPLICATION_JSON }
-            .configureCodecs(objectMapper)
             .build()
 
     companion object {
@@ -122,9 +116,3 @@ data class TokenErrorResponse(
     @param:JsonProperty("error_description")
     val errorDescription: String,
 )
-
-private val objectMapper: JsonMapper =
-    jacksonMapperBuilder()
-        .configure(SerializationFeature.INDENT_OUTPUT, true)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .build()

@@ -28,8 +28,9 @@ class KrrClient(
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient =
-        configureWebClientBuilder(webClientBuilder, createDefaultHttpClient())
-            .baseUrl(krrUrl).build()
+        webClientBuilder.configureWebClientBuilder(createDefaultHttpClient())
+            .baseUrl(krrUrl)
+            .build()
 
     fun getDigitalKontaktinformasjon(personId: String): KontaktInfoResponse? =
         runCatching {

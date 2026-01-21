@@ -40,7 +40,7 @@ class KommuneInfoClient(
     }
 
     private val kommuneInfoWebClient: WebClient =
-        configureWebClientBuilder(webClientBuilder, createFiksHttpClient())
+        webClientBuilder.configureWebClientBuilder(createFiksHttpClient())
             .baseUrl(digisosApiEndpoint)
             .build()
 

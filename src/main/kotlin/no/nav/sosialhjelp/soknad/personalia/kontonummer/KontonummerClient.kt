@@ -31,8 +31,7 @@ class KontonummerClientImpl(
     webClientBuilder: WebClient.Builder,
 ) : KontonummerClient {
     private val webClient =
-        configureWebClientBuilder(webClientBuilder, createDefaultHttpClient())
-            .build()
+        webClientBuilder.configureWebClientBuilder(createDefaultHttpClient()).build()
 
     override fun getKontonummer(ident: String): KontoDto? {
         return try {

@@ -71,12 +71,13 @@ class GotenbergClient(
     }
 
     private fun buildWebClient(): WebClient {
-        return configureWebClientBuilder(webClientBuilder, createDefaultHttpClient())
+        return webClientBuilder.configureWebClientBuilder(createDefaultHttpClient())
             .baseUrl(baseUrl)
             .defaultHeaders {
                 it.contentType = MediaType.MULTIPART_FORM_DATA
                 it.accept = listOf(MediaType.APPLICATION_PDF, MediaType.TEXT_PLAIN)
-            }.build()
+            }
+            .build()
     }
 
     private val log by logger()

@@ -17,8 +17,7 @@ class BostotteConfig(
     fun husbankenClient(): HusbankenClient = HusbankenClient(husbankenWebClient)
 
     private val husbankenWebClient: WebClient =
-        configureWebClientBuilder(
-            webClientBuilder = webClientBuilder,
+        webClientBuilder.configureWebClientBuilder(
             httpClient = createDefaultHttpClient().responseTimeout(Duration.ofSeconds(10L)),
         )
             .baseUrl(bostotteBaseUrl)

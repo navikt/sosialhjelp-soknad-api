@@ -19,9 +19,7 @@ class VirusScanConfig(
     }
 
     private val virusScannerWebClient: WebClient =
-        configureWebClientBuilder(
-            webClientBuilder,
-            createDefaultHttpClient(),
-        )
-            .baseUrl(clamAvUrl).build()
+        webClientBuilder.configureWebClientBuilder(createDefaultHttpClient())
+            .baseUrl(clamAvUrl)
+            .build()
 }

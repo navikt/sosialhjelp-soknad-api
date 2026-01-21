@@ -42,7 +42,7 @@ class MellomlagringConfig(
             .responseTimeout(RESPONSE_TIMEOUT)
 
     private val webClient =
-        configureWebClientBuilder(webClientBuilder, mellomlagerHttpClient)
+        webClientBuilder.configureWebClientBuilder(mellomlagerHttpClient)
             .baseUrl(digisosApiEndpoint)
             .defaultHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .defaultHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)

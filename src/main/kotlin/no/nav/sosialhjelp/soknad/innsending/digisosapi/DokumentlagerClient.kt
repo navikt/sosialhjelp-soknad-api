@@ -33,9 +33,9 @@ class DokumentlagerClient(
     private var cachedPublicKey: X509Certificate? = null
 
     private val fiksWebClient =
-        configureWebClientBuilder(webClientBuilder, createFiksHttpClient())
+        webClientBuilder.configureWebClientBuilder(createFiksHttpClient())
             .baseUrl(digisosApiEndpoint)
-            .configureCodecs()
+            .codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }
             .build()
 
     fun getDokumentlagerPublicKeyX509Certificate(): X509Certificate {

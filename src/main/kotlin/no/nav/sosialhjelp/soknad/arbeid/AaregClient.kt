@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
@@ -19,8 +20,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
-import tools.jackson.databind.json.JsonMapper
-import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -31,23 +30,15 @@ class AaregClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    private val arbeidsforholdMapper: JsonMapper =
-        jacksonMapperBuilder()
-            .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-            .configure(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .build()
-
     private val sokeperiode: Sokeperiode get() = Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now())
 
     private val tokenxToken: String get() =
         texasService.exchangeToken(IdentityProvider.TOKENX, target = aaregAudience)
 
     private val webClient =
-        configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
+        webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient())
             .baseUrl(aaregUrl)
-            .codecs {
-                it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(arbeidsforholdMapper))
-            }
+            .codecs { it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(soknadJacksonMapper)) }
             .build()
 
     private val queryParamsPart = "?sporingsinformasjon={sporingsinformasjon}&regelverk={regelverk}&ansettelsesperiodeFom={fom}&ansettelsesperiodeTom={tom}"

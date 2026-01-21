@@ -13,7 +13,10 @@ import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
+import org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
+import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
+import org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
 import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
@@ -22,35 +25,36 @@ class OrganisasjonClient(
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient =
-        configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
-            .build()
+        webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient()).build()
 
-    fun hentOrganisasjonNoekkelinfo(orgnr: String): OrganisasjonNoekkelinfoDto? {
-        return try {
-            webClient.get()
-                .uri("$eregUrl/v1/organisasjon/{orgnr}/noekkelinfo", orgnr)
-                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID) ?: "")
-                .header(HEADER_CONSUMER_ID, getConsumerId())
-                .retrieve()
-                .bodyToMono<OrganisasjonNoekkelinfoDto>()
-                .block()
-        } catch (e: WebClientResponseException.NotFound) {
-            log.warn("Ereg - 404 Not Found - Fant ikke forespurt(e) entitet(er)")
-            null
-        } catch (e: WebClientResponseException.BadRequest) {
-            log.warn("Ereg - 400 Bad Request - Ugyldig(e) parameter(e) i request")
-            null
-        } catch (e: WebClientResponseException.ServiceUnavailable) {
-            log.error("Ereg - ${e.statusCode} - Tjenesten er utilgjengelig", e)
-            throw TjenesteUtilgjengeligException("EREG", e)
-        } catch (e: WebClientResponseException.InternalServerError) {
-            log.error("Ereg - ${e.statusCode} - Tjenesten er utilgjengelig", e)
-            throw TjenesteUtilgjengeligException("EREG", e)
-        } catch (e: Exception) {
-            log.error("Ereg - Noe uventet feilet", e)
-            throw TjenesteUtilgjengeligException("EREG", e)
-        }
+    fun hentOrganisasjonNoekkelinfo(orgnummer: String): OrganisasjonNoekkelinfoDto? {
+        return runCatching { doGetOrganisasjonNoekkelinfo(orgnummer) }
+            .getOrElse {
+                when (it) {
+                    is NotFound -> {
+                        log.warn("Ereg - 404 Not Found - Fant ikke forespurt(e) entitet(er)", it)
+                        return null
+                    }
+                    is BadRequest -> {
+                        log.warn("Ereg - 400 Bad Request - Ugyldig(e) parameter(e) i request", it)
+                        return null
+                    }
+                    is ServiceUnavailable -> log.error("Ereg - ${it.statusCode} - Tjenesten er utilgjengelig", it)
+                    is InternalServerError -> log.error("Ereg - ${it.statusCode} - Tjenesten er utilgjengelig", it)
+                    else -> log.error("Ereg - Noe uventet feilet", it)
+                }
+                throw TjenesteUtilgjengeligException("EREG", it)
+            }
     }
+
+    private fun doGetOrganisasjonNoekkelinfo(orgnummer: String): OrganisasjonNoekkelinfoDto? =
+        webClient.get()
+            .uri("$eregUrl/v1/organisasjon/{orgnr}/noekkelinfo", orgnummer)
+            .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID) ?: "")
+            .header(HEADER_CONSUMER_ID, getConsumerId())
+            .retrieve()
+            .bodyToMono<OrganisasjonNoekkelinfoDto>()
+            .block()
 
     companion object {
         private val log by logger()

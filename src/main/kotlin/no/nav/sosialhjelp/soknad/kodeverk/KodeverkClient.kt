@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
-import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.io.Serializable
 import java.time.LocalDate
 
@@ -67,15 +67,10 @@ class KodeverkClient(
             }
             .getOrThrow()
 
-    private val jsonMapper =
-        jacksonMapperBuilder()
-            .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-            .build()
-
     private val webClient =
-        configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
+        webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient())
             .codecs {
-                it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(jsonMapper))
+                it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(soknadJacksonMapper))
             }
             .baseUrl(kodeverkUrl)
             .build()
