@@ -51,7 +51,7 @@ data class Arbeidsforhold(
     val orgnummer: String?,
     val start: LocalDate?,
     val slutt: LocalDate?,
-    val fastStillingsprosent: Int? = 0,
+    val fastStillingsprosent: Double?,
     val harFastStilling: Boolean?,
 )
 

@@ -27,8 +27,13 @@ class AaregService(
 
         logger.info("Henter arbeidsforhold for bruker fra aareg-api v2")
         runCatching {
-            val arbeidsforhold = aaregClientV2.finnArbeidsforholdForArbeidstaker()
-            logger.info("Hentet arbeidsforhold: ${jacksonObjectMapper().writeValueAsString(arbeidsforhold)}")
+            val arbeidsforholdDto = aaregClientV2.finnArbeidsforholdForArbeidstaker()
+            logger.info("V2 Hentet arbeidsforhold: ${jacksonObjectMapper().writeValueAsString(arbeidsforholdDto)}")
+
+            val arbeidsforholdCreator = ArbeidsforholdCreator(organisasjonService)
+
+            val arbeidsforhold = arbeidsforholdDto?.map { arbeidsforholdCreator.createArbeidsforhold(it) }
+            jacksonObjectMapper().writeValueAsString("Konverterte arbeidsforhold: $arbeidsforhold")
         }
             .onFailure { logger.error("Hente fra Api V2 feilet", it) }
             .getOrNull()

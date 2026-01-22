@@ -1,20 +1,28 @@
 package no.nav.sosialhjelp.soknad.arbeid.dto
 
+import java.time.LocalDate
+
 data class ArbeidsforholdDtoV2(
     val id: String,
-    val ansettelsesperiode: AnsettelsesperiodeDtoV2?,
+    val ansettelsesperiode: AnsettelsesperiodeDtoV2,
     val ansettelsesdetaljer: List<AnsettelsesdetaljerDtoV2>?,
     val opplysningspliktig: OpplysningspliktigDto?,
     val arbeidstaker: ArbeidstakerDto?,
 )
 
 data class AnsettelsesperiodeDtoV2(
-    val startdato: String,
-    val sluttdato: String?,
+    val startdato: LocalDate,
+    val sluttdato: LocalDate?,
 )
 
 data class AnsettelsesdetaljerDtoV2(
     val avtaltStillingsprosent: Double,
+    val ansettelsesform: AnsettelsesformDto?,
+)
+
+data class AnsettelsesformDto(
+    val kode: String?,
+    val beskrivelse: String?,
 )
 
 data class OpplysningspliktigDto(
