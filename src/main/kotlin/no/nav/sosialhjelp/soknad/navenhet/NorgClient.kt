@@ -23,8 +23,7 @@ class NorgClient(
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient =
-        configureWebClientBuilder(webClientBuilder, createDefaultHttpClient())
-            .build()
+        webClientBuilder.configureWebClientBuilder(createDefaultHttpClient()).build()
 
     fun hentNavEnhetForGeografiskTilknytning(gt: GeografiskTilknytning): NavEnhetDto? {
         log.info("Henter NavEnhet fra norg for gt: $gt")

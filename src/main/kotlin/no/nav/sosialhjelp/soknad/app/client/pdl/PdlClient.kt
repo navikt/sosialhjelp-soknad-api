@@ -6,28 +6,19 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEHANDLINGSNUMMER_SOKNAD
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_BEHANDLINGSNUMMER
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import org.springframework.http.MediaType
 import org.springframework.http.codec.json.JacksonJsonDecoder
 import org.springframework.web.reactive.function.client.WebClient
-import tools.jackson.databind.json.JsonMapper
-import tools.jackson.module.kotlin.jacksonMapperBuilder
 import tools.jackson.module.kotlin.readValue
 
 abstract class PdlClient(
     webClientBuilder: WebClient.Builder,
     private val baseurl: String,
 ) {
-    protected val pdlMapper: JsonMapper =
-        jacksonMapperBuilder()
-            .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-            .configure(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .build()
-
     private val pdlWebClient: WebClient =
-        configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
-            .codecs {
-                it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(pdlMapper))
-            }
+        webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient())
+            .codecs { it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(soknadJacksonMapper)) }
             .defaultHeader(HEADER_BEHANDLINGSNUMMER, BEHANDLINGSNUMMER_SOKNAD)
             .build()
 
@@ -38,7 +29,7 @@ abstract class PdlClient(
                 .accept(MediaType.APPLICATION_JSON)
 
     protected inline fun <reified T> parse(response: String): T =
-        runCatching { pdlMapper.readValue<T>(response) }
+        runCatching { soknadJacksonMapper.readValue<T>(response) }
             .getOrElse {
                 if (it is MismatchedInputException || it is JsonProcessingException) it.clearLocation()
                 throw it

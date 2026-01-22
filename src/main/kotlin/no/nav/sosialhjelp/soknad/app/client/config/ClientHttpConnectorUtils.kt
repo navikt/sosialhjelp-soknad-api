@@ -11,15 +11,18 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import reactor.netty.resources.ConnectionProvider
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.time.Duration
 
+val soknadJacksonMapper =
+    jacksonMapperBuilder()
+        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+        .build()
+
 // felles config for WebClients
-fun configureWebClientBuilder(
-    webClientBuilder: WebClient.Builder,
-    httpClient: HttpClient,
-): WebClient.Builder =
-    webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(httpClient))
+fun WebClient.Builder.configureWebClientBuilder(httpClient: HttpClient): WebClient.Builder =
+    clientConnector(ReactorClientHttpConnector(httpClient))
         .codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }
         .filter(MdcExchangeFilter)
 

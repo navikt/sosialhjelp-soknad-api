@@ -1,28 +1,14 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.sosialhjelpJsonMapper
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.codec.json.JacksonJsonDecoder
-import org.springframework.http.codec.json.JacksonJsonEncoder
 import org.springframework.util.LinkedMultiValueMap
-import org.springframework.web.reactive.function.client.WebClient
 import tools.jackson.databind.json.JsonMapper
 import tools.jackson.module.kotlin.kotlinModule
 import java.util.UUID
 import java.util.regex.Pattern
-
-fun WebClient.Builder.configureCodecs(jsonMapper: JsonMapper = sosialhjelpJsonMapper): WebClient.Builder {
-    codecs {
-        it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
-        it.defaultCodecs().jacksonJsonEncoder(JacksonJsonEncoder(jsonMapper))
-        it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(jsonMapper))
-    }
-
-    return this
-}
 
 object Utils {
     val sosialhjelpJsonMapper: JsonMapper =

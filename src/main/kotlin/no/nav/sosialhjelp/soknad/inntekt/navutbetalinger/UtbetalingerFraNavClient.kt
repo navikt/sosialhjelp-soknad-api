@@ -30,8 +30,7 @@ class NavUtbetalingerClientImpl(
     webClientBuilder: WebClient.Builder,
 ) : UtbetalingerFraNavClient {
     private val webClient =
-        configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
-            .build()
+        webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient()).build()
 
     override fun getUtbetalingerSiste40Dager(personId: String): UtbetalDataDto? {
         logger.info("Henter utbetalingsdata fra: $utbetalDataUrl ")
