@@ -34,7 +34,7 @@ private fun Arbeidsforhold.toV2Arbeidsforhold(): V2Arbeidsforhold {
         arbeidsgivernavn = this.arbeidsgivernavn,
         start = this.fom,
         slutt = this.tom,
-        fastStillingsprosent = this.fastStillingsprosent?.toInt(),
+        fastStillingsprosent = this.fastStillingsprosent?.toDouble(),
         harFastStilling = this.harFastStilling,
     )
 }
