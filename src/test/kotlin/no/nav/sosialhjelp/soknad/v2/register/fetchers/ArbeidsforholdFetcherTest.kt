@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import no.nav.sosialhjelp.soknad.arbeid.AaregClientImpl
+import no.nav.sosialhjelp.soknad.arbeid.AaregClient
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
@@ -53,7 +53,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Aareg-client returnerer null skal ikke kaste feil eller lagre til db`() {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker(any()) } returns null
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns null
 
         arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
         assertThat(livssituasjonRepository.findByIdOrNull(soknad.id)).isNull()
@@ -61,7 +61,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Exception i Aareg-client kaster feil`() {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker(any()) } throws
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } throws
             TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
 
         assertThatThrownBy {
@@ -140,7 +140,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     }
 
     @MockkBean
-    protected lateinit var aaregClient: AaregClientImpl
+    protected lateinit var aaregClient: AaregClient
 
     @MockkBean
     protected lateinit var organisasjonClient: OrganisasjonClient
@@ -148,7 +148,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     private fun createAnswerForAaregClient(
         answer: List<ArbeidsforholdDto> = defaultResponseFromAaregClient(soknad.eierPersonId),
     ): List<ArbeidsforholdDto> {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker(soknad.eierPersonId) } returns answer
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns answer
         return answer
     }
 

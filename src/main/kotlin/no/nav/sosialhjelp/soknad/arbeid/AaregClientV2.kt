@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.arbeid
 
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDtoV2
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider.TOKENX
@@ -13,9 +14,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import tools.jackson.databind.DeserializationFeature
-import tools.jackson.databind.json.JsonMapper
-import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -47,17 +45,10 @@ class AaregClientV2(
     private val tokenXToken: String get() = texasService.exchangeToken(TOKENX, target = aaregAudience)
 
     private val webClient: WebClient =
-        configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
+        webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient())
             .baseUrl(aaregUrl)
-            .codecs { it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(mapperBuilder)) }
+            .codecs { it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(soknadJacksonMapper)) }
             .build()
-
-    companion object {
-        private val mapperBuilder: JsonMapper.Builder =
-            jacksonMapperBuilder()
-                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    }
 }
 
 private data class ArbeidsforholdSokRequest(

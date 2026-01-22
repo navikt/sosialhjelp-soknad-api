@@ -100,7 +100,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         every { personService.hentPerson(any()) } returns createPersonAnswer()
         every { personService.hentBarnForPerson(any()) } returns createBarnAnswer()
         every { kontonummerService.getKontonummer(any()) } returns "12145534122"
-        every { arbeidsforholdService.hentArbeidsforhold(any()) } returns createArbeidsforholdAnswer()
+        every { arbeidsforholdService.hentArbeidsforhold() } returns createArbeidsforholdAnswer()
         every { skattbarInntektService.hentUtbetalinger(any()) } returns createSkattbarInntektAnswer()
         every { organisasjonService.hentOrgNavn(any()) } returns arbeidsgiverNavn
         every { krrService.getMobilnummer(any()) } returns "44553366"
