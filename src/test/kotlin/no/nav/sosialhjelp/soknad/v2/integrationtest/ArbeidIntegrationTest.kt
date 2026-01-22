@@ -40,7 +40,7 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
                     assertThat(arbeidsforholdDto.start).isEqualTo(start?.toIsoString())
                     assertThat(arbeidsforholdDto.slutt).isEqualTo(slutt?.toIsoString())
                     assertThat(arbeidsforholdDto.harFastStilling).isEqualTo(harFastStilling)
-                    assertThat(arbeidsforholdDto.fastStillingsprosent).isEqualTo(fastStillingsprosent)
+                    assertThat(arbeidsforholdDto.fastStillingsprosent).isEqualTo(fastStillingsprosent?.toInt())
                 }
             }
         }

@@ -99,7 +99,7 @@ private fun JsonArbeidsforhold.assertArbeidsforhold(arbeidsforhold: Arbeidsforho
     assertThat(arbeidsgivernavn).isEqualTo(arbeidsforhold.arbeidsgivernavn)
     assertThat(fom).isEqualTo(arbeidsforhold.start?.toIsoString())
     assertThat(tom).isEqualTo(arbeidsforhold.slutt?.toIsoString())
-    assertThat(stillingsprosent).isEqualTo(arbeidsforhold.fastStillingsprosent)
+    assertThat(stillingsprosent).isEqualTo(arbeidsforhold.fastStillingsprosent?.toInt())
     when (arbeidsforhold.harFastStilling) {
         null -> assertThat(stillingstype).isNull()
         true -> assertThat(stillingstype).isEqualTo(JsonArbeidsforhold.Stillingstype.FAST)
