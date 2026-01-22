@@ -207,7 +207,7 @@ fun opprettArbeidsforhold(
     slutt: LocalDate? = null,
     fastStillingsprosent: Int? = 100,
     harFastStilling: Boolean? = true,
-): Arbeidsforhold = Arbeidsforhold(arbeidsgivernavn, orgnummer, start, slutt, fastStillingsprosent, harFastStilling)
+): Arbeidsforhold = Arbeidsforhold(arbeidsgivernavn, orgnummer, start, slutt, fastStillingsprosent?.toDouble(), harFastStilling)
 
 fun opprettNavEnhet(
     enhetNr: String = "321321321",
