@@ -87,8 +87,8 @@ private data class ArbeidsforholdSokRequest(
     val rapporteringsordninger: List<String>? = null,
     // bruk default i api
     val arbeidsforholdstatuser: List<String>? = null,
-    val historikk: Boolean = false,
-    val sporingsinformasjon: Boolean = false,
+    val historikk: Boolean = true,
+    val sporingsinformasjon: Boolean = true,
 )
 
 private data class Sokeperiode(
