@@ -30,7 +30,7 @@ enum class OpplysningspliktigType {
 data class OpplysningspliktigIdentDto(
     val type: OpplysningspliktigIdentType,
     val ident: String,
-    val gjeldende: Boolean,
+    val gjeldende: Boolean?,
 )
 
 enum class OpplysningspliktigIdentType {
