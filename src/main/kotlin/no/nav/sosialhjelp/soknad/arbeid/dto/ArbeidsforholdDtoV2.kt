@@ -19,11 +19,17 @@ data class AnsettelsesperiodeDtoV2(
 data class AnsettelsesdetaljerDtoV2(
     val avtaltStillingsprosent: Double,
     val ansettelsesform: AnsettelsesformDto?,
+    val rapporteringsmaaneder: RapporteringsmaanederDto?,
 )
 
 data class AnsettelsesformDto(
     val kode: String?,
     val beskrivelse: String?,
+)
+
+data class RapporteringsmaanederDto(
+    val fra: LocalDate,
+    val til: LocalDate?,
 )
 
 data class OpplysningspliktigDto(

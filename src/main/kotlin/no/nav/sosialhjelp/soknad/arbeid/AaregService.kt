@@ -15,29 +15,32 @@ class AaregService(
     private val aaregClientV2: AaregClientV2,
 ) {
     fun hentArbeidsforhold(): List<Arbeidsforhold>? {
-        hentFraAaregV2HvisIkkeProd()
-
         return aaregClient.finnArbeidsforholdForArbeidstaker()
             ?.map { it.toDomain(organisasjonService) }
             .also { logger.info("Hentet ${it?.size ?: 0} arbeidsforhold fra aareg") }
     }
 
-    private fun hentFraAaregV2HvisIkkeProd() {
+    fun hentArbeidsforholdV2(): List<no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold>? {
+        return hentFraAaregV2HvisIkkeProd()
+    }
+
+    private fun hentFraAaregV2HvisIkkeProd(): List<no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold>? {
         if (MiljoUtils.isProduction()) error("Skal ikke hente fra Aareg V2 i produksjon")
 
         logger.info("Henter arbeidsforhold for bruker fra aareg-api v2")
-        runCatching {
+        return runCatching {
             val arbeidsforholdDto = aaregClientV2.finnArbeidsforholdForArbeidstaker()
             logger.info("V2 ArbeidsforholdDto: ${jacksonObjectMapper().writeValueAsString(arbeidsforholdDto)}")
 
             val arbeidsforholdCreator = ArbeidsforholdCreator(organisasjonService)
 
-            val arbeidsforhold = arbeidsforholdDto?.map { arbeidsforholdCreator.createArbeidsforhold(it) }
-
-            logger.info(
-                "Konverterte arbeidsforhold: " +
-                    jacksonObjectMapper().writeValueAsString(arbeidsforhold),
-            )
+            arbeidsforholdDto?.map { arbeidsforholdCreator.createArbeidsforhold(it) }
+                .also { arbeidsforhold ->
+                    logger.info(
+                        "Konverterte arbeidsforhold: " +
+                            jacksonObjectMapper().writeValueAsString(arbeidsforhold),
+                    )
+                }
         }
             .onFailure { logger.error("Hente fra Api V2 feilet", it) }
             .getOrNull()

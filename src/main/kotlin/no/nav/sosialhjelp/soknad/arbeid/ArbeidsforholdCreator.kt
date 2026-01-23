@@ -17,8 +17,10 @@ class ArbeidsforholdCreator(private val organisasjonService: OrganisasjonService
         val arbeidsstedNavn = dto.createArbeidsstedNavn(orgnummerArbeidssted)
         val startdato = dto.getStartdato()
         val sluttdato = dto.getSluttdato()
-        val stillingsprosent = dto.getStillingsprosent()
-        val harFastStilling = dto.harFastStilling()
+
+        val ansettelsesdetalj = dto.getGjeldendeAnsettelsesdetalj()
+        val stillingsprosent = ansettelsesdetalj?.avtaltStillingsprosent
+        val harFastStilling = ansettelsesdetalj?.ansettelsesform?.kode == "fast"
 
         return Arbeidsforhold(
             orgnummer = "opplysningspliktig: $orgnummerOpplysningspliktig, arbeidssted: $orgnummerArbeidssted",
@@ -65,8 +67,7 @@ class ArbeidsforholdCreator(private val organisasjonService: OrganisasjonService
 
     private fun ArbeidsforholdDtoV2.getSluttdato(): LocalDate? = ansettelsesperiode.sluttdato
 
-    private fun ArbeidsforholdDtoV2.getStillingsprosent(): Double? =
-        ansettelsesdetaljer?.sumOf { it.avtaltStillingsprosent }
-
-    private fun ArbeidsforholdDtoV2.harFastStilling(): Boolean = ansettelsesdetaljer?.isNotEmpty() == true
+    // det "gjeldende" ansettelsesdetaljen avgjøres avgjøres av rapporteringsmaaneder.til er null
+    private fun ArbeidsforholdDtoV2.getGjeldendeAnsettelsesdetalj() =
+        ansettelsesdetaljer?.find { it.rapporteringsmaaneder?.til == null }
 }
