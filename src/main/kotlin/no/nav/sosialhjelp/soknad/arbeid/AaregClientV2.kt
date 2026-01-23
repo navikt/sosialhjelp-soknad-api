@@ -17,8 +17,6 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import tools.jackson.module.kotlin.jacksonObjectMapper
 import tools.jackson.module.kotlin.readValue
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Component
 class AaregClientV2(
@@ -87,14 +85,6 @@ private data class ArbeidsforholdSokRequest(
     val rapporteringsordninger: List<String>? = null,
     // bruk default i api
     val arbeidsforholdstatuser: List<String>? = null,
-    val historikk: Boolean = true,
-    val sporingsinformasjon: Boolean = true,
+    val historikk: Boolean = false,
+    val sporingsinformasjon: Boolean = false,
 )
-
-private data class Sokeperiode(
-    private val fomDate: LocalDate,
-    private val tomDate: LocalDate,
-) {
-    val fom: String get() = fomDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
-    val tom: String get() = tomDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
-}

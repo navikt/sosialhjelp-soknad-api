@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDtoV2
-import no.nav.sosialhjelp.soknad.arbeid.dto.OpplysningspliktigDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.OpplysningspliktigIdentDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.OpplysningspliktigIdentType
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsstedType
+import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoType
 import no.nav.sosialhjelp.soknad.arbeid.dto.OpplysningspliktigType
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
@@ -11,16 +11,18 @@ import java.time.LocalDate
 
 class ArbeidsforholdCreator(private val organisasjonService: OrganisasjonService) {
     fun createArbeidsforhold(dto: ArbeidsforholdDtoV2): Arbeidsforhold {
-        val orgnummer = dto.getOrgnummer()
-        val arbeidsgivernavn = dto.createArbeidsgiverNavn(orgnummer)
+        val orgnummerOpplysningspliktig = dto.getOrgnummerOpplysningspliktig()
+        val orgnummerArbeidssted = dto.getOrgnummerArbeidssted()
+        val opplysningspliktigNavn = dto.createOpplysningspliktigNavn(orgnummerOpplysningspliktig)
+        val arbeidsstedNavn = dto.createArbeidsstedNavn(orgnummerArbeidssted)
         val startdato = dto.getStartdato()
         val sluttdato = dto.getSluttdato()
         val stillingsprosent = dto.getStillingsprosent()
         val harFastStilling = dto.harFastStilling()
 
         return Arbeidsforhold(
-            orgnummer = orgnummer,
-            arbeidsgivernavn = arbeidsgivernavn,
+            orgnummer = "opplysningspliktig: $orgnummerOpplysningspliktig, arbeidssted: $orgnummerArbeidssted",
+            arbeidsgivernavn = "opplysningspliktig: $opplysningspliktigNavn, arbeidssted: $arbeidsstedNavn",
             start = startdato,
             slutt = sluttdato,
             fastStillingsprosent = stillingsprosent,
@@ -28,19 +30,33 @@ class ArbeidsforholdCreator(private val organisasjonService: OrganisasjonService
         )
     }
 
-    private fun ArbeidsforholdDtoV2.getOrgnummer(): String? {
+    private fun ArbeidsforholdDtoV2.getOrgnummerOpplysningspliktig(): String? {
         return opplysningspliktig
             .takeIf { OpplysningspliktigType.Hovedenhet == it?.type }
-            ?.findOrgnummerType()
+            ?.identer?.findOrgnummerType()
             ?.ident
     }
 
-    private fun OpplysningspliktigDto.findOrgnummerType(): OpplysningspliktigIdentDto? =
-        identer.find { OpplysningspliktigIdentType.ORGANISASJONSNUMMER == it.type }
+    private fun ArbeidsforholdDtoV2.getOrgnummerArbeidssted(): String? {
+        return arbeidssted
+            .takeIf { ArbeidsstedType.Underenhet == it?.type }
+            ?.identer?.findOrgnummerType()
+            ?.ident
+    }
 
-    private fun ArbeidsforholdDtoV2.createArbeidsgiverNavn(orgnummer: String?): String =
+    private fun List<IdentInfoDto>.findOrgnummerType(): IdentInfoDto? =
+        find { IdentInfoType.ORGANISASJONSNUMMER == it.type }
+
+    private fun ArbeidsforholdDtoV2.createOpplysningspliktigNavn(orgnummer: String?): String =
         when {
             opplysningspliktig?.type == OpplysningspliktigType.Person -> "Privatperson"
+            orgnummer != null -> organisasjonService.hentOrgNavn(orgnummer)
+            else -> ""
+        }
+
+    private fun ArbeidsforholdDtoV2.createArbeidsstedNavn(orgnummer: String?): String =
+        when {
+            arbeidssted?.type == ArbeidsstedType.Person -> "Privatperson"
             orgnummer != null -> organisasjonService.hentOrgNavn(orgnummer)
             else -> ""
         }

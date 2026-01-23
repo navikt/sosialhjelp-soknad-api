@@ -33,6 +33,7 @@ class AaregService(
             val arbeidsforholdCreator = ArbeidsforholdCreator(organisasjonService)
 
             val arbeidsforhold = arbeidsforholdDto?.map { arbeidsforholdCreator.createArbeidsforhold(it) }
+
             logger.info(
                 jacksonObjectMapper().writeValueAsString("Konverterte arbeidsforhold: $arbeidsforhold"),
             )

@@ -8,6 +8,7 @@ data class ArbeidsforholdDtoV2(
     val ansettelsesdetaljer: List<AnsettelsesdetaljerDtoV2>?,
     val opplysningspliktig: OpplysningspliktigDto?,
     val arbeidstaker: ArbeidstakerDto?,
+    val arbeidssted: ArbeidsstedDto?,
 )
 
 data class AnsettelsesperiodeDtoV2(
@@ -27,7 +28,7 @@ data class AnsettelsesformDto(
 
 data class OpplysningspliktigDto(
     val type: OpplysningspliktigType,
-    val identer: List<OpplysningspliktigIdentDto>,
+    val identer: List<IdentInfoDto>,
 )
 
 enum class OpplysningspliktigType {
@@ -35,13 +36,23 @@ enum class OpplysningspliktigType {
     Person,
 }
 
-data class OpplysningspliktigIdentDto(
-    val type: OpplysningspliktigIdentType,
+data class ArbeidsstedDto(
+    val type: ArbeidsstedType,
+    val identer: List<IdentInfoDto>,
+)
+
+enum class ArbeidsstedType {
+    Underenhet,
+    Person,
+}
+
+data class IdentInfoDto(
+    val type: IdentInfoType,
     val ident: String,
     val gjeldende: Boolean?,
 )
 
-enum class OpplysningspliktigIdentType {
+enum class IdentInfoType {
     AKTORID,
     FOLKEREGISTERIDENT,
     ORGANISASJONSNUMMER,
