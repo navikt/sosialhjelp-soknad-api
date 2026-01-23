@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import tools.jackson.module.kotlin.jacksonObjectMapper
-import tools.jackson.module.kotlin.readValue
 
 @Component
 class AaregClientV2(
@@ -28,37 +25,18 @@ class AaregClientV2(
     fun finnArbeidsforholdForArbeidstaker(): List<ArbeidsforholdDtoV2>? {
         val request = ArbeidsforholdSokRequest(arbeidstakerId = getUserIdFromToken())
 
-        val arbeidsforholdResponse = doFinnArbeidsforhold(request)
-        logger.info("Hentet arbeidsforhold: $arbeidsforholdResponse")
-
-        return arbeidsforholdResponse?.let { jacksonObjectMapper().readValue(arbeidsforholdResponse) }
+        return doFinnArbeidsforhold(request)
     }
 
-//    fun finnArbeidsforholdForArbeidstaker(): List<ArbeidsforholdDtoV2>? {
-//        val request = ArbeidsforholdSokRequest(arbeidstakerId = getUserIdFromToken())
-//
-//        return doFinnArbeidsforhold(request)
-//    }
-
-    private fun doFinnArbeidsforhold(request: ArbeidsforholdSokRequest): String? {
+    private fun doFinnArbeidsforhold(request: ArbeidsforholdSokRequest): List<ArbeidsforholdDtoV2>? {
         return webClient.post()
             .uri("/v2/arbeidstaker/arbeidsforhold")
             .header(HttpHeaders.AUTHORIZATION, getAuthHeader())
             .body(BodyInserters.fromValue(request))
             .retrieve()
-            .bodyToMono<String>()
+            .bodyToMono<List<ArbeidsforholdDtoV2>>()
             .block()
     }
-
-//    private fun doFinnArbeidsforhold(request: ArbeidsforholdSokRequest): List<ArbeidsforholdDtoV2>? {
-//        return webClient.post()
-//            .uri("/v2/arbeidstaker/arbeidsforhold")
-//            .header(HttpHeaders.AUTHORIZATION, getAuthHeader())
-//            .body(BodyInserters.fromValue(request))
-//            .retrieve()
-//            .bodyToMono<List<ArbeidsforholdDtoV2>>()
-//            .block()
-//    }
 
     private fun getAuthHeader() = "Bearer $tokenXToken"
 
@@ -69,10 +47,6 @@ class AaregClientV2(
             .baseUrl(aaregUrl)
             .codecs { it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(soknadJacksonMapper)) }
             .build()
-
-    companion object {
-        private val logger by logger()
-    }
 }
 
 private data class ArbeidsforholdSokRequest(

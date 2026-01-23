@@ -28,7 +28,7 @@ class AaregService(
         logger.info("Henter arbeidsforhold for bruker fra aareg-api v2")
         runCatching {
             val arbeidsforholdDto = aaregClientV2.finnArbeidsforholdForArbeidstaker()
-            logger.info("V2 Hentet arbeidsforhold: ${jacksonObjectMapper().writeValueAsString(arbeidsforholdDto)}")
+            logger.info("V2 ArbeidsforholdDto: ${jacksonObjectMapper().writeValueAsString(arbeidsforholdDto)}")
 
             val arbeidsforholdCreator = ArbeidsforholdCreator(organisasjonService)
 
