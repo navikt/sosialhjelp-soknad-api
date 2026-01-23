@@ -35,7 +35,8 @@ class AaregService(
             val arbeidsforhold = arbeidsforholdDto?.map { arbeidsforholdCreator.createArbeidsforhold(it) }
 
             logger.info(
-                jacksonObjectMapper().writeValueAsString("Konverterte arbeidsforhold: $arbeidsforhold"),
+                "Konverterte arbeidsforhold: " +
+                    jacksonObjectMapper().writeValueAsString(arbeidsforhold),
             )
         }
             .onFailure { logger.error("Hente fra Api V2 feilet", it) }
