@@ -28,8 +28,8 @@ data class AnsettelsesformDto(
 )
 
 data class RapporteringsmaanederDto(
-    val fra: LocalDate,
-    val til: LocalDate?,
+    val fra: String,
+    val til: String?,
 )
 
 data class OpplysningspliktigDto(
