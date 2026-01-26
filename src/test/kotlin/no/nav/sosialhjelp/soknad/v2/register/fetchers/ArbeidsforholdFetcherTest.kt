@@ -4,7 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.arbeid.AaregClient
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoType
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonClient
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
@@ -15,7 +15,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.register.AbstractRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.orgnummer1
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.orgnummer2
-import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromAaregClient
+import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromAaregClientV2
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromOrganisasjonClient
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -53,7 +53,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Aareg-client returnerer null skal ikke kaste feil eller lagre til db`() {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker(any()) } returns null
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns null
 
         arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
         assertThat(livssituasjonRepository.findByIdOrNull(soknad.id)).isNull()
@@ -61,7 +61,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Exception i Aareg-client kaster feil`() {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker(any()) } throws
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } throws
             TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
 
         assertThatThrownBy {
@@ -119,7 +119,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Oppdaterere med tom liste fjerner tidligere lagrede data`() {
-        createAnswerForAaregClient()
+        createAnswerForAaregClient().also { createAnswerForOrganisasjonClient(it) }
 
         arbeidsforholdFetcher.fetchAndSave(soknad.id)
 
@@ -128,7 +128,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
             assertThat(inntekter).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
 
-        createAnswerForAaregClient(answer = emptyList())
+        createAnswerForAaregClient(answerV2 = emptyList())
 
         arbeidsforholdFetcher.fetchAndSave(soknad.id)
 
@@ -146,17 +146,21 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     protected lateinit var organisasjonClient: OrganisasjonClient
 
     private fun createAnswerForAaregClient(
-        answer: List<ArbeidsforholdDto> = defaultResponseFromAaregClient(soknad.eierPersonId),
+        answerV2: List<ArbeidsforholdDto> = defaultResponseFromAaregClientV2(soknad.eierPersonId),
     ): List<ArbeidsforholdDto> {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker(soknad.eierPersonId) } returns answer
-        return answer
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns answerV2
+        return answerV2
     }
 
     private fun createAnswerForOrganisasjonClient(
         arbeidsforhold: List<ArbeidsforholdDto>,
     ): List<OrganisasjonNoekkelinfoDto> {
         return arbeidsforhold
-            .map { (it.arbeidsgiver as OrganisasjonDto).organisasjonsnummer }
+            .map {
+                it.arbeidssted?.identer
+                    ?.find { identType -> identType.type == IdentInfoType.ORGANISASJONSNUMMER }
+                    ?.ident
+            }
             .map {
                 val answer = defaultResponseFromOrganisasjonClient(it!!)
                 every { organisasjonClient.hentOrganisasjonNoekkelinfo(it) } returns answer

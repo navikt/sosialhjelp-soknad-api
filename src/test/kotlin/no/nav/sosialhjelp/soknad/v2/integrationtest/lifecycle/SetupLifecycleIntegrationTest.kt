@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
-import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoClient
@@ -100,7 +99,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         every { personService.hentPerson(any()) } returns createPersonAnswer()
         every { personService.hentBarnForPerson(any()) } returns createBarnAnswer()
         every { kontonummerService.getKontonummer(any()) } returns "12145534122"
-        every { arbeidsforholdService.hentArbeidsforhold(any()) } returns createArbeidsforholdAnswer()
+        every { arbeidsforholdService.hentArbeidsforhold() } returns createArbeidsforholdAnswer()
         every { skattbarInntektService.hentUtbetalinger(any()) } returns createSkattbarInntektAnswer()
         every { organisasjonService.hentOrgNavn(any()) } returns arbeidsgiverNavn
         every { krrService.getMobilnummer(any()) } returns "44553366"
@@ -201,14 +200,14 @@ fun createVegadresse(
     )
 }
 
-fun createArbeidsforholdAnswer(): List<Arbeidsforhold> {
+fun createArbeidsforholdAnswer(): List<no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold> {
     return listOf(
-        Arbeidsforhold(
-            orgnr = orgnr,
+        no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold(
+            orgnummer = orgnr,
             arbeidsgivernavn = arbeidsgiverNavn,
-            fom = LocalDate.of(2020, 1, 1),
-            fastStillingsprosent = 100,
-            tom = null,
+            start = LocalDate.of(2020, 1, 1),
+            fastStillingsprosent = 100.00,
+            slutt = null,
             harFastStilling = true,
         ),
     )

@@ -1,11 +1,17 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
+import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesdetaljerDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesformDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesperiodeDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsavtaleDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.PeriodeDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.PersonArbeidDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsstedDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsstedType
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidstakerDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidstakerIdentDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidstakerIdentType
+import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoType
+import no.nav.sosialhjelp.soknad.arbeid.dto.RapporteringsmaanederDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.SakDto
@@ -79,50 +85,102 @@ object DefaultValuesForMockedResponses {
     val kontoDto = KontoDto(kontonummer = "12341212345", utenlandskKontoInfo = null)
 }
 
-internal fun defaultResponseFromAaregClient(personId: String): List<ArbeidsforholdDto> {
+internal fun defaultResponseFromAaregClientV2(personId: String): List<ArbeidsforholdDto> {
     return listOf(
         ArbeidsforholdDto(
+            id = UUID.randomUUID().toString(),
             ansettelsesperiode =
                 AnsettelsesperiodeDto(
-                    periode =
-                        PeriodeDto(
-                            fom = LocalDate.now().minusYears(2),
-                            tom = LocalDate.now(),
+                    startdato = LocalDate.now().minusYears(2),
+                    sluttdato = LocalDate.now(),
+                ),
+            ansettelsesdetaljer =
+                listOf(
+                    AnsettelsesdetaljerDto(
+                        avtaltStillingsprosent = 100.00,
+                        ansettelsesform =
+                            AnsettelsesformDto(
+                                kode = "fast",
+                                beskrivelse = "Fast ansatt",
+                            ),
+                        rapporteringsmaaneder =
+                            RapporteringsmaanederDto(
+                                fra = "2024-01",
+                                til = null,
+                            ),
+                    ),
+                ),
+            opplysningspliktig = null,
+            arbeidstaker =
+                ArbeidstakerDto(
+                    identer =
+                        listOf(
+                            ArbeidstakerIdentDto(
+                                type = ArbeidstakerIdentType.FOLKEREGISTERIDENT,
+                                ident = personId,
+                                gjeldende = true,
+                            ),
                         ),
                 ),
-            arbeidsavtaler =
-                listOf(
-                    ArbeidsavtaleDto(stillingsprosent = 100.00),
-                ),
-            arbeidsforholdId = UUID.randomUUID().toString(),
-            arbeidsgiver = OrganisasjonDto(organisasjonsnummer = orgnummer1, type = "fast"),
-            arbeidstaker =
-                PersonArbeidDto(
-                    offentligIdent = personId,
-                    aktoerId = UUID.randomUUID().toString(),
-                    type = "ansatt",
+            arbeidssted =
+                ArbeidsstedDto(
+                    type = ArbeidsstedType.Underenhet,
+                    identer =
+                        listOf(
+                            IdentInfoDto(
+                                type = IdentInfoType.ORGANISASJONSNUMMER,
+                                ident = orgnummer1,
+                                gjeldende = true,
+                            ),
+                        ),
                 ),
         ),
         ArbeidsforholdDto(
+            id = UUID.randomUUID().toString(),
             ansettelsesperiode =
                 AnsettelsesperiodeDto(
-                    periode =
-                        PeriodeDto(
-                            fom = LocalDate.now().minusYears(8),
-                            tom = null,
+                    startdato = LocalDate.now().minusYears(8),
+                    sluttdato = null,
+                ),
+            ansettelsesdetaljer =
+                listOf(
+                    AnsettelsesdetaljerDto(
+                        avtaltStillingsprosent = 100.00,
+                        ansettelsesform =
+                            AnsettelsesformDto(
+                                kode = "fast",
+                                beskrivelse = "Fast ansatt",
+                            ),
+                        rapporteringsmaaneder =
+                            RapporteringsmaanederDto(
+                                fra = "2024-01",
+                                til = null,
+                            ),
+                    ),
+                ),
+            opplysningspliktig = null,
+            arbeidstaker =
+                ArbeidstakerDto(
+                    identer =
+                        listOf(
+                            ArbeidstakerIdentDto(
+                                type = ArbeidstakerIdentType.FOLKEREGISTERIDENT,
+                                ident = personId,
+                                gjeldende = true,
+                            ),
                         ),
                 ),
-            arbeidsavtaler =
-                listOf(
-                    ArbeidsavtaleDto(stillingsprosent = 100.00),
-                ),
-            arbeidsforholdId = UUID.randomUUID().toString(),
-            arbeidsgiver = OrganisasjonDto(organisasjonsnummer = orgnummer2, type = "fast"),
-            arbeidstaker =
-                PersonArbeidDto(
-                    offentligIdent = personId,
-                    aktoerId = UUID.randomUUID().toString(),
-                    type = "ansatt",
+            arbeidssted =
+                ArbeidsstedDto(
+                    type = ArbeidsstedType.Underenhet,
+                    identer =
+                        listOf(
+                            IdentInfoDto(
+                                type = IdentInfoType.ORGANISASJONSNUMMER,
+                                ident = orgnummer2,
+                                gjeldende = true,
+                            ),
+                        ),
                 ),
         ),
     )

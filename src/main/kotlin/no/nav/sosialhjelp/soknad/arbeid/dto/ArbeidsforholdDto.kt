@@ -1,64 +1,81 @@
 package no.nav.sosialhjelp.soknad.arbeid.dto
 
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
-import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import java.time.LocalDate
 
 data class ArbeidsforholdDto(
-    val ansettelsesperiode: AnsettelsesperiodeDto?,
-    val arbeidsavtaler: List<ArbeidsavtaleDto>?,
-    val arbeidsforholdId: String?,
-    val arbeidsgiver: OpplysningspliktigArbeidsgiverDto?,
-    val arbeidstaker: PersonArbeidDto?,
+    val id: String,
+    val ansettelsesperiode: AnsettelsesperiodeDto,
+    val ansettelsesdetaljer: List<AnsettelsesdetaljerDto>?,
+    val opplysningspliktig: OpplysningspliktigDto?,
+    val arbeidstaker: ArbeidstakerDto?,
+    val arbeidssted: ArbeidsstedDto?,
 )
 
 data class AnsettelsesperiodeDto(
-    val periode: PeriodeDto,
+    val startdato: LocalDate,
+    val sluttdato: LocalDate?,
 )
 
-data class ArbeidsavtaleDto(
-    val stillingsprosent: Double,
+data class AnsettelsesdetaljerDto(
+    val avtaltStillingsprosent: Double,
+    val ansettelsesform: AnsettelsesformDto?,
+    val rapporteringsmaaneder: RapporteringsmaanederDto?,
 )
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes(
-    JsonSubTypes.Type(value = OrganisasjonDto::class, name = "Organisasjon"),
-    JsonSubTypes.Type(value = PersonArbeidDto::class, name = "Person"),
-)
-sealed class OpplysningspliktigArbeidsgiverDto()
-
-data class OrganisasjonDto(
-    val organisasjonsnummer: String?,
-    val type: String?,
-) : OpplysningspliktigArbeidsgiverDto()
-
-data class PersonArbeidDto(
-    val offentligIdent: String,
-    val aktoerId: String,
-    val type: String?,
-) : OpplysningspliktigArbeidsgiverDto()
-
-data class PeriodeDto(
-    val fom: LocalDate,
-    val tom: LocalDate?,
+data class AnsettelsesformDto(
+    val kode: String?,
+    val beskrivelse: String?,
 )
 
-fun ArbeidsforholdDto.toDomain(organisasjonService: OrganisasjonService): Arbeidsforhold {
-    return Arbeidsforhold(
-        orgnr = (arbeidsgiver as? OrganisasjonDto)?.organisasjonsnummer,
-        arbeidsgivernavn =
-            if (arbeidsgiver is OrganisasjonDto) {
-                organisasjonService.hentOrgNavn(
-                    arbeidsgiver.organisasjonsnummer,
-                )
-            } else {
-                "Privatperson"
-            },
-        fom = ansettelsesperiode?.periode?.fom,
-        tom = ansettelsesperiode?.periode?.tom,
-        fastStillingsprosent = arbeidsavtaler?.sumOf { it.stillingsprosent }?.toLong(),
-        harFastStilling = arbeidsavtaler?.isNotEmpty(),
-    )
+data class RapporteringsmaanederDto(
+    val fra: String,
+    val til: String?,
+)
+
+data class OpplysningspliktigDto(
+    val type: OpplysningspliktigType,
+    val identer: List<IdentInfoDto>,
+)
+
+enum class OpplysningspliktigType {
+    Hovedenhet,
+    Person,
+}
+
+data class ArbeidsstedDto(
+    val type: ArbeidsstedType,
+    val identer: List<IdentInfoDto>,
+)
+
+enum class ArbeidsstedType {
+    Underenhet,
+    Person,
+}
+
+data class IdentInfoDto(
+    val type: IdentInfoType,
+    val ident: String,
+    val gjeldende: Boolean?,
+)
+
+enum class IdentInfoType {
+    AKTORID,
+    FOLKEREGISTERIDENT,
+    ORGANISASJONSNUMMER,
+}
+
+data class ArbeidstakerDto(
+    val identer: List<ArbeidstakerIdentDto>,
+)
+
+data class ArbeidstakerIdentDto(
+    val type: ArbeidstakerIdentType,
+    val ident: String,
+    val gjeldende: Boolean,
+)
+
+enum class ArbeidstakerIdentType {
+    FOLKEREGISTERIDENT,
+    ORGANISASJONSNUMMER,
+    AKTORID,
 }

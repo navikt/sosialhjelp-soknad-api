@@ -70,7 +70,7 @@ private fun Arbeidsforhold.toArbeidsforholdDto(): ArbeidsforholdDto {
         orgnummer = orgnummer,
         start = start?.toIsoString(),
         slutt = slutt?.toIsoString(),
-        fastStillingsprosent = fastStillingsprosent,
+        fastStillingsprosent = fastStillingsprosent?.toInt(),
         harFastStilling = harFastStilling,
     )
 }
