@@ -124,7 +124,6 @@ class DigisosApiV2Client(
                 .header(AUTHORIZATION, "Bearer $userToken")
                 .retrieve()
                 .bodyToMono<List<DigisosSak>>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
                 ?: throw FiksException(
                     message = "Fiks - noe uventet feilet ved henting av søknader. Response er null?",
