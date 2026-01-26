@@ -1,11 +1,19 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
-import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesperiodeDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsavtaleDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.PeriodeDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.PersonArbeidDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesdetaljerDtoV2
+import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesformDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesperiodeDtoV2
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDtoV2
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsstedDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsstedType
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidstakerDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidstakerIdentDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidstakerIdentType
+import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoType
+import no.nav.sosialhjelp.soknad.arbeid.dto.OpplysningspliktigDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.OpplysningspliktigType
+import no.nav.sosialhjelp.soknad.arbeid.dto.RapporteringsmaanederDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.SakDto
@@ -79,7 +87,7 @@ object DefaultValuesForMockedResponses {
     val kontoDto = KontoDto(kontonummer = "12341212345", utenlandskKontoInfo = null)
 }
 
-internal fun defaultResponseFromAaregClient(personId: String): List<ArbeidsforholdDto> {
+internal fun defaultResponseFromAaregClient(personId: String): List<ArbeidsforholdDtoV2> {
     return listOf(
         ArbeidsforholdDto(
             ansettelsesperiode =
@@ -123,6 +131,70 @@ internal fun defaultResponseFromAaregClient(personId: String): List<Arbeidsforho
                     offentligIdent = personId,
                     aktoerId = UUID.randomUUID().toString(),
                     type = "ansatt",
+                ),
+        ),
+    )
+}
+
+internal fun defaultResponseFromAaregClientV2(personId: String): List<ArbeidsforholdDtoV2> {
+    return listOf(
+        ArbeidsforholdDtoV2(
+            id = UUID.randomUUID().toString(),
+            ansettelsesperiode =
+                AnsettelsesperiodeDtoV2(
+                    startdato = LocalDate.now().minusMonths(2),
+                    sluttdato = null,
+                ),
+            ansettelsesdetaljer =
+                listOf(
+                    AnsettelsesdetaljerDtoV2(
+                        avtaltStillingsprosent = 100.00,
+                        ansettelsesform =
+                            AnsettelsesformDto(
+                                kode = "fast",
+                                beskrivelse = "Fast ansatt",
+                            ),
+                        rapporteringsmaaneder =
+                            RapporteringsmaanederDto(
+                                fra = "2024-01",
+                                til = null,
+                            ),
+                    ),
+                ),
+            opplysningspliktig =
+                OpplysningspliktigDto(
+                    type = OpplysningspliktigType.Hovedenhet,
+                    identer =
+                        listOf(
+                            IdentInfoDto(
+                                type = IdentInfoType.ORGANISASJONSNUMMER,
+                                ident = orgnummer1,
+                                gjeldende = true,
+                            ),
+                        ),
+                ),
+            arbeidstaker =
+                ArbeidstakerDto(
+                    identer =
+                        listOf(
+                            ArbeidstakerIdentDto(
+                                type = ArbeidstakerIdentType.FOLKEREGISTERIDENT,
+                                ident = personId,
+                                gjeldende = true,
+                            ),
+                        ),
+                ),
+            arbeidssted =
+                ArbeidsstedDto(
+                    type = ArbeidsstedType.Underenhet,
+                    identer =
+                        listOf(
+                            IdentInfoDto(
+                                type = IdentInfoType.ORGANISASJONSNUMMER,
+                                ident = orgnummer1,
+                                gjeldende = true,
+                            ),
+                        ),
                 ),
         ),
     )

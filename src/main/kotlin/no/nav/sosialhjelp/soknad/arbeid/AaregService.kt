@@ -1,46 +1,22 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.arbeid.dto.toDomain
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
-import tools.jackson.module.kotlin.jacksonObjectMapper
 
 @Component
 class AaregService(
-    private val aaregClient: AaregClient,
     private val organisasjonService: OrganisasjonService,
     private val aaregClientV2: AaregClientV2,
 ) {
-    fun hentArbeidsforhold(): List<Arbeidsforhold>? {
-        return aaregClient.finnArbeidsforholdForArbeidstaker()
-            ?.map { it.toDomain(organisasjonService) }
-            .also { logger.info("Hentet ${it?.size ?: 0} arbeidsforhold fra aareg") }
-    }
-
     fun hentArbeidsforholdV2(): List<no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold>? {
-        return hentFraAaregV2HvisIkkeProd()
-    }
-
-    private fun hentFraAaregV2HvisIkkeProd(): List<no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold>? {
-        if (MiljoUtils.isProduction()) error("Skal ikke hente fra Aareg V2 i produksjon")
+        val arbeidsforholdCreator = ArbeidsforholdCreator(organisasjonService)
 
         logger.info("Henter arbeidsforhold for bruker fra aareg-api v2")
+
         return runCatching {
-            val arbeidsforholdDto = aaregClientV2.finnArbeidsforholdForArbeidstaker()
-            logger.info("V2 ArbeidsforholdDto: ${jacksonObjectMapper().writeValueAsString(arbeidsforholdDto)}")
-
-            val arbeidsforholdCreator = ArbeidsforholdCreator(organisasjonService)
-
-            arbeidsforholdDto?.map { arbeidsforholdCreator.createArbeidsforhold(it) }
-                .also { arbeidsforhold ->
-                    logger.info(
-                        "Konverterte arbeidsforhold: " +
-                            jacksonObjectMapper().writeValueAsString(arbeidsforhold),
-                    )
-                }
+            aaregClientV2.finnArbeidsforholdForArbeidstaker()
+                ?.let { dto -> dto.map { arbeidsforholdCreator.createArbeidsforhold(it) } }
         }
             .onFailure { logger.error("Hente fra Api V2 feilet", it) }
             .getOrNull()

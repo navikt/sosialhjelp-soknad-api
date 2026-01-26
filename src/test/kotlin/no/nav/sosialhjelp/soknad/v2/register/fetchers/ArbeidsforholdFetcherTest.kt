@@ -2,9 +2,10 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import no.nav.sosialhjelp.soknad.arbeid.AaregClient
-import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
+import io.netty.resolver.DefaultAddressResolverGroup
+import no.nav.sosialhjelp.soknad.arbeid.AaregClientV2
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDtoV2
+import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoType
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonClient
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
@@ -15,7 +16,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.register.AbstractRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.orgnummer1
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.orgnummer2
-import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromAaregClient
+import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromAaregClientV2
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromOrganisasjonClient
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -23,6 +24,7 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import kotlin.collections.emptyList
 
 class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     @Autowired
@@ -44,7 +46,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
         arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.arbeid.arbeidsforhold).hasSize(2)
+            assertThat(it.arbeid.arbeidsforhold).hasSize(1)
             assertThat(it.arbeid.arbeidsforhold.any { item -> item.orgnummer == orgnummer1 }).isTrue()
             assertThat(it.arbeid.arbeidsforhold.any { item -> item.orgnummer == orgnummer2 }).isTrue()
         }
@@ -53,7 +55,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Aareg-client returnerer null skal ikke kaste feil eller lagre til db`() {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns null
+        every { aaregClientV2.finnArbeidsforholdForArbeidstaker() } returns null
 
         arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
         assertThat(livssituasjonRepository.findByIdOrNull(soknad.id)).isNull()
@@ -61,7 +63,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Exception i Aareg-client kaster feil`() {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker() } throws
+        every { aaregClientV2.finnArbeidsforholdForArbeidstaker() } throws
             TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
 
         assertThatThrownBy {
@@ -128,7 +130,10 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
             assertThat(inntekter).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
 
-        createAnswerForAaregClient(answer = emptyList())
+        DefaultAddressResolverGroup.INSTANCE
+        DefaultAdressResolverGroup.INSTANCE
+
+        createAnswerForAaregClient(answerV2 = emptyList())
 
         arbeidsforholdFetcher.fetchAndSave(soknad.id)
 
@@ -140,23 +145,27 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     }
 
     @MockkBean
-    protected lateinit var aaregClient: AaregClient
+    protected lateinit var aaregClientV2: AaregClientV2
 
     @MockkBean
     protected lateinit var organisasjonClient: OrganisasjonClient
 
     private fun createAnswerForAaregClient(
-        answer: List<ArbeidsforholdDto> = defaultResponseFromAaregClient(soknad.eierPersonId),
-    ): List<ArbeidsforholdDto> {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns answer
-        return answer
+        answerV2: List<ArbeidsforholdDtoV2> = defaultResponseFromAaregClientV2(soknad.eierPersonId),
+    ): List<ArbeidsforholdDtoV2> {
+        every { aaregClientV2.finnArbeidsforholdForArbeidstaker() } returns answerV2
+        return answerV2
     }
 
     private fun createAnswerForOrganisasjonClient(
-        arbeidsforhold: List<ArbeidsforholdDto>,
+        arbeidsforhold: List<ArbeidsforholdDtoV2>,
     ): List<OrganisasjonNoekkelinfoDto> {
         return arbeidsforhold
-            .map { (it.arbeidsgiver as OrganisasjonDto).organisasjonsnummer }
+            .map {
+                it.arbeidssted?.identer
+                    ?.find { identType -> identType.type == IdentInfoType.ORGANISASJONSNUMMER }
+                    ?.ident
+            }
             .map {
                 val answer = defaultResponseFromOrganisasjonClient(it!!)
                 every { organisasjonClient.hentOrganisasjonNoekkelinfo(it) } returns answer

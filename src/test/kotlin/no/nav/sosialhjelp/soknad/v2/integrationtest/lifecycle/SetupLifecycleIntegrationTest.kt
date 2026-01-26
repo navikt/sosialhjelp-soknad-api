@@ -100,7 +100,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         every { personService.hentPerson(any()) } returns createPersonAnswer()
         every { personService.hentBarnForPerson(any()) } returns createBarnAnswer()
         every { kontonummerService.getKontonummer(any()) } returns "12145534122"
-        every { arbeidsforholdService.hentArbeidsforhold() } returns createArbeidsforholdAnswer()
+        every { arbeidsforholdService.hentArbeidsforholdV2() } returns createArbeidsforholdAnswer()
         every { skattbarInntektService.hentUtbetalinger(any()) } returns createSkattbarInntektAnswer()
         every { organisasjonService.hentOrgNavn(any()) } returns arbeidsgiverNavn
         every { krrService.getMobilnummer(any()) } returns "44553366"
@@ -201,14 +201,14 @@ fun createVegadresse(
     )
 }
 
-fun createArbeidsforholdAnswer(): List<Arbeidsforhold> {
+fun createArbeidsforholdAnswer(): List<no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold> {
     return listOf(
-        Arbeidsforhold(
-            orgnr = orgnr,
+        no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold(
+            orgnummer = orgnr,
             arbeidsgivernavn = arbeidsgiverNavn,
-            fom = LocalDate.of(2020, 1, 1),
-            fastStillingsprosent = 100,
-            tom = null,
+            start = LocalDate.of(2020, 1, 1),
+            fastStillingsprosent = 100.00,
+            slutt = null,
             harFastStilling = true,
         ),
     )
