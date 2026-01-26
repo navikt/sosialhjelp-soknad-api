@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
-import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesdetaljerDtoV2
+import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesdetaljerDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesformDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesperiodeDtoV2
-import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDtoV2
+import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesperiodeDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsstedDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsstedType
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidstakerDto
@@ -11,8 +11,6 @@ import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidstakerIdentDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidstakerIdentType
 import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoType
-import no.nav.sosialhjelp.soknad.arbeid.dto.OpplysningspliktigDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.OpplysningspliktigType
 import no.nav.sosialhjelp.soknad.arbeid.dto.RapporteringsmaanederDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
@@ -87,67 +85,18 @@ object DefaultValuesForMockedResponses {
     val kontoDto = KontoDto(kontonummer = "12341212345", utenlandskKontoInfo = null)
 }
 
-internal fun defaultResponseFromAaregClient(personId: String): List<ArbeidsforholdDtoV2> {
+internal fun defaultResponseFromAaregClientV2(personId: String): List<ArbeidsforholdDto> {
     return listOf(
         ArbeidsforholdDto(
-            ansettelsesperiode =
-                AnsettelsesperiodeDto(
-                    periode =
-                        PeriodeDto(
-                            fom = LocalDate.now().minusYears(2),
-                            tom = LocalDate.now(),
-                        ),
-                ),
-            arbeidsavtaler =
-                listOf(
-                    ArbeidsavtaleDto(stillingsprosent = 100.00),
-                ),
-            arbeidsforholdId = UUID.randomUUID().toString(),
-            arbeidsgiver = OrganisasjonDto(organisasjonsnummer = orgnummer1, type = "fast"),
-            arbeidstaker =
-                PersonArbeidDto(
-                    offentligIdent = personId,
-                    aktoerId = UUID.randomUUID().toString(),
-                    type = "ansatt",
-                ),
-        ),
-        ArbeidsforholdDto(
-            ansettelsesperiode =
-                AnsettelsesperiodeDto(
-                    periode =
-                        PeriodeDto(
-                            fom = LocalDate.now().minusYears(8),
-                            tom = null,
-                        ),
-                ),
-            arbeidsavtaler =
-                listOf(
-                    ArbeidsavtaleDto(stillingsprosent = 100.00),
-                ),
-            arbeidsforholdId = UUID.randomUUID().toString(),
-            arbeidsgiver = OrganisasjonDto(organisasjonsnummer = orgnummer2, type = "fast"),
-            arbeidstaker =
-                PersonArbeidDto(
-                    offentligIdent = personId,
-                    aktoerId = UUID.randomUUID().toString(),
-                    type = "ansatt",
-                ),
-        ),
-    )
-}
-
-internal fun defaultResponseFromAaregClientV2(personId: String): List<ArbeidsforholdDtoV2> {
-    return listOf(
-        ArbeidsforholdDtoV2(
             id = UUID.randomUUID().toString(),
             ansettelsesperiode =
-                AnsettelsesperiodeDtoV2(
-                    startdato = LocalDate.now().minusMonths(2),
-                    sluttdato = null,
+                AnsettelsesperiodeDto(
+                    startdato = LocalDate.now().minusYears(2),
+                    sluttdato = LocalDate.now(),
                 ),
             ansettelsesdetaljer =
                 listOf(
-                    AnsettelsesdetaljerDtoV2(
+                    AnsettelsesdetaljerDto(
                         avtaltStillingsprosent = 100.00,
                         ansettelsesform =
                             AnsettelsesformDto(
@@ -161,18 +110,7 @@ internal fun defaultResponseFromAaregClientV2(personId: String): List<Arbeidsfor
                             ),
                     ),
                 ),
-            opplysningspliktig =
-                OpplysningspliktigDto(
-                    type = OpplysningspliktigType.Hovedenhet,
-                    identer =
-                        listOf(
-                            IdentInfoDto(
-                                type = IdentInfoType.ORGANISASJONSNUMMER,
-                                ident = orgnummer1,
-                                gjeldende = true,
-                            ),
-                        ),
-                ),
+            opplysningspliktig = null,
             arbeidstaker =
                 ArbeidstakerDto(
                     identer =
@@ -192,6 +130,54 @@ internal fun defaultResponseFromAaregClientV2(personId: String): List<Arbeidsfor
                             IdentInfoDto(
                                 type = IdentInfoType.ORGANISASJONSNUMMER,
                                 ident = orgnummer1,
+                                gjeldende = true,
+                            ),
+                        ),
+                ),
+        ),
+        ArbeidsforholdDto(
+            id = UUID.randomUUID().toString(),
+            ansettelsesperiode =
+                AnsettelsesperiodeDto(
+                    startdato = LocalDate.now().minusYears(8),
+                    sluttdato = null,
+                ),
+            ansettelsesdetaljer =
+                listOf(
+                    AnsettelsesdetaljerDto(
+                        avtaltStillingsprosent = 100.00,
+                        ansettelsesform =
+                            AnsettelsesformDto(
+                                kode = "fast",
+                                beskrivelse = "Fast ansatt",
+                            ),
+                        rapporteringsmaaneder =
+                            RapporteringsmaanederDto(
+                                fra = "2024-01",
+                                til = null,
+                            ),
+                    ),
+                ),
+            opplysningspliktig = null,
+            arbeidstaker =
+                ArbeidstakerDto(
+                    identer =
+                        listOf(
+                            ArbeidstakerIdentDto(
+                                type = ArbeidstakerIdentType.FOLKEREGISTERIDENT,
+                                ident = personId,
+                                gjeldende = true,
+                            ),
+                        ),
+                ),
+            arbeidssted =
+                ArbeidsstedDto(
+                    type = ArbeidsstedType.Underenhet,
+                    identer =
+                        listOf(
+                            IdentInfoDto(
+                                type = IdentInfoType.ORGANISASJONSNUMMER,
+                                ident = orgnummer2,
                                 gjeldende = true,
                             ),
                         ),

@@ -2,9 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import io.netty.resolver.DefaultAddressResolverGroup
-import no.nav.sosialhjelp.soknad.arbeid.AaregClientV2
-import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDtoV2
+import no.nav.sosialhjelp.soknad.arbeid.AaregClient
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoType
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonClient
@@ -24,7 +23,6 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import kotlin.collections.emptyList
 
 class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     @Autowired
@@ -46,7 +44,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
         arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.arbeid.arbeidsforhold).hasSize(1)
+            assertThat(it.arbeid.arbeidsforhold).hasSize(2)
             assertThat(it.arbeid.arbeidsforhold.any { item -> item.orgnummer == orgnummer1 }).isTrue()
             assertThat(it.arbeid.arbeidsforhold.any { item -> item.orgnummer == orgnummer2 }).isTrue()
         }
@@ -55,7 +53,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Aareg-client returnerer null skal ikke kaste feil eller lagre til db`() {
-        every { aaregClientV2.finnArbeidsforholdForArbeidstaker() } returns null
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns null
 
         arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
         assertThat(livssituasjonRepository.findByIdOrNull(soknad.id)).isNull()
@@ -63,7 +61,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Exception i Aareg-client kaster feil`() {
-        every { aaregClientV2.finnArbeidsforholdForArbeidstaker() } throws
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } throws
             TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
 
         assertThatThrownBy {
@@ -121,7 +119,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Oppdaterere med tom liste fjerner tidligere lagrede data`() {
-        createAnswerForAaregClient()
+        createAnswerForAaregClient().also { createAnswerForOrganisasjonClient(it) }
 
         arbeidsforholdFetcher.fetchAndSave(soknad.id)
 
@@ -129,9 +127,6 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
             assertThat(inntekter).anyMatch { it.type == InntektType.JOBB }
             assertThat(inntekter).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
-
-        DefaultAddressResolverGroup.INSTANCE
-        DefaultAdressResolverGroup.INSTANCE
 
         createAnswerForAaregClient(answerV2 = emptyList())
 
@@ -145,20 +140,20 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     }
 
     @MockkBean
-    protected lateinit var aaregClientV2: AaregClientV2
+    protected lateinit var aaregClient: AaregClient
 
     @MockkBean
     protected lateinit var organisasjonClient: OrganisasjonClient
 
     private fun createAnswerForAaregClient(
-        answerV2: List<ArbeidsforholdDtoV2> = defaultResponseFromAaregClientV2(soknad.eierPersonId),
-    ): List<ArbeidsforholdDtoV2> {
-        every { aaregClientV2.finnArbeidsforholdForArbeidstaker() } returns answerV2
+        answerV2: List<ArbeidsforholdDto> = defaultResponseFromAaregClientV2(soknad.eierPersonId),
+    ): List<ArbeidsforholdDto> {
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns answerV2
         return answerV2
     }
 
     private fun createAnswerForOrganisasjonClient(
-        arbeidsforhold: List<ArbeidsforholdDtoV2>,
+        arbeidsforhold: List<ArbeidsforholdDto>,
     ): List<OrganisasjonNoekkelinfoDto> {
         return arbeidsforhold
             .map {

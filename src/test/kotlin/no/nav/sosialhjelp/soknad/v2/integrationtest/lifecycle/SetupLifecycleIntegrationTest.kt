@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
-import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoClient
@@ -100,7 +99,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         every { personService.hentPerson(any()) } returns createPersonAnswer()
         every { personService.hentBarnForPerson(any()) } returns createBarnAnswer()
         every { kontonummerService.getKontonummer(any()) } returns "12145534122"
-        every { arbeidsforholdService.hentArbeidsforholdV2() } returns createArbeidsforholdAnswer()
+        every { arbeidsforholdService.hentArbeidsforhold() } returns createArbeidsforholdAnswer()
         every { skattbarInntektService.hentUtbetalinger(any()) } returns createSkattbarInntektAnswer()
         every { organisasjonService.hentOrgNavn(any()) } returns arbeidsgiverNavn
         every { krrService.getMobilnummer(any()) } returns "44553366"

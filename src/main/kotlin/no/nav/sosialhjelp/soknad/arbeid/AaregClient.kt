@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
-import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDtoV2
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider.TOKENX
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import org.springframework.beans.factory.annotation.Value
@@ -16,25 +16,25 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
-class AaregClientV2(
+class AaregClient(
     @param:Value("\${aareg_url}") private val aaregUrl: String,
     @param:Value("\${aareg_audience}") private val aaregAudience: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    fun finnArbeidsforholdForArbeidstaker(): List<ArbeidsforholdDtoV2>? {
+    fun finnArbeidsforholdForArbeidstaker(): List<ArbeidsforholdDto>? {
         val request = ArbeidsforholdSokRequest(arbeidstakerId = getUserIdFromToken())
 
         return doFinnArbeidsforhold(request)
     }
 
-    private fun doFinnArbeidsforhold(request: ArbeidsforholdSokRequest): List<ArbeidsforholdDtoV2>? {
+    private fun doFinnArbeidsforhold(request: ArbeidsforholdSokRequest): List<ArbeidsforholdDto>? {
         return webClient.post()
             .uri("/v2/arbeidstaker/arbeidsforhold")
             .header(HttpHeaders.AUTHORIZATION, getAuthHeader())
             .body(BodyInserters.fromValue(request))
             .retrieve()
-            .bodyToMono<List<ArbeidsforholdDtoV2>>()
+            .bodyToMono<List<ArbeidsforholdDto>>()
             .block()
     }
 

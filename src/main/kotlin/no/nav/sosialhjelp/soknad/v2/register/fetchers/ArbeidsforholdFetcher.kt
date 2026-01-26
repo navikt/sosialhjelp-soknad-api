@@ -17,7 +17,7 @@ class ArbeidsforholdFetcher(
     override fun fetchAndSave(soknadId: UUID) {
         logger.info("Henter arbeidsforhold fra Aa-registeret")
 
-        arbeidsforholdService.hentArbeidsforholdV2()
+        arbeidsforholdService.hentArbeidsforhold()
             ?.let { arbeidsforhold ->
                 livssituasjonService.updateArbeidsforhold(
                     soknadId,
@@ -25,23 +25,5 @@ class ArbeidsforholdFetcher(
                 )
             }
             ?: logger.info("Kunne ikke hente arbeidsforhold fra register, eller det finnes ikke for person")
-
-//        arbeidsforholdService.hentArbeidsforhold()?.let { arbeidsforholdList ->
-//            livssituasjonService.updateArbeidsforhold(
-//                soknadId = soknadId,
-//                arbeidsforhold = arbeidsforholdList.map { it.toV2Arbeidsforhold() },
-//            )
-//        } ?: logger.info("Kunne ikke hente arbeidsforhold fra register, eller det finnes ikke for person")
     }
 }
-
-// private fun Arbeidsforhold.toV2Arbeidsforhold(): V2Arbeidsforhold {
-//    return V2Arbeidsforhold(
-//        orgnummer = this.orgnr,
-//        arbeidsgivernavn = this.arbeidsgivernavn,
-//        start = this.fom,
-//        slutt = this.tom,
-//        fastStillingsprosent = this.fastStillingsprosent?.toDouble(),
-//        harFastStilling = this.harFastStilling,
-//    )
-// }

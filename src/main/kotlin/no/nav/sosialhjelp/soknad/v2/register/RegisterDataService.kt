@@ -9,7 +9,7 @@ import java.util.UUID
 interface RegisterDataFetcher {
     fun fetchAndSave(soknadId: UUID)
 
-    // Implementeres og settes til false av fetchere som skal stoppe hele prosessen
+    // Implementeres og settes til true av fetchere som skal stoppe hele prosessen
     fun exceptionOnError(): Boolean = false
 }
 

@@ -2,21 +2,21 @@ package no.nav.sosialhjelp.soknad.arbeid.dto
 
 import java.time.LocalDate
 
-data class ArbeidsforholdDtoV2(
+data class ArbeidsforholdDto(
     val id: String,
-    val ansettelsesperiode: AnsettelsesperiodeDtoV2,
-    val ansettelsesdetaljer: List<AnsettelsesdetaljerDtoV2>?,
+    val ansettelsesperiode: AnsettelsesperiodeDto,
+    val ansettelsesdetaljer: List<AnsettelsesdetaljerDto>?,
     val opplysningspliktig: OpplysningspliktigDto?,
     val arbeidstaker: ArbeidstakerDto?,
     val arbeidssted: ArbeidsstedDto?,
 )
 
-data class AnsettelsesperiodeDtoV2(
+data class AnsettelsesperiodeDto(
     val startdato: LocalDate,
     val sluttdato: LocalDate?,
 )
 
-data class AnsettelsesdetaljerDtoV2(
+data class AnsettelsesdetaljerDto(
     val avtaltStillingsprosent: Double,
     val ansettelsesform: AnsettelsesformDto?,
     val rapporteringsmaaneder: RapporteringsmaanederDto?,
