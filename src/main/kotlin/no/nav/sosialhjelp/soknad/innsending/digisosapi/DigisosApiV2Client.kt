@@ -245,7 +245,6 @@ class DigisosApiV2Client(
                     .body(BodyInserters.fromMultipartData(body))
                     .retrieve()
                     .bodyToMono<String>()
-                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                     .block()
                     ?: throw FiksException(
                         message = "Fiks - noe uventet feilet ved innsending av søknad. Response er null?",
