@@ -16,7 +16,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_to_stable.yml@v16
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_to_stable.yml@v17
     with:
       prod-resource: 'prod-gcp.yaml'
       test-resource: 'preprod.yaml'
