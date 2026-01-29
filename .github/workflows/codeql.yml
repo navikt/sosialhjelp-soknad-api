@@ -35,6 +35,10 @@ jobs:
       # required to fetch internal or private CodeQL packs
       packages: read
 
+    env:
+      ORG_GRADLE_PROJECT_githubUser: x-access-token
+      ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
+
     strategy:
       fail-fast: false
       matrix:
