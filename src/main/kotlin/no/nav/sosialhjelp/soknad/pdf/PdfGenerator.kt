@@ -59,7 +59,7 @@ class PdfGenerator {
         try {
             metadata.importXMPMetadata(xmp.asByteArray())
         } catch (e: Exception) {
-            e.printStackTrace()
+            logger.error("Feil ved generering av PDF metadata", e)
         }
 
         oi.info = "sRGB IEC61966-2.1"
