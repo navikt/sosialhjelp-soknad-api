@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.app.client.pdl
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
-import no.nav.sosialhjelp.soknad.app.Constants.BEHANDLINGSNUMMER_SOKNAD
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_BEHANDLINGSNUMMER
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
@@ -34,4 +32,10 @@ abstract class PdlClient(
                 if (it is MismatchedInputException || it is JsonProcessingException) it.clearLocation()
                 throw it
             }
+
+    companion object {
+        // se behandlingskatalogen
+        private const val HEADER_BEHANDLINGSNUMMER = "behandlingsnummer"
+        private const val BEHANDLINGSNUMMER_SOKNAD = "B484"
+    }
 }

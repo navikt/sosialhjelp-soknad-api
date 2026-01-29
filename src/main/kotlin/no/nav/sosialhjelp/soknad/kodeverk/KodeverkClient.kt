@@ -1,14 +1,10 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
 import io.github.resilience4j.retry.annotation.Retry
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import org.springframework.beans.factory.annotation.Value
@@ -50,11 +46,7 @@ class KodeverkClient(
                         .queryParam("spraak", SPRAK_NORSK_BOKMAL)
                         .build(kodeverksnavn)
                 }
-                .headers { headers ->
-                    headers.add(HttpHeaders.AUTHORIZATION, "Bearer $token")
-                    headers.add(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
-                    headers.add(HEADER_CONSUMER_ID, getConsumerId())
-                }
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $token)")
                 .retrieve()
                 .bodyToMono<KodeverkDto>()
                 .block() ?: error("Kodeverk - ugyldig data")
