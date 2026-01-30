@@ -13,8 +13,6 @@ object MdcOperations {
     const val MDC_HTTP_METHOD = "httpMethod"
     const val MDC_SOKNAD_ID = "soknadId"
 
-    private val random = SecureRandom()
-
     fun putToMDC(
         key: String?,
         value: String?,
