@@ -8,6 +8,9 @@ object Constants {
     const val CLAIM_ACR_LOA_HIGH = "acr=idporten-loa-high"
     const val TOKENX = "tokenx"
 
+    const val HEADER_CALL_ID = "Nav-Call-Id"
+    const val HEADER_CONSUMER_ID = "Nav-Consumer-Id"
+
     const val HEADER_INTEGRASJON_ID = "IntegrasjonId"
     const val HEADER_INTEGRASJON_PASSORD = "IntegrasjonPassord"
 
