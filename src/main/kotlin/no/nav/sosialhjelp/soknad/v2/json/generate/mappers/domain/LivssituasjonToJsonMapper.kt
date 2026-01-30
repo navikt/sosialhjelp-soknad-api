@@ -118,7 +118,7 @@ private fun Arbeidsforhold.toJsonArbeidsforhold(): JsonArbeidsforhold =
         .withKilde(JsonKilde.SYSTEM)
         .withArbeidsgivernavn(arbeidsgivernavn)
         .withStillingstype(harFastStilling?.toJsonArbeidsforholdStillingtype())
-        .withStillingsprosent(fastStillingsprosent?.toInt())
+        .withStillingsprosent(fastStillingsprosent?.toInt() ?: 0)
         .withFom(start?.toIsoString())
         .withTom(slutt?.toIsoString())
         .withOverstyrtAvBruker(false)
