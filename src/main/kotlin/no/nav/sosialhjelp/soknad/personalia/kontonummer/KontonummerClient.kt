@@ -1,12 +1,9 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
@@ -38,7 +35,6 @@ class KontonummerClientImpl(
             webClient.get()
                 .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
                 .header(AUTHORIZATION, BEARER + tokenX)
-                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID) ?: "")
                 .retrieve()
                 .bodyToMono<KontoDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)

@@ -1,13 +1,10 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
@@ -60,7 +57,6 @@ class KrrClient(
             .post()
             .uri("/rest/v1/personer")
             .header(AUTHORIZATION, BEARER + tokenxToken)
-            .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID) ?: "")
             .bodyValue(KontaktInfoRequest(listOf(personId)))
             .retrieve()
             .bodyToMono<KontaktInfoResponse>()

@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
-import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_ADRESSEBESKYTTELSE
@@ -82,7 +80,6 @@ class HentPersonClientImpl(
             .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
             .block()
 
-    @Deprecated("Skal ikke hente informasjon om ektefelle uten samtykke")
     override fun hentEktefelle(ident: String): EktefelleDto? =
         try {
             val response =
@@ -104,7 +101,6 @@ class HentPersonClientImpl(
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
 
-    @Deprecated("Skal ikke hente informasjon om barn uten samtykke")
     override fun hentBarn(ident: String): BarnDto? =
         try {
             val response: String =
@@ -128,7 +124,6 @@ class HentPersonClientImpl(
 
     private val tokenX get() = texasService.exchangeToken(IdentityProvider.TOKENX, target = pdlAudience)
 
-    @Deprecated("Skal ikke benytte system-token for uthenting av persondata")
     private fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
 
     private fun variables(ident: String): Map<String, Any> = mapOf("historikk" to false, "ident" to ident)
@@ -137,5 +132,7 @@ class HentPersonClientImpl(
 
     companion object {
         private val logger = getLogger(HentPersonClient::class.java)
+        private const val TEMA_KOM = "KOM"
+        private const val HEADER_TEMA = "Tema"
     }
 }

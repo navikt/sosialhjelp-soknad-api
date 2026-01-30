@@ -1,15 +1,10 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -34,8 +29,6 @@ class NorgClient(
         return runCatching {
             webClient.get()
                 .uri("$norgUrl/enhet/navkontor/{geografiskTilknytning}", gt)
-                .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID) ?: "")
-                .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
                 .retrieve()
                 .bodyToMono<NavEnhetDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)

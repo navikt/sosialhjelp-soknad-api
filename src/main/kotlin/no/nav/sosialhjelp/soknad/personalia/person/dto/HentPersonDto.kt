@@ -108,11 +108,6 @@ data class StatsborgerskapDto(
     val land: String,
 )
 
-@Deprecated("Opplysningen skal ikke hentes fra PDL")
-data class FoedselDto(
-    val foedselsdato: LocalDate,
-)
-
 data class FoedselsdatoDto(
     val foedselsdato: LocalDate,
     val foedselsaar: Int,
