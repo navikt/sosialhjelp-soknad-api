@@ -25,9 +25,4 @@ object MdcOperations {
     fun clearMDC() {
         MDC.remove(MDC_SOKNAD_ID)
     }
-
-    private val randomNumber: Int
-        get() = random.nextInt(Int.MAX_VALUE)
-    private val systemTime: Long
-        get() = System.currentTimeMillis()
 }
