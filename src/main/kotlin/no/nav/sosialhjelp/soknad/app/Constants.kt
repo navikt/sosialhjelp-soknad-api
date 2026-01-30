@@ -11,6 +11,5 @@ object Constants {
     const val HEADER_INTEGRASJON_ID = "IntegrasjonId"
     const val HEADER_INTEGRASJON_PASSORD = "IntegrasjonPassord"
 
-
     const val BEARER = "Bearer "
 }
