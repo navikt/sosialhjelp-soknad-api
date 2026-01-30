@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.app.mdc
 
 // Copy from modig-log-common
 
-import java.security.SecureRandom
 import org.slf4j.MDC
 
 /**
