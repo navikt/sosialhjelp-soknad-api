@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
 import io.github.resilience4j.retry.annotation.Retry
-import java.io.Serializable
-import java.time.LocalDate
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
@@ -16,6 +14,8 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.io.Serializable
+import java.time.LocalDate
 
 @Component
 class KodeverkClient(
