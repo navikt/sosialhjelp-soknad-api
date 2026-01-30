@@ -17,7 +17,7 @@ data class AnsettelsesperiodeDto(
 )
 
 data class AnsettelsesdetaljerDto(
-    val avtaltStillingsprosent: Double,
+    val avtaltStillingsprosent: Double?,
     val ansettelsesform: AnsettelsesformDto?,
     val rapporteringsmaaneder: RapporteringsmaanederDto?,
 )
