@@ -3,16 +3,11 @@ package no.nav.sosialhjelp.soknad.app.filter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_HTTP_METHOD
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_PATH
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_SOKNAD_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.clearMDC
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.putToMDC
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -23,13 +18,8 @@ class MdcFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val callId = request.getHeader(HEADER_CALL_ID) ?: MdcOperations.generateCallId()
-        val consumerId = SubjectHandlerUtils.getConsumerId()
-
         val soknadId = getSoknadId(request) ?: getBehandlingsId(request)
 
-        putToMDC(MDC_CALL_ID, callId)
-        putToMDC(MDC_CONSUMER_ID, consumerId)
         soknadId?.let { putToMDC(MDC_SOKNAD_ID, it) }
         putToMDC(MDC_HTTP_METHOD, request.method)
         putToMDC(MDC_PATH, request.requestURI)

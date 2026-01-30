@@ -3,12 +3,8 @@ package no.nav.sosialhjelp.soknad.app.filter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
 import jakarta.servlet.ServletResponse
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_PATH
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_SOKNAD_ID
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.assertj.core.api.Assertions.assertThat
@@ -17,7 +13,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.MDC
-import org.springframework.mock.web.MockFilterChain
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE
@@ -35,43 +30,6 @@ internal class MdcFilterTest {
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-    }
-
-    @Test
-    fun `should add CallId from request`() {
-        val request = MockHttpServletRequest()
-        request.requestURI = "requestUri"
-        request.addHeader(HEADER_CALL_ID, MOCK_CALL_ID)
-
-        val response = MockHttpServletResponse()
-
-        mdcFilter.doFilter(request, response, filterChain)
-
-        assertThat(filterChain.capturedMDCValue(MDC_CALL_ID)).isEqualTo(MOCK_CALL_ID)
-    }
-
-    @Test
-    fun `should generate CallId if none in request`() {
-        val request = MockHttpServletRequest()
-        request.requestURI = "requestUri"
-
-        val response = MockHttpServletResponse()
-
-        mdcFilter.doFilter(request, response, filterChain)
-
-        assertThat(filterChain.capturedMDCValue(MDC_CALL_ID)).contains("CallId_", "_")
-    }
-
-    @Test
-    fun `should add consumerId`() {
-        val request = MockHttpServletRequest()
-        request.requestURI = "requestUri"
-
-        val response = MockHttpServletResponse()
-
-        mdcFilter.doFilter(request, response, filterChain)
-
-        assertThat(filterChain.capturedMDCValue(MDC_CONSUMER_ID)).isEqualTo("StaticConsumerId")
     }
 
     @Test
@@ -112,21 +70,7 @@ internal class MdcFilterTest {
             .isThrownBy { filterChain.capturedMDCValue(MDC_SOKNAD_ID) }
     }
 
-    @Test
-    fun `should clear mdc context afterwards`() {
-        val request = MockHttpServletRequest()
-        request.requestURI = "requestUri"
-        request.addHeader(HEADER_CALL_ID, MOCK_CALL_ID)
-
-        val response = MockHttpServletResponse()
-
-        mdcFilter.doFilter(request, response, MockFilterChain())
-
-        assertThat(getFromMDC(MDC_CALL_ID)).isNull()
-    }
-
     companion object {
-        private const val MOCK_CALL_ID = "mock_call_id"
         private const val MOCK_BEHANDLINGS_ID = "mock_behandlings_id"
     }
 
