@@ -65,7 +65,10 @@ class MellomlagringClientImpl(
         runCatching { doHentDokumenterMetadata(navEksternId) }
             .getOrElse {
                 when (it) {
-                    is WebClientResponseException.NotFound -> return null
+                    is WebClientResponseException.NotFound -> {
+                        log.info("Ingen mellomlagrede vedlegg funnet for navEksternId=$navEksternId -> 404 Not Found")
+                        return null
+                    }
                     is WebClientResponseException ->
                         log.error("Fiks - getMellomlagredeVedlegg feilet: ${it.statusCode} -> ${it.responseBodyAsString}", it)
                     else -> log.error("Fiks - getMellomlagredeVedlegg feilet ukjent feil: ${it.message}", it)
