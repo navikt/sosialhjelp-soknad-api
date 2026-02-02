@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import no.nav.sosialhjelp.api.fiks.ErrorMessage
+import java.io.ByteArrayInputStream
+import java.util.Collections
+import java.util.concurrent.Future
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -24,13 +26,7 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
-import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
 import org.springframework.web.reactive.function.client.bodyToMono
-import tools.jackson.module.kotlin.readValue
-import java.io.ByteArrayInputStream
-import java.util.Collections
-import java.util.concurrent.Future
 
 interface MellomlagringClient {
     fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto?
@@ -65,29 +61,28 @@ class MellomlagringClientImpl(
     private val texasService: TexasService,
     private val webClient: WebClient,
 ) : MellomlagringClient {
-    override fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto? {
-        return try {
-            webClient.get()
-                .uri(MELLOMLAGRING_PATH, navEksternId)
-                .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
-                .retrieve()
-                .bodyToMono<MellomlagringDto>()
-                .block() ?: throw FiksException("MellomlagringDto er null?", null)
-        } catch (e: WebClientResponseException) {
-            log.error("Fiks - getMellomlagredeVedlegg feilet: Statuscode: ${e.statusCode} -> ${e.responseBodyAsString}", e)
-
-            if (e is BadRequest || e is NotFound) {
-                val errorMessage = sosialhjelpJsonMapper.readValue<ErrorMessage>(e.responseBodyAsString)
-                val message = errorMessage.message
-                if (message != null && message.contains("Fant ingen data i basen knytter til angitt id'en")) {
-                    return null
+    override fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto? =
+        runCatching { doHentDokumenterMetadata(navEksternId) }
+            .getOrElse {
+                when (it) {
+                    is WebClientResponseException.NotFound -> return null
+                    is WebClientResponseException ->
+                        log.error("Fiks - getMellomlagredeVedlegg feilet: ${it.statusCode} -> ${it.responseBodyAsString}", it)
+                    else -> log.error("Fiks - getMellomlagredeVedlegg feilet ukjent feil: ${it.message}", it)
                 }
+                throw it
             }
 
-            throw e
-        }
+    private fun doHentDokumenterMetadata(navEksternId: String): MellomlagringDto {
+        return webClient.get()
+            .uri(MELLOMLAGRING_PATH, navEksternId)
+            .accept(MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
+            .retrieve()
+            .bodyToMono<MellomlagringDto>()
+            .block() ?: throw FiksException("MellomlagringDto er null?", null)
     }
+
 
     override fun lastOppDokument(
         navEksternId: String,
