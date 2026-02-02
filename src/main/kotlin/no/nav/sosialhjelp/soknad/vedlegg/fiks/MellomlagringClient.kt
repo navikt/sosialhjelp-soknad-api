@@ -75,6 +75,8 @@ class MellomlagringClientImpl(
                 .bodyToMono<MellomlagringDto>()
                 .block() ?: throw FiksException("MellomlagringDto er null?", null)
         } catch (e: WebClientResponseException) {
+            log.error("Fiks - getMellomlagredeVedlegg feilet: Statuscode: ${e.statusCode} -> ${e.responseBodyAsString}", e)
+
             if (e is BadRequest || e is NotFound) {
                 val errorMessage = sosialhjelpJsonMapper.readValue<ErrorMessage>(e.responseBodyAsString)
                 val message = errorMessage.message
@@ -82,7 +84,7 @@ class MellomlagringClientImpl(
                     return null
                 }
             }
-            log.warn("Fiks - getMellomlagredeVedlegg feilet - ${e.responseBodyAsString}", e)
+
             throw e
         }
     }
