@@ -1,9 +1,6 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import java.io.ByteArrayInputStream
-import java.util.Collections
-import java.util.concurrent.Future
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -27,6 +24,9 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.io.ByteArrayInputStream
+import java.util.Collections
+import java.util.concurrent.Future
 
 interface MellomlagringClient {
     fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto?
@@ -82,7 +82,6 @@ class MellomlagringClientImpl(
             .bodyToMono<MellomlagringDto>()
             .block() ?: throw FiksException("MellomlagringDto er null?", null)
     }
-
 
     override fun lastOppDokument(
         navEksternId: String,
