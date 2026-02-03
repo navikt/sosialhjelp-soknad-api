@@ -58,11 +58,11 @@ class DigisosApiV2Client(
 ) {
     private val fiksHttpClient =
         HttpClient.create(fiksServiceConnectionProvider)
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, THIRTY_SECONDS.toMillis().toInt())
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, ONE_MINUTE.toMillis().toInt())
             .doOnConnected {
                 it
-                    .addHandlerLast(ReadTimeoutHandler(THIRTY_SECONDS.toSeconds().toInt()))
-                    .addHandlerLast(WriteTimeoutHandler(THIRTY_SECONDS.toSeconds().toInt()))
+                    .addHandlerLast(ReadTimeoutHandler(ONE_MINUTE.toSeconds().toInt()))
+                    .addHandlerLast(WriteTimeoutHandler(ONE_MINUTE.toSeconds().toInt()))
             }
             .responseTimeout(TWO_MINUTES)
 
@@ -300,7 +300,7 @@ class DigisosApiV2Client(
 
     companion object {
         private val log by logger()
-        private val THIRTY_SECONDS = Duration.ofSeconds(30)
+        private val ONE_MINUTE = Duration.ofMinutes(1)
         private val TWO_MINUTES = Duration.ofMinutes(2)
     }
 }
