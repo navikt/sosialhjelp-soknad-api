@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import java.time.LocalDateTime
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
@@ -14,8 +14,8 @@ import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
-import java.time.LocalDateTime
-import java.util.UUID
+import tools.jackson.module.kotlin.jacksonObjectMapper
+import tools.jackson.module.kotlin.readValue
 
 @Repository
 interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID> {

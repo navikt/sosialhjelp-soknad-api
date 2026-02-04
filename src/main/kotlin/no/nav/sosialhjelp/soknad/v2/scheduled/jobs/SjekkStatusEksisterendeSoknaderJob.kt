@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
@@ -16,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.UUID
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 /**
  * Dobbeltsjekker at gamle soknader ikke forblir med status sendt.

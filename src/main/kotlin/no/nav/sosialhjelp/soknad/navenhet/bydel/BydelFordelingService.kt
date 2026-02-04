@@ -1,19 +1,19 @@
 package no.nav.sosialhjelp.soknad.navenhet.bydel
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
-import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
-import org.apache.commons.lang3.StringUtils
-import org.springframework.core.io.ClassPathResource
-import org.springframework.stereotype.Component
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.util.stream.Collectors
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import org.apache.commons.lang3.StringUtils
+import org.springframework.core.io.ClassPathResource
+import org.springframework.stereotype.Component
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.module.kotlin.jacksonMapperBuilder
+import tools.jackson.module.kotlin.readValue
 
 @Component
 class BydelFordelingService {
@@ -60,7 +60,9 @@ class BydelFordelingService {
     companion object {
         const val BYDEL_MARKA_OSLO = "030117"
 
-        private val objectMapper = jacksonObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+        private val objectMapper = jacksonMapperBuilder()
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .build()
 
         private fun readBydelsfordelingFromFile(): String {
             val resource = ClassPathResource("pdl/marka-bydelsfordeling.json")
