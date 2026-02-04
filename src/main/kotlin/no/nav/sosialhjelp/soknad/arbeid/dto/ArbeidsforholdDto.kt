@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.arbeid.dto
 import java.time.LocalDate
 
 data class ArbeidsforholdDto(
-    val id: String,
+    val id: String?,
     val ansettelsesperiode: AnsettelsesperiodeDto,
     val ansettelsesdetaljer: List<AnsettelsesdetaljerDto>?,
     val opplysningspliktig: OpplysningspliktigDto?,
