@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.reactive.function.client.WebClient
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.net.InetAddress.getLocalHost
 import java.time.LocalDateTime
 
@@ -33,7 +33,7 @@ class LeaderElectionImpl(
                         .retrieve()
                         .bodyToMono(String::class.java)
                         .block()
-                leader = jacksonObjectMapper().readTree(response).get("name").asText()
+                leader = jacksonObjectMapper().readTree(response).get("name").asString()
                 lastCallTime = now
             } catch (e: Exception) {
                 log.warn("LeaderElection - kunne ikke bestemme lederpod. ${e.message}", e)

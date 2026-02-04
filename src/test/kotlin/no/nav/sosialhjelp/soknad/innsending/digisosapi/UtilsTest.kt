@@ -1,11 +1,10 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.util.UUID
 
 class UtilsTest {
@@ -56,8 +55,7 @@ class UtilsTest {
     "harNksTilgang": true,
     "behandlingsansvarlig": "Test kommune"
   }"""
-        val objectMapper = ObjectMapper().registerKotlinModule()
-        val (kommunenummer) = objectMapper.readValue(response, KommuneInfo::class.java)
+        val (kommunenummer) = jacksonObjectMapper().readValue(response, KommuneInfo::class.java)
         assertThat(kommunenummer).isEqualTo("4699")
     }
 }

@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.metrics
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import jakarta.xml.bind.annotation.XmlRootElement
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.ANNET
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 object VedleggskravStatistikkUtil {
     private val log by logger()

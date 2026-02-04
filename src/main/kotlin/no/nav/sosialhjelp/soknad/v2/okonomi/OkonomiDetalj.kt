@@ -2,12 +2,11 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
+import tools.jackson.module.kotlin.jacksonObjectMapper
+import tools.jackson.module.kotlin.readValue
 import java.time.LocalDate
 
 // Wrapper-objekt som persisteres som en json-streng i databasen
@@ -88,10 +87,7 @@ enum class Mottaker {
     KOMMUNE,
 }
 
-private val mapper =
-    jacksonObjectMapper().apply {
-        registerModules(JavaTimeModule())
-    }
+private val mapper = jacksonObjectMapper()
 
 @WritingConverter
 class OkonomiskeDetaljerToStringConverter<T : OkonomiDetalj> : Converter<OkonomiDetaljer<T>, String> {

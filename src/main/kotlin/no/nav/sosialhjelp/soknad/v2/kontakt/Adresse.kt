@@ -2,13 +2,13 @@ package no.nav.sosialhjelp.soknad.v2.kontakt
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
+import tools.jackson.module.kotlin.jacksonObjectMapper
+import tools.jackson.module.kotlin.readValue
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(
@@ -71,6 +71,5 @@ object AdresseToJsonConverter : Converter<Adresse, String> {
 
 @ReadingConverter
 object JsonToAdresseConverter : Converter<String, Adresse> {
-    //    override fun convert(source: String): Adresse = JsonToAdresseMapper.map(source)
     override fun convert(source: String): Adresse = jacksonObjectMapper().readValue(source)
 }

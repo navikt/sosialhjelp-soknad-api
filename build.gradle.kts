@@ -79,7 +79,7 @@ dependencies {
     implementation(libs.soknadsosialhjelp.filformat)
 
     // sosialhjelp-common
-    implementation(libs.bundles.sosialhjelp.common)
+    implementation(libs.sosialhjelp.common.api)
 
     // KS / Fiks
 //    implementation(libs.svarut.rest.klient)
