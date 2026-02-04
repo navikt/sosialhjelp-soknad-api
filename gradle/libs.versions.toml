@@ -3,7 +3,7 @@ kotlin = "2.3.0"
 spring-boot = "4.0.2"
 coroutines = "1.10.2"
 filformat = "1.2026.01.27-07.09-9d3959606fe6"
-sosialhjelp_common = "1.20250120.1009-d88048d"
+sosialhjelp_common = "1.20260204.1230-c5b48b8"
 fiks_kryptering = "2.1.0"
 springdoc = "3.0.1"
 flyway = "12.0.0"
@@ -61,7 +61,6 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 soknadsosialhjelp-filformat = { module = "no.nav.sbl.dialogarena:soknadsosialhjelp-filformat", version.ref = "filformat" }
 
 sosialhjelp-common-api = { module = "no.nav.sosialhjelp:sosialhjelp-common-api", version.ref = "sosialhjelp_common" }
-sosialhjelp-common-selftest = { module = "no.nav.sosialhjelp:sosialhjelp-common-selftest", version.ref = "sosialhjelp_common" }
 
 kryptering = { module = "no.ks.fiks:kryptering", version.ref = "fiks_kryptering" }
 
@@ -144,12 +143,6 @@ pdfbox = [
     "pdfbox-io",
     "preflight",
 ]
-
-sosialhjelp-common = [
-    "sosialhjelp-common-selftest",
-    "sosialhjelp-common-api",
-]
-
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }

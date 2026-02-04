@@ -1,10 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
+import java.nio.charset.StandardCharsets
+import java.time.LocalDate
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
@@ -20,9 +21,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.nio.charset.StandardCharsets
-import java.time.LocalDate
-import java.util.UUID
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 
 class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
     @Autowired
@@ -258,8 +258,9 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
     private fun readResponseFromPath(path: String = "/skatt/InntektOgSkattToMaanederToArbeidsgivere.json"): SkattbarInntekt {
         val resourceAsStream = this.javaClass.getResourceAsStream(path) ?: error("Resource not found: $path")
         val json = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
-        return jacksonObjectMapper()
+        return jacksonMapperBuilder()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .build()
             .readValue(json, SkattbarInntekt::class.java)
     }
 }

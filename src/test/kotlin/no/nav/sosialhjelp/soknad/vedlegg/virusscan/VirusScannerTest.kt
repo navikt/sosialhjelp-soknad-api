@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
@@ -18,6 +17,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 class VirusScannerTest {
     private val mockWebServer = MockWebServer()

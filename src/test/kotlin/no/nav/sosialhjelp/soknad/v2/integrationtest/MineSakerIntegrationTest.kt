@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
@@ -18,6 +16,8 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.util.UUID
+import tools.jackson.module.kotlin.jacksonObjectMapper
+import tools.jackson.module.kotlin.readValue
 
 class MineSakerIntegrationTest : AbstractIntegrationTest() {
     @Autowired

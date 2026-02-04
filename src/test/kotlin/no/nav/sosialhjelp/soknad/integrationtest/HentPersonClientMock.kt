@@ -1,11 +1,6 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import java.nio.charset.StandardCharsets
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
@@ -14,14 +9,14 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseD
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
-import java.nio.charset.StandardCharsets
+import tools.jackson.module.kotlin.jacksonMapperBuilder
+import tools.jackson.module.kotlin.readValue
 
 class HentPersonClientMock : HentPersonClient {
-    val mapper: ObjectMapper =
-        jacksonObjectMapper()
-            .registerKotlinModule()
-            .registerModule(JavaTimeModule())
-            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+    val mapper =
+        jacksonMapperBuilder()
+            .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .build()
 
     override fun hentPerson(ident: String): PersonDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlPersonResponse.json")

@@ -1,21 +1,18 @@
 package no.nav.sosialhjelp.soknad.adressesok.dto
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import java.nio.charset.StandardCharsets
 import no.nav.sosialhjelp.soknad.app.client.pdl.AdressesokDto
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.nio.charset.StandardCharsets
+import tools.jackson.module.kotlin.jacksonMapperBuilder
+import tools.jackson.module.kotlin.readValue
 
 internal class AdressesokDtoTest {
-    private val pdlMapper: ObjectMapper =
-        jacksonObjectMapper()
-            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-            .registerModule(JavaTimeModule())
+    private val pdlMapper =
+        jacksonMapperBuilder()
+            .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .build()
 
     @Test
     fun deserialiseringAvAdresseSokResponseJson() {

@@ -1,9 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.service
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KontaktInfoResponse
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrClient
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrService
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.util.UUID
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = [KrrService::class])
 class KrrServiceTest {
@@ -61,8 +60,9 @@ class KrrServiceTest {
 }
 
 private fun deserialize(input: String) =
-    jacksonObjectMapper()
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    jacksonMapperBuilder()
+        .configure(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .build()
         .readValue(input, KontaktInfoResponse::class.java)
 
 private val okResponse =
