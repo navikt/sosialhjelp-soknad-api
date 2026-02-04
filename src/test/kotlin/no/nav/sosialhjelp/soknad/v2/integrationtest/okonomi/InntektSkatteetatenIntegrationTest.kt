@@ -3,9 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
-import java.nio.charset.StandardCharsets
-import java.time.LocalDate
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
@@ -23,6 +20,9 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import tools.jackson.databind.DeserializationFeature
 import tools.jackson.module.kotlin.jacksonMapperBuilder
+import java.nio.charset.StandardCharsets
+import java.time.LocalDate
+import java.util.UUID
 
 class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
     @Autowired

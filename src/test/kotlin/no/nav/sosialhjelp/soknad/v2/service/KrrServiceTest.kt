@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.service
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KontaktInfoResponse
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrClient
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrService
@@ -15,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import tools.jackson.module.kotlin.jacksonMapperBuilder
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = [KrrService::class])
 class KrrServiceTest {

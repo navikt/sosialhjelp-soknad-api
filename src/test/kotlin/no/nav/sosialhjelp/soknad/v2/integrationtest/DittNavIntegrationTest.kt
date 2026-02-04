@@ -16,10 +16,10 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
-import java.time.LocalDateTime
-import java.util.UUID
 import tools.jackson.module.kotlin.jacksonObjectMapper
 import tools.jackson.module.kotlin.readValue
+import java.time.LocalDateTime
+import java.util.UUID
 
 class DittNavIntegrationTest : AbstractIntegrationTest() {
     @Autowired

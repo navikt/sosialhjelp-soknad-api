@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
-import java.nio.charset.StandardCharsets
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
@@ -11,6 +10,7 @@ import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 import tools.jackson.module.kotlin.readValue
+import java.nio.charset.StandardCharsets
 
 class HentPersonClientMock : HentPersonClient {
     val mapper =

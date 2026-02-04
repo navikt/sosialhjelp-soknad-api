@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
-import java.util.UUID
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import tools.jackson.module.kotlin.jacksonObjectMapper
+import java.util.UUID
 
 class UtilsTest {
     @Test

@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.person.dto
 
-import java.nio.charset.StandardCharsets
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.Test
 import tools.jackson.databind.DeserializationFeature
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 import tools.jackson.module.kotlin.readValue
+import java.nio.charset.StandardCharsets
 
 internal class DtoTest {
     private val pdlMapper =

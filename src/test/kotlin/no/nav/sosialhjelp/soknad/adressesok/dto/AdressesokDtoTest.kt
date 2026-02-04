@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.adressesok.dto
 
-import java.nio.charset.StandardCharsets
 import no.nav.sosialhjelp.soknad.app.client.pdl.AdressesokDto
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 import tools.jackson.module.kotlin.readValue
+import java.nio.charset.StandardCharsets
 
 internal class AdressesokDtoTest {
     private val pdlMapper =
