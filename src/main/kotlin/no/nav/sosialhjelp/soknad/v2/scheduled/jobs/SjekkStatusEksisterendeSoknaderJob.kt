@@ -13,9 +13,9 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.LocalDateTime
 import java.util.UUID
-import tools.jackson.module.kotlin.jacksonObjectMapper
 
 /**
  * Dobbeltsjekker at gamle soknader ikke forblir med status sendt.

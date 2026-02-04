@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
-import java.net.InetAddress.getLocalHost
-import java.time.LocalDateTime
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.reactive.function.client.WebClient
 import tools.jackson.module.kotlin.jacksonObjectMapper
+import java.net.InetAddress.getLocalHost
+import java.time.LocalDateTime
 
 interface LeaderElection {
     fun isLeader(): Boolean

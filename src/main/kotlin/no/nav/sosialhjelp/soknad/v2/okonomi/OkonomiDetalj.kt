@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import java.time.LocalDate
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
 import tools.jackson.module.kotlin.jacksonObjectMapper
 import tools.jackson.module.kotlin.readValue
+import java.time.LocalDate
 
 // Wrapper-objekt som persisteres som en json-streng i databasen
 data class OkonomiDetaljer<T : OkonomiDetalj>(
