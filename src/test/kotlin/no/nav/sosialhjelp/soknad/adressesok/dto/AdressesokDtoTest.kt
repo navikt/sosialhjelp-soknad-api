@@ -7,11 +7,13 @@ import org.junit.jupiter.api.Test
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 import tools.jackson.module.kotlin.readValue
 import java.nio.charset.StandardCharsets
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.ObjectMapper
 
 internal class AdressesokDtoTest {
-    private val pdlMapper =
+    private val pdlMapper: ObjectMapper =
         jacksonMapperBuilder()
-            .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .build()
 
     @Test

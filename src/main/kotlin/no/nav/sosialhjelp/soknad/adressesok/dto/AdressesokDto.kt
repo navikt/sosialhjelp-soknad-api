@@ -6,7 +6,7 @@ data class AdressesokDataDto(
 
 data class AdressesokResultDto(
     val hits: List<AdressesokHitDto>?,
-    val pageNumber: Int,
+    val pageNumber: Int?,
     val totalPages: Int,
     val totalHits: Int,
 )
