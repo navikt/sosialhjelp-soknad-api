@@ -1,8 +1,8 @@
 [versions]
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 spring-boot = "4.0.2"
 coroutines = "1.10.2"
-filformat = "1.2026.01.27-07.09-9d3959606fe6"
+filformat = "1.2026.02.04-07.27-7f2f3515bd59"
 sosialhjelp_common = "1.20260204.1322-0cda8ef"
 fiks_kryptering = "2.1.0"
 springdoc = "3.0.1"
