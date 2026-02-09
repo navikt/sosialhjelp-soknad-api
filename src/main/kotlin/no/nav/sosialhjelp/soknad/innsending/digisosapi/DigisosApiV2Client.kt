@@ -4,11 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
-import java.io.IOException
-import java.time.Duration
-import java.util.Collections
-import java.util.UUID
-import java.util.concurrent.Future
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
@@ -44,6 +39,11 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.netty.http.client.HttpClient
+import java.io.IOException
+import java.time.Duration
+import java.util.Collections
+import java.util.UUID
+import java.util.concurrent.Future
 
 @Component
 class DigisosApiV2Client(

@@ -1,8 +1,5 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
-import java.io.ByteArrayInputStream
-import java.util.Collections
-import java.util.concurrent.Future
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -25,6 +22,9 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import tools.jackson.module.kotlin.jacksonObjectMapper
+import java.io.ByteArrayInputStream
+import java.util.Collections
+import java.util.concurrent.Future
 
 interface MellomlagringClient {
     fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto?
@@ -134,7 +134,6 @@ class MellomlagringClientImpl(
         filForOpplasting: FilOpplasting,
         navEksternId: String,
     ): MellomlagringDto {
-
         val body = createBodyForUpload(filForOpplasting)
 
         val startTime = System.currentTimeMillis()
