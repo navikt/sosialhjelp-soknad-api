@@ -12,9 +12,3 @@ data class FilMetadata(
     val mimetype: String,
     val storrelse: Long,
 )
-
-data class FilForOpplasting<T>(
-    val filnavn: String,
-    val metadata: T,
-    val data: InputStream,
-)

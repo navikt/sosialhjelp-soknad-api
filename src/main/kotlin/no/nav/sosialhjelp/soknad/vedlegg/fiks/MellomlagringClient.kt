@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
-import com.fasterxml.jackson.core.JsonProcessingException
+import java.io.ByteArrayInputStream
+import java.util.Collections
+import java.util.concurrent.Future
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -9,24 +11,20 @@ import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.sosialhjelpJsonMapper
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import org.apache.commons.io.IOUtils
-import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.InputStreamResource
+import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.util.LinkedMultiValueMap
+import org.springframework.http.client.MultipartBodyBuilder
+import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
-import java.io.ByteArrayInputStream
-import java.util.Collections
-import java.util.concurrent.Future
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 interface MellomlagringClient {
     fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto?
@@ -67,8 +65,8 @@ class MellomlagringClientImpl(
                 when (it) {
                     is WebClientResponseException.NotFound -> return null
                     is WebClientResponseException ->
-                        log.error("Fiks - getMellomlagredeVedlegg feilet: ${it.statusCode} -> ${it.responseBodyAsString}", it)
-                    else -> log.error("Fiks - getMellomlagredeVedlegg feilet ukjent feil: ${it.message}", it)
+                        logger.error("Fiks - getMellomlagredeVedlegg feilet: ${it.statusCode} -> ${it.responseBodyAsString}", it)
+                    else -> logger.error("Fiks - getMellomlagredeVedlegg feilet ukjent feil: ${it.message}", it)
                 }
                 throw it
             }
@@ -117,8 +115,7 @@ class MellomlagringClientImpl(
             doUploadDocument(
                 navEksternId = navEksternId,
                 filForOpplasting =
-                    FilForOpplasting(
-                        filnavn = filOpplasting.metadata.filnavn,
+                    FilOpplasting(
                         metadata = filOpplasting.metadata,
                         data = krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate),
                     ),
@@ -134,12 +131,11 @@ class MellomlagringClientImpl(
     }
 
     private fun doUploadDocument(
-        filForOpplasting: FilForOpplasting<Any>,
+        filForOpplasting: FilOpplasting,
         navEksternId: String,
     ): MellomlagringDto {
-        val body = LinkedMultiValueMap<String, Any>()
-        body.add("metadata", createHttpEntityOfString(getJson(filForOpplasting), "metadata"))
-        body.add(filForOpplasting.filnavn, createHttpEntityOfFile(filForOpplasting, filForOpplasting.filnavn))
+
+        val body = createBodyForUpload(filForOpplasting)
 
         val startTime = System.currentTimeMillis()
         return webClient.post()
@@ -149,7 +145,7 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<MellomlagringDto>()
             .doOnError(WebClientResponseException::class.java) {
-                log.warn(
+                logger.warn(
                     "Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}",
                     it,
                 )
@@ -168,7 +164,7 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<String>()
             .doOnError(WebClientResponseException::class.java) {
-                log.warn("Fiks - deleteAll mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+                logger.warn("Fiks - deleteAll mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
             }
             .block()
     }
@@ -202,42 +198,55 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<String>()
             .doOnSuccess {
-                log.info("Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId, behandlingsId=$navEksternId")
+                logger.info("Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId, behandlingsId=$navEksternId")
             }
             .doOnError(WebClientResponseException::class.java) {
-                log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+                logger.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
             }
             .block()
     }
 
     private fun getToken(): String = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
 
-    private fun createHttpEntityOfString(
-        body: String,
-        name: String,
-    ): HttpEntity<Any> {
-        return createHttpEntity(body, name, null, "text/plain;charset=UTF-8")
-    }
-
-    private fun createHttpEntityOfFile(
-        file: FilForOpplasting<Any>,
-        name: String,
-    ): HttpEntity<Any> {
-        return createHttpEntity(ByteArrayResource(IOUtils.toByteArray(file.data)), name, file.filnavn, "application/octet-stream")
-    }
-
     companion object {
         private const val MELLOMLAGRING_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}"
         private const val MELLOMLAGRING_DOKUMENT_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}/{digisosDokumentId}"
 
-        private val log by logger()
-
-        private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String {
-            return try {
-                sosialhjelpJsonMapper.writeValueAsString(objectFilForOpplasting.metadata)
-            } catch (e: JsonProcessingException) {
-                throw IllegalStateException(e)
-            }
-        }
+        private val logger by logger()
     }
 }
+
+private fun createBodyForUpload(file: FilOpplasting): MultiValueMap<String, HttpEntity<*>> =
+    MultipartBodyBuilder()
+        .run {
+            part("metadata-part", createJsonFilMetadata(file.metadata))
+                .headers {
+                    it.contentType = MediaType.APPLICATION_JSON
+                    it.contentDisposition =
+                        ContentDisposition
+                            .builder("form-data")
+                            .name("metadata")
+                            .build()
+                }
+            part("files-part", InputStreamResource(file.data))
+                .headers {
+                    it.contentType = MediaType.APPLICATION_OCTET_STREAM
+                    it.contentDisposition =
+                        ContentDisposition
+                            .builder("form-data")
+                            .name("files")
+                            .filename(file.metadata.filnavn)
+                            .build()
+                }
+            build()
+        }
+
+private fun createJsonFilMetadata(metadata: FilMetadata): String =
+    jacksonObjectMapper()
+        .writeValueAsString(
+            FilMetadata(
+                filnavn = metadata.filnavn,
+                mimetype = metadata.mimetype,
+                storrelse = metadata.storrelse,
+            ),
+        )
