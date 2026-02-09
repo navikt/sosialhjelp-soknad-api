@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Compani
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.springframework.core.io.InputStreamResource
-import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -219,25 +218,13 @@ class MellomlagringClientImpl(
 private fun createBodyForUpload(file: FilOpplasting): MultiValueMap<String, HttpEntity<*>> =
     MultipartBodyBuilder()
         .run {
-            part("metadata-part", createJsonFilMetadata(file.metadata))
-                .headers {
-                    it.contentType = MediaType.APPLICATION_JSON
-                    it.contentDisposition =
-                        ContentDisposition
-                            .builder("form-data")
-                            .name("metadata")
-                            .build()
-                }
-            part("files-part", InputStreamResource(file.data))
-                .headers {
-                    it.contentType = MediaType.APPLICATION_OCTET_STREAM
-                    it.contentDisposition =
-                        ContentDisposition
-                            .builder("form-data")
-                            .name("files")
-                            .filename(file.metadata.filnavn)
-                            .build()
-                }
+            part("metadata", createJsonFilMetadata(file.metadata))
+                .contentType(MediaType.APPLICATION_JSON)
+
+            part("files", InputStreamResource(file.data))
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .filename(file.metadata.filnavn)
+
             build()
         }
 
