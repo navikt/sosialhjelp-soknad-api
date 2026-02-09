@@ -21,9 +21,22 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 @Component
-class KrypteringService {
+class KrypteringService(private val dokumentlagerClient: DokumentlagerClient) {
     private val executor = ExecutorCompletionService<Void>(Executors.newCachedThreadPool())
     private val kryptering: CMSStreamKryptering = CMSKrypteringImpl()
+
+    private val certificate: X509Certificate get() = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
+
+    fun krypter(
+        dokumentStream: InputStream,
+        krypteringFutureList: MutableList<Future<Void>>,
+    ): InputStream {
+        return krypter(
+            dokumentStream = dokumentStream,
+            krypteringFutureList = krypteringFutureList,
+            fiksX509Certificate = certificate,
+        )
+    }
 
     fun krypter(
         dokumentStream: InputStream,

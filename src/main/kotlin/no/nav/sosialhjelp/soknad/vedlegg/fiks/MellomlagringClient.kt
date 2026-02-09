@@ -1,11 +1,13 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
+import java.io.ByteArrayInputStream
+import java.util.Collections
+import java.util.concurrent.Future
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
@@ -22,9 +24,6 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import tools.jackson.module.kotlin.jacksonObjectMapper
-import java.io.ByteArrayInputStream
-import java.util.Collections
-import java.util.concurrent.Future
 
 interface MellomlagringClient {
     fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto?
@@ -54,7 +53,6 @@ interface MellomlagringClient {
 }
 
 class MellomlagringClientImpl(
-    private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val texasService: TexasService,
     private val webClient: WebClient,
@@ -65,7 +63,11 @@ class MellomlagringClientImpl(
                 when (it) {
                     is WebClientResponseException.NotFound -> return null
                     is WebClientResponseException ->
-                        logger.error("Fiks - getMellomlagredeVedlegg feilet: ${it.statusCode} -> ${it.responseBodyAsString}", it)
+                        logger.error(
+                            "Fiks - getMellomlagredeVedlegg feilet: ${it.statusCode} -> ${it.responseBodyAsString}",
+                            it,
+                        )
+
                     else -> logger.error("Fiks - getMellomlagredeVedlegg feilet ukjent feil: ${it.message}", it)
                 }
                 throw it
@@ -109,16 +111,11 @@ class MellomlagringClientImpl(
         filOpplasting: FilOpplasting,
     ): MellomlagringDto {
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
-        val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
 
         return runCatching {
             doUploadDocument(
                 navEksternId = navEksternId,
-                filForOpplasting =
-                    FilOpplasting(
-                        metadata = filOpplasting.metadata,
-                        data = krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate),
-                    ),
+                filForOpplasting = filOpplasting.krypterData(krypteringFutureList),
             )
                 .also { waitForFutures(krypteringFutureList) }
         }
@@ -129,6 +126,9 @@ class MellomlagringClientImpl(
                     .forEach { it.cancel(true) }
             }
     }
+
+    private fun FilOpplasting.krypterData(krypteringFutureList: MutableList<Future<Void>>): FilOpplasting =
+        copy(data = krypteringService.krypter(data, krypteringFutureList))
 
     private fun doUploadDocument(
         filForOpplasting: FilOpplasting,
@@ -209,7 +209,8 @@ class MellomlagringClientImpl(
 
     companion object {
         private const val MELLOMLAGRING_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}"
-        private const val MELLOMLAGRING_DOKUMENT_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}/{digisosDokumentId}"
+        private const val MELLOMLAGRING_DOKUMENT_PATH =
+            "digisos/api/v1/mellomlagring/{navEksternRefId}/{digisosDokumentId}"
 
         private val logger by logger()
     }
