@@ -206,34 +206,35 @@ class MellomlagringClientImpl(
 
     private fun getToken(): String = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
 
-    companion object {
-        private const val MELLOMLAGRING_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}"
-        private const val MELLOMLAGRING_DOKUMENT_PATH =
-            "digisos/api/v1/mellomlagring/{navEksternRefId}/{digisosDokumentId}"
+    private fun createBodyForUpload(file: FilOpplasting): MultiValueMap<String, HttpEntity<*>> =
+        MultipartBodyBuilder()
+            .run {
+                part("metadata", createJsonFilMetadata(file.metadata))
+                    .contentType(MediaType.APPLICATION_JSON)
 
-        private val logger by logger()
-    }
-}
+                part("files", InputStreamResource(file.data))
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .filename(file.metadata.filnavn)
 
-private fun createBodyForUpload(file: FilOpplasting): MultiValueMap<String, HttpEntity<*>> =
-    MultipartBodyBuilder()
-        .run {
-            part("metadata", createJsonFilMetadata(file.metadata))
-                .contentType(MediaType.APPLICATION_JSON)
+                build()
+            }
 
-            part("files", InputStreamResource(file.data))
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .filename(file.metadata.filnavn)
-
-            build()
-        }
-
-private fun createJsonFilMetadata(metadata: FilMetadata): String =
-    jacksonObjectMapper()
-        .writeValueAsString(
+    private fun createJsonFilMetadata(metadata: FilMetadata): String =
+        objectMapper.writeValueAsString(
             FilMetadata(
                 filnavn = metadata.filnavn,
                 mimetype = metadata.mimetype,
                 storrelse = metadata.storrelse,
             ),
         )
+
+    companion object {
+        private const val MELLOMLAGRING_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}"
+        private const val MELLOMLAGRING_DOKUMENT_PATH =
+            "digisos/api/v1/mellomlagring/{navEksternRefId}/{digisosDokumentId}"
+
+        private val objectMapper = jacksonObjectMapper()
+
+        private val logger by logger()
+    }
+}
