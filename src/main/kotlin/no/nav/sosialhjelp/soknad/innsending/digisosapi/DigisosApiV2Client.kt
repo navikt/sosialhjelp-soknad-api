@@ -20,7 +20,6 @@ import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.sosialhjelpJsonMapper
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Value
@@ -96,8 +95,7 @@ class DigisosApiV2Client(
                     tilleggsinformasjonJson,
                     vedleggJson,
                     pdfDokumenter.map { dokument: FilOpplasting ->
-                        FilForOpplasting(
-                            filnavn = dokument.metadata.filnavn,
+                        FilOpplasting(
                             metadata = dokument.metadata,
                             data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate),
                         )
@@ -205,7 +203,7 @@ class DigisosApiV2Client(
         soknadJson: String,
         tilleggsinformasjonJson: String,
         vedleggJson: String,
-        filer: List<FilForOpplasting<Any>>,
+        filer: List<FilOpplasting>,
         kommunenummer: String,
         soknadId: UUID,
     ): UUID {
@@ -220,11 +218,11 @@ class DigisosApiV2Client(
         filer.forEachIndexed { index, fil ->
             body.add("metadata$index", createHttpEntity(getJson(fil), "metadata$index", null, TEXT_PLAIN_VALUE))
             body.add(
-                fil.filnavn,
+                fil.metadata.filnavn,
                 createHttpEntity(
                     ByteArrayResource(IOUtils.toByteArray(fil.data)),
-                    fil.filnavn,
-                    fil.filnavn,
+                    fil.metadata.filnavn,
+                    fil.metadata.filnavn,
                     APPLICATION_OCTET_STREAM_VALUE,
                 ),
             )
@@ -271,7 +269,7 @@ class DigisosApiV2Client(
         }
     }
 
-    private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String =
+    private fun getJson(objectFilForOpplasting: FilOpplasting): String =
         try {
             sosialhjelpJsonMapper.writeValueAsString(objectFilForOpplasting.metadata)
         } catch (e: JsonProcessingException) {

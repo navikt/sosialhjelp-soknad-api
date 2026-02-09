@@ -1,29 +1,25 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.sosialhjelpJsonMapper
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import org.apache.commons.io.IOUtils
-import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.util.LinkedMultiValueMap
+import org.springframework.http.client.MultipartBodyBuilder
+import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.io.ByteArrayInputStream
 import java.util.Collections
 import java.util.concurrent.Future
@@ -56,7 +52,6 @@ interface MellomlagringClient {
 }
 
 class MellomlagringClientImpl(
-    private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val texasService: TexasService,
     private val webClient: WebClient,
@@ -67,8 +62,12 @@ class MellomlagringClientImpl(
                 when (it) {
                     is WebClientResponseException.NotFound -> return null
                     is WebClientResponseException ->
-                        log.error("Fiks - getMellomlagredeVedlegg feilet: ${it.statusCode} -> ${it.responseBodyAsString}", it)
-                    else -> log.error("Fiks - getMellomlagredeVedlegg feilet ukjent feil: ${it.message}", it)
+                        logger.error(
+                            "Fiks - getMellomlagredeVedlegg feilet: ${it.statusCode} -> ${it.responseBodyAsString}",
+                            it,
+                        )
+
+                    else -> logger.error("Fiks - getMellomlagredeVedlegg feilet ukjent feil: ${it.message}", it)
                 }
                 throw it
             }
@@ -111,17 +110,11 @@ class MellomlagringClientImpl(
         filOpplasting: FilOpplasting,
     ): MellomlagringDto {
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
-        val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
 
         return runCatching {
             doUploadDocument(
                 navEksternId = navEksternId,
-                filForOpplasting =
-                    FilForOpplasting(
-                        filnavn = filOpplasting.metadata.filnavn,
-                        metadata = filOpplasting.metadata,
-                        data = krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate),
-                    ),
+                filForOpplasting = filOpplasting.krypterData(krypteringFutureList),
             )
                 .also { waitForFutures(krypteringFutureList) }
         }
@@ -133,13 +126,14 @@ class MellomlagringClientImpl(
             }
     }
 
+    private fun FilOpplasting.krypterData(krypteringFutureList: MutableList<Future<Void>>): FilOpplasting =
+        copy(data = krypteringService.krypter(data, krypteringFutureList))
+
     private fun doUploadDocument(
-        filForOpplasting: FilForOpplasting<Any>,
+        filForOpplasting: FilOpplasting,
         navEksternId: String,
     ): MellomlagringDto {
-        val body = LinkedMultiValueMap<String, Any>()
-        body.add("metadata", createHttpEntityOfString(getJson(filForOpplasting), "metadata"))
-        body.add(filForOpplasting.filnavn, createHttpEntityOfFile(filForOpplasting, filForOpplasting.filnavn))
+        val body = createBodyForUpload(filForOpplasting)
 
         val startTime = System.currentTimeMillis()
         return webClient.post()
@@ -149,7 +143,7 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<MellomlagringDto>()
             .doOnError(WebClientResponseException::class.java) {
-                log.warn(
+                logger.warn(
                     "Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}",
                     it,
                 )
@@ -168,7 +162,7 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<String>()
             .doOnError(WebClientResponseException::class.java) {
-                log.warn("Fiks - deleteAll mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+                logger.warn("Fiks - deleteAll mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
             }
             .block()
     }
@@ -202,42 +196,45 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<String>()
             .doOnSuccess {
-                log.info("Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId, behandlingsId=$navEksternId")
+                logger.info("Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId, behandlingsId=$navEksternId")
             }
             .doOnError(WebClientResponseException::class.java) {
-                log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+                logger.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
             }
             .block()
     }
 
     private fun getToken(): String = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
 
-    private fun createHttpEntityOfString(
-        body: String,
-        name: String,
-    ): HttpEntity<Any> {
-        return createHttpEntity(body, name, null, "text/plain;charset=UTF-8")
-    }
+    private fun createBodyForUpload(file: FilOpplasting): MultiValueMap<String, HttpEntity<*>> =
+        MultipartBodyBuilder()
+            .run {
+                part("metadata", createJsonFilMetadata(file.metadata))
+                    .contentType(MediaType.APPLICATION_JSON)
 
-    private fun createHttpEntityOfFile(
-        file: FilForOpplasting<Any>,
-        name: String,
-    ): HttpEntity<Any> {
-        return createHttpEntity(ByteArrayResource(IOUtils.toByteArray(file.data)), name, file.filnavn, "application/octet-stream")
-    }
+                part("files", InputStreamResource(file.data))
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .filename(file.metadata.filnavn)
+
+                build()
+            }
+
+    private fun createJsonFilMetadata(metadata: FilMetadata): String =
+        objectMapper.writeValueAsString(
+            FilMetadata(
+                filnavn = metadata.filnavn,
+                mimetype = metadata.mimetype,
+                storrelse = metadata.storrelse,
+            ),
+        )
 
     companion object {
         private const val MELLOMLAGRING_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}"
-        private const val MELLOMLAGRING_DOKUMENT_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}/{digisosDokumentId}"
+        private const val MELLOMLAGRING_DOKUMENT_PATH =
+            "digisos/api/v1/mellomlagring/{navEksternRefId}/{digisosDokumentId}"
 
-        private val log by logger()
+        private val objectMapper = jacksonObjectMapper()
 
-        private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String {
-            return try {
-                sosialhjelpJsonMapper.writeValueAsString(objectFilForOpplasting.metadata)
-            } catch (e: JsonProcessingException) {
-                throw IllegalStateException(e)
-            }
-        }
+        private val logger by logger()
     }
 }
