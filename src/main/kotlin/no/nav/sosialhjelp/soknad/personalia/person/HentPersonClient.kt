@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import java.time.Duration
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
@@ -9,6 +10,7 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_EKTEFELLE
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_PERSON
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
+import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
@@ -19,6 +21,8 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseD
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -42,6 +46,9 @@ class HentPersonClientImpl(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
+
+    // må caches på dette nivået da den kalles 2 steder i PersonService
+    @Cacheable(HentPersonClientConfig.CACHE_NAME, unless = "#result == null")
     override fun hentPerson(ident: String): PersonDto? =
         doPdlRequest(ident, HENT_PERSON, "hentPerson")
 
@@ -134,5 +141,13 @@ class HentPersonClientImpl(
         private val logger = getLogger(HentPersonClient::class.java)
         private const val TEMA_KOM = "KOM"
         private const val HEADER_TEMA = "Tema"
+    }
+}
+
+@Configuration
+class HentPersonClientConfig: SoknadApiCacheConfig(CACHE_NAME, TTL) {
+    companion object {
+        const val CACHE_NAME = "hentPersonCache"
+        private val TTL = Duration.ofMinutes(10)
     }
 }

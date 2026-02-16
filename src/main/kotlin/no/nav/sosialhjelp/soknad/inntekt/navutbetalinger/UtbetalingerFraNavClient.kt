@@ -50,7 +50,9 @@ class NavUtbetalingerClientImpl(
             .onSuccess { logger.info("Hentet ${it?.size} utbetalinger fra utbetaldata tjeneste") }
             .onFailure { logger.error("Hente utbetalinger fra Nav feilet", it) }
             .getOrNull()
-            ?.let { UtbetalDataDto(it, false) }
+            ?.let {
+                UtbetalDataDto(it, false)
+            }
     }
 
     private val tokenX get() = texasService.exchangeToken(TOKENX, target = utbetalDataAudience)
