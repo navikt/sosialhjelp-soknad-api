@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
-import java.time.Duration
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
@@ -27,6 +26,7 @@ import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.time.Duration
 
 interface HentPersonClient {
     fun hentPerson(ident: String): PersonDto?
@@ -46,7 +46,6 @@ class HentPersonClientImpl(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
-
     // må caches på dette nivået da den kalles 2 steder i PersonService
     @Cacheable(HentPersonClientConfig.CACHE_NAME, unless = "#result == null")
     override fun hentPerson(ident: String): PersonDto? =
@@ -145,7 +144,7 @@ class HentPersonClientImpl(
 }
 
 @Configuration
-class HentPersonClientConfig: SoknadApiCacheConfig(CACHE_NAME, TTL) {
+class HentPersonClientConfig : SoknadApiCacheConfig(CACHE_NAME, TTL) {
     companion object {
         const val CACHE_NAME = "hentPersonCache"
         private val TTL = Duration.ofMinutes(10)
