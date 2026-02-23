@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.personalia.person.domain
 
 import io.mockk.every
 import io.mockk.mockk
+import java.time.LocalDate
+import java.time.LocalDateTime
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper.Companion.DOED
 import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
@@ -28,8 +30,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.VegadresseDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 internal class PdlDtoMapperTest {
     companion object {
@@ -56,8 +56,7 @@ internal class PdlDtoMapperTest {
     }
 
     private val kodeverkService: KodeverkService = mockk()
-    private val helper = MapperHelper()
-    private val mapper = PdlDtoMapper(kodeverkService, helper)
+    private val mapper = PdlDtoMapper(kodeverkService, MapperHelper)
 
     private val defaultVegadresse =
         VegadresseDto(

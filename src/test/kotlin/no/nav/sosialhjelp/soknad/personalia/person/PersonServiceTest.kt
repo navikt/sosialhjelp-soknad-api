@@ -4,9 +4,10 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import java.time.LocalDate
+import java.time.LocalDateTime
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
-import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
@@ -22,8 +23,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 internal class PersonServiceTest {
     companion object {
@@ -67,8 +66,7 @@ internal class PersonServiceTest {
 
     private val hentPersonClient: HentPersonClient = mockk()
     private val mapper: PdlDtoMapper = mockk()
-    private val helper: MapperHelper = MapperHelper()
-    private val personService = PersonService(hentPersonClient, helper, mapper)
+    private val personService = PersonService(hentPersonClient, mapper)
 
     private val mockPersonDto = mockk<PersonDto>()
     private val mockEktefelleDto = mockk<EktefelleDto>()
@@ -93,14 +91,14 @@ internal class PersonServiceTest {
         every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns
-            listOf(
-                SivilstandDto(
-                    type = SivilstandType.GIFT,
-                    relatertVedSivilstand = EKTEFELLE_IDENT,
-                    metadata = defaultMetadataDto,
-                    folkeregistermetadata = null,
-                ),
-            )
+                listOf(
+                    SivilstandDto(
+                        type = SivilstandType.GIFT,
+                        relatertVedSivilstand = EKTEFELLE_IDENT,
+                        metadata = defaultMetadataDto,
+                        folkeregistermetadata = null,
+                    ),
+                )
         every { hentPersonClient.hentEktefelle(any()) } returns mockEktefelleDto
         every { mapper.ektefelleDtoToDomain(any(), any(), any()) } returns ektefelle
 
@@ -113,14 +111,14 @@ internal class PersonServiceTest {
         every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns
-            listOf(
-                SivilstandDto(
-                    type = SivilstandType.GIFT,
-                    relatertVedSivilstand = null,
-                    metadata = defaultMetadataDto,
-                    folkeregistermetadata = null,
-                ),
-            )
+                listOf(
+                    SivilstandDto(
+                        type = SivilstandType.GIFT,
+                        relatertVedSivilstand = null,
+                        metadata = defaultMetadataDto,
+                        folkeregistermetadata = null,
+                    ),
+                )
 
         val result = personService.hentPerson("ident")
         assertThat(result!!.ektefelle).isNull()
@@ -134,14 +132,14 @@ internal class PersonServiceTest {
         every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns
-            listOf(
-                SivilstandDto(
-                    type = SivilstandType.GIFT,
-                    relatertVedSivilstand = FDAT_IDENT,
-                    metadata = defaultMetadataDto,
-                    folkeregistermetadata = null,
-                ),
-            )
+                listOf(
+                    SivilstandDto(
+                        type = SivilstandType.GIFT,
+                        relatertVedSivilstand = FDAT_IDENT,
+                        metadata = defaultMetadataDto,
+                        folkeregistermetadata = null,
+                    ),
+                )
 
         val result = personService.hentPerson("ident")
         assertThat(result!!.ektefelle).isNull()

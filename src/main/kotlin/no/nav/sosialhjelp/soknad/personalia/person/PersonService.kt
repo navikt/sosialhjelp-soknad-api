@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.personalia.person
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
-import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
@@ -15,11 +14,11 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 import java.time.Duration
+import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
 
 @Component
 class PersonService(
     private val hentPersonClient: HentPersonClient,
-    private val helper: MapperHelper,
     private val mapper: PdlDtoMapper,
 ) {
     fun hentPerson(
@@ -71,7 +70,7 @@ class PersonService(
 
     private fun hentEktefelle(personDto: PersonDto?): Ektefelle? {
         if (personDto?.sivilstand != null && personDto.sivilstand.isNotEmpty()) {
-            val sivilstand = helper.utledGjeldendeSivilstand(personDto.sivilstand)
+            val sivilstand = MapperHelper.utledGjeldendeSivilstand(personDto.sivilstand)
             if (sivilstand != null && (SivilstandType.GIFT === sivilstand.type || SivilstandType.REGISTRERT_PARTNER === sivilstand.type)) {
                 val ektefelleIdent = sivilstand.relatertVedSivilstand
                 if (ektefelleIdent.isNullOrEmpty()) {
