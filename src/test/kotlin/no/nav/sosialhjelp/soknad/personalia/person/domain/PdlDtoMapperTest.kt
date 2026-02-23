@@ -56,7 +56,7 @@ internal class PdlDtoMapperTest {
     }
 
     private val kodeverkService: KodeverkService = mockk()
-    private val mapper = PdlDtoMapper(kodeverkService, MapperHelper)
+    private val mapper = PdlDtoMapper(kodeverkService)
 
     private val defaultVegadresse =
         VegadresseDto(
