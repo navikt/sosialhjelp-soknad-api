@@ -19,7 +19,6 @@ import java.time.Duration
 @Component
 class PersonService(
     private val hentPersonClient: HentPersonClient,
-    private val helper: MapperHelper,
     private val mapper: PdlDtoMapper,
 ) {
     fun hentPerson(
@@ -71,7 +70,7 @@ class PersonService(
 
     private fun hentEktefelle(personDto: PersonDto?): Ektefelle? {
         if (personDto?.sivilstand != null && personDto.sivilstand.isNotEmpty()) {
-            val sivilstand = helper.utledGjeldendeSivilstand(personDto.sivilstand)
+            val sivilstand = MapperHelper.utledGjeldendeSivilstand(personDto.sivilstand)
             if (sivilstand != null && (SivilstandType.GIFT === sivilstand.type || SivilstandType.REGISTRERT_PARTNER === sivilstand.type)) {
                 val ektefelleIdent = sivilstand.relatertVedSivilstand
                 if (ektefelleIdent.isNullOrEmpty()) {

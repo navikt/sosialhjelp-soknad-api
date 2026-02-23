@@ -19,7 +19,7 @@ internal class MapperHelperTest {
         private val DEC_2_MORGEN = LocalDateTime.of(2020, 12, 2, 7, 0)
     }
 
-    private val helper = MapperHelper()
+    private val helper = MapperHelper
 
     @Test
     fun ingenSivilstander_ingenVelges() {

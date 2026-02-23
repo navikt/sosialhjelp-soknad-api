@@ -76,20 +76,25 @@ data class ForelderBarnRelasjonDto(
     val minRolleForPerson: String,
 )
 
+interface MetadataInfo {
+    val metadata: MetadataDto
+    val folkeregistermetadata: FolkeregisterMetadataDto?
+}
+
 data class NavnDto(
     val fornavn: String,
     val mellomnavn: String?,
     val etternavn: String,
-    val metadata: MetadataDto,
-    val folkeregistermetadata: FolkeregisterMetadataDto?,
-)
+    override val metadata: MetadataDto,
+    override val folkeregistermetadata: FolkeregisterMetadataDto?,
+) : MetadataInfo
 
 data class SivilstandDto(
     val type: SivilstandType,
     val relatertVedSivilstand: String?,
-    val metadata: MetadataDto,
-    val folkeregistermetadata: FolkeregisterMetadataDto?,
-)
+    override val metadata: MetadataDto,
+    override val folkeregistermetadata: FolkeregisterMetadataDto?,
+) : MetadataInfo
 
 enum class SivilstandType {
     UOPPGITT,

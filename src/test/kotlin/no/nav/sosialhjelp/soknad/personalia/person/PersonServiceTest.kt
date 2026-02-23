@@ -6,7 +6,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
-import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
@@ -67,8 +66,7 @@ internal class PersonServiceTest {
 
     private val hentPersonClient: HentPersonClient = mockk()
     private val mapper: PdlDtoMapper = mockk()
-    private val helper: MapperHelper = MapperHelper()
-    private val personService = PersonService(hentPersonClient, helper, mapper)
+    private val personService = PersonService(hentPersonClient, mapper)
 
     private val mockPersonDto = mockk<PersonDto>()
     private val mockEktefelleDto = mockk<EktefelleDto>()

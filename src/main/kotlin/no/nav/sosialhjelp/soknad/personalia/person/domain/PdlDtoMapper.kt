@@ -22,10 +22,7 @@ import java.time.LocalDate
 import java.time.Period
 
 @Component
-class PdlDtoMapper(
-    private val kodeverkService: KodeverkService,
-    private val helper: MapperHelper,
-) {
+class PdlDtoMapper(private val kodeverkService: KodeverkService) {
     companion object {
         const val NOR = "NOR"
         const val DOED = "DOED"
@@ -122,15 +119,15 @@ class PdlDtoMapper(
     }
 
     private fun findFornavn(navn: List<NavnDto>?): String {
-        return helper.utledGjeldendeNavn(navn)?.fornavn ?: ""
+        return MapperHelper.utledGjeldendeNavn(navn)?.fornavn ?: ""
     }
 
     private fun findMellomnavn(navn: List<NavnDto>?): String {
-        return helper.utledGjeldendeNavn(navn)?.mellomnavn ?: ""
+        return MapperHelper.utledGjeldendeNavn(navn)?.mellomnavn ?: ""
     }
 
     private fun findEtternavn(navn: List<NavnDto>?): String {
-        return helper.utledGjeldendeNavn(navn)?.etternavn ?: ""
+        return MapperHelper.utledGjeldendeNavn(navn)?.etternavn ?: ""
     }
 
     private fun findFodselsdato(foedselsdato: List<FoedselsdatoDto>?): LocalDate? {
@@ -153,7 +150,7 @@ class PdlDtoMapper(
     }
 
     private fun findSivilstatus(sivilstand: List<SivilstandDto>?): String? {
-        val sivilstandDto = helper.utledGjeldendeSivilstand(sivilstand)
+        val sivilstandDto = MapperHelper.utledGjeldendeSivilstand(sivilstand)
         return if (sivilstandDto != null) MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS[sivilstandDto.type] else ""
     }
 
