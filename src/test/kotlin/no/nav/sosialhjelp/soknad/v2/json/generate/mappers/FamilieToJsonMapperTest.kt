@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
-import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidationException
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
@@ -9,6 +8,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.FamilieToJsonMa
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator as validator
 
 class FamilieToJsonMapperTest : AbstractMapperTest() {

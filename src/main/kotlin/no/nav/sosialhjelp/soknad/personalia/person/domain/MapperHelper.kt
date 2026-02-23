@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.person.domain
 
-import java.time.LocalDateTime
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EndringDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MetadataDto
@@ -8,6 +7,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.MetadataInfo
 import no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
+import java.time.LocalDateTime
 
 object MapperHelper {
     private val logger by logger()
@@ -31,7 +31,7 @@ object MapperHelper {
         if (
             flereRegistrertSamtidig(
                 sistEndredeSivilstand.getEndringstidspunktOrNull(),
-                sorted.map { it.getEndringstidspunktOrNull() }
+                sorted.map { it.getEndringstidspunktOrNull() },
             ) ||
             sistEndredeSivilstand.type == SivilstandType.UOPPGITT ||
             !MASTERS.contains(sistEndredeSivilstand.metadata.master.uppercase())
@@ -56,7 +56,7 @@ object MapperHelper {
         val sistEndredeNavn = sorted[0]
         if (flereRegistrertSamtidig(
                 sistEndredeNavn.getEndringstidspunktOrNull(),
-                sorted.map { it.getEndringstidspunktOrNull() }
+                sorted.map { it.getEndringstidspunktOrNull() },
             ) || !MASTERS.contains(sistEndredeNavn.metadata.master.uppercase())
         ) {
             return null
@@ -68,8 +68,7 @@ object MapperHelper {
         return sistEndredeNavn
     }
 
-    private fun MetadataInfo.getEndringstidspunktOrNull(
-    ): LocalDateTime? {
+    private fun MetadataInfo.getEndringstidspunktOrNull(): LocalDateTime? {
         return if (metadata.master.equals(FREG, ignoreCase = true)) {
             folkeregistermetadata?.ajourholdstidspunkt
         } else {
@@ -91,7 +90,7 @@ object MapperHelper {
 
     private fun erKildeUdokumentert(metadata: MetadataDto): Boolean {
         return PDL.equals(metadata.master, ignoreCase = true) &&
-                metadata.sisteEndringOrNull() != null &&
-                metadata.sisteEndringOrNull()?.kilde == BRUKER_SELV
+            metadata.sisteEndringOrNull() != null &&
+            metadata.sisteEndringOrNull()?.kilde == BRUKER_SELV
     }
 }

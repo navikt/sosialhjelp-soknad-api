@@ -87,14 +87,14 @@ data class NavnDto(
     val etternavn: String,
     override val metadata: MetadataDto,
     override val folkeregistermetadata: FolkeregisterMetadataDto?,
-): MetadataInfo
+) : MetadataInfo
 
 data class SivilstandDto(
     val type: SivilstandType,
     val relatertVedSivilstand: String?,
     override val metadata: MetadataDto,
     override val folkeregistermetadata: FolkeregisterMetadataDto?,
-): MetadataInfo
+) : MetadataInfo
 
 enum class SivilstandType {
     UOPPGITT,
