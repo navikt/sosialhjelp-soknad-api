@@ -22,7 +22,7 @@ import java.time.LocalDate
 import java.time.Period
 
 @Component
-class PdlDtoMapper(private val kodeverkService: KodeverkService,) {
+class PdlDtoMapper(private val kodeverkService: KodeverkService) {
     companion object {
         const val NOR = "NOR"
         const val DOED = "DOED"
