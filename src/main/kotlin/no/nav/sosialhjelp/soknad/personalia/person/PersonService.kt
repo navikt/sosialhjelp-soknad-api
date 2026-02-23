@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.personalia.person
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
+import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
@@ -14,7 +15,6 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 import java.time.Duration
-import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
 
 @Component
 class PersonService(

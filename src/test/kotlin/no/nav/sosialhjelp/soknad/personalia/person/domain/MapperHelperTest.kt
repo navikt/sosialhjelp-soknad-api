@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.person.domain
 
-import java.time.LocalDateTime
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EndringDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FolkeregisterMetadataDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MetadataDto
@@ -9,6 +8,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class MapperHelperTest {
     companion object {
