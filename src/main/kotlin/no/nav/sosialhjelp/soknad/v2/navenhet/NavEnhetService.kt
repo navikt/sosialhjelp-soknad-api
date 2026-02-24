@@ -59,8 +59,9 @@ class NavEnhetService(
     }
 }
 
-fun Adresse.getGtFromAdresse(): String? = when (this) {
-    is VegAdresse -> bydelsnummer ?: kommunenummer
-    is MatrikkelAdresse -> bydelsnummer ?: kommunenummer
-    else -> null
-}
+fun Adresse.getGtFromAdresse(): String? =
+    when (this) {
+        is VegAdresse -> bydelsnummer ?: kommunenummer
+        is MatrikkelAdresse -> bydelsnummer ?: kommunenummer
+        else -> null
+    }
