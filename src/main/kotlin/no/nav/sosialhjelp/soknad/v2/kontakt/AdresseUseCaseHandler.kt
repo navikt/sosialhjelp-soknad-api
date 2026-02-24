@@ -1,9 +1,12 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
+import no.nav.sosialhjelp.soknad.v2.navenhet.getGtFromAdresse
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -34,13 +37,23 @@ class AdresseUseCaseHandler(
         val currentAdresser = adresseService.findAdresser(soknadId)
         val currentMottaker = adresseService.findMottaker(soknadId)
 
-        val mottaker =
+        // TODO Midlertidig omskriving for å nøste opp i bug
+
+        val valgtAdresse =
             when (adresseValg) {
                 AdresseValg.FOLKEREGISTRERT -> currentAdresser.folkeregistrert
                 AdresseValg.MIDLERTIDIG -> currentAdresser.midlertidig
                 AdresseValg.SOKNAD -> brukerAdresse
             }
-                ?.let { navEnhetService.getNavEnhet(it) }
+
+        val mottaker =
+            runCatching { valgtAdresse?.let { navEnhetService.getNavEnhet(it) } }
+                .onFailure {
+                    if (it is SosialhjelpSoknadApiException) {
+                        logger.error("Kunne ikke finne Nav-Enhet. AdresseValg: $adresseValg, GT: ${valgtAdresse?.getGtFromAdresse()}", it)
+                    }
+                }
+                .getOrThrow()
 
         runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker) }
             .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad(soknadId, currentAdresser, currentMottaker, mottaker) }
@@ -70,6 +83,10 @@ class AdresseUseCaseHandler(
         return kommunenavn
             ?: kodeverkService.getKommunenavn(kommunenummer)
                 ?.also { adresseService.updateKommunenavnMottaker(soknadId, it) }
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
 

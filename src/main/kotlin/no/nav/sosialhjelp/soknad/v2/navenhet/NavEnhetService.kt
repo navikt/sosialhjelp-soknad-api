@@ -8,7 +8,9 @@ import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.stereotype.Service
 
 @Service
@@ -29,6 +31,9 @@ class NavEnhetService(
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(adresse) ?: error("Fant ikke adresseforslag")
 
         val gt = adresseForslag.getGeografiskTilknytning()
+
+        log.info("*** GT *** : GT fra adresse = ${adresse.getGtFromAdresse()}, GT fra adresseforslag = $gt")
+
         val navEnhet = norgService.getEnhetForGt(gt) ?: error("Fant ingen Nav-enhet for gt: $gt")
         val kommunenavn = adresseForslag.kommunenummer?.let { getKommunenavn(it) }
 
@@ -53,3 +58,10 @@ class NavEnhetService(
         private val log by logger()
     }
 }
+
+fun Adresse.getGtFromAdresse(): String? =
+    when (this) {
+        is VegAdresse -> bydelsnummer ?: kommunenummer
+        is MatrikkelAdresse -> bydelsnummer ?: kommunenummer
+        else -> null
+    }
