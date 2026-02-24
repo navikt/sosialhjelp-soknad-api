@@ -50,7 +50,7 @@ class AdresseUseCaseHandler(
             runCatching { valgtAdresse?.let { navEnhetService.getNavEnhet(it) } }
                 .onFailure {
                     if (it is SosialhjelpSoknadApiException) {
-                        logger.error("Kunne ikke oppdatere Nav-Enhet. AdresseValg: $adresseValg, GT: ${valgtAdresse?.getGtFromAdresse()}")
+                        logger.error("Kunne ikke finne Nav-Enhet. AdresseValg: $adresseValg, GT: ${valgtAdresse?.getGtFromAdresse()}", it)
                     }
                 }
                 .getOrThrow()
