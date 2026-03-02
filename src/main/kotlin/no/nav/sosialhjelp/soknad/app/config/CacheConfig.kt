@@ -51,6 +51,7 @@ object CustomCacheErrorHandler : CacheErrorHandler {
         key: Any,
         value: Any?,
     ) {
+        if (exception is SerializationException) cache.evict(key)
         log.warn("Couldn't put cache value for key $key in cache ${cache.name}", exception)
     }
 
