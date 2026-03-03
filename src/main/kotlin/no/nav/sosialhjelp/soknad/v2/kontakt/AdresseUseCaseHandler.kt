@@ -47,7 +47,7 @@ class AdresseUseCaseHandler(
             }
 
         val mottaker =
-            runCatching { valgtAdresse?.let { navEnhetService.getNavEnhet(it) } }
+            runCatching { valgtAdresse?.let { navEnhetService.findNavEnhetByAdresse(it) } }
                 .onFailure {
                     if (it is SosialhjelpSoknadApiException) {
                         logger.error("Kunne ikke finne Nav-Enhet. AdresseValg: $adresseValg, GT: ${valgtAdresse?.getGtFromAdresse()}", it)

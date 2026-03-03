@@ -133,7 +133,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
         val navEnhet = NavEnhet("Sandvika Nav-senter", "1212", null, "123", null)
-        every { norgService.getEnhetForGt("1234") } returns navEnhet
+        every { norgService.getEnhetForGt("2944") } returns navEnhet
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
@@ -232,7 +232,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val adresserInput =
             AdresserInput(
                 adresseValg = AdresseValg.SOKNAD,
-                brukerAdresse = VegAdresse(kommunenummer = "12", adresselinjer = listOf("Test 1"), postnummer = "1337", poststed = "Sandvika", gatenavn = "Testveien", husnummer = "1"),
+                brukerAdresse = VegAdresse(kommunenummer = KOMMUNENUMMER, adresselinjer = listOf("Test 1"), postnummer = "1337", poststed = "Sandvika", gatenavn = "Testveien", husnummer = "1"),
             )
 
         doPut(

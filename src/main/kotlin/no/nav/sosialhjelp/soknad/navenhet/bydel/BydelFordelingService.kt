@@ -1,8 +1,9 @@
 package no.nav.sosialhjelp.soknad.navenhet.bydel
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.navenhet.getGtFromAdresse
 import org.apache.commons.lang3.StringUtils
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
@@ -27,12 +28,11 @@ class BydelFordelingService {
             }
         }
 
-    fun getBydelTilForMarka(adresseForslag: AdresseForslag): String {
-        return markaBydelFordeling
-            .filter { it.veiadresse.trim().equals(adresseForslag.adresse?.trim(), true) }
-            .firstOrNull { isInHusnummerFordeling(it.husnummerfordeling, adresseForslag.husnummer) }
-            ?.bydelTil ?: adresseForslag.geografiskTilknytning ?: ""
-    }
+    fun getBydelTilForMarka(adresse: VegAdresse): String =
+        markaBydelFordeling
+            .filter { it.veiadresse.trim().equals(adresse.gatenavn?.trim(), true) }
+            .firstOrNull { isInHusnummerFordeling(it.husnummerfordeling, adresse.husnummer) }
+            ?.bydelTil ?: adresse.getGtFromAdresse() ?: ""
 
     private fun isInHusnummerFordeling(
         husnummerfordeling: List<Husnummerfordeling>,
