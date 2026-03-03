@@ -14,8 +14,9 @@ import reactor.netty.resources.ConnectionProvider
 import tools.jackson.databind.DeserializationFeature
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.time.Duration
+import tools.jackson.databind.json.JsonMapper
 
-val soknadJacksonMapper =
+val soknadJacksonMapper: JsonMapper =
     jacksonMapperBuilder()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
         .build()

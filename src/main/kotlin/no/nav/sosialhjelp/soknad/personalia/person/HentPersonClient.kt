@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import java.time.Duration
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
@@ -22,11 +23,14 @@ import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.redis.cache.RedisCacheConfiguration
+import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer
+import org.springframework.data.redis.serializer.RedisSerializationContext
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import java.time.Duration
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 interface HentPersonClient {
     fun hentPerson(ident: String): PersonDto?
@@ -145,6 +149,17 @@ class HentPersonClientImpl(
 
 @Configuration
 class HentPersonClientConfig : SoknadApiCacheConfig(CACHE_NAME, TTL) {
+
+    override fun getConfig(): RedisCacheConfiguration {
+        return super
+            .getConfig()
+            .serializeValuesWith(
+                RedisSerializationContext.SerializationPair.fromSerializer(
+                    JacksonJsonRedisSerializer(jacksonObjectMapper(), PersonDto::class.java)
+                )
+            )
+    }
+
     companion object {
         const val CACHE_NAME = "hentPersonCache"
         private val TTL = Duration.ofMinutes(10)
