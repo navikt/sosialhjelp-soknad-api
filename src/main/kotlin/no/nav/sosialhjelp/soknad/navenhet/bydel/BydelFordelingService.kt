@@ -1,11 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet.bydel
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.nio.charset.StandardCharsets
-import java.util.stream.Collectors
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
@@ -16,6 +11,11 @@ import org.springframework.stereotype.Component
 import tools.jackson.databind.DeserializationFeature
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 import tools.jackson.module.kotlin.readValue
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
+import java.util.stream.Collectors
 
 @Component
 class BydelFordelingService {
@@ -28,13 +28,11 @@ class BydelFordelingService {
                 throw SosialhjelpSoknadApiException("BydelFordeling marka: Failed to parse json", e)
             }
         }
+    fun getBydelTilForMarka(adresse: VegAdresse): String = markaBydelFordeling
+        .filter { it.veiadresse.trim().equals(adresse.gatenavn?.trim(), true) }
+        .firstOrNull { isInHusnummerFordeling(it.husnummerfordeling, adresse.husnummer) }
+        ?.bydelTil ?: adresse.getGtFromAdresse() ?: ""
 
-    fun getBydelTilForMarka(adresse: VegAdresse): String {
-        return markaBydelFordeling
-            .filter { it.veiadresse.trim().equals(adresse.gatenavn?.trim(), true) }
-            .firstOrNull { isInHusnummerFordeling(it.husnummerfordeling, adresse.husnummer) }
-            ?.bydelTil ?: adresse.getGtFromAdresse() ?: ""
-    }
     @Deprecated("Bruk getBydelTilForMarka med VegAdresse")
     fun getBydelTilForMarka(adresseForslag: AdresseForslag): String {
         return markaBydelFordeling

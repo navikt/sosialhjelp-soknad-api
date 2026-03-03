@@ -20,9 +20,10 @@ class NavEnhetService(
     fun findNavEnhetByAdresse(
         adresse: Adresse,
     ): NavEnhet {
-        val navEnhet = adresse.checkBydelFordelingMarka()
-            .let { norgService.getEnhetForGt(it) }
-            ?: error("Fant ingen Nav-enhet for gt: ${adresse.getGtFromAdresse()}")
+        val navEnhet =
+            adresse.checkBydelFordelingMarka()
+                .let { norgService.getEnhetForGt(it) }
+                ?: error("Fant ingen Nav-enhet for gt: ${adresse.getGtFromAdresse()}")
 
         log.info("Fant Nav-enhet ${navEnhet.enhetsnavn} (${navEnhet.enhetsnummer}) for gt: ${adresse.getGtFromAdresse()}")
 
@@ -34,9 +35,8 @@ class NavEnhetService(
 
     private fun getKommunenavn(kommunenummer: String): String? = kodeverkService.getKommunenavn(kommunenummer)
 
-
     private fun Adresse.checkBydelFordelingMarka(): String {
-        if(this !is VegAdresse) return getGtFromAdresse() ?: error("Adresse mangler geografisk tilknytning")
+        if (this !is VegAdresse) return getGtFromAdresse() ?: error("Adresse mangler geografisk tilknytning")
 
         return when (BYDEL_MARKA_OSLO == getGtFromAdresse()) {
             true -> bydelFordelingService.getBydelTilForMarka(this)
@@ -50,7 +50,7 @@ class NavEnhetService(
 }
 
 private fun Adresse.getKommunenummer(): String {
-    return when(this) {
+    return when (this) {
         is VegAdresse -> kommunenummer
         is MatrikkelAdresse -> kommunenummer
         else -> error("Adresse av type ${this::class.simpleName} støttes ikke")
