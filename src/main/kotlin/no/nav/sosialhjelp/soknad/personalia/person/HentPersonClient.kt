@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
-import java.time.Duration
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
@@ -31,6 +30,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import tools.jackson.module.kotlin.jacksonObjectMapper
+import java.time.Duration
 
 interface HentPersonClient {
     fun hentPerson(ident: String): PersonDto?
@@ -149,14 +149,13 @@ class HentPersonClientImpl(
 
 @Configuration
 class HentPersonClientConfig : SoknadApiCacheConfig(CACHE_NAME, TTL) {
-
     override fun getConfig(): RedisCacheConfiguration {
         return super
             .getConfig()
             .serializeValuesWith(
                 RedisSerializationContext.SerializationPair.fromSerializer(
-                    JacksonJsonRedisSerializer(jacksonObjectMapper(), PersonDto::class.java)
-                )
+                    JacksonJsonRedisSerializer(jacksonObjectMapper(), PersonDto::class.java),
+                ),
             )
     }
 
