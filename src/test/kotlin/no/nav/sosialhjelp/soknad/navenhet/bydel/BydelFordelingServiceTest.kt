@@ -2,9 +2,8 @@ package no.nav.sosialhjelp.soknad.navenhet.bydel
 
 import io.mockk.every
 import io.mockk.spyk
-import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
-import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -28,43 +27,35 @@ internal class BydelFordelingServiceTest {
 
     @Test
     fun skalReturnereBydelTil() {
-        val testveien14 = createAdresseForslag(TESTVEIEN, "14")
+        val testveien14 = createVegAdresse(TESTVEIEN, "14")
         assertThat(bydelFordelingService.getBydelTilForMarka(testveien14)).isEqualTo(BYDEL_GRORUD)
 
-        val testgaten1 = createAdresseForslag(TESTGATEN, "1")
-        val testgaten100 = createAdresseForslag(TESTGATEN, "100")
+        val testgaten1 = createVegAdresse(TESTGATEN, "1")
+        val testgaten100 = createVegAdresse(TESTGATEN, "100")
         assertThat(bydelFordelingService.getBydelTilForMarka(testgaten1)).isEqualTo(BYDEL_VESTRE_AKER)
         assertThat(bydelFordelingService.getBydelTilForMarka(testgaten100)).isEqualTo(BYDEL_VESTRE_AKER)
 
-        val testgaten101 = createAdresseForslag(TESTGATEN, "101")
-        val testgaten899 = createAdresseForslag(TESTGATEN, "899")
+        val testgaten101 = createVegAdresse(TESTGATEN, "101")
+        val testgaten899 = createVegAdresse(TESTGATEN, "899")
         assertThat(bydelFordelingService.getBydelTilForMarka(testgaten101)).isEqualTo(BYDEL_NORDRE_AKER)
         assertThat(bydelFordelingService.getBydelTilForMarka(testgaten899)).isEqualTo(BYDEL_NORDRE_AKER)
     }
 
     @Test
     fun skalReturnereAdresseforslagGeografiskTilknytningHvisBydelFordelingIkkeFinnes() {
-        val adresseForslag = createAdresseForslag("annen adresse", "14")
+        val adresseForslag = createVegAdresse("annen adresse", "14")
         val bydelTil = bydelFordelingService.getBydelTilForMarka(adresseForslag)
         assertThat(bydelTil).isEqualTo(BYDEL_MARKA_OSLO)
     }
 
-    private fun createAdresseForslag(
-        adresse: String,
+    private fun createVegAdresse(
+        gatenavn: String,
         husnummer: String,
-    ): AdresseForslag {
-        return AdresseForslag(
-            adresse,
-            husnummer,
-            null,
-            null,
-            null,
-            null,
-            null,
-            BYDEL_MARKA_OSLO,
-            null,
-            null,
-            AdresseForslagType.GATEADRESSE,
+    ): VegAdresse {
+        return VegAdresse(
+            gatenavn = gatenavn,
+            husnummer = husnummer,
+            bydelsnummer = BYDEL_MARKA_OSLO,
         )
     }
 
