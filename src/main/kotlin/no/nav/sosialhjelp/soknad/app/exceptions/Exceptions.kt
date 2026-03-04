@@ -29,7 +29,7 @@ class SendingTilKommuneUtilgjengeligException(message: String?) : SosialhjelpSok
 
 class SoknadenHarNedetidException(message: String?) : SosialhjelpSoknadApiException(message)
 
-class SoknadUnderArbeidIkkeFunnetException(message: String?) : SosialhjelpSoknadApiException(message)
+class SoknadFinnesIkkeException(val soknadId: UUID) : SosialhjelpSoknadApiException(null)
 
 class AuthorizationException(
     message: String?,

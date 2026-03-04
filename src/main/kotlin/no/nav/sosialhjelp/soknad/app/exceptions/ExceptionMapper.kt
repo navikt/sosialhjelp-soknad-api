@@ -168,10 +168,13 @@ class ExceptionMapper(
         return buildError(HttpStatus.CONFLICT, SoknadApiError(SoknadApiErrorType.SoknadUpdateConflict))
     }
 
-    @ExceptionHandler(value = [IkkeFunnetException::class, SoknadUnderArbeidIkkeFunnetException::class])
+    @ExceptionHandler(value = [IkkeFunnetException::class, SoknadFinnesIkkeException::class])
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     fun handleNotFoundExceptions(e: RuntimeException): ResponseEntity<SoknadApiError> {
-        log.warn("Fant ikke: ${e.message}", e)
+        when (e) {
+            is SoknadFinnesIkkeException -> log.info("Finnes ingen søknad med id: ${e.soknadId}")
+            else -> log.warn("Fant ikke: ${e.message}", e)
+        }
         return buildError(
             HttpStatus.NOT_FOUND,
             SoknadApiError(
