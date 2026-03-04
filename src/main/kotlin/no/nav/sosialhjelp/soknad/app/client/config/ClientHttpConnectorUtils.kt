@@ -12,10 +12,11 @@ import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import reactor.netty.resources.ConnectionProvider
 import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.json.JsonMapper
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.time.Duration
 
-val soknadJacksonMapper =
+val soknadJacksonMapper: JsonMapper =
     jacksonMapperBuilder()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
         .build()

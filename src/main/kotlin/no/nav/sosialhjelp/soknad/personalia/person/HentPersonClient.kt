@@ -22,10 +22,14 @@ import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.redis.cache.RedisCacheConfiguration
+import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer
+import org.springframework.data.redis.serializer.RedisSerializationContext
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Duration
 
 interface HentPersonClient {
@@ -145,6 +149,16 @@ class HentPersonClientImpl(
 
 @Configuration
 class HentPersonClientConfig : SoknadApiCacheConfig(CACHE_NAME, TTL) {
+    override fun getConfig(): RedisCacheConfiguration {
+        return super
+            .getConfig()
+            .serializeValuesWith(
+                RedisSerializationContext.SerializationPair.fromSerializer(
+                    JacksonJsonRedisSerializer(jacksonObjectMapper(), PersonDto::class.java),
+                ),
+            )
+    }
+
     companion object {
         const val CACHE_NAME = "hentPersonCache"
         private val TTL = Duration.ofMinutes(10)
