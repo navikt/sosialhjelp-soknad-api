@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.metadata
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadFinnesIkkeException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.data.repository.findByIdOrNull
@@ -139,8 +139,7 @@ class SoknadMetadataService(
     }
 
     private fun findMetadataOrError(soknadId: UUID): SoknadMetadata {
-        return metadataRepository.findByIdOrNull(soknadId)
-            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+        return metadataRepository.findByIdOrNull(soknadId) ?: throw SoknadFinnesIkkeException(soknadId)
     }
 
     companion object {
