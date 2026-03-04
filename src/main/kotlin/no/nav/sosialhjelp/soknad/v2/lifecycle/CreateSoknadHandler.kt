@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
@@ -11,6 +10,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
@@ -47,7 +47,6 @@ class CreateSoknadHandler(
                         throw it
                     }
                 }
-
             }
     }
 
