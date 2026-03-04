@@ -51,16 +51,16 @@ class SoknadLifecycleHandlerImpl(
                 prometheusMetricsService.reportStartSoknad()
                 logger.info("Ny søknad opprettet")
             }
-            .onFailure {
-                if (it is AuthorizationException) {
-                    throw it
-                } else {
-                    prometheusMetricsService.reportStartSoknadFeilet()
-                    throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
+            .also { MdcOperations.clearMDC() }
+            .getOrElse {
+                when (it) {
+                    is AuthorizationException -> throw it
+                    else -> {
+                        prometheusMetricsService.reportStartSoknadFeilet()
+                        throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
+                    }
                 }
             }
-            .also { MdcOperations.clearMDC() }
-            .getOrThrow()
     }
 
     override fun sendSoknad(
@@ -90,9 +90,7 @@ class SoknadLifecycleHandlerImpl(
                 prometheusMetricsService.reportAvbruttSoknad(referer)
                 logger.info("Søknad avbrutt. Sletter data.")
             }
-            .onFailure {
-                throw SoknadLifecycleException("Feil ved avbrutt søknad.", it, soknadId)
-            }
+            .getOrElse { throw SoknadLifecycleException("Feil ved avbrutt søknad.", it, soknadId) }
     }
 
     private fun handleError(

@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
@@ -37,10 +38,15 @@ class CreateSoknadHandler(
     @Transactional(propagation = Propagation.NEVER)
     fun runRegisterDataFetchers(soknadId: UUID) {
         runCatching { registerDataService.runAllRegisterDataFetchers(soknadId = soknadId) }
-            .onFailure {
-                logger.error("Uopprettelig feil ved henting av registerdata for søknad $soknadId", it)
+            .getOrElse {
                 metadataService.deleteMetadata(soknadId)
-                throw it
+                when (it) {
+                    is AuthorizationException -> throw it
+                    else -> {
+                        logger.error("Uopprettelig feil ved henting av registerdata for søknad", it)
+                        throw it
+                    }
+                }
             }
     }
 
