@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
@@ -9,7 +11,6 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
@@ -37,10 +38,16 @@ class CreateSoknadHandler(
     @Transactional(propagation = Propagation.NEVER)
     fun runRegisterDataFetchers(soknadId: UUID) {
         runCatching { registerDataService.runAllRegisterDataFetchers(soknadId = soknadId) }
-            .onFailure {
-                logger.error("Uopprettelig feil ved henting av registerdata for søknad $soknadId", it)
+            .getOrElse {
                 metadataService.deleteMetadata(soknadId)
-                throw it
+                when (it) {
+                    is AuthorizationException -> throw it
+                    else -> {
+                        logger.error("Uopprettelig feil ved henting av registerdata for søknad", it)
+                        throw it
+                    }
+                }
+
             }
     }
 

@@ -133,7 +133,7 @@ class ExceptionMapper(
 
     @ExceptionHandler(value = [AuthorizationException::class])
     fun handleAuthorizationException(e: AuthorizationException): ResponseEntity<SoknadApiError> {
-        log.warn("Ikke tilgang", e)
+        log.info("Ikke tilgang", e)
         return buildError(
             HttpStatus.FORBIDDEN,
             SoknadApiError(error = e.type),
