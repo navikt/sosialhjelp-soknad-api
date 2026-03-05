@@ -6,10 +6,7 @@ import no.nav.security.token.support.core.exceptions.MetaDataNotAvailableExcepti
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
-import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadFileEncrypted
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadPossibleVirus
@@ -65,17 +62,9 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.InnsendingMidlertidigUtilgjengelig),
                 )
             }
-            is SendingTilKommuneErIkkeAktivertException -> {
-                log.error(e.message, e)
-                buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.InnsendingIkkeAktivert))
-            }
             is SendingTilKommuneUtilgjengeligException -> {
                 log.error(e.message, e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.InnsendingUtilgjengelig))
-            }
-            is SoknadenHarNedetidException -> {
-                log.warn(e.message, e)
-                buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.PlanlagtNedetid))
             }
             is PdfGenereringException -> {
                 log.error(e.message, e)
@@ -84,13 +73,6 @@ class ExceptionMapper(
             is PdlApiException -> {
                 log.error("Kall til PDL feilet", e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.PdlKallFeilet))
-            }
-            is DokumentUploadDuplicateFilename -> {
-                log.info("Bruker lastet opp allerede opplastet fil")
-                buildError(
-                    HttpStatus.NOT_ACCEPTABLE,
-                    SoknadApiError(SoknadApiErrorType.DokumentUploadDuplicateFilename),
-                )
             }
             is DokumentUploadUnsupportedMediaType -> {
                 log.warn("UgyldigOpplastingTypeException", e)
@@ -113,10 +95,6 @@ class ExceptionMapper(
             is OkonomiElementFinnesIkkeException -> {
                 log.error("Feil ved oppdatering av okonomi-element: ${e.message}", e)
                 buildError(HttpStatus.NOT_FOUND, SoknadApiError(SoknadApiErrorType.NotFound, e))
-            }
-            is UpdateBostotteException -> {
-                log.error("Feil ved oppdatering av Bostotte", e)
-                buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
             }
             else -> {
                 log.error("REST-kall feilet", e)
@@ -159,13 +137,6 @@ class ExceptionMapper(
     fun handleThrowable(e: Throwable): ResponseEntity<*> {
         log.error("Noe uventet feilet: ${e.message}", e)
         return buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError))
-    }
-
-    @ExceptionHandler(value = [SamtidigOppdateringException::class])
-    @ResponseStatus(value = HttpStatus.CONFLICT)
-    fun handleConflictExceptions(e: RuntimeException): ResponseEntity<SoknadApiError> {
-        log.warn(e.message, e)
-        return buildError(HttpStatus.CONFLICT, SoknadApiError(SoknadApiErrorType.SoknadUpdateConflict))
     }
 
     @ExceptionHandler(value = [IkkeFunnetException::class, SoknadFinnesIkkeException::class])

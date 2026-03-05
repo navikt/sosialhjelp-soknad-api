@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.pdf
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.app.exceptions.PdfGenereringException
 import no.nav.sosialhjelp.soknad.pdf.ArbeidOgUtdanning.leggTilArbeidOgUtdanning
 import no.nav.sosialhjelp.soknad.pdf.Begrunnelse.leggTilBegrunnelse
 import no.nav.sosialhjelp.soknad.pdf.Bosituasjon.leggTilBosituasjon

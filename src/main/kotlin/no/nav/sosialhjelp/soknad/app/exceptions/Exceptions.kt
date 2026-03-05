@@ -19,15 +19,9 @@ open class SosialhjelpSoknadApiException : RuntimeException {
 class IkkeFunnetException(melding: String?, e: Exception? = null) :
     SosialhjelpSoknadApiException(melding, e)
 
-class SamtidigOppdateringException(message: String?) : RuntimeException(message)
-
-class SendingTilKommuneErIkkeAktivertException(message: String?) : SosialhjelpSoknadApiException(message)
-
 class SendingTilKommuneErMidlertidigUtilgjengeligException(message: String?) : SosialhjelpSoknadApiException(message)
 
 class SendingTilKommuneUtilgjengeligException(message: String?) : SosialhjelpSoknadApiException(message)
-
-class SoknadenHarNedetidException(message: String?) : SosialhjelpSoknadApiException(message)
 
 class SoknadFinnesIkkeException(val soknadId: UUID) : SosialhjelpSoknadApiException(null)
 
@@ -53,3 +47,10 @@ class InnsendingFeiletException(
     throwable: Throwable?,
     id: UUID?,
 ) : SoknadLifecycleException(message, throwable, id)
+
+class PdfGenereringException(melding: String?, e: Throwable?) : SosialhjelpSoknadApiException(melding, e)
+
+class PdlApiException : SosialhjelpSoknadApiException {
+    constructor(message: String?) : super(message)
+    constructor(message: String?, t: Throwable?) : super(message, t)
+}

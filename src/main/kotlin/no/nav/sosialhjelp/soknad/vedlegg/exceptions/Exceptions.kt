@@ -10,5 +10,3 @@ class DokumentUploadPossibleVirus(message: String) : DokumentUploadError(message
 class DokumentUploadUnsupportedMediaType(message: String) : DokumentUploadError(message)
 
 class DokumentUploadFileEncrypted : DokumentUploadError("PDF kan ikke være kryptert")
-
-class DokumentUploadDuplicateFilename : DokumentUploadError("fil med samme navn eksisterer allerede i søknad")

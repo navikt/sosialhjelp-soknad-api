@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.bostotte
 
-import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType.BOSTOTTE
@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
 
 interface BostotteService {
     fun getBostotteInfo(soknadId: UUID): BostotteInfo
@@ -138,12 +137,3 @@ data class BostotteInfo(
     val saker: List<BostotteSak>,
     val utbetalinger: List<Inntekt>,
 )
-
-data class UpdateBostotteException(
-    override val message: String?,
-    val soknadId: UUID? = null,
-) : SosialhjelpSoknadApiException(
-        message = message,
-        cause = null,
-        id = soknadId?.toString(),
-    )
