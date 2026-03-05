@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.bostotte
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType.BOSTOTTE
@@ -11,6 +10,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 interface BostotteService {
     fun getBostotteInfo(soknadId: UUID): BostotteInfo
