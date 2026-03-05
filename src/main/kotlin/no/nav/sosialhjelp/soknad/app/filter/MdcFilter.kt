@@ -27,8 +27,11 @@ class MdcFilter : OncePerRequestFilter() {
         putToMDC(MDC_PATH, request.requestURI)
         request.getHeader(HttpHeaders.REFERER)?.let { putToMDC(MDC_REFERER, it) }
 
-        try { filterChain.doFilter(request, response) }
-        finally { clearMDC() }
+        try {
+            filterChain.doFilter(request, response)
+        } finally {
+            clearMDC()
+        }
     }
 
     private fun getSoknadId(request: HttpServletRequest): String? {
