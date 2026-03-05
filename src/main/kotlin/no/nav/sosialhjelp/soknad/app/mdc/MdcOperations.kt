@@ -11,6 +11,7 @@ object MdcOperations {
     const val MDC_PATH = "path"
     const val MDC_HTTP_METHOD = "httpMethod"
     const val MDC_SOKNAD_ID = "soknadId"
+    const val MDC_REFERER = "request_Referer"
 
     fun putToMDC(
         key: String?,
