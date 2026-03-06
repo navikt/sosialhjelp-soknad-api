@@ -105,6 +105,7 @@ dependencies {
     // Micrometer/prometheus
     implementation(libs.simpleclient)
     implementation(libs.micrometer.registry.prometheus)
+    implementation(libs.micrometer.context.propagation)
 
     // Opentelemetry
     implementation(platform(libs.opentelemetry.bom))

@@ -1,14 +1,8 @@
 package no.nav.sosialhjelp.soknad.app.client.config
 
 import io.netty.channel.ChannelOption
-import org.slf4j.MDC
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
-import org.springframework.web.reactive.function.client.ClientRequest
-import org.springframework.web.reactive.function.client.ClientResponse
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction
-import org.springframework.web.reactive.function.client.ExchangeFunction
 import org.springframework.web.reactive.function.client.WebClient
-import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import reactor.netty.resources.ConnectionProvider
 import tools.jackson.databind.DeserializationFeature
@@ -25,7 +19,6 @@ val soknadJacksonMapper: JsonMapper =
 fun WebClient.Builder.configureWebClientBuilder(httpClient: HttpClient): WebClient.Builder =
     clientConnector(ReactorClientHttpConnector(httpClient))
         .codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }
-        .filter(MdcExchangeFilter)
 
 // konfigurarer HttpClient for bruk mot tjenester i fss-miljøet
 fun createNavFssServiceHttpClient(): HttpClient =
@@ -82,13 +75,3 @@ val fiksServiceConnectionProvider: ConnectionProvider =
             metrics(true)
             build()
         }
-
-// Kopierer MDC-context inn til reactor threads
-object MdcExchangeFilter : ExchangeFilterFunction {
-    override fun filter(
-        request: ClientRequest,
-        next: ExchangeFunction,
-    ): Mono<ClientResponse> = next.exchange(request).doOnNext { setContextMap() }
-
-    private fun setContextMap() = MDC.getCopyOfContextMap()?.also { MDC.setContextMap(it) }
-}
