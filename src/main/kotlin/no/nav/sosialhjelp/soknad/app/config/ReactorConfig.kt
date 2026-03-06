@@ -9,6 +9,8 @@ class ReactorConfig {
     @PostConstruct
     fun enableAutomaticContextPropagation() {
         // Enables automatic propagation of ThreadLocal values (including MDC) into Reactor Context
+        // This is required because we use WebClient (reactive) without full WebFlux on the classpath
+        // The spring.reactor.context-propagation property only works when WebFlux is present
         Hooks.enableAutomaticContextPropagation()
     }
 }
