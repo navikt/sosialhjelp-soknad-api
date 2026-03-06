@@ -75,4 +75,3 @@ val fiksServiceConnectionProvider: ConnectionProvider =
             metrics(true)
             build()
         }
-
