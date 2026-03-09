@@ -34,7 +34,7 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - run: ./gradlew build -x test --no-daemon --info
+      - run: ./gradlew --no-daemon -Dorg.gradle.jvmargs=-Xmx1g build --info --stacktrace -x ktlintCheck -x test
         env:
           ORG_GRADLE_JVMARGS: -Xmx4g -Xms4g -XX:+UseG1GC
 
