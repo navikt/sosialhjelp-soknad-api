@@ -8,6 +8,7 @@ on:
 jobs:
   analyze:
     runs-on: 'ubuntu-latest'
+    timeout-minutes: 15
     permissions:
       packages: read
       contents: read
@@ -23,6 +24,7 @@ jobs:
         uses: github/codeql-action/init@v4
         with:
           languages: 'java-kotlin'
+          build-mode: 'manual'
 
       - uses: gradle/actions/setup-gradle@v5
 
@@ -31,7 +33,7 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - run: ./gradlew clean build -x test
+      - run: ./gradlew ass
         env:
           ORG_GRADLE_JVMARGS: -Xmx4g -Xms4g -XX:+UseG1GC
 
