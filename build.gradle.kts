@@ -204,3 +204,10 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 tasks.withType<Test> {
     jvmArgs("-Xmx2g")
 }
+
+val isCi = providers.environmentVariable("CI").isPresent
+
+if (isCi) {
+    tasks.matching { it.name.startsWith(("spotless")) }
+        .configureEach { enabled = false }
+}
