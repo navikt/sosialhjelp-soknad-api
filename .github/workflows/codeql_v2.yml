@@ -2,7 +2,8 @@ name: 'CodeQl v2'
 
 on:
   push:
-    branches: ['main']
+    branches:
+    - '**'
   workflow_dispatch:
 
 jobs:
@@ -33,7 +34,7 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - run: ./gradlew ass
+      - run: ./gradlew build -x test --no-daemon --info
         env:
           ORG_GRADLE_JVMARGS: -Xmx4g -Xms4g -XX:+UseG1GC
 
