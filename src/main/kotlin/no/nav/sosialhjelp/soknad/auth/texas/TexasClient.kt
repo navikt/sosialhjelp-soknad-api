@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.auth.texas
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -72,6 +73,7 @@ class TexasClient(
 
     private val texasWebClient: WebClient =
         webClientBuilder
+            .filter(MdcExchangeFilter)
             .defaultHeaders { it.contentType = MediaType.APPLICATION_JSON }
             .build()
 

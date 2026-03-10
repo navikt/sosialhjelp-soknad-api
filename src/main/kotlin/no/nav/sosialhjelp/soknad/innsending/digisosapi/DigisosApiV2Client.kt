@@ -43,6 +43,7 @@ import java.time.Duration
 import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.Future
+import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 
 @Component
 class DigisosApiV2Client(
@@ -74,6 +75,7 @@ class DigisosApiV2Client(
             }
             .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+            .filter(MdcExchangeFilter)
             .build()
 
     fun krypterOgLastOppFiler(
