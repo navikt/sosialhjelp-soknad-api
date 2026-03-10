@@ -9,9 +9,15 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_REFERER
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_SOKNAD_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.clearMDC
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.putToMDC
+import org.slf4j.MDC
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import org.springframework.web.reactive.function.client.ClientRequest
+import org.springframework.web.reactive.function.client.ClientResponse
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction
+import org.springframework.web.reactive.function.client.ExchangeFunction
+import reactor.core.publisher.Mono
 
 @Component
 class MdcFilter : OncePerRequestFilter() {
@@ -77,5 +83,24 @@ class MdcFilter : OncePerRequestFilter() {
 
     companion object {
         private const val SOKNAD_API_BASEURL = "/sosialhjelp/soknad-api/"
+    }
+}
+
+// Kopierer MDC-context inn til reactor threads
+object MdcExchangeFilter : ExchangeFilterFunction {
+    override fun filter(
+        request: ClientRequest,
+        next: ExchangeFunction,
+    ): Mono<ClientResponse> {
+        val copy = MDC.getCopyOfContextMap()
+        var currentOldContextMap: Map<String, String>? = null
+
+        return next
+            .exchange(request)
+            .doOnNext {
+                currentOldContextMap = MDC.getCopyOfContextMap() ?: emptyMap()
+                copy?.let { MDC.setContextMap(currentOldContextMap + it) }
+            }
+            .doFinally { MDC.setContextMap(currentOldContextMap) }
     }
 }
