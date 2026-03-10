@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.fiksServiceConnectionProvider
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
@@ -43,7 +44,6 @@ import java.time.Duration
 import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.Future
-import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 
 @Component
 class DigisosApiV2Client(
