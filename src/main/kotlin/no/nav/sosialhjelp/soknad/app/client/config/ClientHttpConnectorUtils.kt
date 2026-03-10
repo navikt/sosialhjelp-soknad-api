@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.app.client.config
 
 import io.netty.channel.ChannelOption
+import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
@@ -19,6 +20,7 @@ val soknadJacksonMapper: JsonMapper =
 fun WebClient.Builder.configureWebClientBuilder(httpClient: HttpClient): WebClient.Builder =
     clientConnector(ReactorClientHttpConnector(httpClient))
         .codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }
+        .filter(MdcExchangeFilter)
 
 // konfigurarer HttpClient for bruk mot tjenester i fss-miljøet
 fun createNavFssServiceHttpClient(): HttpClient =
