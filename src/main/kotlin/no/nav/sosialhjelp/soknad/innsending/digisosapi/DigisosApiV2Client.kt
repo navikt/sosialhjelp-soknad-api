@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.fiksServiceConnectionProvider
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
@@ -74,6 +75,7 @@ class DigisosApiV2Client(
             }
             .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+            .filter(MdcExchangeFilter)
             .build()
 
     fun krypterOgLastOppFiler(

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
+import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.reactive.function.client.WebClient
 import tools.jackson.module.kotlin.jacksonObjectMapper
@@ -14,7 +15,11 @@ class LeaderElectionImpl(
     webClientBuilder: WebClient.Builder,
 ) : LeaderElection {
     private val electorPath: String? = System.getenv(ELECTOR_PATH)
-    private val webClient: WebClient = webClientBuilder.baseUrl("http://$electorPath").build()
+    private val webClient: WebClient =
+        webClientBuilder
+            .filter(MdcExchangeFilter)
+            .baseUrl("http://$electorPath")
+            .build()
 
     private var hostname: String = getLocalHost().hostName
     private var leader: String? = null

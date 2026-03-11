@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.app.filter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_HTTP_METHOD
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_PATH
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_REFERER
@@ -19,7 +18,6 @@ import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.ExchangeFunction
 import reactor.core.publisher.Mono
-import tools.jackson.module.kotlin.jacksonObjectMapper
 
 @Component
 class MdcFilter : OncePerRequestFilter() {
@@ -95,25 +93,14 @@ object MdcExchangeFilter : ExchangeFilterFunction {
         next: ExchangeFunction,
     ): Mono<ClientResponse> {
         val copy = MDC.getCopyOfContextMap()
-        logger.info("Thread: ${getThreadName()}, MDC Copy: ${jacksonObjectMapper().writeValueAsString(copy)}")
-
         var currentOldContextMap: Map<String, String>? = null
 
         return next
             .exchange(request)
             .doOnEach {
                 currentOldContextMap = MDC.getCopyOfContextMap() ?: emptyMap()
-
-                val combinedMap = currentOldContextMap + (copy ?: emptyMap())
-                MDC.setContextMap(combinedMap)
+                MDC.setContextMap(currentOldContextMap + (copy ?: emptyMap()))
             }
-            .doFinally {
-                logger.info("Thread: ${getThreadName()}, Do finally: ${jacksonObjectMapper().writeValueAsString(currentOldContextMap)}")
-                MDC.setContextMap(currentOldContextMap)
-            }
+            .doFinally { MDC.setContextMap(currentOldContextMap) }
     }
-
-    private val logger by logger()
 }
-
-private fun getThreadName(): String = Thread.currentThread().name
