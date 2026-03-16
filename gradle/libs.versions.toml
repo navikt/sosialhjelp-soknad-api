@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 spring-boot = "4.0.3"
 coroutines = "1.10.2"
 filformat = "1.2026.02.04-07.27-7f2f3515bd59"
