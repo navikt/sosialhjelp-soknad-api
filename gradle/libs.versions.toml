@@ -25,7 +25,6 @@ commons_text = "1.15.0"
 ktlint = "1.2.1"
 mockk = "1.14.9"
 versions = "0.53.0"
-resilience4j = "2.4.0"
 spotless = "8.3.0"
 opentelemetry = "1.60.1"
 opentelemetry-logback = "2.26.0-alpha"
@@ -49,10 +48,6 @@ spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-star
 spring-boot-starter-data-jdbc-test = { module = "org.springframework.boot:spring-boot-starter-data-jdbc-test", version.ref = "spring-boot" }
 spring-boot-starter-webflux-test = { module = "org.springframework.boot:spring-boot-starter-webflux-test", version.ref = "spring-boot" }
 spring-boot-starter-data-redis-test = { module = "org.springframework.boot:spring-boot-starter-data-redis-test", version.ref = "spring-boot" }
-
-resilience4j-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
-resilience4j-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
-resilience4j-spring-boot3 = { module = "io.github.resilience4j:resilience4j-spring-boot3", version.ref = "resilience4j" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "coroutines" }
@@ -125,12 +120,6 @@ spring-boot-test = [
     "spring-boot-starter-webflux-test",
     "spring-boot-starter-cache-test",
     "spring-boot-starter-data-redis-test",
-]
-
-resilience4j = [
-    "resilience4j-kotlin",
-    "resilience4j-retry",
-    "resilience4j-spring-boot3"
 ]
 
 coroutines = [

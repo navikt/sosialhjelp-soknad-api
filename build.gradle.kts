@@ -67,9 +67,6 @@ dependencies {
     // Spring
     implementation(libs.bundles.spring.boot)
 
-    // Resilience4j (Retry, CircuitBreaker, ...)
-    implementation(libs.bundles.resilience4j)
-
     implementation(libs.jsonassert)
 
     // Coroutines
