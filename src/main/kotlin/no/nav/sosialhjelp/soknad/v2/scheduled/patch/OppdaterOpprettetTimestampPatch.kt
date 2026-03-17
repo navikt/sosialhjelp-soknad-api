@@ -7,16 +7,24 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDateTime
+import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
 
 @Component
 class OppdaterOpprettetTimestampPatch(
     private val metadataRepository: SoknadMetadataRepository,
     private val oppdaterService: OppdaterService,
+    private val leaderElection: LeaderElection,
 ) {
     private var shouldRun = true
 
-    @Scheduled(cron = "0 15 14 * * *")
+    @Scheduled(cron = "0 30 14 * * *")
     fun oppdaterOpprettetTimestamp() {
+        if (leaderElection.isLeader()) {
+            doOppdaterOpprettetTimestamp()
+        }
+    }
+
+    fun doOppdaterOpprettetTimestamp() {
         if (!shouldRun) return
 
         logger.info("***JOB*** Starting job: Oppdaterer opprettet-timestamp for soknader opprettet for mer enn 1 time siden.")
