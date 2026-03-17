@@ -1,8 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled.patch
 
-import java.time.Duration
-import java.time.LocalDateTime
-import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -19,11 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import org.springframework.test.context.ActiveProfiles
+import java.time.Duration
+import java.time.LocalDateTime
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test", "test-container")
 class OppdaterOpprettetTimestampPatchTest {
-
     @Autowired
     private lateinit var oppdaterOpprettetTimestampPatch: OppdaterOpprettetTimestampPatch
 
@@ -38,14 +37,13 @@ class OppdaterOpprettetTimestampPatchTest {
 
     fun setup() {
         runBlocking {
-
             val start = LocalDateTime.now()
             logger.info("Starter generering ($start) av $totalMetadatas metadatas")
 
             (1..antallThreads)
                 .map {
-                    async(Dispatchers.IO){
-                        createMetadatas(totalMetadatas/antallThreads)
+                    async(Dispatchers.IO) {
+                        createMetadatas(totalMetadatas / antallThreads)
                     }
                 }.awaitAll()
 
@@ -61,7 +59,7 @@ class OppdaterOpprettetTimestampPatchTest {
             SoknadMetadata(
                 soknadId = UUID.randomUUID(),
                 personId = "12345678910",
-                tidspunkt = Tidspunkt(opprettet = nowWithMillis().minusHours(2).minusMinutes(1))
+                tidspunkt = Tidspunkt(opprettet = nowWithMillis().minusHours(2).minusMinutes(1)),
             ).also { metadatas.add(it) }
 
             if (i % 25000 == 0) {

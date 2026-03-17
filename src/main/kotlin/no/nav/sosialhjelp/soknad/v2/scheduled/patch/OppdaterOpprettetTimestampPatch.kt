@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled.patch
 
-import java.time.Duration
-import java.time.LocalDateTime
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.time.Duration
+import java.time.LocalDateTime
 
 @Component
 class OppdaterOpprettetTimestampPatch(
@@ -34,7 +34,6 @@ class OppdaterOpprettetTimestampPatch(
 
         shouldRun = false
     }
-
 
     companion object {
         private val logger by logger()

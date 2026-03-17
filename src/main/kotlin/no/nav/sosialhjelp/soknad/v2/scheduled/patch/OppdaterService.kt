@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled.patch
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 class OppdaterService(
@@ -13,7 +13,6 @@ class OppdaterService(
 ) {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun updateAllMetadatas(soknadIds: List<UUID>) {
-
         val chunked = soknadIds.chunked(500)
 
         logger.info("***JOB*** Deler oppdateringen i ${chunked.size} batcher for å unngå overbelastning av databasen.")
