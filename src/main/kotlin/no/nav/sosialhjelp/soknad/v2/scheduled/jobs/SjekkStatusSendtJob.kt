@@ -23,19 +23,20 @@ class SjekkStatusSendtJob(
     private fun doCheckSoknaderStatusSendt() {
         metadataService
             .findMetadataForStatus(SoknadStatus.SENDT)
-            .filter { it.sentIsOlderThan7Days() }
+            .filter { it.sentIsOlderThan(DAYS) }
             .also { sentOlderThan7Days ->
                 if (sentOlderThan7Days.isNotEmpty()) {
-                    logger.error("Fant ${sentOlderThan7Days.size} søknader med status SENDT eldre enn 7 dager")
+                    logger.error("Fant ${sentOlderThan7Days.size} søknader med status SENDT eldre enn ${DAYS} dager")
                 }
                 metricsService.setAntallGamleSoknaderStatusSendt(sentOlderThan7Days.size)
             }
     }
 
-    private fun SoknadMetadata.sentIsOlderThan7Days(): Boolean =
-        tidspunkt.sendtInn?.isBefore(nowWithMillis().minusDays(7)) ?: error("Metadata Mangler 'sendt_inn'")
-
     companion object {
         private val logger by logger()
+        const val DAYS = 7L
     }
 }
+
+private fun SoknadMetadata.sentIsOlderThan(days: Long): Boolean =
+    tidspunkt.sendtInn?.isBefore(nowWithMillis().minusDays(days)) ?: error("Metadata Mangler 'sendt_inn'")
