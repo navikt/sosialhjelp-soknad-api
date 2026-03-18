@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.slf4j.Logger
+import kotlin.time.Duration.Companion.seconds
 
 abstract class AbstractJob(
     private val leaderElection: LeaderElection,

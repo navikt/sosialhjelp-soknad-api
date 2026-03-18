@@ -16,8 +16,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class SjekkStatusSendtJobTest: AbstractJobTest() {
-
+class SjekkStatusSendtJobTest : AbstractJobTest() {
     @Autowired
     private lateinit var sjekkStatusSendtJob: SjekkStatusSendtJob
 
@@ -25,7 +24,6 @@ class SjekkStatusSendtJobTest: AbstractJobTest() {
     private lateinit var prometheusMetricsService: PrometheusMetricsService
 
     private val capturedOutput: CapturingSlot<Int> = slot()
-
 
     @BeforeEach
     fun setup() {
@@ -60,7 +58,7 @@ class SjekkStatusSendtJobTest: AbstractJobTest() {
         opprettSoknadMetadata(
             status = SoknadStatus.SENDT,
             opprettetDato = nowMinusDays(10),
-            innsendtDato = nowMinusDays(8)
+            innsendtDato = nowMinusDays(8),
         )
             .also { metadataRepository.save(it) }
     }
@@ -69,10 +67,8 @@ class SjekkStatusSendtJobTest: AbstractJobTest() {
         opprettSoknadMetadata(
             status = SoknadStatus.SENDT,
             opprettetDato = nowMinusDays(2),
-            innsendtDato = nowMinusDays(1)
+            innsendtDato = nowMinusDays(1),
         )
             .also { metadataRepository.save(it) }
     }
 }
-
-

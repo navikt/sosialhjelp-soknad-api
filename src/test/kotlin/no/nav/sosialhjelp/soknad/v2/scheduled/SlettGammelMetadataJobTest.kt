@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
-import java.time.LocalDateTime
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.test.runTest
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SlettGammelMetadataJob
@@ -9,6 +7,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.LocalDateTime
+import kotlin.time.Duration.Companion.seconds
 
 class SlettGammelMetadataJobTest : AbstractJobTest() {
     @Autowired

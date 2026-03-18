@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
-import java.time.LocalDateTime
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -11,6 +9,8 @@ import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
+import java.util.UUID
 
 @Component
 class SletteSoknaderStatusFeiletJob(

@@ -5,7 +5,6 @@ import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -17,9 +16,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import java.util.UUID
 
-class SjekkStatusMottattJobTest: AbstractJobTest() {
-
+class SjekkStatusMottattJobTest : AbstractJobTest() {
     @Autowired
     private lateinit var sjekkStatusMottattJob: SjekkStatusMottattJob
 
@@ -30,17 +29,17 @@ class SjekkStatusMottattJobTest: AbstractJobTest() {
 
     @BeforeEach
     fun setup() {
-        every { soknadJobService.deleteSoknaderByIds(capture(capturedOutput)) } answers { callOriginal()}
+        every { soknadJobService.deleteSoknaderByIds(capture(capturedOutput)) } answers { callOriginal() }
     }
 
     @Test
     fun `Hvis eksisterende soknad med status MOTTATT_FSL finnes skal den slettes`() {
-
-        val metadata = opprettSoknadMetadata(
-            status = SoknadStatus.MOTTATT_FSL,
-            innsendtDato = nowWithMillis()
-        )
-            .let { metadataRepository.save(it) }
+        val metadata =
+            opprettSoknadMetadata(
+                status = SoknadStatus.MOTTATT_FSL,
+                innsendtDato = nowWithMillis(),
+            )
+                .let { metadataRepository.save(it) }
         opprettSoknad(id = metadata.soknadId).also { soknadRepository.save(it) }
 
         sjekkStatusMottattJob.sjekkStatusMottatt()
@@ -53,18 +52,17 @@ class SjekkStatusMottattJobTest: AbstractJobTest() {
 
     @Test
     fun `Hvis det ikke eksisterer soknad med status MOTTATT_FSL skal det ikke skje noe`() {
-
-        val metadata = opprettSoknadMetadata(
-            status = SoknadStatus.MOTTATT_FSL,
-            innsendtDato = nowWithMillis()
-        )
-            .let { metadataRepository.save(it) }
+        val metadata =
+            opprettSoknadMetadata(
+                status = SoknadStatus.MOTTATT_FSL,
+                innsendtDato = nowWithMillis(),
+            )
+                .let { metadataRepository.save(it) }
 
         sjekkStatusMottattJob.sjekkStatusMottatt()
 
         assertThat(metadataRepository.findByIdOrNull(metadata.soknadId)).isNotNull
         assertThat(soknadRepository.findByIdOrNull(metadata.soknadId)).isNull()
         verify(exactly = 0) { soknadJobService.deleteSoknaderByIds(any()) }
-
     }
 }

@@ -1,8 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
-import java.time.LocalDateTime
-import java.util.UUID
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.test.runTest
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
@@ -19,6 +16,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.LocalDateTime
+import java.util.UUID
+import kotlin.time.Duration.Companion.seconds
 
 class SlettGamleSoknaderJobTest : AbstractJobTest() {
     @Autowired
