@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.metrics.SoknadMottattMetricsService
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component
 class SjekkStatusSendtJob(
     leaderElection: LeaderElection,
     private val metadataService: SoknadMetadataService,
-    private val prometheusMetricsService: PrometheusMetricsService,
+    private val metricsService: SoknadMottattMetricsService,
 ) : AbstractJob(leaderElection, "Sjekk status sendt", logger) {
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0 */4 * * *")
     fun sjekkStatusSendt() = doInJob { doCheckSoknaderStatusSendt() }
 
     private fun doCheckSoknaderStatusSendt() {
@@ -28,7 +28,7 @@ class SjekkStatusSendtJob(
                 if (sentOlderThan7Days.isNotEmpty()) {
                     logger.error("Fant ${sentOlderThan7Days.size} søknader med status SENDT eldre enn 7 dager")
                 }
-                prometheusMetricsService.setAntallGamleSoknaderStatusSendt(sentOlderThan7Days.size)
+                metricsService.setAntallGamleSoknaderStatusSendt(sentOlderThan7Days.size)
             }
     }
 

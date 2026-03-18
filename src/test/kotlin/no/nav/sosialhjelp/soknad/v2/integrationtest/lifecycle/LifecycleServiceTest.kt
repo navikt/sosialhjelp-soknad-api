@@ -58,7 +58,7 @@ class LifecycleServiceTest {
     private val cancelSoknadHandler: CancelSoknadHandler = mockk()
     private val lifecycleService: SoknadLifecycleUseCaseHandler =
         SoknadLifecycleHandlerImpl(
-            prometheusMetricsService = mockk(relaxed = true),
+            lifecycleMetricsService = mockk(relaxed = true),
             createSoknadHandler = createSoknadHandler,
             sendSoknadHandler = sendSoknadHandler,
             cancelSoknadHandler = cancelSoknadHandler,

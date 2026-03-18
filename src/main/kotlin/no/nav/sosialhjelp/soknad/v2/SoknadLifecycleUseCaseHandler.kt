@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.metrics.SoknadLifecycleMetricsService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CancelSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler
@@ -35,7 +35,7 @@ interface SoknadLifecycleUseCaseHandler {
 
 @Service
 class SoknadLifecycleHandlerImpl(
-    private val prometheusMetricsService: PrometheusMetricsService,
+    private val lifecycleMetricsService: SoknadLifecycleMetricsService,
     private val createSoknadHandler: CreateSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
     private val cancelSoknadHandler: CancelSoknadHandler,
@@ -48,7 +48,7 @@ class SoknadLifecycleHandlerImpl(
             .onSuccess {
                 createSoknadHandler.runRegisterDataFetchers(soknadId)
 
-                prometheusMetricsService.reportStartSoknad()
+                lifecycleMetricsService.reportStartSoknad()
                 logger.info("Ny søknad opprettet")
             }
             .also { MdcOperations.clearMDC() }
@@ -56,7 +56,7 @@ class SoknadLifecycleHandlerImpl(
                 when (it) {
                     is AuthorizationException -> throw it
                     else -> {
-                        prometheusMetricsService.reportStartSoknadFeilet()
+                        lifecycleMetricsService.reportStartSoknadFeilet()
                         throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
                     }
                 }
@@ -70,9 +70,9 @@ class SoknadLifecycleHandlerImpl(
 
         return runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId) }
             .onSuccess {
-                prometheusMetricsService.reportSendt(it.isKortSoknad)
+                lifecycleMetricsService.reportSendt(it.isKortSoknad)
 
-                prometheusMetricsService.reportSoknadMottaker(
+                lifecycleMetricsService.reportSoknadMottaker(
                     MetricsUtils.navKontorTilMetricNavn(it.navEnhetNavn),
                 )
             }
@@ -87,7 +87,7 @@ class SoknadLifecycleHandlerImpl(
         runCatching { cancelSoknadHandler.cancelSoknad(soknadId) }
             .onSuccess {
                 cancelSoknadHandler.cleanUploadedDocuments(soknadId)
-                prometheusMetricsService.reportAvbruttSoknad(referer)
+                lifecycleMetricsService.reportAvbruttSoknad(referer)
                 logger.info("Søknad avbrutt. Sletter data.")
             }
             .getOrElse { throw SoknadLifecycleException("Feil ved avbrutt søknad.", it, soknadId) }
@@ -102,7 +102,7 @@ class SoknadLifecycleHandlerImpl(
             is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
             -> throw e
             else -> {
-                prometheusMetricsService.reportSendSoknadFeilet()
+                lifecycleMetricsService.reportSendSoknadFeilet()
                 throw InnsendingFeiletException(
                     deletionDate = sendSoknadHandler.getDeletionDate(soknadId),
                     message = "Feil ved innsending av søknad.",

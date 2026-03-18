@@ -7,7 +7,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.metrics.SoknadMottattMetricsService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SjekkStatusSendtJob
@@ -21,13 +21,13 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
     private lateinit var sjekkStatusSendtJob: SjekkStatusSendtJob
 
     @MockkSpyBean
-    private lateinit var prometheusMetricsService: PrometheusMetricsService
+    private lateinit var metricsService: SoknadMottattMetricsService
 
     private val capturedOutput: CapturingSlot<Int> = slot()
 
     @BeforeEach
     fun setup() {
-        every { prometheusMetricsService.setAntallGamleSoknaderStatusSendt(capture(capturedOutput)) } just Runs
+        every { metricsService.setAntallGamleSoknaderStatusSendt(capture(capturedOutput)) } just Runs
     }
 
     @Test
@@ -37,7 +37,7 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
 
         sjekkStatusSendtJob.sjekkStatusSendt()
 
-        verify(exactly = 1) { prometheusMetricsService.setAntallGamleSoknaderStatusSendt(capturedOutput.captured) }
+        verify(exactly = 1) { metricsService.setAntallGamleSoknaderStatusSendt(capturedOutput.captured) }
         assertThat(metadataRepository.findAll()).hasSize(2)
         assertThat(capturedOutput.captured).isEqualTo(0)
     }
@@ -49,7 +49,7 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
 
         sjekkStatusSendtJob.sjekkStatusSendt()
 
-        verify(exactly = 1) { prometheusMetricsService.setAntallGamleSoknaderStatusSendt(capturedOutput.captured) }
+        verify(exactly = 1) { metricsService.setAntallGamleSoknaderStatusSendt(capturedOutput.captured) }
         assertThat(metadataRepository.findAll()).hasSize(2)
         assertThat(capturedOutput.captured).isEqualTo(2)
     }
