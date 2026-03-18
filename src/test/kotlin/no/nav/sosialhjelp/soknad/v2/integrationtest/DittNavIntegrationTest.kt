@@ -88,7 +88,13 @@ class DittNavIntegrationTest : AbstractIntegrationTest() {
         sendtInn: LocalDateTime = LocalDateTime.now(),
         personId: String,
     ): UUID {
-        val soknadId = metadataRepository.createMetadata(opprettet, status, sendtInn = sendtInn, personId = personId)
+        val soknadId =
+            metadataRepository.createMetadata(
+                opprettet,
+                status,
+                sendtInn = sendtInn,
+                personId = personId,
+            )
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
 
         return soknadId

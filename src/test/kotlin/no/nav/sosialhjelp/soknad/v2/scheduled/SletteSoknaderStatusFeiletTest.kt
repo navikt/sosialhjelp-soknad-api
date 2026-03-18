@@ -35,8 +35,7 @@ class SletteSoknaderStatusFeiletTest : AbstractJobTest() {
             sletteJob.sletteSoknaderStatusFeilet()
 
             soknadRepository.findAll().also { assertThat(it).isEmpty() }
-            metadataRepository.findAll()
-                .also { metadata -> assertThat(metadata).hasSize(1).allMatch { it.status == INNSENDING_FEILET } }
+            metadataRepository.findAll().also { assertThat(it).isEmpty() }
         }
 
     @Test
@@ -73,8 +72,8 @@ class SletteSoknaderStatusFeiletTest : AbstractJobTest() {
                 }
 
             assertThat(metadataRepository.findAll())
-                .hasSize(4)
-                .anyMatch { it.status == INNSENDING_FEILET }
+                .hasSize(3)
+                .noneMatch { it.status == INNSENDING_FEILET }
         }
 
     private fun createMetadataAndSoknad(

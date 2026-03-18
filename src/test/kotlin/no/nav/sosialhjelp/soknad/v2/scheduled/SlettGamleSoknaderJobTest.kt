@@ -119,9 +119,11 @@ fun SoknadMetadataRepository.createMetadata(
 ): UUID {
     return SoknadMetadata(
         soknadId = UUID.randomUUID(),
+        digisosId = UUID.randomUUID(),
         personId = personId,
         tidspunkt = Tidspunkt(opprettet = opprettet, sendtInn = sendtInn),
         status = status,
+        mottakerKommunenummer = "0301",
     )
         .also { save(it) }
         .soknadId

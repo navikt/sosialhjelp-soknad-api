@@ -28,6 +28,7 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
     @BeforeEach
     fun setup() {
         every { metricsService.setAntallGamleSoknaderStatusSendt(capture(capturedOutput)) } just Runs
+        metadataRepository.deleteAll()
     }
 
     @Test
