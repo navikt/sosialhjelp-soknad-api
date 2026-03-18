@@ -23,7 +23,7 @@ class SlettSoknaderMottattAvFagsystemJob(
     private val digisosApiService: DigisosApiService,
 ) : AbstractJob(leaderElection, "Slette mottatte soknader", logger) {
     @Scheduled(cron = "0 */10 * * * *")
-    suspend fun slettSoknaderSomErMottattAvFagsystem() = doInJob { findAndDeleteMottatteSoknader() }
+    fun slettSoknaderSomErMottattAvFagsystem() = doInJob { findAndDeleteMottatteSoknader() }
 
     private fun findAndDeleteMottatteSoknader() {
         val metadatas = getExistingMetadatasStatusSendt()

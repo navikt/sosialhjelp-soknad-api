@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
-import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
+import java.time.LocalDateTime
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
@@ -11,10 +12,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.time.LocalDateTime
-import java.util.UUID
 
-class SoknadJobServiceTest : AbstractIntegrationTest() {
+class SoknadJobServiceTest : AbstractJobTest() {
     @Autowired
     private lateinit var soknadJobService: SoknadJobService
 

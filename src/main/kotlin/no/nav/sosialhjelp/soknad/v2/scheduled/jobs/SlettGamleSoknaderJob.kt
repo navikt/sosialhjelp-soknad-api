@@ -18,7 +18,7 @@ class SlettGamleSoknaderJob(
     private val metadataService: SoknadMetadataService,
 ) : AbstractJob(leaderElection, "Slette gamle soknader", logger) {
     @Scheduled(cron = "0 30 3 * * * ")
-    suspend fun slettGamleSoknader() = doInJob { findAndDeleteOldSoknader() }
+    fun slettGamleSoknader() = doInJob { findAndDeleteOldSoknader() }
 
     private fun findAndDeleteOldSoknader() {
         val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
@@ -30,12 +30,8 @@ class SlettGamleSoknaderJob(
     }
 
     private fun handleOldSoknadIds(soknadIds: List<UUID>) {
-        soknadIds.chunked(500).forEach { batch ->
-            soknadJobService.deleteSoknaderByIds(batch)
-            metadataService.deleteAll(batch)
-        }
-
-        logger.info("Slettet ${soknadIds.size} gamle søknader med status OPPRETTET")
+        logger.info("Fant ${soknadIds.size} gamle søknader med status OPPRETTET. Sletter")
+        soknadIds.chunked(500).forEach { batch -> metadataService.deleteAll(batch) }
     }
 
     companion object {

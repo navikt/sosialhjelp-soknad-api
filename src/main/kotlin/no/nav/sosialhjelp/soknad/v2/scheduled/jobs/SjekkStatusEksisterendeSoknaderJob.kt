@@ -29,7 +29,7 @@ class SjekkStatusEksisterendeSoknaderJob(
     leaderElection: LeaderElection,
 ) : AbstractJob(leaderElection, "Sjekke status eksisterende soknader", logger) {
     @Scheduled(cron = "0 0 7 * * *")
-    suspend fun checkIfExistingSoknaderHasWrongStatus() = doInJob { findSoknadWithWrongStatus() }
+    fun checkIfExistingSoknaderHasWrongStatus() = doInJob { findSoknadWithWrongStatus() }
 
     private fun findSoknadWithWrongStatus() {
         soknadJobService.findAllExistingSoknadIds()

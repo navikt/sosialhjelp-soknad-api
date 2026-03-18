@@ -15,7 +15,7 @@ class SlettGammelMetadataJob(
     private val metadataService: SoknadMetadataService,
 ) : AbstractJob(jobName = "Slette gamle metadata", leaderElection = leaderElection, logger = logger) {
     @Scheduled(cron = "0 30 4 * * *")
-    suspend fun slettGammelMetadata() = doInJob { findAndDeleteOldMetadata() }
+    fun slettGammelMetadata() = doInJob { findAndDeleteOldMetadata() }
 
     private fun findAndDeleteOldMetadata() {
         val soknadIds = metadataService.findOlderThan(nowWithMillis().minusDays(NUMBER_OF_DAYS))

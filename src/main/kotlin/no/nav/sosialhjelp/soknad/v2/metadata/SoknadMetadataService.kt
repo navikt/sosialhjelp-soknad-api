@@ -10,11 +10,15 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 
+interface SoknadMetadataJobService {
+    fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata>
+}
+
 @Component
 @Transactional
 class SoknadMetadataService(
     private val metadataRepository: SoknadMetadataRepository,
-) {
+) : SoknadMetadataJobService {
     fun createSoknadMetadata(
         soknadId: UUID,
         isKort: Boolean,
@@ -137,6 +141,10 @@ class SoknadMetadataService(
                 )
             }
     }
+
+    @Transactional(readOnly = true)
+    override fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata> =
+        metadataRepository.findMetadataByStatus(status)
 
     private fun findMetadataOrError(soknadId: UUID): SoknadMetadata {
         return metadataRepository.findByIdOrNull(soknadId) ?: throw SoknadFinnesIkkeException(soknadId)
