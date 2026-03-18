@@ -26,7 +26,7 @@ class SjekkStatusSendtJob(
             .filter { it.sentIsOlderThan(DAYS) }
             .also { sentOlderThan7Days ->
                 if (sentOlderThan7Days.isNotEmpty()) {
-                    logger.error("Fant ${sentOlderThan7Days.size} søknader med status SENDT eldre enn ${DAYS} dager")
+                    logger.error("Fant ${sentOlderThan7Days.size} søknader med status SENDT eldre enn $DAYS dager")
                 }
                 metricsService.setAntallGamleSoknaderStatusSendt(sentOlderThan7Days.size)
             }
