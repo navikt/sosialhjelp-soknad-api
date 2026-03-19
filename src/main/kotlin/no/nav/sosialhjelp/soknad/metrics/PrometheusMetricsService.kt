@@ -17,15 +17,10 @@ class PrometheusMetricsService(
     ): IntegerGauge =
         IntegerGauge(meterRegistry, name, description)
 
-    fun createCounter(name: String): Counter =
-        Counter.builder(name).register(meterRegistry)
-
-    fun createCounterWithTags(
-        name: String,
-        tag: Tag,
-    ): Counter =
-        Counter.builder(name)
-            .tag(tag.key, tag.value)
+    fun createCounter(name: String, tag: Tag? = null): Counter =
+        Counter
+            .builder(name)
+            .apply { if (tag != null) tag(tag.key, tag.value) }
             .register(meterRegistry)
 
     fun increment(

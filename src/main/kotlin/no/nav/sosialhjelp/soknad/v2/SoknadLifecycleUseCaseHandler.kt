@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2
 
+import java.time.LocalDateTime
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
@@ -8,15 +10,12 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligEx
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.SoknadLifecycleMetricsService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CancelSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
-import java.util.UUID
 
 interface SoknadLifecycleUseCaseHandler {
     fun startSoknad(
@@ -69,13 +68,7 @@ class SoknadLifecycleHandlerImpl(
         logger.info("Starter innsending av søknad.")
 
         return runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId) }
-            .onSuccess {
-                lifecycleMetricsService.reportSendt(it.isKortSoknad)
-
-                lifecycleMetricsService.reportSoknadMottaker(
-                    MetricsUtils.navKontorTilMetricNavn(it.navEnhetNavn),
-                )
-            }
+            .onSuccess { lifecycleMetricsService.reportSendt(it.isKortSoknad) }
             .getOrElse { e -> handleError(soknadId, e) }
             .let { Pair(it.digisosId, it.innsendingTidspunkt) }
     }
@@ -87,7 +80,6 @@ class SoknadLifecycleHandlerImpl(
         runCatching { cancelSoknadHandler.cancelSoknad(soknadId) }
             .onSuccess {
                 cancelSoknadHandler.cleanUploadedDocuments(soknadId)
-                lifecycleMetricsService.reportAvbruttSoknad(referer)
                 logger.info("Søknad avbrutt. Sletter data.")
             }
             .getOrElse { throw SoknadLifecycleException("Feil ved avbrutt søknad.", it, soknadId) }
