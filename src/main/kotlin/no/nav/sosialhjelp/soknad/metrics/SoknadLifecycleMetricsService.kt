@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service
 
 @Service
 class SoknadLifecycleMetricsService(metricsManager: MetricsManager) {
-    private val startSoknadCounter = metricsManager.createCounter("start_soknad_counter")
-    private val feiletSendingMedDigisosApiCounter = metricsManager.createCounter("feilet_sending_med_digisos_api_counter")
-    private val feilVedOpprettingAvSoknad = metricsManager.createCounter("feil_ved_oppretting_av_soknad_counter")
+    private val startSoknadCounter = metricsManager.createCounter("soknad.counter.start")
+    private val feiletSendingMedDigisosApiCounter = metricsManager.createCounter("soknad.counter.sending.failed")
+    private val feilVedOpprettingAvSoknad = metricsManager.createCounter("soknad.counter.creation.failed")
 
     private val kortSoknadSentCounter =
-        metricsManager.createCounter("soknad_sent_counter", Tag.of(TAG_KORT, "true"))
+        metricsManager.createCounter("soknad.counter.sent", Tag.of(TAG_KORT, "true"))
     private val standardSoknadSentCounter =
-        metricsManager.createCounter("soknad_sent_counter", Tag.of(TAG_KORT, "false"))
+        metricsManager.createCounter("soknad.counter.sent", Tag.of(TAG_KORT, "false"))
 
     fun reportStartSoknad() {
         startSoknadCounter.increment()
