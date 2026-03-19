@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class SoknadMottattMetricsService(
-    prometheusMetricsService: PrometheusMetricsService,
+    metricsManager: MetricsManager,
     private val leaderElection: LeaderElection,
     private val metadataJobService: SoknadMetadataJobService,
 ) {
     private val antallGamleSoknaderStatusSendtGauge =
-        prometheusMetricsService.createIntegerGauge(METRIC_NAME, METRIC_DESCRIPTION)
+        metricsManager.createIntegerGauge(METRIC_NAME, METRIC_DESCRIPTION)
 
     @EventListener(ApplicationReadyEvent::class)
     fun initializeSoknadMottattGauge() {

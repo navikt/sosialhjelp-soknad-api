@@ -8,7 +8,7 @@ import io.micrometer.core.instrument.Tags
 import org.springframework.stereotype.Service
 
 @Service
-class PrometheusMetricsService(
+class MetricsManager(
     private val meterRegistry: MeterRegistry,
 ) {
     fun createIntegerGauge(

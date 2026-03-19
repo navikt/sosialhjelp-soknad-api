@@ -4,15 +4,15 @@ import io.micrometer.core.instrument.Tag
 import org.springframework.stereotype.Service
 
 @Service
-class SoknadLifecycleMetricsService(prometheusMetricsService: PrometheusMetricsService) {
-    private val startSoknadCounter = prometheusMetricsService.createCounter("start_soknad_counter")
-    private val feiletSendingMedDigisosApiCounter = prometheusMetricsService.createCounter("feilet_sending_med_digisos_api_counter")
-    private val feilVedOpprettingAvSoknad = prometheusMetricsService.createCounter("feil_ved_oppretting_av_soknad_counter")
+class SoknadLifecycleMetricsService(metricsManager: MetricsManager) {
+    private val startSoknadCounter = metricsManager.createCounter("start_soknad_counter")
+    private val feiletSendingMedDigisosApiCounter = metricsManager.createCounter("feilet_sending_med_digisos_api_counter")
+    private val feilVedOpprettingAvSoknad = metricsManager.createCounter("feil_ved_oppretting_av_soknad_counter")
 
     private val kortSoknadSentCounter =
-        prometheusMetricsService.createCounter("soknad_sent_counter", Tag.of(TAG_KORT, "true"))
+        metricsManager.createCounter("soknad_sent_counter", Tag.of(TAG_KORT, "true"))
     private val standardSoknadSentCounter =
-        prometheusMetricsService.createCounter("soknad_sent_counter", Tag.of(TAG_KORT, "false"))
+        metricsManager.createCounter("soknad_sent_counter", Tag.of(TAG_KORT, "false"))
 
     fun reportStartSoknad() {
         startSoknadCounter.increment()
