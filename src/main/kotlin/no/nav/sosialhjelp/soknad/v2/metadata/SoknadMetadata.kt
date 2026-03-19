@@ -19,8 +19,8 @@ interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudR
 
     fun findByPersonId(personId: String): List<SoknadMetadata>
 
-    @Query("select soknad_id from soknad_metadata where status = 'AVBRUTT'")
-    fun findMetadataWithStatusAvbrutt(): List<UUID>
+    @Query("select * from soknad_metadata where status = :status")
+    fun findMetadataByStatus(status: SoknadStatus): List<SoknadMetadata>
 }
 
 @Table
@@ -62,10 +62,8 @@ enum class SoknadStatus {
 private fun SoknadStatus.validate(metadata: SoknadMetadata) {
     if (this == SoknadStatus.SENDT || this == SoknadStatus.MOTTATT_FSL) {
         if (metadata.tidspunkt.sendtInn == null) error("Mangler innsendt dato for ferdig søknad.")
-        // Må disable disse fordi etter migrering til ny datamodell, så har vi ikke disse verdiene.
-        // TODO: Fiks når de har blitt sletta etter 200 dager: 23. august 2025
-        // if (metadata.mottakerKommunenummer == null) error("Mangler mottaker for ferdig søknad.")
-        // if (metadata.digisosId == null) error("Mangler digisosId for ferdig søknad.")
-        // if (metadata.mottakerKommunenummer.length != 4) error("Kommunenummer ikke 4 siffer")
+        if (metadata.mottakerKommunenummer == null) error("Mangler mottaker for ferdig søknad.")
+        if (metadata.digisosId == null) error("Mangler digisosId for ferdig søknad.")
+        if (metadata.mottakerKommunenummer.length != 4) error("Kommunenummer ikke 4 siffer")
     }
 }

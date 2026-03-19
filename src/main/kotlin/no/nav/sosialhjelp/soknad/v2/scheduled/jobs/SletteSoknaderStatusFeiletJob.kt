@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
@@ -15,9 +16,10 @@ import java.util.UUID
 class SletteSoknaderStatusFeiletJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
+    private val metadataJobService: SoknadMetadataJobService,
 ) : AbstractJob(leaderElection, "Slette soknader med status INNSENDING_FEILET", logger) {
     @Scheduled(cron = "0 0 4 * * *")
-    suspend fun sletteSoknaderStatusFeilet() = doInJob { findAndDeleteSoknaderStatusFeilet() }
+    fun sletteSoknaderStatusFeilet() = doInJob { findAndDeleteSoknaderStatusFeilet() }
 
     private fun findAndDeleteSoknaderStatusFeilet() {
         soknadJobService.findSoknadIdsOlderThanWithStatus(getTimeStamp(), SoknadStatus.INNSENDING_FEILET)
@@ -25,12 +27,8 @@ class SletteSoknaderStatusFeiletJob(
     }
 
     private fun handleSoknaderInnsendingFeilet(soknadIds: List<UUID>) {
-        logger.info("Sletter ${soknadIds.size} soknader hvor innsending feilet.")
-        soknadIds.forEach { id ->
-            runCatching { soknadJobService.deleteSoknadById(id) }
-                .onFailure { logger.error("Feil ved sletting av gammel soknad $id med status INNSENDING_FEILET", it) }
-                .getOrNull()
-        }
+        logger.info("Fant ${soknadIds.size} soknader hvor innsending feilet. Sletter")
+        soknadIds.chunked(500).forEach { chunk -> metadataJobService.deleteAll(chunk) }
     }
 
     private fun getTimeStamp(): LocalDateTime = nowWithMillis().minusDays(NUMBER_OF_DAYS + EXTRA_DAYS)

@@ -6,7 +6,6 @@ spring:
   cache:
     type: simple
 
-
 resilience4j:
   retry:
     configs:

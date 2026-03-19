@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
@@ -15,10 +15,10 @@ import java.util.UUID
 class SlettGamleSoknaderJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
-    private val metadataService: SoknadMetadataService,
+    private val metadataJobService: SoknadMetadataJobService,
 ) : AbstractJob(leaderElection, "Slette gamle soknader", logger) {
     @Scheduled(cron = "0 30 3 * * * ")
-    suspend fun slettGamleSoknader() = doInJob { findAndDeleteOldSoknader() }
+    fun slettGamleSoknader() = doInJob { findAndDeleteOldSoknader() }
 
     private fun findAndDeleteOldSoknader() {
         val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
@@ -30,12 +30,8 @@ class SlettGamleSoknaderJob(
     }
 
     private fun handleOldSoknadIds(soknadIds: List<UUID>) {
-        soknadIds.chunked(500).forEach { batch ->
-            soknadJobService.deleteSoknaderByIds(batch)
-            metadataService.deleteAll(batch)
-        }
-
-        logger.info("Slettet ${soknadIds.size} gamle søknader med status OPPRETTET")
+        logger.info("Fant ${soknadIds.size} gamle søknader med status OPPRETTET. Sletter")
+        soknadIds.chunked(500).forEach { batch -> metadataJobService.deleteAll(batch) }
     }
 
     companion object {

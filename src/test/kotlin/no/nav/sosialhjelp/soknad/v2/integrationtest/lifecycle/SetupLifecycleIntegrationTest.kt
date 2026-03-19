@@ -16,7 +16,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoCl
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.metrics.MetricsManager
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -81,7 +81,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var kommuneInfoClient: KommuneInfoClient
 
     @MockkBean(relaxed = true)
-    protected lateinit var prometheusMetricsService: PrometheusMetricsService
+    protected lateinit var metricsManager: MetricsManager
 
     @BeforeEach
     protected fun setup() {

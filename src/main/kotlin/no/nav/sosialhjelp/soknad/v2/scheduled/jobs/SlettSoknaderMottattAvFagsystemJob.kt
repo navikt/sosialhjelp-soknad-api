@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
@@ -18,31 +18,29 @@ import java.util.UUID
 @Component
 class SlettSoknaderMottattAvFagsystemJob(
     leaderElection: LeaderElection,
-    private val metadataService: SoknadMetadataService,
+    private val metadataJobService: SoknadMetadataJobService,
     private val soknadJobService: SoknadJobService,
     private val digisosApiService: DigisosApiService,
 ) : AbstractJob(leaderElection, "Slette mottatte soknader", logger) {
     @Scheduled(cron = "0 */10 * * * *")
-    suspend fun slettSoknaderSomErMottattAvFagsystem() = doInJob { findAndDeleteMottatteSoknader() }
+    fun slettSoknaderSomErMottattAvFagsystem() = doInJob { findAndDeleteMottatteSoknader() }
 
     private fun findAndDeleteMottatteSoknader() {
-        val metadatas = getExistingMetadatasStatusSendt()
+        val metadatas = metadataJobService.findMetadataForStatus(SENDT)
+
         metadatas
             .mapNotNull { metadata -> metadata.getDigisosId() }
             .let { digisosIdsSendt -> digisosApiService.getDigisosIdsStatusMottatt(digisosIdsSendt) }
-            .let { digisosIdsMottatt -> metadatas.filterSoknadIdsStatusMottat(digisosIdsMottatt) }
+            .let { digisosIdsMottatt -> metadatas.findSoknadIdsStatusMottatt(digisosIdsMottatt) }
             .also { soknadIdsMottatt -> handleMottatteIds(soknadIdsMottatt) }
     }
-
-    private fun getExistingMetadatasStatusSendt(): List<SoknadMetadata> =
-        soknadJobService.findSoknadIdsWithStatus(SENDT).let { metadataService.getMetadatasForIds(it) }
 
     // Kastes det exception her...
     // ... vil det stoppe opp oppdateringen for mange andre objekter også
     private fun SoknadMetadata.getDigisosId(): UUID? =
         digisosId.also { if (digisosId == null) logger.error("DigisosId er null for $soknadId") }
 
-    private fun List<SoknadMetadata>.filterSoknadIdsStatusMottat(digisosIds: List<UUID>): List<UUID> {
+    private fun List<SoknadMetadata>.findSoknadIdsStatusMottatt(digisosIds: List<UUID>): List<UUID> {
         return this
             .filter { digisosIds.contains(it.digisosId) }
             .map { it.soknadId }
@@ -52,7 +50,7 @@ class SlettSoknaderMottattAvFagsystemJob(
         if (mottatteIds.isNotEmpty()) {
             soknadJobService.deleteSoknaderByIds(mottatteIds)
             logger.info("Slettet ${mottatteIds.size} med status MOTTATT hos FIKS")
-            mottatteIds.forEach { metadataService.updateSoknadStatus(it, MOTTATT_FSL) }
+            mottatteIds.forEach { metadataJobService.updateSoknadStatus(it, MOTTATT_FSL) }
         }
     }
 

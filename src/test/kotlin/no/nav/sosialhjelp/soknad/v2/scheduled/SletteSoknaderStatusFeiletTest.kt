@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import kotlinx.coroutines.test.runTest
-import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.INNSENDING_FEILET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
@@ -18,7 +17,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
-class SletteSoknaderStatusFeiletTest : AbstractIntegrationTest() {
+class SletteSoknaderStatusFeiletTest : AbstractJobTest() {
     @Autowired
     private lateinit var sletteJob: SletteSoknaderStatusFeiletJob
 
@@ -36,8 +35,7 @@ class SletteSoknaderStatusFeiletTest : AbstractIntegrationTest() {
             sletteJob.sletteSoknaderStatusFeilet()
 
             soknadRepository.findAll().also { assertThat(it).isEmpty() }
-            metadataRepository.findAll()
-                .also { metadata -> assertThat(metadata).hasSize(1).allMatch { it.status == INNSENDING_FEILET } }
+            metadataRepository.findAll().also { assertThat(it).isEmpty() }
         }
 
     @Test
@@ -74,8 +72,8 @@ class SletteSoknaderStatusFeiletTest : AbstractIntegrationTest() {
                 }
 
             assertThat(metadataRepository.findAll())
-                .hasSize(4)
-                .anyMatch { it.status == INNSENDING_FEILET }
+                .hasSize(3)
+                .noneMatch { it.status == INNSENDING_FEILET }
         }
 
     private fun createMetadataAndSoknad(
@@ -89,3 +87,5 @@ class SletteSoknaderStatusFeiletTest : AbstractIntegrationTest() {
         return soknadId
     }
 }
+
+fun nowMinusDays(days: Long): LocalDateTime = LocalDateTime.now().minusDays(days)

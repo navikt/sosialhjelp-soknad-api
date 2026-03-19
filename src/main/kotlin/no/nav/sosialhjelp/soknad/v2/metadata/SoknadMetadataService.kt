@@ -10,11 +10,24 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 
+interface SoknadMetadataJobService {
+    fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata>
+
+    fun updateSoknadStatus(
+        soknadId: UUID,
+        soknadStatus: SoknadStatus,
+    )
+
+    fun deleteAll(soknadIds: List<UUID>)
+
+    fun findOlderThan(timestamp: LocalDateTime): List<UUID>
+}
+
 @Component
 @Transactional
 class SoknadMetadataService(
     private val metadataRepository: SoknadMetadataRepository,
-) {
+) : SoknadMetadataJobService {
     fun createSoknadMetadata(
         soknadId: UUID,
         isKort: Boolean,
@@ -102,7 +115,7 @@ class SoknadMetadataService(
             .also { metadataRepository.save(it) }
     }
 
-    fun updateSoknadStatus(
+    override fun updateSoknadStatus(
         soknadId: UUID,
         soknadStatus: SoknadStatus,
     ) {
@@ -112,17 +125,12 @@ class SoknadMetadataService(
     }
 
     @Transactional(readOnly = true)
-    fun findOlderThan(timestamp: LocalDateTime): List<UUID> {
+    override fun findOlderThan(timestamp: LocalDateTime): List<UUID> {
         return metadataRepository.findSoknadIdsOlderThan(timestamp)
     }
 
-    fun deleteAll(soknadIds: List<UUID>) {
+    override fun deleteAll(soknadIds: List<UUID>) {
         metadataRepository.deleteAllById(soknadIds)
-    }
-
-    @Transactional(readOnly = true)
-    fun findAllMetadatasForIds(allSoknadIds: List<UUID>): List<SoknadMetadata> {
-        return metadataRepository.findAllById(allSoknadIds)
     }
 
     @Transactional(readOnly = true)
@@ -137,6 +145,10 @@ class SoknadMetadataService(
                 )
             }
     }
+
+    @Transactional(readOnly = true)
+    override fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata> =
+        metadataRepository.findMetadataByStatus(status)
 
     private fun findMetadataOrError(soknadId: UUID): SoknadMetadata {
         return metadataRepository.findByIdOrNull(soknadId) ?: throw SoknadFinnesIkkeException(soknadId)
