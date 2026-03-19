@@ -30,7 +30,7 @@ class SoknadMottattMetricsService(
             .findMetadataForStatus(SoknadStatus.SENDT)
             .filter { metadata -> metadata.sentIsOlderThan(DAYS) }
             .also { metadatas ->
-                logger.info("Initialiserer gauge for ${metadatas.size} antall søknader eldre enn $DAYS dager med status sendt")
+                logger.info("Initialiserer gauge for ${metadatas.size} antall søknader eldre enn $DAYS dager med status SENDT")
                 setAntallGamleSoknaderStatusSendt(metadatas.size)
             }
     }
