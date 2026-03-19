@@ -17,7 +17,7 @@ class SjekkStatusSendtJob(
     private val metadataJobService: SoknadMetadataJobService,
     private val metricsService: SoknadMottattMetricsService,
 ) : AbstractJob(leaderElection, "Sjekk status sendt", logger) {
-    @Scheduled(cron = "0 0 */4 * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     fun sjekkStatusSendt() = doInJob { doCheckSoknaderStatusSendt() }
 
     private fun doCheckSoknaderStatusSendt() {
