@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
@@ -16,7 +16,7 @@ import java.util.UUID
 class SletteSoknaderStatusFeiletJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
-    private val metadataService: SoknadMetadataService,
+    private val metadataJobService: SoknadMetadataJobService,
 ) : AbstractJob(leaderElection, "Slette soknader med status INNSENDING_FEILET", logger) {
     @Scheduled(cron = "0 0 4 * * *")
     fun sletteSoknaderStatusFeilet() = doInJob { findAndDeleteSoknaderStatusFeilet() }
@@ -28,7 +28,7 @@ class SletteSoknaderStatusFeiletJob(
 
     private fun handleSoknaderInnsendingFeilet(soknadIds: List<UUID>) {
         logger.info("Fant ${soknadIds.size} soknader hvor innsending feilet. Sletter")
-        soknadIds.chunked(500).forEach { chunk -> metadataService.deleteAll(chunk) }
+        soknadIds.chunked(500).forEach { chunk -> metadataJobService.deleteAll(chunk) }
     }
 
     private fun getTimeStamp(): LocalDateTime = nowWithMillis().minusDays(NUMBER_OF_DAYS + EXTRA_DAYS)

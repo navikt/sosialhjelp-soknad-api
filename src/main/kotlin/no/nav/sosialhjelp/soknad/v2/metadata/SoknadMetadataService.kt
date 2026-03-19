@@ -12,6 +12,15 @@ import java.util.UUID
 
 interface SoknadMetadataJobService {
     fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata>
+
+    fun updateSoknadStatus(
+        soknadId: UUID,
+        soknadStatus: SoknadStatus,
+    )
+
+    fun deleteAll(soknadIds: List<UUID>)
+
+    fun findOlderThan(timestamp: LocalDateTime): List<UUID>
 }
 
 @Component
@@ -106,7 +115,7 @@ class SoknadMetadataService(
             .also { metadataRepository.save(it) }
     }
 
-    fun updateSoknadStatus(
+    override fun updateSoknadStatus(
         soknadId: UUID,
         soknadStatus: SoknadStatus,
     ) {
@@ -116,17 +125,12 @@ class SoknadMetadataService(
     }
 
     @Transactional(readOnly = true)
-    fun findOlderThan(timestamp: LocalDateTime): List<UUID> {
+    override fun findOlderThan(timestamp: LocalDateTime): List<UUID> {
         return metadataRepository.findSoknadIdsOlderThan(timestamp)
     }
 
-    fun deleteAll(soknadIds: List<UUID>) {
+    override fun deleteAll(soknadIds: List<UUID>) {
         metadataRepository.deleteAllById(soknadIds)
-    }
-
-    @Transactional(readOnly = true)
-    fun findAllMetadatasForIds(allSoknadIds: List<UUID>): List<SoknadMetadata> {
-        return metadataRepository.findAllById(allSoknadIds)
     }
 
     @Transactional(readOnly = true)

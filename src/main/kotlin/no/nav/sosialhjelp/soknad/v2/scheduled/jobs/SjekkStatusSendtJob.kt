@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.metrics.SoknadMottattMetricsService
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component
 @Component
 class SjekkStatusSendtJob(
     leaderElection: LeaderElection,
-    private val metadataService: SoknadMetadataService,
+    private val metadataJobService: SoknadMetadataJobService,
     private val metricsService: SoknadMottattMetricsService,
 ) : AbstractJob(leaderElection, "Sjekk status sendt", logger) {
     @Scheduled(cron = "0 0 */4 * * *")
     fun sjekkStatusSendt() = doInJob { doCheckSoknaderStatusSendt() }
 
     private fun doCheckSoknaderStatusSendt() {
-        metadataService
+        metadataJobService
             .findMetadataForStatus(SoknadStatus.SENDT)
             .filter { it.sentIsOlderThan(DAYS) }
             .also { sentOlderThan7Days ->
