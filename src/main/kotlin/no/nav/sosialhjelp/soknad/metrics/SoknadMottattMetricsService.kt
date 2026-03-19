@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
 import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SjekkStatusSendtJob.Companion.DAYS
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service
 @Service
 class SoknadMottattMetricsService(
     prometheusMetricsService: PrometheusMetricsService,
+    private val leaderElection: LeaderElection,
     private val metadataJobService: SoknadMetadataJobService,
 ) {
     private val antallGamleSoknaderStatusSendtGauge =
@@ -20,6 +22,10 @@ class SoknadMottattMetricsService(
 
     @EventListener(ApplicationReadyEvent::class)
     fun initializeSoknadMottattGauge() {
+        if (leaderElection.isLeader()) doInitialize()
+    }
+
+    private fun doInitialize() {
         metadataJobService
             .findMetadataForStatus(SoknadStatus.SENDT)
             .filter { metadata -> metadata.sentIsOlderThan(DAYS) }
