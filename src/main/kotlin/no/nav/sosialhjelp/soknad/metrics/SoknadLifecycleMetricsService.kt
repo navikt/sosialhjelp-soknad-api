@@ -4,8 +4,7 @@ import io.micrometer.core.instrument.Tag
 import org.springframework.stereotype.Service
 
 @Service
-class SoknadLifecycleMetricsService(prometheusMetricsService: PrometheusMetricsService,) {
-
+class SoknadLifecycleMetricsService(prometheusMetricsService: PrometheusMetricsService) {
     private val startSoknadCounter = prometheusMetricsService.createCounter("start_soknad_counter")
     private val feiletSendingMedDigisosApiCounter = prometheusMetricsService.createCounter("feilet_sending_med_digisos_api_counter")
     private val feilVedOpprettingAvSoknad = prometheusMetricsService.createCounter("feil_ved_oppretting_av_soknad_counter")

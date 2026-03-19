@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2
 
-import java.time.LocalDateTime
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
@@ -16,6 +14,8 @@ import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.util.UUID
 
 interface SoknadLifecycleUseCaseHandler {
     fun startSoknad(
