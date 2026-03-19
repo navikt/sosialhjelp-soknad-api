@@ -41,7 +41,7 @@ class SoknadMottattMetricsService(
 
     companion object {
         private val logger by logger()
-        private const val METRIC_NAME = "soknad.gauge.old.status.sendt"
+        private const val METRIC_NAME = "soknad.old.status.sendt"
         private const val METRIC_DESCRIPTION =
             "Hvis det finnes søknader med status sendt eldre en $DAYS dager bør de sjekkes opp"
     }
