@@ -36,7 +36,7 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
         opprettNyereSoknad()
         opprettNyereSoknad()
 
-        sjekkStatusSendtJob.sjekkStatusSendt()
+        sjekkStatusSendtJob.doCheckSoknaderStatusSendt()
 
         verify(exactly = 1) { metricsService.setAntallGamleSoknaderStatusSendt(capturedOutput.captured) }
         assertThat(metadataRepository.findAll()).hasSize(2)
@@ -48,7 +48,7 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
         opprettForGammelSoknad()
         opprettForGammelSoknad()
 
-        sjekkStatusSendtJob.sjekkStatusSendt()
+        sjekkStatusSendtJob.doCheckSoknaderStatusSendt()
 
         verify(exactly = 1) { metricsService.setAntallGamleSoknaderStatusSendt(capturedOutput.captured) }
         assertThat(metadataRepository.findAll()).hasSize(2)
