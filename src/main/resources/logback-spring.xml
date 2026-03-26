@@ -22,6 +22,7 @@
         <logger name="klientlogger" level="debug"/>
         <logger name="org.springframework" level="warn"/>
         <logger name="org.apache.pdfbox" level="error"/>
+        <logger name="org.apache.fontbox" level="error"/>
 
         <root level="INFO">
             <appender-ref ref="stdout_json"/>
@@ -41,6 +42,7 @@
         <logger name="org.flywaydb" level="debug" />
         <logger name="no.nav.sosialhjelp.soknad" level="debug"/>
         <logger name="org.apache.pdfbox" level="error"/>
+        <logger name="org.apache.fontbox" level="error"/>
         <logger name="no.nav.security.token.support" level="info"/>
         <logger name="klientlogger" level="debug"/>
 
