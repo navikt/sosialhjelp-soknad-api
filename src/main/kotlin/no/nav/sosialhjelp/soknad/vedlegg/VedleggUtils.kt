@@ -7,8 +7,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMed
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import org.apache.pdfbox.Loader
-import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -132,14 +130,10 @@ object VedleggUtils {
     private fun sjekkOmPdfErGyldig(data: ByteArray) {
         runCatching {
             Loader.loadPDF(data)
-                .use { document ->
-                    if (document.isDocEmpty()) log.warn("PDF er tom")
-                    if (document.isEncrypted) throw DokumentUploadFileEncrypted()
-                }
+                .use { document -> if (document.isEncrypted) throw DokumentUploadFileEncrypted() }
         }
             .getOrElse {
                 when (it) {
-                    is InvalidPasswordException -> throw DokumentUploadFileEncrypted()
                     is IOException -> throw DokumentUploadError("Kunne ikke lagre fil", it, "vedlegg.opplasting.feil.generell")
                     else -> throw it
                 }
@@ -163,5 +157,3 @@ object VedleggUtils {
         }
     }
 }
-
-private fun PDDocument.isDocEmpty(): Boolean = pages.count == 0 || pages.get(0).contentStreams?.hasNext() != true
