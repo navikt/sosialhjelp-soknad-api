@@ -1,11 +1,5 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
-import java.io.IOException
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
-import java.util.Locale
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadFileEncrypted
@@ -15,6 +9,12 @@ import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
+import java.io.IOException
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+import java.util.Locale
+import java.util.UUID
 
 object VedleggUtils {
     private val log by logger()
@@ -130,7 +130,6 @@ object VedleggUtils {
     }
 
     private fun sjekkOmPdfErGyldig(data: ByteArray) {
-
         runCatching {
             Loader.loadPDF(data)
                 .use { document ->
@@ -139,7 +138,7 @@ object VedleggUtils {
                 }
         }
             .getOrElse {
-                when(it) {
+                when (it) {
                     is InvalidPasswordException -> throw DokumentUploadFileEncrypted()
                     is IOException -> throw DokumentUploadError("Kunne ikke lagre fil", it, "vedlegg.opplasting.feil.generell")
                     else -> throw it
