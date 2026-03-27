@@ -7,8 +7,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMed
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import org.apache.pdfbox.Loader
-import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
-import org.apache.pdfbox.text.PDFTextStripper
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -130,20 +128,16 @@ object VedleggUtils {
     }
 
     private fun sjekkOmPdfErGyldig(data: ByteArray) {
-        try {
+        runCatching {
             Loader.loadPDF(data)
-                .use { document ->
-                    val text = PDFTextStripper().getText(document)
-                    if (text == null || text.isEmpty()) {
-                        log.warn("PDF er tom") // En PDF med ett helt blankt ark generert av word gir text = "\r\n"
-                    }
-                    if (document.isEncrypted) throw DokumentUploadFileEncrypted()
-                }
-        } catch (e: InvalidPasswordException) {
-            throw DokumentUploadFileEncrypted()
-        } catch (e: IOException) {
-            throw DokumentUploadError("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
+                .use { document -> if (document.isEncrypted) throw DokumentUploadFileEncrypted() }
         }
+            .getOrElse {
+                when (it) {
+                    is IOException -> throw DokumentUploadError("Kunne ikke lagre fil", it, "vedlegg.opplasting.feil.generell")
+                    else -> throw it
+                }
+            }
     }
 
     private fun erTikaOgFileExtensionEnige(
