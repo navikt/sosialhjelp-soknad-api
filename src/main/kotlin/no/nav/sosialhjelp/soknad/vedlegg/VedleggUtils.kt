@@ -1,5 +1,11 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
+import java.io.IOException
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+import java.util.Locale
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadFileEncrypted
@@ -7,14 +13,8 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMed
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import org.apache.pdfbox.Loader
+import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
-import org.apache.pdfbox.text.PDFTextStripper
-import java.io.IOException
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
-import java.util.Locale
-import java.util.UUID
 
 object VedleggUtils {
     private val log by logger()
@@ -130,20 +130,21 @@ object VedleggUtils {
     }
 
     private fun sjekkOmPdfErGyldig(data: ByteArray) {
-        try {
+
+        runCatching {
             Loader.loadPDF(data)
                 .use { document ->
-                    val text = PDFTextStripper().getText(document)
-                    if (text == null || text.isEmpty()) {
-                        log.warn("PDF er tom") // En PDF med ett helt blankt ark generert av word gir text = "\r\n"
-                    }
+                    if (document.isDocEmpty()) log.warn("PDF er tom")
                     if (document.isEncrypted) throw DokumentUploadFileEncrypted()
                 }
-        } catch (e: InvalidPasswordException) {
-            throw DokumentUploadFileEncrypted()
-        } catch (e: IOException) {
-            throw DokumentUploadError("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
         }
+            .getOrElse {
+                when(it) {
+                    is InvalidPasswordException -> throw DokumentUploadFileEncrypted()
+                    is IOException -> throw DokumentUploadError("Kunne ikke lagre fil", it, "vedlegg.opplasting.feil.generell")
+                    else -> throw it
+                }
+            }
     }
 
     private fun erTikaOgFileExtensionEnige(
@@ -163,3 +164,5 @@ object VedleggUtils {
         }
     }
 }
+
+private fun PDDocument.isDocEmpty(): Boolean = pages.count == 0 || pages.get(0).contentStreams?.hasNext() != true
