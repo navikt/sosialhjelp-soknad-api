@@ -89,9 +89,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var personService: PersonService
 
-    @MockkBean
-    private lateinit var hentAdresseService: HentAdresseService
-
     @BeforeEach
     fun setup() {
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
