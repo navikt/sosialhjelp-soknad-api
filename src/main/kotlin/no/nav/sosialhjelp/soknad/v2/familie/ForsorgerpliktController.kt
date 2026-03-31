@@ -83,7 +83,7 @@ private fun Map<UUID, Barn>.mapToBarnDtoList(): List<BarnDto> {
     return entries.map { (key, barn) ->
         BarnDto(
             uuid = key,
-            barn.navn,
+            navn = null,
             barn.fodselsdato,
             barn.borSammen,
             barn.folkeregistrertSammen,

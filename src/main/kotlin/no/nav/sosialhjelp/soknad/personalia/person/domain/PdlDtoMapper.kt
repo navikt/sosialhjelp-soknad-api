@@ -78,9 +78,6 @@ class PdlDtoMapper(private val kodeverkService: KodeverkService) {
             return null
         }
         return Barn(
-            findFornavn(barnDto.navn),
-            findMellomnavn(barnDto.navn),
-            findEtternavn(barnDto.navn),
             barnIdent,
             findFodselsdato(barnDto.foedselsdato),
             isFolkeregistrertSammen(personDto.bostedsadresse, barnDto.bostedsadresse),

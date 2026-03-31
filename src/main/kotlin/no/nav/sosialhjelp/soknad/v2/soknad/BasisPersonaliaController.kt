@@ -24,29 +24,14 @@ class BasisPersonaliaController(
 
 private fun Eier.toPersonaliaDto(personId: String): PersonaliaDto =
     PersonaliaDto(
-        navn =
-            NavnDto(
-                fornavn = navn.fornavn ?: "",
-                mellomnavn = navn.mellomnavn,
-                etternavn = navn.etternavn ?: "",
-            ),
         fodselsnummer = personId,
         statsborgerskap = statsborgerskap,
         nordiskBorger = nordiskBorger,
     )
 
 data class PersonaliaDto(
-    val navn: NavnDto,
     // TODO Nødvendig / riktig å sende med fødselsnummer i denne Dto'en ?
     val fodselsnummer: String? = null,
     val statsborgerskap: String? = null,
     val nordiskBorger: Boolean? = null,
 )
-
-data class NavnDto(
-    val fornavn: String,
-    val mellomnavn: String? = null,
-    val etternavn: String,
-) {
-    val fulltNavn: String = listOfNotNull(fornavn, mellomnavn, etternavn).filter { it.isNotBlank() }.joinToString(" ") { it.trim() }
-}

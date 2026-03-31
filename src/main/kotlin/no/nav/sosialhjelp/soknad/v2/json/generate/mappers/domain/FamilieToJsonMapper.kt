@@ -130,7 +130,7 @@ private fun Barn.toJson() =
             JsonBarn()
                 .withKilde(JsonKilde.SYSTEM)
                 .withFodselsdato(fodselsdato)
-                .withNavn(navn?.toJson())
+                .withNavn(toJsonBarnNavn())
                 .withPersonIdentifikator(personId)
                 .withHarDiskresjonskode(false),
         ).withErFolkeregistrertSammen(
@@ -152,7 +152,10 @@ private fun Barn.toJson() =
             },
         )
 
+private fun toJsonBarnNavn() = JsonNavn().withFornavn("n").withMellomnavn("").withEtternavn("n")
+
 // mellomnavn er required i json-modellen
-fun Navn.toJson(): JsonNavn = JsonNavn().withFornavn(fornavn ?: "").withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn ?: "")
+@Suppress("UnusedReceiverParameter")
+fun Navn.toJson(): JsonNavn = JsonNavn().withFornavn("n").withMellomnavn("").withEtternavn("n")
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)

@@ -90,16 +90,6 @@ internal class PdlDtoMapperTest {
             bostedsadresse = emptyList(),
             folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
             foedselsdato = listOf(FoedselsdatoDto(LocalDate.now().minusYears(12), 1970)),
-            navn =
-                listOf(
-                    NavnDto(
-                        fornavn = FORNAVN,
-                        mellomnavn = null,
-                        etternavn = ETTERNAVN,
-                        metadata = METADATA,
-                        folkeregistermetadata = FOLKEREGISTERMETADATA,
-                    ),
-                ),
         )
 
     private val defaultForelderBarnRelasjonDto =
@@ -609,14 +599,10 @@ internal class PdlDtoMapperTest {
                 bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
                 foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN, 1970)),
-                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn).isNotNull
-        assertThat(barn!!.fornavn).isEqualTo(FORNAVN)
-        assertThat(barn.mellomnavn).isBlank
-        assertThat(barn.etternavn).isEqualTo(ETTERNAVN)
-        assertThat(barn.fnr).isEqualTo(BARNIDENT)
+        assertThat(barn!!.fnr).isEqualTo(BARNIDENT)
         assertThat(barn.fodselsdato).isEqualTo(
             LocalDate.of(
                 FOEDSELSDATO_BARN.year,
@@ -645,7 +631,6 @@ internal class PdlDtoMapperTest {
                 bostedsadresse = listOf(BostedsadresseDto(null, null, null, null)),
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
                 foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN, 1970)),
-                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn).isNull()
@@ -669,7 +654,6 @@ internal class PdlDtoMapperTest {
                 bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto(DOED)),
                 foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN, 1970)),
-                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn).isNull()
@@ -693,7 +677,6 @@ internal class PdlDtoMapperTest {
                 bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
                 foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN_MYNDIG, 1970)),
-                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn).isNull()
@@ -717,7 +700,6 @@ internal class PdlDtoMapperTest {
                 bostedsadresse = null,
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
                 foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN, 1970)),
-                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn!!.folkeregistrertSammen).isFalse
@@ -741,7 +723,6 @@ internal class PdlDtoMapperTest {
                 bostedsadresse = emptyList(),
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
                 foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN, 1970)),
-                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn!!.folkeregistrertSammen).isFalse

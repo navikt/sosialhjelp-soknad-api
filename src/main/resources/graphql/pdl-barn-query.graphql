@@ -1,17 +1,3 @@
-fragment metadata on Metadata {
-    master
-    endringer {
-        kilde
-        registrert
-        type
-    }
-}
-
-fragment folkeregistermetadata on Folkeregistermetadata {
-    ajourholdstidspunkt
-    kilde
-}
-
 query($ident: ID!, $historikk: Boolean!) {
     hentPerson(ident: $ident) {
         adressebeskyttelse(historikk: $historikk) {
@@ -47,17 +33,6 @@ query($ident: ID!, $historikk: Boolean!) {
         foedselsdato {
             foedselsdato
             foedselsaar
-        }
-        navn(historikk: $historikk) {
-            fornavn
-            mellomnavn
-            etternavn
-            metadata {
-                ...metadata
-            }
-            folkeregistermetadata{
-                ...folkeregistermetadata
-            }
         }
     }
 }

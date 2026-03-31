@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.v2.familie.SivilstandDto
 import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.toEktefelle
-import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.navn.NavnInput
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
@@ -143,7 +142,6 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
                     UUID.randomUUID() to
                         Barn(
                             personId = "01010112345",
-                            navn = Navn(fornavn = "Ola", etternavn = "Nordmann"),
                             fodselsdato = "010101",
                         ),
                 ),

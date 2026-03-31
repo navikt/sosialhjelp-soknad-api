@@ -56,9 +56,6 @@ internal class PersonServiceTest {
         )
     private val barn =
         Barn(
-            fornavn = "fornavn",
-            mellomnavn = null,
-            etternavn = "etternavn",
             fnr = "barnident",
             fodselsdato = null,
             folkeregistrertSammen = true,
