@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
-import io.github.resilience4j.retry.annotation.Retry
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
@@ -30,7 +29,6 @@ class KodeverkClient(
             token = texasService.getToken(IdentityProvider.AZURE_AD, scope),
         )
 
-    @Retry(name = "kodeverk")
     private fun doHentKodeverk(
         kodeverksnavn: String,
         token: String,
