@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.familie
 
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.familie.service.Forsorger
 import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
-import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
 
 @RestController
 @ProtectionSelvbetjeningHigh
@@ -68,7 +67,6 @@ data class BarnInput(
 
 data class BarnDto(
     val uuid: UUID,
-    val navn: Navn?,
     val fodselsdato: String?,
     val borSammen: Boolean? = null,
     val folkeregistrertSammen: Boolean? = null,
@@ -83,7 +81,6 @@ private fun Map<UUID, Barn>.mapToBarnDtoList(): List<BarnDto> {
     return entries.map { (key, barn) ->
         BarnDto(
             uuid = key,
-            navn = null,
             barn.fodselsdato,
             barn.borSammen,
             barn.folkeregistrertSammen,
