@@ -152,10 +152,9 @@ private fun Barn.toJson() =
             },
         )
 
+// DSOS-200 Det er besluttet at navn på barn ikke skal sendes med til fagsystem
 private fun toJsonBarnNavn() = JsonNavn().withFornavn("n").withMellomnavn("").withEtternavn("n")
 
-// mellomnavn er required i json-modellen
-@Suppress("UnusedReceiverParameter")
-fun Navn.toJson(): JsonNavn = JsonNavn().withFornavn("n").withMellomnavn("").withEtternavn("n")
+fun Navn.toJson(): JsonNavn = JsonNavn().withFornavn(fornavn ?: "").withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn ?: "")
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)
