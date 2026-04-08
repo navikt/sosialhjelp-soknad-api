@@ -9,10 +9,6 @@ import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import no.nav.sosialhjelp.soknad.metrics.SoknadMottattMetricsService
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
@@ -23,6 +19,10 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 class SjekkStatusSendtJobTest : AbstractJobTest() {
     @Autowired
@@ -32,7 +32,6 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
     private lateinit var metricsService: SoknadMottattMetricsService
 
     private var capturedOutput: CapturingSlot<Int> = slot()
-
 
     @BeforeEach
     fun setup() {
@@ -108,11 +107,17 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
             .also { metadataRepository.save(it) }
     }
 
-    private fun setTimestampForJob(timestamp: LocalDateTime, hour: Int): LocalDateTime {
+    private fun setTimestampForJob(
+        timestamp: LocalDateTime,
+        hour: Int,
+    ): LocalDateTime {
         return LocalDateTime.of(timestamp.toLocalDate(), LocalTime.of(hour, 0))
     }
 
-    private fun findPreviousDayOfWeek(dayOfWeek: DayOfWeek, hour: Int): LocalDateTime {
+    private fun findPreviousDayOfWeek(
+        dayOfWeek: DayOfWeek,
+        hour: Int,
+    ): LocalDateTime {
         var timestampAtHour = LocalDateTime.of(LocalDate.now(), LocalTime.of(hour, 0))
         if (timestampAtHour.dayOfWeek == dayOfWeek) return timestampAtHour
 

@@ -42,4 +42,3 @@ private fun LocalDateTime.subtractWorkingDays(days: Long): LocalDateTime {
 
 private fun SoknadMetadata.sentIsOlderThan(days: Long): Boolean =
     tidspunkt.sendtInn?.isBefore(nowWithMillis().subtractWorkingDays(days)) ?: error("Metadata Mangler 'sendt_inn'")
-
