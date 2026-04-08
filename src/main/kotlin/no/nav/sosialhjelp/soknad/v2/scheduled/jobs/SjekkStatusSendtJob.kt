@@ -7,13 +7,15 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.time.DayOfWeek
+import java.time.LocalDateTime
 
 @Component
 class SjekkStatusSendtJob(
     private val metadataJobService: SoknadMetadataJobService,
     private val metricsService: SoknadMottattMetricsService,
 ) {
-    @Scheduled(cron = "0 0 */4 * * *")
+    @Scheduled(cron = "0 0 */4 * * MON-FRI")
     fun doCheckSoknaderStatusSendt() {
         metadataJobService
             .findMetadataForStatus(SoknadStatus.SENDT)
@@ -22,9 +24,17 @@ class SjekkStatusSendtJob(
     }
 
     companion object {
-        const val DAYS = 7L
+        const val DAYS = 2
     }
 }
 
-private fun SoknadMetadata.sentIsOlderThan(days: Long): Boolean =
-    tidspunkt.sendtInn?.isBefore(nowWithMillis().minusDays(days)) ?: error("Metadata Mangler 'sendt_inn'")
+private val weekend = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
+
+private fun LocalDateTime.subtractWorkingDays(days: Int): LocalDateTime =
+    generateSequence(minusDays((1))) { it.minusDays(1) }
+        .filter { it.dayOfWeek !in weekend }
+        .take(days)
+        .last()
+
+private fun SoknadMetadata.sentIsOlderThan(days: Int): Boolean =
+    tidspunkt.sendtInn?.isBefore(nowWithMillis().subtractWorkingDays(days)) ?: error("Metadata Mangler 'sendt_inn'")

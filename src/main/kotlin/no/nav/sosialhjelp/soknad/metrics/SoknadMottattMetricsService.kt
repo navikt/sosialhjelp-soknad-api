@@ -25,7 +25,7 @@ class SoknadMottattMetricsService(
             .filter { metadata -> metadata.sentIsOlderThan(DAYS) }
             .also { metadatas ->
                 logger.info("Initialiserer gauge for ${metadatas.size} antall søknader eldre enn $DAYS dager med status SENDT")
-                setAntallGamleSoknaderStatusSendt(metadatas.size)
+                antallGamleSoknaderStatusSendtGauge.set(metadatas.size)
             }
     }
 
@@ -42,6 +42,6 @@ class SoknadMottattMetricsService(
     }
 }
 
-private fun SoknadMetadata.sentIsOlderThan(days: Long): Boolean =
-    tidspunkt.sendtInn?.isBefore(nowWithMillis().minusDays(days))
+private fun SoknadMetadata.sentIsOlderThan(days: Int): Boolean =
+    tidspunkt.sendtInn?.isBefore(nowWithMillis().minusDays(days.toLong()))
         ?: error("Metadata Mangler 'sendt_inn'")
