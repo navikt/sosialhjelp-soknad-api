@@ -42,6 +42,6 @@ class SoknadMottattMetricsService(
     }
 }
 
-private fun SoknadMetadata.sentIsOlderThan(days: Long): Boolean =
-    tidspunkt.sendtInn?.isBefore(nowWithMillis().minusDays(days))
+private fun SoknadMetadata.sentIsOlderThan(days: Int): Boolean =
+    tidspunkt.sendtInn?.isBefore(nowWithMillis().minusDays(days.toLong()))
         ?: error("Metadata Mangler 'sendt_inn'")

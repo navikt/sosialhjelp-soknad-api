@@ -24,21 +24,17 @@ class SjekkStatusSendtJob(
     }
 
     companion object {
-        const val DAYS = 2L
+        const val DAYS = 2
     }
 }
 
-private fun LocalDateTime.subtractWorkingDays(days: Long): LocalDateTime {
-    var result = this
-    var remaining = days
-    while (remaining > 0) {
-        result = result.minusDays(1)
-        if (result.dayOfWeek != DayOfWeek.SATURDAY && result.dayOfWeek != DayOfWeek.SUNDAY) {
-            remaining--
-        }
-    }
-    return result
-}
+private val weekend = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
-private fun SoknadMetadata.sentIsOlderThan(days: Long): Boolean =
+private fun LocalDateTime.subtractWorkingDays(days: Int): LocalDateTime =
+    generateSequence(minusDays((1))) { it.minusDays(1) }
+        .filter { it.dayOfWeek !in weekend }
+        .take(days)
+        .last()
+
+private fun SoknadMetadata.sentIsOlderThan(days: Int): Boolean =
     tidspunkt.sendtInn?.isBefore(nowWithMillis().subtractWorkingDays(days)) ?: error("Metadata Mangler 'sendt_inn'")
