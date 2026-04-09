@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.net.InetAddress.getLocalHost
 import java.time.LocalDateTime
@@ -36,7 +37,7 @@ class LeaderElectionImpl(
                 val response =
                     webClient.get()
                         .retrieve()
-                        .bodyToMono(String::class.java)
+                        .bodyToMono<String>()
                         .block()
                 leader = jacksonObjectMapper().readTree(response).get("name").asString()
                 lastCallTime = now

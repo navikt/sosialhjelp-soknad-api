@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
 import org.springframework.scheduling.annotation.Scheduled
@@ -12,7 +12,7 @@ import java.util.UUID
 @Component
 class SlettGammelMetadataJob(
     leaderElection: LeaderElection,
-    private val metadataJobService: SoknadMetadataJobService,
+    private val metadataJobService: SoknadMetadataService,
 ) : AbstractJob(jobName = "Slette gamle metadata", leaderElection = leaderElection, logger = logger) {
     @Scheduled(cron = "0 30 4 * * *")
     fun slettGammelMetadata() = doInJob { findAndDeleteOldMetadata() }

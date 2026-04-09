@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -26,7 +26,7 @@ import java.util.UUID
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadLifecycleController(
     private val soknadLifecycleService: SoknadLifecycleUseCaseHandler,
-    private val soknadMetadataService: SoknadMetadataService,
+    private val soknadMetadataServiceImpl: SoknadMetadataServiceImpl,
 ) {
     @PostMapping("/create")
     fun createSoknad(
@@ -68,7 +68,7 @@ class SoknadLifecycleController(
     @GetMapping("/{soknadId}/isKort")
     fun isKortSoknad(
         @PathVariable soknadId: String,
-    ): Boolean = soknadMetadataService.getSoknadType(UUID.fromString(soknadId)) == SoknadType.KORT
+    ): Boolean = soknadMetadataServiceImpl.getSoknadType(UUID.fromString(soknadId)) == SoknadType.KORT
 }
 
 data class StartSoknadResponseDto(

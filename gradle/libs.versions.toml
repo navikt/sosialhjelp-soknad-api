@@ -86,8 +86,7 @@ logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-enc
 jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api", version.ref = "jakarta_servlet" }
 unleash-client-java = { module = "io.getunleash:unleash-client-java", version.ref = "unleash_client" }
 tika-core = { module = "org.apache.tika:tika-core", version.ref = "tika" }
-# vises som unused, men er nødvendig (se build.gradle)
-tika-parsers-standard-package = { module = "org.apache.tika:tika-parsers-standard-package", version.ref = "tika" }
+tika-parsers-standard = { module = "org.apache.tika:tika-parsers-standard-package", version.ref = "tika" }
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons_text" }
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfbox" }
 preflight = { module = "org.apache.pdfbox:preflight", version.ref = "pdfbox" }

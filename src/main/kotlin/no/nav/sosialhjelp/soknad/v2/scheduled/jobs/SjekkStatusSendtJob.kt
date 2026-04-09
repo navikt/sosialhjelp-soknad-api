@@ -3,14 +3,14 @@ package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 import no.nav.sosialhjelp.soknad.metrics.SoknadMottattMetricsService
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
 class SjekkStatusSendtJob(
-    private val metadataJobService: SoknadMetadataJobService,
+    private val metadataJobService: SoknadMetadataService,
     private val metricsService: SoknadMottattMetricsService,
 ) {
     @Scheduled(cron = "0 0 */4 * * *")

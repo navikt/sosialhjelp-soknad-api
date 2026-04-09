@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -24,7 +24,7 @@ class KortSoknadUseCaseHandler(
     private val kortSoknadService: KortSoknadService,
     private val mellomlagerService: MellomlagerService,
     private val digisosApiService: DigisosApiService,
-    private val metadataService: SoknadMetadataService,
+    private val metadataService: SoknadMetadataServiceImpl,
     private val unleash: Unleash,
 ) {
     fun resolveKortSoknad(
