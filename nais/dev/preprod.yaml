@@ -37,6 +37,7 @@ spec:
   azure:
     application:
       enabled: true
+      allowAllUsers: true
   maskinporten:
     enabled: true
     scopes:
@@ -87,6 +88,7 @@ spec:
         - application: sosialhjelp-soknad
         - application: sosialhjelp-innsyn
         - application: sosialhjelp-innsyn-api
+        - application: sosialhjelp-adminpanel
         - application: mine-saker-api
           namespace: min-side
         - application: dittnav-api

@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.innsending
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
@@ -14,16 +14,16 @@ import java.util.UUID
 @Component
 class KortSoknadService(
     private val dokumentasjonService: DokumentasjonService,
-    private val soknadMetadataService: SoknadMetadataService,
+    private val soknadMetadataServiceImpl: SoknadMetadataServiceImpl,
     private val okonomiService: OkonomiService,
 ) {
     private val logger by logger()
 
     @Transactional
     fun isTransitioningToKort(soknadId: UUID): Boolean {
-        if (soknadMetadataService.getMetadataForSoknad(soknadId).soknadType == SoknadType.KORT) return false
+        if (soknadMetadataServiceImpl.getMetadataForSoknad(soknadId).soknadType == SoknadType.KORT) return false
 
-        soknadMetadataService.updateSoknadType(soknadId, SoknadType.KORT)
+        soknadMetadataServiceImpl.updateSoknadType(soknadId, SoknadType.KORT)
         logger.info("Transitioning soknad $soknadId to kort")
 
         // Hvis en søknad skal transformeres til kort -> fjern forventet dokumentasjon og opprett obligatorisk dokumentasjon
@@ -38,9 +38,9 @@ class KortSoknadService(
 
     @Transactional
     fun isTransitioningToStandard(soknadId: UUID): Boolean {
-        if (soknadMetadataService.getMetadataForSoknad(soknadId).soknadType == SoknadType.STANDARD) return false
+        if (soknadMetadataServiceImpl.getMetadataForSoknad(soknadId).soknadType == SoknadType.STANDARD) return false
 
-        soknadMetadataService.updateSoknadType(soknadId, SoknadType.STANDARD)
+        soknadMetadataServiceImpl.updateSoknadType(soknadId, SoknadType.STANDARD)
 
         dokumentasjonService.fjernForventetDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
