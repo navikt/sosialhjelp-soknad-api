@@ -50,7 +50,7 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
         every { metricsService.doInitialize() } just Runs
 
         val monday = findPreviousDayOfWeek(DayOfWeek.MONDAY, 12)
-        val tuesday = findPreviousDayOfWeek(DayOfWeek.TUESDAY, 12)
+        val tuesday = monday.plusDays(1)
 
         createSoknadSendtAtDay(monday)
         createSoknadSendtAtDay(tuesday)
@@ -67,7 +67,7 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
     @Test
     fun `Soknad sendt i helg kl 12 er ikke for gammel pa tirsdag etter kl 12`() {
         val saturday = findPreviousDayOfWeek(DayOfWeek.SATURDAY, 12)
-        val sunday = findPreviousDayOfWeek(DayOfWeek.SUNDAY, 12)
+        val sunday = saturday.plusDays(1)
 
         createSoknadSendtAtDay(saturday)
         createSoknadSendtAtDay(sunday)
@@ -84,7 +84,7 @@ class SjekkStatusSendtJobTest : AbstractJobTest() {
     @Test
     fun `Soknad sendt i helg kl 12 er for gammel pa onsdag etter kl 12`() {
         val saturday = findPreviousDayOfWeek(DayOfWeek.SATURDAY, 12)
-        val sunday = findPreviousDayOfWeek(DayOfWeek.SUNDAY, 12)
+        val sunday = saturday.plusDays(1)
 
         createSoknadSendtAtDay(saturday)
         createSoknadSendtAtDay(sunday)
