@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.eier
 
+import java.time.LocalDate
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
@@ -27,6 +28,7 @@ data class Eier(
     val navn: Navn,
     @Embedded.Empty
     val kontonummer: Kontonummer = Kontonummer(),
+    val fodselsdato: LocalDate? = null,
 ) : DomainRoot {
     override fun getDbId() = soknadId
 }

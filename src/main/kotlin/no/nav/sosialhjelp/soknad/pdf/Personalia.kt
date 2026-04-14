@@ -23,6 +23,9 @@ object Personalia {
         pdf.skrivH4Bold(pdfUtils.getTekst("kontakt.tittel"))
         pdf.addBlankLine()
 
+        pdf.skrivTekstBold(pdfUtils.getTekst("kontakt.system.personalia.fodselsdato"))
+        pdfUtils.skrivInfotekst(pdf, jsonPersonalia.fodselsdato)
+
         if (utvidetSoknad) {
             pdf.skrivH4Bold(pdfUtils.getTekst("kontakt.system.personalia.sporsmal"))
             pdfUtils.skrivInfotekst(pdf, "kontakt.system.personalia.infotekst.tekst")

@@ -32,6 +32,7 @@ class EierDataHandler(
                             etternavn = person.etternavn,
                         ),
                     kontonummer = eierService.getKontonummer(soknadId) ?: Kontonummer(),
+                    fodselsdato = person.fodselsdato,
                 )
             }
             .also { eier -> eierService.updateFromRegister(eier) }
