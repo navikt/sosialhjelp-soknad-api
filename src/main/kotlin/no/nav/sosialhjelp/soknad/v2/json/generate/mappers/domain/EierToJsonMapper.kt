@@ -41,7 +41,7 @@ class EierToJsonMapper(
 
             with(json.soknad.data.personalia) {
                 this.navn = eier.navn.toJsonSokerNavn()
-                this.fodselsdato = eier.fodselsdato?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: ""
+                this.fodselsdato = eier.fodselsdato?.format(DateTimeFormatter.ISO_LOCAL_DATE)
                 this.nordiskBorger = eier.toJsonNordiskBorger()
                 this.statsborgerskap = eier.toJsonStatsborgerskap()
 
