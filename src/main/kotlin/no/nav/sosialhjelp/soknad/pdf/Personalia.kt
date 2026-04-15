@@ -24,7 +24,7 @@ object Personalia {
         pdf.addBlankLine()
 
         pdf.skrivTekstBold(pdfUtils.getTekst("kontakt.system.personalia.fodselsdato"))
-        pdf.skrivTekst( jsonPersonalia.fodselsdato)
+        pdf.skrivTekst(jsonPersonalia.fodselsdato)
 
         if (utvidetSoknad) {
             pdf.skrivH4Bold(pdfUtils.getTekst("kontakt.system.personalia.sporsmal"))
