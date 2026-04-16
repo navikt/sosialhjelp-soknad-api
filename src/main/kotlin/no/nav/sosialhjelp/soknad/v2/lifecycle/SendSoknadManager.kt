@@ -46,7 +46,7 @@ class SendSoknadManager(
             soknadJson = json.toSoknadJson(),
             vedleggJson = json.toVedleggJson(),
             tilleggsinformasjon = json.createTilleggsinformasjonJson(),
-            pdfDokumenter = getFilOpplastingList(json),
+            pdfDokumenter = getGeneratedPdfFiles(json),
             kommunenummer = kommunenummer,
         )
     }
@@ -92,7 +92,7 @@ class SendSoknadManager(
         return objectMapper.writeValueAsString(JsonTilleggsinformasjon(soknad.mottaker.enhetsnummer))
     }
 
-    private fun getFilOpplastingList(json: JsonInternalSoknad): List<FilOpplasting> {
+    private fun getGeneratedPdfFiles(json: JsonInternalSoknad): List<FilOpplasting> {
         return listOf(
             lagDokumentForSaksbehandlerPdf(json),
             lagDokumentForJuridiskPdf(json),

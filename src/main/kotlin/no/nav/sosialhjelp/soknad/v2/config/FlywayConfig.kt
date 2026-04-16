@@ -29,6 +29,7 @@ class FlywayConfig {
             throw IllegalStateException("Flyway skal ikke kjøres i produksjon")
         }
 
+        // må sette clean-disabled: false hvis preprod skal cleane
         return FlywayMigrationStrategy { flyway ->
             if (flyway.cleanOnStartup()) flyway.clean()
             flyway.migrate()
