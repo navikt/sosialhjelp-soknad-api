@@ -34,8 +34,8 @@ abstract class PdlClient(
             }
 
     companion object {
-        // se behandlingskatalogen
+        // OBS: nummeret må eksistere i behandlingskatalogen
         private const val HEADER_BEHANDLINGSNUMMER = "behandlingsnummer"
-        private const val BEHANDLINGSNUMMER_SOKNAD = "B484"
+        private const val BEHANDLINGSNUMMER_SOKNAD = "D116"
     }
 }
