@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.v2.SoknadValidator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.stereotype.Component
@@ -20,7 +20,7 @@ class SendSoknadHandler(
     private val jsonGenerator: JsonInternalSoknadGenerator,
     private val soknadValidator: SoknadValidator,
     private val sendSoknadManager: SendSoknadManager,
-    private val metadataService: SoknadMetadataService,
+    private val metadataService: SoknadMetadataServiceImpl,
 ) {
     fun doSendAndReturnInfo(
         soknadId: UUID,
@@ -96,7 +96,7 @@ class SendSoknadHandler(
     }
 }
 
-private fun SoknadMetadataService.isKortSoknad(soknadId: UUID) = getSoknadType(soknadId) == SoknadType.KORT
+private fun SoknadMetadataServiceImpl.isKortSoknad(soknadId: UUID) = getSoknadType(soknadId) == SoknadType.KORT
 
 data class SoknadSendtInfo(
     val digisosId: UUID,

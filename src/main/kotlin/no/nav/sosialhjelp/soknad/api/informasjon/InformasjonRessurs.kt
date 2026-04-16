@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.slf4j.LoggerFactory
@@ -36,7 +36,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class InformasjonRessurs(
     private val adresseSokService: AdressesokService,
     private val personService: PersonService,
-    private val metadataService: SoknadMetadataService,
+    private val metadataService: SoknadMetadataServiceImpl,
     private val soknadService: SoknadService,
     @param:Value("\${spring.servlet.multipart.max-file-size}") private val maxUploadSize: DataSize,
 ) {

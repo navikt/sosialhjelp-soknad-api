@@ -138,7 +138,7 @@ dependencies {
 
     // Tika
     implementation(libs.tika.core)
-    implementation(libs.tika.parsers.standard.`package`)
+    implementation(libs.tika.parsers.standard)
 
     // commons
     implementation(libs.commons.text)

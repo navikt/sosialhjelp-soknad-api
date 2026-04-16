@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
@@ -18,7 +18,7 @@ import java.util.UUID
 @Component
 class SlettSoknaderMottattAvFagsystemJob(
     leaderElection: LeaderElection,
-    private val metadataJobService: SoknadMetadataJobService,
+    private val metadataJobService: SoknadMetadataService,
     private val soknadJobService: SoknadJobService,
     private val digisosApiService: DigisosApiService,
 ) : AbstractJob(leaderElection, "Slette mottatte soknader", logger) {

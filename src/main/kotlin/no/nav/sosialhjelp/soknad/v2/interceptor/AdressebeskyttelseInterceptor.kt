@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class AdressebeskyttelseInterceptor(
     private val personService: PersonService,
-    private val metadataService: SoknadMetadataService,
+    private val metadataService: SoknadMetadataServiceImpl,
     private val soknadService: SoknadService,
 ) : SoknadApiHandlerInterceptor {
     override fun preHandle(

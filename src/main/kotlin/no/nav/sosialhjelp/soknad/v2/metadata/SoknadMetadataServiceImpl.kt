@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 
-interface SoknadMetadataJobService {
+interface SoknadMetadataService {
     fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata>
+
+    fun findMetadataForStatus(status: List<SoknadStatus>): List<SoknadMetadata>
 
     fun updateSoknadStatus(
         soknadId: UUID,
@@ -25,9 +27,9 @@ interface SoknadMetadataJobService {
 
 @Component
 @Transactional
-class SoknadMetadataService(
+class SoknadMetadataServiceImpl(
     private val metadataRepository: SoknadMetadataRepository,
-) : SoknadMetadataJobService {
+) : SoknadMetadataService {
     fun createSoknadMetadata(
         soknadId: UUID,
         isKort: Boolean,
@@ -96,7 +98,14 @@ class SoknadMetadataService(
         minusDays: LocalDateTime,
     ): Int =
         metadataRepository.findByPersonId(personId)
-            .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
+            .filter {
+                it.status in
+                    listOf(
+                        SoknadStatus.SENDT,
+                        SoknadStatus.MOTTATT_FSL,
+                        SoknadStatus.MANUELT_KVITTERT_UT,
+                    )
+            }
             .count { metadata ->
                 metadata.tidspunkt.sendtInn?.isAfter(minusDays)
                     ?: error("SoknadMetadata skal ha tidspunkt for sendt inn")
@@ -120,7 +129,7 @@ class SoknadMetadataService(
         soknadStatus: SoknadStatus,
     ) {
         findMetadataOrError(soknadId)
-            .run { copy(status = soknadStatus) }
+            .run { copy(status = soknadStatus, tidspunkt = tidspunkt.copy(sistEndret = LocalDateTime.now())) }
             .also { metadataRepository.save(it) }
     }
 
@@ -148,6 +157,10 @@ class SoknadMetadataService(
 
     @Transactional(readOnly = true)
     override fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata> =
+        metadataRepository.findMetadataByStatus(listOf(status))
+
+    @Transactional(readOnly = true)
+    override fun findMetadataForStatus(status: List<SoknadStatus>): List<SoknadMetadata> =
         metadataRepository.findMetadataByStatus(status)
 
     private fun findMetadataOrError(soknadId: UUID): SoknadMetadata {

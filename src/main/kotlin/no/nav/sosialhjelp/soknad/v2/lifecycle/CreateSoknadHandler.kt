@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.lifecycle
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
@@ -17,7 +17,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class CreateSoknadHandler(
     private val soknadService: SoknadService,
     private val dokumentasjonService: DokumentasjonService,
-    private val metadataService: SoknadMetadataService,
+    private val metadataService: SoknadMetadataServiceImpl,
     private val registerDataService: RegisterDataService,
 ) {
     @Transactional(propagation = Propagation.REQUIRES_NEW)

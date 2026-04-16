@@ -107,6 +107,9 @@ no.nav.security.jwt.issuer:
   tokenx:
     discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
     accepted_audience: ${TOKEN_X_CLIENT_ID}
+  entraid:
+    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+    accepted_audience: ${AZURE_APP_CLIENT_ID}
 
 # redis
 redis_host: ${REDIS_HOST_CACHE}
