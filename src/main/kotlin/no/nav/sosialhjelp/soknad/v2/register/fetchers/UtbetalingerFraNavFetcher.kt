@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.register.AsynchronousFetcher
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
+import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -21,13 +21,11 @@ class UtbetalingerFraNavFetcher(
 ) : AsynchronousFetcher {
     private val logger by logger()
 
-    override fun fetchAndSave(
-        soknadId: UUID,
-        userContext: UserContext,
-    ) {
+    override suspend fun fetchAndSave(soknadId: UUID) {
         okonomiService.removeElementFromOkonomi(soknadId, type = InntektType.UTBETALING_NAVYTELSE)
 
-        navUtbetalingerService.getUtbetalingerSiste40Dager(userContext)
+        val ctx = currentUserContext()
+        navUtbetalingerService.getUtbetalingerSiste40Dager(ctx.token, ctx.userId)
             ?.also {
                 saveUtbetalingerFraNav(soknadId, it)
                 integrasjonStatusService.setUtbetalingerFraNavStatus(soknadId, feilet = false)

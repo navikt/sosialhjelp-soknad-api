@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsstedType
 import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoType
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import org.springframework.stereotype.Component
 
 @Component
@@ -14,11 +13,14 @@ class AaregService(
     private val organisasjonService: OrganisasjonService,
     private val aaregClient: AaregClient,
 ) {
-    fun hentArbeidsforhold(userContext: UserContext): List<Arbeidsforhold>? {
+    fun hentArbeidsforhold(
+        token: String,
+        userId: String,
+    ): List<Arbeidsforhold>? {
         logger.info("Henter arbeidsforhold for bruker fra Aareg-api")
 
         return runCatching {
-            aaregClient.finnArbeidsforholdForArbeidstaker(userContext)
+            aaregClient.finnArbeidsforholdForArbeidstaker(token, userId)
                 ?.let { dto -> dto.map { it.createArbeidsforhold() } }
         }
             .onFailure { logger.error("Hente fra Aareg-api feilet", it) }

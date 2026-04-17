@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
@@ -23,31 +22,35 @@ class PersonService(
     private val mapper: PdlDtoMapper,
 ) {
     fun hentPerson(
-        userContext: UserContext,
+        ident: String,
+        token: String,
         hentEktefelle: Boolean = true,
     ): Person? {
-        val personDto = hentPersonClient.hentPerson(userContext) ?: return null
-        val person = mapper.personDtoToDomain(personDto, userContext.userId)
+        val personDto = hentPersonClient.hentPerson(ident, token) ?: return null
+        val person = mapper.personDtoToDomain(personDto, ident)
         if (person != null && hentEktefelle) {
-            person.ektefelle = hentEktefelle(personDto)
+            person.ektefelle = hentEktefelle(personDto, token)
         }
         return person
     }
 
     @Cacheable(AdressebeskyttelseCacheConfig.CACHE_NAME, unless = "#result == true")
-    fun hasAdressebeskyttelse(userContext: UserContext): Boolean = hasGradering(userContext)
+    fun hasAdressebeskyttelse(ident: String): Boolean = hasGradering(ident)
 
-    @CacheEvict(AdressebeskyttelseCacheConfig.CACHE_NAME, key = "#userContext")
-    fun onSendSoknadHasAdressebeskyttelse(userContext: UserContext): Boolean = hasGradering(userContext)
+    @CacheEvict(AdressebeskyttelseCacheConfig.CACHE_NAME, key = "#ident")
+    fun onSendSoknadHasAdressebeskyttelse(ident: String): Boolean = hasGradering(ident)
 
-    private fun hasGradering(userContext: UserContext): Boolean =
+    private fun hasGradering(ident: String): Boolean =
         hentPersonClient
-            .hentAdressebeskyttelse(userContext)
+            .hentAdressebeskyttelse(ident)
             .let { dto -> mapper.personAdressebeskyttelseDtoToGradering(dto) }
             .isGradert()
 
-    fun hentBarnForPerson(userContext: UserContext): List<Barn>? {
-        val personDto = hentPersonClient.hentPerson(userContext)
+    fun hentBarnForPerson(
+        ident: String,
+        token: String,
+    ): List<Barn>? {
+        val personDto = hentPersonClient.hentPerson(ident, token)
         if (personDto?.forelderBarnRelasjon == null) {
             return null
         }
@@ -69,7 +72,10 @@ class PersonService(
             .filterNotNull()
     }
 
-    private fun hentEktefelle(personDto: PersonDto?): Ektefelle? {
+    private fun hentEktefelle(
+        personDto: PersonDto?,
+        token: String,
+    ): Ektefelle? {
         if (personDto?.sivilstand != null && personDto.sivilstand.isNotEmpty()) {
             val sivilstand = MapperHelper.utledGjeldendeSivilstand(personDto.sivilstand)
             if (sivilstand != null && (SivilstandType.GIFT === sivilstand.type || SivilstandType.REGISTRERT_PARTNER === sivilstand.type)) {

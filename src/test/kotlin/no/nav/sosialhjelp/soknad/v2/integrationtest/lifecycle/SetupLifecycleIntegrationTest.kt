@@ -96,14 +96,14 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
             .apply { setUser(userId) }
             .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
 
-        every { personService.hentPerson(any()) } returns createPersonAnswer()
-        every { personService.hentBarnForPerson(any()) } returns createBarnAnswer()
+        every { personService.hentPerson(any(), any()) } returns createPersonAnswer()
+        every { personService.hentBarnForPerson(any(), any()) } returns createBarnAnswer()
         every { kontonummerService.getKontonummer(any()) } returns "12145534122"
-        every { arbeidsforholdService.hentArbeidsforhold() } returns createArbeidsforholdAnswer()
+        every { arbeidsforholdService.hentArbeidsforhold(any(), any()) } returns createArbeidsforholdAnswer()
         every { skattbarInntektService.hentUtbetalinger(any()) } returns createSkattbarInntektAnswer()
         every { organisasjonService.hentOrgNavn(any()) } returns arbeidsgiverNavn
-        every { krrService.getMobilnummer(any()) } returns "44553366"
-        every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns createNavUtbetaling()
+        every { krrService.getMobilnummer(any(), any()) } returns "44553366"
+        every { navUtbetalingerService.getUtbetalingerSiste40Dager(any(), any()) } returns createNavUtbetaling()
         every { kommuneInfoClient.getAll() } returns createKommuneInfoList()
         every {
             digisosApiV2Client.krypterOgLastOppFiler(

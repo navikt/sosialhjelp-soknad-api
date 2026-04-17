@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.register.PrimaryFetcher
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
+import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
@@ -14,7 +14,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 interface PersonRegisterDataHandler {
-    fun saveData(
+    suspend fun saveData(
         soknadId: UUID,
         person: Person,
     )
@@ -31,13 +31,12 @@ class PersonDataFetcher(
 ) : PrimaryFetcher {
     private val logger by logger()
 
-    override fun fetchAndSave(
-        soknadId: UUID,
-        userContext: UserContext,
-    ) {
+    override suspend fun fetchAndSave(soknadId: UUID) {
         logger.info("Henter person i PDL")
 
-        val hentPerson = personService.hentPerson(userContext)
+        val userId = currentUserContext().userId
+        val token = currentUserContext().token
+        val hentPerson = personService.hentPerson(userId, token)
         hentPerson
             ?.also { it.verifyOver18() }
             ?.let { person ->

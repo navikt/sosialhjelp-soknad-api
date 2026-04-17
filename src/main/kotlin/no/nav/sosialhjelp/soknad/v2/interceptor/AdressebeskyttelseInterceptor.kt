@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
@@ -38,13 +37,12 @@ class AdressebeskyttelseInterceptor(
 
     private fun HttpServletRequest.isSendPath() = requestURI.matchesRegex(BASE_PATH + SEND_PATH)
 
-    // henter ikke fra cache ved sending for å sjekke at person ikke har fått adressebeskyttelse underveis i søknaden
     private fun hasAdressebeskyttelse(isSendPath: Boolean): Boolean {
-        val userContext = UserContext(SubjectHandlerUtils.getToken(), getUserIdFromToken())
+        val ident = getUserIdFromToken()
 
         return when (isSendPath) {
-            true -> personService.onSendSoknadHasAdressebeskyttelse(userContext)
-            false -> personService.hasAdressebeskyttelse(userContext)
+            true -> personService.onSendSoknadHasAdressebeskyttelse(ident)
+            false -> personService.hasAdressebeskyttelse(ident)
         }
     }
 

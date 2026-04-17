@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
+import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
@@ -30,5 +31,14 @@ abstract class AbstractRegisterDataTest {
 
         val staticSubjectHandlerImpl = StaticSubjectHandlerImpl().apply { setUser(soknad.eierPersonId) }
         SubjectHandlerUtils.setNewSubjectHandlerImpl(staticSubjectHandlerImpl)
+    }
+
+    protected fun runWithUserContext(block: suspend () -> Unit) {
+        val userContext =
+            UserContext(
+                SubjectHandlerUtils.getToken(),
+                SubjectHandlerUtils.getUserIdFromToken(),
+            )
+        runBlocking(userContext) { block() }
     }
 }

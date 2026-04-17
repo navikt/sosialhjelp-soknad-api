@@ -38,7 +38,7 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
     @Test
     fun `Utbetalinger fra NAV skal lagres i db`() {
         createAnswerForNavUtbetalingerClient()
-        utbetalingerFraNavFetcher.fetchAndSave(soknad.id)
+        runWithUserContext { utbetalingerFraNavFetcher.fetchAndSave(soknad.id) }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
 
@@ -54,10 +54,10 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Tom liste lagrer ingen Inntekt`() {
-        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any(), any()) } returns
             UtbetalDataDto(utbetalinger = emptyList(), feilet = false)
 
-        utbetalingerFraNavFetcher.fetchAndSave(soknad.id)
+        runWithUserContext { utbetalingerFraNavFetcher.fetchAndSave(soknad.id) }
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilUtbetalingerNav).isFalse()
@@ -65,9 +65,9 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Returnerer null setter integrasjon-status feilet = true`() {
-        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns null
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any(), any()) } returns null
 
-        utbetalingerFraNavFetcher.fetchAndSave(soknad.id)
+        runWithUserContext { utbetalingerFraNavFetcher.fetchAndSave(soknad.id) }
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
 
@@ -75,6 +75,6 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
     }
 
     private fun createAnswerForNavUtbetalingerClient() {
-        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns defaultResponseFromNavUtbetalingerClient()
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any(), any()) } returns defaultResponseFromNavUtbetalingerClient()
     }
 }

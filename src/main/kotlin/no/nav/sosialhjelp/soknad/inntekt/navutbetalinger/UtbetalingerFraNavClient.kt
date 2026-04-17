@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
@@ -20,7 +19,10 @@ import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
 
 interface UtbetalingerFraNavClient {
-    fun getUtbetalingerSiste40Dager(userContext: UserContext): UtbetalDataDto?
+    fun getUtbetalingerSiste40Dager(
+        token: String,
+        userId: String,
+    ): UtbetalDataDto?
 }
 
 @Component
@@ -33,15 +35,18 @@ class NavUtbetalingerClientImpl(
     private val webClient =
         webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient()).build()
 
-    override fun getUtbetalingerSiste40Dager(userContext: UserContext): UtbetalDataDto? {
+    override fun getUtbetalingerSiste40Dager(
+        token: String,
+        userId: String,
+    ): UtbetalDataDto? {
         logger.info("Henter utbetalingsdata fra: $utbetalDataUrl ")
 
-        val request = NavUtbetalingerRequest(userContext.userId, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
+        val request = NavUtbetalingerRequest(userId, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
 
         return runCatching {
             webClient.post()
                 .uri("$utbetalDataUrl/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
-                .header(HttpHeaders.AUTHORIZATION, BEARER + getTokenX(userContext.token))
+                .header(HttpHeaders.AUTHORIZATION, BEARER + getTokenX(token))
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToMono<List<Utbetaling>>()

@@ -19,7 +19,7 @@ class EierDataFetcherTest : AbstractPersonDataFetcherTest() {
     fun `Hente fra PDL skal lagre eier-data i db`() {
         val personDto = createAnswerForHentPersonUgift()
 
-        fetchPerson.fetchAndSave(soknad.id)
+        runWithUserContext { fetchPerson.fetchAndSave(soknad.id) }
 
         eierRepository.findByIdOrNull(soknad.id)?.let {
             assertThat(it.navn.fornavn).isEqualTo(personDto.navn?.get(0)?.fornavn)
@@ -46,7 +46,7 @@ class EierDataFetcherTest : AbstractPersonDataFetcherTest() {
                 ),
             )
         val personDto = createAnswerForHentPersonUgift()
-        fetchPerson.fetchAndSave(soknad.id)
+        runWithUserContext { fetchPerson.fetchAndSave(soknad.id) }
 
         eierRepository.findByIdOrNull(soknad.id)!!.let { updated ->
             assertThat(existing.navn).isNotEqualTo(updated.navn)

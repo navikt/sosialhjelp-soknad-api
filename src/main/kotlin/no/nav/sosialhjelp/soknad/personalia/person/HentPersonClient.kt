@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
@@ -18,7 +19,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
@@ -34,13 +34,16 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Duration
 
 interface HentPersonClient {
-    fun hentPerson(userContext: UserContext): PersonDto?
+    fun hentPerson(
+        ident: String,
+        token: String,
+    ): PersonDto?
 
     fun hentEktefelle(ident: String): EktefelleDto?
 
     fun hentBarn(ident: String): BarnDto?
 
-    fun hentAdressebeskyttelse(userContext: UserContext): PersonAdressebeskyttelseDto?
+    fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto?
 }
 
 @Component
@@ -51,21 +54,24 @@ class HentPersonClientImpl(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
-    // må caches på dette nivået da den kalles 2 steder i PersonService
-    @Cacheable(HentPersonClientConfig.CACHE_NAME, unless = "#result == null")
-    override fun hentPerson(userContext: UserContext): PersonDto? =
-        doPdlRequest(userContext, HENT_PERSON, "hentPerson")
+    // must cache at this level as it is called from 2 places in PersonService
+    @Cacheable(HentPersonClientConfig.CACHE_NAME, key = "#ident", unless = "#result == null")
+    override fun hentPerson(
+        ident: String,
+        token: String,
+    ): PersonDto? = doPdlRequest(ident, HENT_PERSON, "hentPerson", token)
 
-    override fun hentAdressebeskyttelse(userContext: UserContext): PersonAdressebeskyttelseDto? =
-        doPdlRequest(userContext, HENT_ADRESSEBESKYTTELSE, "adressebeskyttelse")
+    override fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto? =
+        doPdlRequest(ident, HENT_ADRESSEBESKYTTELSE, "adressebeskyttelse", SubjectHandlerUtils.getToken())
 
     private inline fun <reified T> doPdlRequest(
-        userContext: UserContext,
+        ident: String,
         query: String,
         typeRequest: String,
+        token: String,
     ): T? =
         runCatching {
-            doRequest(userContext.token, PdlRequest(query, variables(userContext.userId)))
+            doRequest(token, PdlRequest(query, variables(ident)))
                 ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
         }
             .onFailure {

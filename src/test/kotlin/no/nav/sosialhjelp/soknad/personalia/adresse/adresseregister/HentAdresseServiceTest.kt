@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 internal class HentAdresseServiceTest {
     private val hentAdresseClient: HentAdresseClient = mockk()
     private val personService: PersonService = mockk()
-    private val hentAdresseService = HentAdresseService(hentAdresseClient, personService)
+    private val hentAdresseService = HentAdresseService(hentAdresseClient)
 
     private val defaultMatrikkelAdresse =
         MatrikkeladresseDto(

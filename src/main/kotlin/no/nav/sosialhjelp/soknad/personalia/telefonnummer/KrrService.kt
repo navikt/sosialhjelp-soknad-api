@@ -2,30 +2,39 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
+import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.stereotype.Component
 import java.time.Duration
+import java.util.UUID
 
 @Component
 class KrrService(
     private val krrClient: KrrClient,
+    private val personIdService: PersonIdService,
 ) {
-    @Cacheable(KrrCacheConfig.CACHE_NAME, unless = "#result == null")
-    fun getMobilnummer(userContext: UserContext): String? {
-        return doGet(userContext)
+    @Cacheable(KrrCacheConfig.CACHE_NAME, key = "#soknadId", unless = "#result == null")
+    fun getMobilnummer(
+        soknadId: UUID,
+        token: String,
+    ): String? {
+        val userId = personIdService.findPersonId(soknadId)
+        return doGet(userId, token)
             ?.also { info -> if (info.mobiltelefonnummer == null) logger.warn("KRR - mobiltelefonnummer er null") }
             ?.mobiltelefonnummer
     }
 
-    private fun doGet(userContext: UserContext): DigitalKontaktinformasjon? {
-        val kontaktInfoResponse = krrClient.getDigitalKontaktinformasjon(userContext) ?: return null
+    private fun doGet(
+        userId: String,
+        token: String,
+    ): DigitalKontaktinformasjon? {
+        val kontaktInfoResponse = krrClient.getDigitalKontaktinformasjon(userId, token) ?: return null
 
         return kontaktInfoResponse.personer
-            ?.let { infoForPersonMap -> infoForPersonMap[userContext.userId] }
-            .also { info -> if (info == null) kontaktInfoResponse.logError(userContext.userId) }
+            ?.let { infoForPersonMap -> infoForPersonMap[userId] }
+            .also { info -> if (info == null) kontaktInfoResponse.logError(userId) }
     }
 
     private fun KontaktInfoResponse.logError(personId: String) {

@@ -18,7 +18,10 @@ class HentPersonClientMock : HentPersonClient {
             .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .build()
 
-    override fun hentPerson(ident: String): PersonDto? {
+    override fun hentPerson(
+        ident: String,
+        token: String,
+    ): PersonDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlPersonResponse.json")
         assertThat(resourceAsStream).isNotNull
         val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)

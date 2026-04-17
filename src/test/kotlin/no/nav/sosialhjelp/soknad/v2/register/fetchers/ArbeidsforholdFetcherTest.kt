@@ -41,7 +41,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     fun `Hente arbeidsforhold fra Register skal lagres i db`() {
         createAnswerForAaregClient().also { createAnswerForOrganisasjonClient(it) }
 
-        arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
+        runWithUserContext { arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id) }
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
             assertThat(it.arbeid.arbeidsforhold).hasSize(2)
@@ -53,19 +53,19 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Aareg-client returnerer null skal ikke kaste feil eller lagre til db`() {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns null
+        every { aaregClient.finnArbeidsforholdForArbeidstaker(any(), any()) } returns null
 
-        arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
+        runWithUserContext { arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id) }
         assertThat(livssituasjonRepository.findByIdOrNull(soknad.id)).isNull()
     }
 
     @Test
     fun `Exception i Aareg-client kaster feil`() {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker() } throws
+        every { aaregClient.finnArbeidsforholdForArbeidstaker(any(), any()) } throws
             TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
 
         assertThatThrownBy {
-            arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
+            runWithUserContext { arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id) }
         }.isInstanceOf(TjenesteUtilgjengeligException::class.java)
     }
 
@@ -74,7 +74,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
         createAnswerForAaregClient()
         every { organisasjonClient.hentOrganisasjonNoekkelinfo(any()) } returns null
 
-        arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
+        runWithUserContext { arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id) }
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let { ls ->
             ls.arbeid.arbeidsforhold.forEach {
@@ -90,7 +90,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
         every { organisasjonClient.hentOrganisasjonNoekkelinfo(any()) } throws
             TjenesteUtilgjengeligException("EREG", Exception("Dette tryna hardt"))
 
-        arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
+        runWithUserContext { arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id) }
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let { ls ->
             ls.arbeid.arbeidsforhold.forEach {
@@ -104,7 +104,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     fun `Arbeidsforhold genererer Inntekts-elementer`() {
         createAnswerForAaregClient()
 
-        arbeidsforholdFetcher.fetchAndSave(soknad.id)
+        runWithUserContext { arbeidsforholdFetcher.fetchAndSave(soknad.id) }
 
         okonomiService.getInntekter(soknad.id).let { inntekter ->
             assertThat(inntekter).anyMatch { it.type == InntektType.JOBB }
@@ -121,7 +121,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     fun `Oppdaterere med tom liste fjerner tidligere lagrede data`() {
         createAnswerForAaregClient().also { createAnswerForOrganisasjonClient(it) }
 
-        arbeidsforholdFetcher.fetchAndSave(soknad.id)
+        runWithUserContext { arbeidsforholdFetcher.fetchAndSave(soknad.id) }
 
         okonomiService.getInntekter(soknad.id).let { inntekter ->
             assertThat(inntekter).anyMatch { it.type == InntektType.JOBB }
@@ -130,7 +130,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
         createAnswerForAaregClient(answerV2 = emptyList())
 
-        arbeidsforholdFetcher.fetchAndSave(soknad.id)
+        runWithUserContext { arbeidsforholdFetcher.fetchAndSave(soknad.id) }
 
         livssituasjonRepository.findByIdOrNull(soknad.id)!!.arbeid.arbeidsforhold.also {
             assertThat(it).isEmpty()
@@ -148,7 +148,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     private fun createAnswerForAaregClient(
         answerV2: List<ArbeidsforholdDto> = defaultResponseFromAaregClientV2(soknad.eierPersonId),
     ): List<ArbeidsforholdDto> {
-        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns answerV2
+        every { aaregClient.finnArbeidsforholdForArbeidstaker(any(), any()) } returns answerV2
         return answerV2
     }
 

@@ -89,7 +89,7 @@ abstract class AbstractIntegrationTest {
     }
 
     protected fun setupPdlAnswers() {
-        every { hentPersonClient.hentPerson(any()) } returns HentPersonClientMock().hentPerson("ident")
+        every { hentPersonClient.hentPerson(any(), any()) } returns HentPersonClientMock().hentPerson("ident", "")
         every { hentPersonClient.hentAdressebeskyttelse(any()) } returns HentPersonClientMock().hentAdressebeskyttelse("ident")
         every { hentPersonClient.hentEktefelle(any()) } returns HentPersonClientMock().hentEktefelle("ident")
         every { hentPersonClient.hentBarn(any()) } returns HentPersonClientMock().hentBarn("ident")

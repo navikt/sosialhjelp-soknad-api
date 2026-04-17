@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider.TOKENX
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.JacksonJsonDecoder
@@ -22,10 +21,13 @@ class AaregClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    fun finnArbeidsforholdForArbeidstaker(userContext: UserContext): List<ArbeidsforholdDto>? {
-        val request = ArbeidsforholdSokRequest(arbeidstakerId = userContext.userId)
+    fun finnArbeidsforholdForArbeidstaker(
+        token: String,
+        userId: String,
+    ): List<ArbeidsforholdDto>? {
+        val request = ArbeidsforholdSokRequest(arbeidstakerId = userId)
 
-        return doFinnArbeidsforhold(userContext.token, request)
+        return doFinnArbeidsforhold(token, request)
     }
 
     private fun doFinnArbeidsforhold(

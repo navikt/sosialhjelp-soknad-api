@@ -18,7 +18,7 @@ class AdresseFetcherTest : AbstractPersonDataFetcherTest() {
     fun `Hente fra PDL skal lagre data i db`() {
         val dto = createAnswerForHentPersonUgift().bostedsadresse?.let { it[0].vegadresse } ?: fail("Fant ikke adresse")
 
-        fetchPerson.fetchAndSave(soknad.id)
+        runWithUserContext { fetchPerson.fetchAndSave(soknad.id) }
 
         kontaktRepository
             .findByIdOrNull(soknad.id)?.adresser?.folkeregistrert
@@ -34,7 +34,7 @@ class AdresseFetcherTest : AbstractPersonDataFetcherTest() {
     fun `Hente person med matrikkeladresse skal lagres i db`() {
         val dto = createAnswerForHentPersonUgiftMedMatrikkelAdresse()
 
-        fetchPerson.fetchAndSave(soknad.id)
+        runWithUserContext { fetchPerson.fetchAndSave(soknad.id) }
 
         kontaktRepository.findByIdOrNull(soknad.id)?.adresser?.folkeregistrert?.let {
             assertThat(it).isInstanceOf(MatrikkelAdresse::class.java)

@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
@@ -15,12 +16,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 interface RegisterDataFetcher {
-    fun fetchAndSave(
-        soknadId: UUID,
-        userContext: UserContext,
-    )
+    suspend fun fetchAndSave(soknadId: UUID)
 
     // Implementeres og settes til true av fetchere som skal stoppe hele prosessen
     fun exceptionOnError(): Boolean = false
@@ -52,52 +52,51 @@ class FetchRegisterDataManager(
                 SubjectHandlerUtils.getUserIdFromToken(),
             )
 
-        runPrimaryFetcher(soknadId, userContext, allFetchers.filterIsInstance<PrimaryFetcher>().firstOrNull())
-        runSynchronousFetchers(soknadId, userContext, allFetchers.filterIsInstance<SynchronousFetcher>())
-        runAsyncFetchers(soknadId, userContext, allFetchers.filterIsInstance<AsynchronousFetcher>())
+        runBlocking(userContext + Dispatchers.IO + MDCContext()) {
+            runPrimaryFetcher(soknadId, allFetchers.filterIsInstance<PrimaryFetcher>().firstOrNull())
+            runSynchronousFetchers(soknadId, allFetchers.filterIsInstance<SynchronousFetcher>())
+            runAsyncFetchers(soknadId, allFetchers.filterIsInstance<AsynchronousFetcher>())
+        }
     }
 
-    private fun runPrimaryFetcher(
+    private suspend fun runPrimaryFetcher(
         soknadId: UUID,
-        userContext: UserContext,
         primaryFetcher: PrimaryFetcher?,
     ) {
         if (primaryFetcher == null) error("Finnes ingen PrimaryFetcher")
-        runFetcher(soknadId, userContext, primaryFetcher)
+        runFetcher(soknadId, primaryFetcher)
     }
 
-    private fun runSynchronousFetchers(
+    private suspend fun runSynchronousFetchers(
         soknadId: UUID,
-        personId: UserContext,
         fetchers: List<SynchronousFetcher>,
     ) {
-        runBlocking(Dispatchers.IO + MDCContext()) {
+        coroutineScope {
             fetchers
-                .map { fetcher -> async { runFetcher(soknadId, personId, fetcher) } }
+                .map { fetcher -> async { runFetcher(soknadId, fetcher) } }
                 .awaitAll()
         }
     }
 
-    private fun runAsyncFetchers(
+    private suspend fun runAsyncFetchers(
         soknadId: UUID,
-        personId: UserContext,
         fetchers: List<AsynchronousFetcher>,
     ) {
+        val userContext = coroutineContext[UserContext]!!
         fetchers.forEach { fetcher ->
-            scope.launch(MDCContext()) {
-                runFetcher(soknadId, personId, fetcher)
+            scope.launch(MDCContext() + userContext) {
+                runFetcher(soknadId, fetcher)
             }
         }
     }
 
-    private fun runFetcher(
+    private suspend fun runFetcher(
         soknadId: UUID,
-        userContext: UserContext,
         fetcher: RegisterDataFetcher,
     ) {
         runCatching {
             logger.info("${Thread.currentThread().name} running fetcher: $fetcher")
-            fetcher.fetchAndSave(soknadId, userContext)
+            fetcher.fetchAndSave(soknadId)
             logger.info("${Thread.currentThread().name} finished fetcher: $fetcher")
         }
             .onFailure {
@@ -109,7 +108,14 @@ class FetchRegisterDataManager(
     }
 }
 
-data class UserContext(
+class UserContext(
     val token: String,
     val userId: String,
-)
+) : CoroutineContext.Element {
+    override val key: CoroutineContext.Key<*> get() = Key
+
+    companion object Key : CoroutineContext.Key<UserContext>
+}
+
+suspend fun currentUserContext(): UserContext =
+    coroutineContext[UserContext] ?: error("No UserContext in coroutine context")

@@ -34,23 +34,23 @@ class KrrServiceTest {
 
     @Test
     fun `Person finnes skal gi ok-response`() {
-        every { krrClient.getDigitalKontaktinformasjon(any()) } returns deserialize(okResponse)
+        every { krrClient.getDigitalKontaktinformasjon(any(), any()) } returns deserialize(okResponse)
 
-        assertThat(krrService.getMobilnummer(UUID.randomUUID())).isEqualTo(MOBILNUMMER)
+        assertThat(krrService.getMobilnummer(UUID.randomUUID(), "test-token")).isEqualTo(MOBILNUMMER)
     }
 
     @Test
     fun `Finnes i PDL men ikke KRR gir aktiv = false`() {
-        every { krrClient.getDigitalKontaktinformasjon(any()) } returns deserialize(ikkeAktivResposne)
+        every { krrClient.getDigitalKontaktinformasjon(any(), any()) } returns deserialize(ikkeAktivResposne)
 
-        assertThat(krrService.getMobilnummer(UUID.randomUUID())).isNull()
+        assertThat(krrService.getMobilnummer(UUID.randomUUID(), "test-token")).isNull()
     }
 
     @Test
     fun `Personen finnes ikke i PDL`() {
-        every { krrClient.getDigitalKontaktinformasjon(any()) } returns deserialize(feilResponse)
+        every { krrClient.getDigitalKontaktinformasjon(any(), any()) } returns deserialize(feilResponse)
 
-        assertThat(krrService.getMobilnummer(UUID.randomUUID())).isNull()
+        assertThat(krrService.getMobilnummer(UUID.randomUUID(), "test-token")).isNull()
     }
 
     companion object {

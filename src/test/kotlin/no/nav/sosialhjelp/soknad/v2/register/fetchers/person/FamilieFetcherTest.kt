@@ -19,7 +19,7 @@ class FamilieFetcherTest : AbstractPersonDataFetcherTest() {
     @Test
     fun `Hente person skal hente og lagre familie-data`() {
         val familieDtos = createAnswerForPersonMedEktefelleOgBarn()
-        fetchPerson.fetchAndSave(soknadId = soknad.id)
+        runWithUserContext { fetchPerson.fetchAndSave(soknadId = soknad.id) }
 
         forsorgerService.findForsorger(soknadId = soknad.id)?.let {
             assertThat(it.ansvar.size).isEqualTo(familieDtos.barn.size)

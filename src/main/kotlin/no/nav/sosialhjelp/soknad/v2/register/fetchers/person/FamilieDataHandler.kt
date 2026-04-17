@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers.person
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
@@ -10,7 +8,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
+import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.PersonRegisterDataHandler
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -23,7 +21,7 @@ class FamilieDataHandler(
 ) : PersonRegisterDataHandler {
     private val logger by logger()
 
-    override fun saveData(
+    override suspend fun saveData(
         soknadId: UUID,
         person: Person,
     ) {
@@ -48,10 +46,10 @@ class FamilieDataHandler(
         }
     }
 
-    private fun handleForsorgerplikt(soknadId: UUID) {
-        val userContext = UserContext(getToken(), getUserIdFromToken())
+    private suspend fun handleForsorgerplikt(soknadId: UUID) {
+        val ctx = currentUserContext()
 
-        personService.hentBarnForPerson(userContext)
+        personService.hentBarnForPerson(ctx.userId, ctx.token)
             ?.let { it.ifEmpty { null } }
             ?.let { barnlist ->
 

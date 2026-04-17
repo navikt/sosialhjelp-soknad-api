@@ -46,7 +46,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
             sivilstandDto = null,
             vegAdresseDto = null,
             matrikkeladresseDto = matrikkeladresseDto,
-        ).also { every { hentPersonClient.hentPerson(any()) } returns it }
+        ).also { every { hentPersonClient.hentPerson(any(), any()) } returns it }
 
         return defaultResponseFromHentMatrikkelAdresse().also {
             every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns it
@@ -55,7 +55,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
 
     fun createAnswerForHentPersonUgift(): PersonDto {
         return defaultResponseFromHentPerson(sivilstandDto = null).also {
-            every { hentPersonClient.hentPerson(soknad.eierPersonId) } returns it
+            every { hentPersonClient.hentPerson(eq(soknad.eierPersonId), any()) } returns it
         }
     }
 
@@ -82,7 +82,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
     protected fun createAnswerForPersonMedEktefelleOgBarn(): FamilieDtos {
         val personDto =
             defaultResponseHentPersonWithEktefelleOgBarn().also {
-                every { hentPersonClient.hentPerson(soknad.eierPersonId) } returns it
+                every { hentPersonClient.hentPerson(eq(soknad.eierPersonId), any()) } returns it
             }
         val ektefelleDto = createAnswerForHentEktefelle(ektefelleFnr)
         val barnDtoList = createAnswerForHentBarn()
