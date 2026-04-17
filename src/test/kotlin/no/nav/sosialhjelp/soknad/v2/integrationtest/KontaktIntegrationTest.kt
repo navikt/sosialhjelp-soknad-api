@@ -24,7 +24,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoSe
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
-import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
@@ -97,7 +96,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     fun setup() {
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
         every { digisosApiV2Client.getSoknader() } returns emptyList()
-        every { personService.hasAdressebeskyttelse(userId) } returns false
+        every { personService.hasAdressebeskyttelse(any()) } returns false
         every { kodeverkService.getKommunenavn(KOMMUNENUMMER) } returns KOMMUNENAVN
     }
 
@@ -177,8 +176,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 orgnummer = null,
             )
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhet
-        every { hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker() } returns
-            KartverketMatrikkelAdresse(KOMMUNENUMMER, "12", "1", null, null, null, null)
 
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())

@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
+import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
@@ -33,13 +34,13 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Duration
 
 interface HentPersonClient {
-    fun hentPerson(ident: String): PersonDto?
+    fun hentPerson(userContext: UserContext): PersonDto?
 
     fun hentEktefelle(ident: String): EktefelleDto?
 
     fun hentBarn(ident: String): BarnDto?
 
-    fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto?
+    fun hentAdressebeskyttelse(userContext: UserContext): PersonAdressebeskyttelseDto?
 }
 
 @Component
@@ -52,19 +53,19 @@ class HentPersonClientImpl(
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
     // må caches på dette nivået da den kalles 2 steder i PersonService
     @Cacheable(HentPersonClientConfig.CACHE_NAME, unless = "#result == null")
-    override fun hentPerson(ident: String): PersonDto? =
-        doPdlRequest(ident, HENT_PERSON, "hentPerson")
+    override fun hentPerson(userContext: UserContext): PersonDto? =
+        doPdlRequest(userContext, HENT_PERSON, "hentPerson")
 
-    override fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto? =
-        doPdlRequest(ident, HENT_ADRESSEBESKYTTELSE, "adressebeskyttelse")
+    override fun hentAdressebeskyttelse(userContext: UserContext): PersonAdressebeskyttelseDto? =
+        doPdlRequest(userContext, HENT_ADRESSEBESKYTTELSE, "adressebeskyttelse")
 
     private inline fun <reified T> doPdlRequest(
-        ident: String,
+        userContext: UserContext,
         query: String,
         typeRequest: String,
     ): T? =
         runCatching {
-            doRequest(PdlRequest(query, variables(ident)))
+            doRequest(userContext.token, PdlRequest(query, variables(userContext.userId)))
                 ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
         }
             .onFailure {
@@ -81,9 +82,12 @@ class HentPersonClientImpl(
             .also { it.checkForPdlApiErrors() }
             .data.hentPerson
 
-    private fun doRequest(pdlRequest: PdlRequest): String? =
+    private fun doRequest(
+        userToken: String,
+        pdlRequest: PdlRequest,
+    ): String? =
         hentPersonRequest
-            .header(AUTHORIZATION, BEARER + tokenX)
+            .header(AUTHORIZATION, BEARER + getTokenX(userToken))
             .bodyValue(pdlRequest)
             .retrieve()
             .bodyToMono<String>()
@@ -132,7 +136,7 @@ class HentPersonClientImpl(
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
 
-    private val tokenX get() = texasService.exchangeToken(IdentityProvider.TOKENX, target = pdlAudience)
+    private fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, target = pdlAudience)
 
     private fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
 

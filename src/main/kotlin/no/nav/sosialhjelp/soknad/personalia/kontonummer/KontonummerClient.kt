@@ -17,7 +17,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.bodyToMono
 
 interface KontonummerClient {
-    fun getKontonummer(ident: String): KontoDto?
+    fun getKontonummer(userToken: String): KontoDto?
 }
 
 @Component
@@ -30,11 +30,11 @@ class KontonummerClientImpl(
     private val webClient =
         webClientBuilder.configureWebClientBuilder(createDefaultHttpClient()).build()
 
-    override fun getKontonummer(ident: String): KontoDto? {
+    override fun getKontonummer(userToken: String): KontoDto? {
         return try {
             webClient.get()
                 .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
-                .header(AUTHORIZATION, BEARER + tokenX)
+                .header(AUTHORIZATION, BEARER + getTokenX(userToken))
                 .retrieve()
                 .bodyToMono<KontoDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
@@ -51,7 +51,8 @@ class KontonummerClientImpl(
         }
     }
 
-    private val tokenX get() = texasService.exchangeToken(IdentityProvider.TOKENX, kontoregisterAudience)
+    private fun getTokenX(personId: String) =
+        texasService.exchangeToken(personId, IdentityProvider.TOKENX, kontoregisterAudience)
 
     companion object {
         private val log = getLogger(KontonummerClientImpl::class.java)

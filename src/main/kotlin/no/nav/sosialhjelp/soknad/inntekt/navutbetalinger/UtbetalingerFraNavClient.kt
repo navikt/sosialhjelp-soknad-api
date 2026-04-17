@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
+import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
@@ -19,7 +20,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
 
 interface UtbetalingerFraNavClient {
-    fun getUtbetalingerSiste40Dager(personId: String): UtbetalDataDto?
+    fun getUtbetalingerSiste40Dager(userContext: UserContext): UtbetalDataDto?
 }
 
 @Component
@@ -32,15 +33,15 @@ class NavUtbetalingerClientImpl(
     private val webClient =
         webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient()).build()
 
-    override fun getUtbetalingerSiste40Dager(personId: String): UtbetalDataDto? {
+    override fun getUtbetalingerSiste40Dager(userContext: UserContext): UtbetalDataDto? {
         logger.info("Henter utbetalingsdata fra: $utbetalDataUrl ")
 
-        val request = NavUtbetalingerRequest(personId, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
+        val request = NavUtbetalingerRequest(userContext.userId, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
 
         return runCatching {
             webClient.post()
                 .uri("$utbetalDataUrl/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
-                .header(HttpHeaders.AUTHORIZATION, BEARER + tokenX)
+                .header(HttpHeaders.AUTHORIZATION, BEARER + getTokenX(userContext.token))
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToMono<List<Utbetaling>>()
@@ -55,7 +56,8 @@ class NavUtbetalingerClientImpl(
             }
     }
 
-    private val tokenX get() = texasService.exchangeToken(TOKENX, target = utbetalDataAudience)
+    private fun getTokenX(personId: String) =
+        texasService.exchangeToken(personId, TOKENX, target = utbetalDataAudience)
 
     companion object {
         private val logger by logger()

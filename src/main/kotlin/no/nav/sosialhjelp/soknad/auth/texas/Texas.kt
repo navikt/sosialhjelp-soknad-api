@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.auth.texas
 
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getTokenOrNull as userTokenOrNull
-
 interface TexasService {
     fun getToken(
         idProvider: IdentityProvider,
@@ -9,6 +7,7 @@ interface TexasService {
     ): String
 
     fun exchangeToken(
+        userToken: String,
         idProvider: IdentityProvider,
         target: String,
     ): String
@@ -29,17 +28,14 @@ class TexasServiceImpl(
     }
 
     override fun exchangeToken(
+        userToken: String,
         idProvider: IdentityProvider,
         target: String,
-    ): String {
-        return userTokenOrNull()?.let { userToken ->
-            when (val tokenResponse = texasClient.exchangeToken(idProvider.value, target, userToken)) {
-                is TokenResponse.Success -> tokenResponse.token
-                is TokenResponse.Error ->
-                    throw IllegalStateException("Failed to exchange token from Texas: $tokenResponse")
-            }
-        } ?: throw IllegalStateException("User token not found")
-    }
+    ): String =
+        when (val tokenResponse = texasClient.exchangeToken(idProvider.value, target, userToken)) {
+            is TokenResponse.Success -> tokenResponse.token
+            is TokenResponse.Error -> throw IllegalStateException("Failed to exchange token from Texas: $tokenResponse")
+        }
 }
 
 enum class IdentityProvider(val value: String) {

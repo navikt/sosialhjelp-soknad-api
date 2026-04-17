@@ -8,10 +8,12 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.LoggLevel
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
+import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -59,7 +61,7 @@ class InformasjonRessurs(
         val eier = personId()
         log.debug("Henter søknadsinfo for bruker")
 
-        return personService.hasAdressebeskyttelse(eier)
+        return personService.hasAdressebeskyttelse(UserContext(SubjectHandlerUtils.getToken(), eier))
             .also { if (it) handleHasAdressebeskyttelse() }
             .let {
                 SessionResponse(
