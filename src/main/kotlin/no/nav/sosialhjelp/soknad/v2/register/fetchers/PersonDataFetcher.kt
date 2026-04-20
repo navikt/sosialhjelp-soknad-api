@@ -6,9 +6,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.register.PrimaryFetcher
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
-import org.springframework.core.Ordered
-import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.util.UUID
@@ -22,8 +19,7 @@ interface PersonRegisterDataHandler {
     fun continueOnError(): Boolean = true
 }
 
-// Sørger for at denne mapperen er den første som kjører
-@Order(Ordered.HIGHEST_PRECEDENCE)
+// PrimaryFetcher - er nødvendig å kjøre før "alle andre"
 @Component
 class PersonDataFetcher(
     private val personService: PersonService,
@@ -31,13 +27,12 @@ class PersonDataFetcher(
 ) : PrimaryFetcher {
     private val logger by logger()
 
-    override fun fetchAndSave(
+    override suspend fun fetchAndSave(
         soknadId: UUID,
-        userContext: UserContext,
     ) {
         logger.info("Henter person i PDL")
 
-        val hentPerson = personService.hentPerson(userContext)
+        val hentPerson = personService.hentPerson()
         hentPerson
             ?.also { it.verifyOver18() }
             ?.let { person ->

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
@@ -8,7 +9,7 @@ import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
+import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
@@ -30,10 +31,10 @@ class KrrClient(
             .baseUrl(krrUrl)
             .build()
 
-    fun getDigitalKontaktinformasjon(userContext: UserContext): KontaktInfoResponse? =
+    suspend fun getDigitalKontaktinformasjon(): KontaktInfoResponse? =
         runCatching {
             logger.info("Henter Digital kontaktinformasjon fra KRR")
-            doPostRequest(userContext)
+            doPostRequest()
         }
             .getOrElse { e ->
                 when (e) {
@@ -53,16 +54,16 @@ class KrrClient(
                 }
             }
 
-    private fun doPostRequest(userContext: UserContext): KontaktInfoResponse? =
+    private suspend fun doPostRequest(): KontaktInfoResponse? =
         webClient
             .post()
             .uri("/rest/v1/personer")
-            .header(AUTHORIZATION, BEARER + getTokenX(userContext.token))
-            .bodyValue(KontaktInfoRequest(listOf(userContext.userId)))
+            .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
+            .bodyValue(KontaktInfoRequest(listOf(currentUserContext().userId)))
             .retrieve()
             .bodyToMono<KontaktInfoResponse>()
             .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-            .block()
+            .awaitSingleOrNull()
 
     private fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, target = krrAudience)
 

@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
@@ -34,13 +33,19 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Duration
 
 interface HentPersonClient {
-    fun hentPerson(userContext: UserContext): PersonDto?
+    fun hentPerson(
+        personId: String,
+        userToken: String,
+    ): PersonDto?
 
-    fun hentEktefelle(ident: String): EktefelleDto?
+    fun hentAdressebeskyttelse(
+        personId: String,
+        userToken: String,
+    ): PersonAdressebeskyttelseDto?
 
-    fun hentBarn(ident: String): BarnDto?
+    fun hentEktefelle(ektefelleIdent: String): EktefelleDto?
 
-    fun hentAdressebeskyttelse(userContext: UserContext): PersonAdressebeskyttelseDto?
+    fun hentBarn(barnIdent: String): BarnDto?
 }
 
 @Component
@@ -52,29 +57,33 @@ class HentPersonClientImpl(
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
     // må caches på dette nivået da den kalles 2 steder i PersonService
-    @Cacheable(HentPersonClientConfig.CACHE_NAME, unless = "#result == null")
-    override fun hentPerson(userContext: UserContext): PersonDto? =
-        doPdlRequest(userContext, HENT_PERSON, "hentPerson")
+    @Cacheable(HentPersonClientConfig.CACHE_NAME, key = "#personId", unless = "#result == null")
+    override fun hentPerson(
+        personId: String,
+        userToken: String,
+    ): PersonDto? =
+        doPdlRequest(PdlRequest(HENT_PERSON, variables(personId)), "hentPerson", userToken)
 
-    override fun hentAdressebeskyttelse(userContext: UserContext): PersonAdressebeskyttelseDto? =
-        doPdlRequest(userContext, HENT_ADRESSEBESKYTTELSE, "adressebeskyttelse")
+    override fun hentAdressebeskyttelse(
+        personId: String,
+        userToken: String,
+    ): PersonAdressebeskyttelseDto? =
+        doPdlRequest(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(personId)), "adressebeskyttelse", userToken)
 
     private inline fun <reified T> doPdlRequest(
-        userContext: UserContext,
-        query: String,
+        pdlRequest: PdlRequest,
         typeRequest: String,
+        userToken: String,
     ): T? =
         runCatching {
-            doRequest(userContext.token, PdlRequest(query, variables(userContext.userId)))
-                ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
+            doRequest(pdlRequest, userToken) ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
         }
-            .onFailure {
+            .getOrElse {
                 when (it) {
                     is PdlApiException -> throw it
                     else -> throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", it)
                 }
             }
-            .getOrThrow()
             .let { response -> parseResponse(response) }
 
     private inline fun <reified T> parseResponse(response: String): T? =
@@ -83,8 +92,8 @@ class HentPersonClientImpl(
             .data.hentPerson
 
     private fun doRequest(
-        userToken: String,
         pdlRequest: PdlRequest,
+        userToken: String,
     ): String? =
         hentPersonRequest
             .header(AUTHORIZATION, BEARER + getTokenX(userToken))
@@ -94,12 +103,13 @@ class HentPersonClientImpl(
             .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
             .block()
 
-    override fun hentEktefelle(ident: String): EktefelleDto? =
+    // TODO Siden dette ikke skal fjernes - skriv også om dette til å bruke generisk logikk
+    override fun hentEktefelle(ektefelleIdent: String): EktefelleDto? =
         try {
             val response =
                 hentPersonRequest
                     .header(AUTHORIZATION, BEARER + azureAdToken())
-                    .bodyValue(PdlRequest(HENT_EKTEFELLE, variables(ident)))
+                    .bodyValue(PdlRequest(HENT_EKTEFELLE, variables(ektefelleIdent)))
                     .retrieve()
                     .bodyToMono<String>()
                     .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
@@ -115,12 +125,13 @@ class HentPersonClientImpl(
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
 
-    override fun hentBarn(ident: String): BarnDto? =
+    // TODO Siden dette ikke skal fjernes - skriv også om dette til å bruke generisk logikk
+    override fun hentBarn(barnIdent: String): BarnDto? =
         try {
             val response: String =
                 hentPersonRequest
                     .header(AUTHORIZATION, BEARER + azureAdToken())
-                    .bodyValue(PdlRequest(HENT_BARN, variables(ident)))
+                    .bodyValue(PdlRequest(HENT_BARN, variables(barnIdent)))
                     .retrieve()
                     .bodyToMono<String>()
                     .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)

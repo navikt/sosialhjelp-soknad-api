@@ -1,12 +1,13 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider.TOKENX
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
+import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.JacksonJsonDecoder
@@ -22,23 +23,22 @@ class AaregClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    fun finnArbeidsforholdForArbeidstaker(userContext: UserContext): List<ArbeidsforholdDto>? {
-        val request = ArbeidsforholdSokRequest(arbeidstakerId = userContext.userId)
+    suspend fun finnArbeidsforholdForArbeidstaker(): List<ArbeidsforholdDto>? {
+        val request = ArbeidsforholdSokRequest(arbeidstakerId = currentUserContext().userId)
 
-        return doFinnArbeidsforhold(userContext.token, request)
+        return doFinnArbeidsforhold(request)
     }
 
-    private fun doFinnArbeidsforhold(
-        token: String,
+    private suspend fun doFinnArbeidsforhold(
         request: ArbeidsforholdSokRequest,
     ): List<ArbeidsforholdDto>? {
         return webClient.post()
             .uri("/v2/arbeidstaker/arbeidsforhold")
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${getTokenX(token)}")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${getTokenX(currentUserContext().userToken)}")
             .body(BodyInserters.fromValue(request))
             .retrieve()
             .bodyToMono<List<ArbeidsforholdDto>>()
-            .block()
+            .awaitSingleOrNull()
     }
 
     private fun getTokenX(personId: String) = texasService.exchangeToken(personId, TOKENX, target = aaregAudience)

@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
-import no.nav.sosialhjelp.soknad.v2.register.UserContext
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 
@@ -19,8 +18,8 @@ class UtbetalingerFraNavService(
     private val navUtbetalingerClient: UtbetalingerFraNavClient,
     private val orgService: OrganisasjonService,
 ) {
-    fun getUtbetalingerSiste40Dager(userContext: UserContext): List<UtbetalingMedKomponent>? {
-        return navUtbetalingerClient.getUtbetalingerSiste40Dager(userContext)
+    suspend fun getUtbetalingerSiste40Dager(): List<UtbetalingMedKomponent>? {
+        return navUtbetalingerClient.getUtbetalingerSiste40Dager()
             ?.toUtbetalingMedKomponent(orgNavn)
             ?.also { utbetalinger ->
 

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
@@ -7,6 +8,7 @@ import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
+import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -17,7 +19,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.bodyToMono
 
 interface KontonummerClient {
-    fun getKontonummer(userToken: String): KontoDto?
+    suspend fun getKontonummer(): KontoDto?
 }
 
 @Component
@@ -30,15 +32,15 @@ class KontonummerClientImpl(
     private val webClient =
         webClientBuilder.configureWebClientBuilder(createDefaultHttpClient()).build()
 
-    override fun getKontonummer(userToken: String): KontoDto? {
+    override suspend fun getKontonummer(): KontoDto? {
         return try {
             webClient.get()
                 .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
-                .header(AUTHORIZATION, BEARER + getTokenX(userToken))
+                .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
                 .retrieve()
                 .bodyToMono<KontoDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .block()
+                .awaitSingleOrNull()
         } catch (e: Unauthorized) {
             log.warn("Kontoregister konto  - 401 Unauthorized - ${e.message}")
             null
