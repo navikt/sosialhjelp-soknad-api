@@ -40,8 +40,8 @@ class MineSakerMetadataRessursEndpointIT {
 
     @BeforeEach
     fun setup() {
-        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns
-            HentPersonClientMock().hentAdressebeskyttelse("ident")
+        every { hentPersonClient.hentAdressebeskyttelse(any(), any()) } returns
+            HentPersonClientMock().hentAdressebeskyttelse("ident", "token")
 
         every { texasService.getToken(any(), any()) } returns
             issueToken(mockOAuth2Server, BRUKER, issuer = SELVBETJENING).serialize()

@@ -23,6 +23,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters
 import java.time.LocalDateTime
 import java.util.UUID
+import org.springframework.test.web.reactive.server.expectBody
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class InterceptorTest : AbstractIntegrationTest() {
@@ -78,7 +79,7 @@ class InterceptorTest : AbstractIntegrationTest() {
             )
             .exchange()
             .expectStatus().isOk
-            .expectBody(Any::class.java)
+            .expectBody<Any>()
             .returnResult()
             .responseBody!!
 

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
@@ -95,7 +96,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     // TODO Er dette riktig antakelse?
     @Test
     fun `Exception i fetcher med ContinueOnError = true skal ikke stoppe opprettelse av ny soknad`() {
-        every { krrService.getMobilnummer(any()) } throws IllegalArgumentException("Feil ved henting av telefonnummer")
+        coEvery { krrService.getMobilnummer() } throws IllegalArgumentException("Feil ved henting av telefonnummer")
 
         createNewSoknad().also { soknadId ->
             soknadRepository.findByIdOrNull(soknadId).let { assertThat(it).isNotNull }
@@ -105,7 +106,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     @Test
     fun `Exception i fetcher med ContinueOnError = false skal stoppe innhenting og ingenting skal lagres`() {
         metadataRepository.deleteAll()
-        every { personService.hentPerson(any()) } throws IllegalArgumentException("Feil ved henting av person")
+        coEvery { personService.hentPerson(any()) } throws IllegalArgumentException("Feil ved henting av person")
 
         doPostFullResponse(uri = createUri)
             .expectStatus().is5xxServerError
@@ -259,7 +260,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `Hvis soker er under 18 skal det returneres error`() {
-        every { personService.hentPerson(any()) } returns
+        coEvery { personService.hentPerson(any()) } returns
             createPersonAnswer().copy(fodselsdato = LocalDate.now().minusYears(17))
 
         doPostFullResponse(uri = createUri)

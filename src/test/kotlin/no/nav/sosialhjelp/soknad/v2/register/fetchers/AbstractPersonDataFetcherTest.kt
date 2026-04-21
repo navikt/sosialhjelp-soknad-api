@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.coEvery
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseClient
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkeladresseDto
@@ -38,7 +39,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
 
     @BeforeEach
     fun mockKontonummer() {
-        every { kontonummerClient.getKontonummer(any()) } returns kontoDto
+        coEvery { kontonummerClient.getKontonummer() } returns kontoDto
     }
 
     fun createAnswerForHentPersonUgiftMedMatrikkelAdresse(): MatrikkeladresseDto {
@@ -46,7 +47,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
             sivilstandDto = null,
             vegAdresseDto = null,
             matrikkeladresseDto = matrikkeladresseDto,
-        ).also { every { hentPersonClient.hentPerson(any()) } returns it }
+        ).also { every { hentPersonClient.hentPerson(any(), any()) } returns it }
 
         return defaultResponseFromHentMatrikkelAdresse().also {
             every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns it
@@ -55,7 +56,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
 
     fun createAnswerForHentPersonUgift(): PersonDto {
         return defaultResponseFromHentPerson(sivilstandDto = null).also {
-            every { hentPersonClient.hentPerson(soknad.eierPersonId) } returns it
+            every { hentPersonClient.hentPerson(soknad.eierPersonId, any()) } returns it
         }
     }
 
@@ -82,7 +83,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
     protected fun createAnswerForPersonMedEktefelleOgBarn(): FamilieDtos {
         val personDto =
             defaultResponseHentPersonWithEktefelleOgBarn().also {
-                every { hentPersonClient.hentPerson(soknad.eierPersonId) } returns it
+                coEvery { hentPersonClient.hentPerson(soknad.eierPersonId, "token") } returns it
             }
         val ektefelleDto = createAnswerForHentEktefelle(ektefelleFnr)
         val barnDtoList = createAnswerForHentBarn()

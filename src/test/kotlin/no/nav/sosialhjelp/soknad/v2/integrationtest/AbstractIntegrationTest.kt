@@ -4,6 +4,7 @@ import com.nimbusds.jwt.SignedJWT
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.every
+import java.util.UUID
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
@@ -26,7 +27,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import org.springframework.web.reactive.function.BodyInserters
-import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT36000S")
@@ -89,8 +89,8 @@ abstract class AbstractIntegrationTest {
     }
 
     protected fun setupPdlAnswers() {
-        every { hentPersonClient.hentPerson(any()) } returns HentPersonClientMock().hentPerson("ident")
-        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns HentPersonClientMock().hentAdressebeskyttelse("ident")
+        every { hentPersonClient.hentPerson(any(), any()) } returns HentPersonClientMock().hentPerson("ident", "token")
+        every { hentPersonClient.hentAdressebeskyttelse(any(), any()) } returns HentPersonClientMock().hentAdressebeskyttelse("ident", "token")
         every { hentPersonClient.hentEktefelle(any()) } returns HentPersonClientMock().hentEktefelle("ident")
         every { hentPersonClient.hentBarn(any()) } returns HentPersonClientMock().hentBarn("ident")
     }

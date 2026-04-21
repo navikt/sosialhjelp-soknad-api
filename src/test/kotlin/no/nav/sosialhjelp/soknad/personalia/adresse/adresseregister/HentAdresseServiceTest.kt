@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.Bydel
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkelNummer
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkeladresseDto
-import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -16,8 +15,7 @@ import org.junit.jupiter.api.Test
 
 internal class HentAdresseServiceTest {
     private val hentAdresseClient: HentAdresseClient = mockk()
-    private val personService: PersonService = mockk()
-    private val hentAdresseService = HentAdresseService(hentAdresseClient, personService)
+    private val hentAdresseService = HentAdresseService(hentAdresseClient)
 
     private val defaultMatrikkelAdresse =
         MatrikkeladresseDto(

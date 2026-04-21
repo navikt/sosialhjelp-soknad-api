@@ -16,7 +16,7 @@ class KrrService(
     @Cacheable(KrrCacheConfig.CACHE_NAME, unless = "#result == null")
     suspend fun getMobilnummer(): String? {
         return doGet()
-            ?.also { info -> if (info.mobiltelefonnummer == null) logger.warn("KRR - mobiltelefonnummer er null") }
+            ?.also { it.mobiltelefonnummer ?: logger.warn("KRR - mobiltelefonnummer er null") }
             ?.mobiltelefonnummer
     }
 

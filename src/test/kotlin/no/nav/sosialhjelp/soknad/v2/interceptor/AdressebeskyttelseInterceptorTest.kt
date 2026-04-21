@@ -75,7 +75,7 @@ class AdressebeskyttelseInterceptorTest {
     fun before() {
         clearAllMocks()
         soknadMetadataRepository.deleteAll()
-        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
+        every { hentPersonClient.hentAdressebeskyttelse(any(), any()) } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
         token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
     }
 
@@ -104,7 +104,7 @@ class AdressebeskyttelseInterceptorTest {
     fun `Kall til et annet endepunkt med adressebeskyttelse skal returnere FORBIDDEN`() {
         clearAllMocks()
 //        every { personService.hasAdressebeskyttelse(any())} returns true
-        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
+        every { hentPersonClient.hentAdressebeskyttelse(any(), any()) } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
 
         webClient.doPostFullResponse(
             uri = "/soknad/create",

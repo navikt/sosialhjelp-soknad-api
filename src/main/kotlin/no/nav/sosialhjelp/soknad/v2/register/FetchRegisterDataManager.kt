@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
+import java.util.UUID
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -16,9 +19,6 @@ import org.slf4j.MDC
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
-import kotlin.coroutines.AbstractCoroutineContextElement
-import kotlin.coroutines.CoroutineContext
 
 interface RegisterDataFetcher {
     suspend fun fetchAndSave(
@@ -47,38 +47,39 @@ class FetchRegisterDataManager(
 
     @Transactional(propagation = Propagation.NEVER)
     fun runAllRegisterDataFetchers(soknadId: UUID) {
-        if (allFetchers.filterIsInstance<PrimaryFetcher>().size > 1) error("Det finnes mer enn en PrimaryFetcher")
-
         logger.info("Henter Register-data")
 
-        val currentUserContext =
-            UserContextElement(
-                userToken = SubjectHandlerUtils.getToken(),
-                userId = SubjectHandlerUtils.getUserIdFromToken(),
-            )
-
-        runPrimaryFetcher(soknadId, currentUserContext, allFetchers.filterIsInstance<PrimaryFetcher>().firstOrNull())
-        runSynchronousFetchers(soknadId, currentUserContext, allFetchers.filterIsInstance<SynchronousFetcher>())
-        runAsyncFetchers(soknadId, currentUserContext, allFetchers.filterIsInstance<AsynchronousFetcher>())
+        createUserContextElement()
+            .also { userContext ->
+                runPrimaryFetcher(soknadId, userContext, allFetchers.findPrimaryFetcher())
+                runSynchronousFetchers(soknadId, userContext, allFetchers.filterIsInstance<SynchronousFetcher>())
+                runAsyncFetchers(soknadId, userContext, allFetchers.filterIsInstance<AsynchronousFetcher>())
+            }
     }
+
+    private fun createUserContextElement() =
+        UserContextElement(
+            userToken = SubjectHandlerUtils.getToken(),
+            userId = SubjectHandlerUtils.getUserIdFromToken(),
+        )
 
     private fun runPrimaryFetcher(
         soknadId: UUID,
-        currentUserContext: UserContextElement,
+        userContext: UserContextElement,
         primaryFetcher: PrimaryFetcher?,
     ) {
         if (primaryFetcher == null) error("Finnes ingen PrimaryFetcher")
-        runBlocking(MDCContext() + currentUserContext) {
+        runBlocking(MDCContext() + userContext) {
             runFetcher(soknadId, primaryFetcher)
         }
     }
 
     private fun runSynchronousFetchers(
         soknadId: UUID,
-        currentUserContext: UserContextElement,
+        userContext: UserContextElement,
         fetchers: List<SynchronousFetcher>,
     ) {
-        runBlocking(Dispatchers.IO + MDCContext() + currentUserContext) {
+        runBlocking(Dispatchers.IO + MDCContext() + userContext) {
             fetchers
                 .map { fetcher -> async { runFetcher(soknadId, fetcher) } }
                 .awaitAll()
@@ -87,12 +88,12 @@ class FetchRegisterDataManager(
 
     private fun runAsyncFetchers(
         soknadId: UUID,
-        currentUserContext: UserContextElement,
+        userContext: UserContextElement,
         fetchers: List<AsynchronousFetcher>,
     ) {
         val mdcSnapshot = MDC.getCopyOfContextMap()
         fetchers.forEach { fetcher ->
-            backgroundScope.launch(MDCContext(mdcSnapshot) + currentUserContext) {
+            backgroundScope.launch(MDCContext(mdcSnapshot) + userContext) {
                 runFetcher(soknadId, fetcher)
             }
         }
@@ -104,6 +105,7 @@ class FetchRegisterDataManager(
     ) {
         runCatching {
             logger.info("${Thread.currentThread().name} running fetcher: $fetcher")
+            logger.info("MDCContext: ${MDC.getCopyOfContextMap()}")
             fetcher.fetchAndSave(soknadId)
             logger.info("${Thread.currentThread().name} finished fetcher: $fetcher")
         }
@@ -125,3 +127,9 @@ class UserContextElement(
 ) : AbstractCoroutineContextElement(Key) {
     companion object Key : CoroutineContext.Key<UserContextElement>
 }
+
+private fun List<RegisterDataFetcher>.findPrimaryFetcher(): PrimaryFetcher =
+    filterIsInstance<PrimaryFetcher>()
+        .also { if (it.size > 1) error("Det finnes mer enn en PrimaryFetcher") }
+        .firstOrNull()
+        ?: error("Fant ikke primaryFetcher")

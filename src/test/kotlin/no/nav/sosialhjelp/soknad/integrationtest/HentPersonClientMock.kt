@@ -18,7 +18,7 @@ class HentPersonClientMock : HentPersonClient {
             .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .build()
 
-    override fun hentPerson(ident: String): PersonDto? {
+    override fun hentPerson(personId: String, userToken: String): PersonDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlPersonResponse.json")
         assertThat(resourceAsStream).isNotNull
         val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
@@ -27,7 +27,7 @@ class HentPersonClientMock : HentPersonClient {
         return pdlPersonResponse.data.hentPerson
     }
 
-    override fun hentEktefelle(ident: String): EktefelleDto? {
+    override fun hentEktefelle(ektefelleIdent: String): EktefelleDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlEktefelleResponse.json")
         assertThat(resourceAsStream).isNotNull
         val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
@@ -36,7 +36,7 @@ class HentPersonClientMock : HentPersonClient {
         return pdlEktefelleResponse.data.hentPerson
     }
 
-    override fun hentBarn(ident: String): BarnDto? {
+    override fun hentBarn(barnIdent: String): BarnDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlBarnResponse.json")
         assertThat(resourceAsStream).isNotNull
         val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
@@ -45,7 +45,7 @@ class HentPersonClientMock : HentPersonClient {
         return pdlBarnResponse.data.hentPerson
     }
 
-    override fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto? {
+    override fun hentAdressebeskyttelse(personId: String, userToken: String): PersonAdressebeskyttelseDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlAdressebeskyttelseTomResponse.json")
         assertThat(resourceAsStream).isNotNull
         val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)

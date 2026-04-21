@@ -1,9 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers.person
 
+import kotlinx.coroutines.test.runTest
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.register.UserContextElement
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.AbstractPersonDataFetcherTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
@@ -15,8 +17,10 @@ class EierDataFetcherTest : AbstractPersonDataFetcherTest() {
     @Autowired
     private lateinit var eierRepository: EierRepository
 
+    private val userContext: UserContextElement = UserContextElement("token", "05058548523")
+
     @Test
-    fun `Hente fra PDL skal lagre eier-data i db`() {
+    suspend fun `Hente fra PDL skal lagre eier-data i db`() = runTest(userContext) {
         val personDto = createAnswerForHentPersonUgift()
 
         fetchPerson.fetchAndSave(soknad.id)
@@ -30,7 +34,8 @@ class EierDataFetcherTest : AbstractPersonDataFetcherTest() {
     }
 
     @Test
-    fun `Eier-data skal overskrives ved ny innhenting, men kontonummer skal bestå`() {
+    suspend fun `Eier-data skal overskrives ved ny innhenting, men kontonummer skal besta`() =
+        runTest(userContext) {
         val existing =
             eierRepository.save(
                 Eier(
