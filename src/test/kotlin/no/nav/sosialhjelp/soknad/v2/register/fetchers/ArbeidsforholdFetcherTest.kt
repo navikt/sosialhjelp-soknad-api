@@ -66,7 +66,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     @Test
     fun `Exception i Aareg-client kaster feil`() {
         coEvery { aaregClient.finnArbeidsforholdForArbeidstaker() } throws
-                TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
+            TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
 
         assertThatThrownBy {
             runTest {
@@ -94,7 +94,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     suspend fun `OrganisasjonClient kaster exception`() {
         createAnswerForAaregClient()
         every { organisasjonClient.hentOrganisasjonNoekkelinfo(any()) } throws
-                TjenesteUtilgjengeligException("EREG", Exception("Dette tryna hardt"))
+            TjenesteUtilgjengeligException("EREG", Exception("Dette tryna hardt"))
 
         arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
 
@@ -147,12 +147,16 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
         livssituasjonRepository.findByIdOrNull(soknad.id)!!.arbeid.arbeidsforhold.also {
             assertThat(it).isEmpty()
         }
-        assertThat(withContext(Dispatchers.IO) {
-            okonomiService.getInntekter(soknad.id)
-        }).isEmpty()
-        assertThat(withContext(Dispatchers.IO) {
-            dokumentasjonRepository.findAllBySoknadId(soknad.id)
-        }).isEmpty()
+        assertThat(
+            withContext(Dispatchers.IO) {
+                okonomiService.getInntekter(soknad.id)
+            },
+        ).isEmpty()
+        assertThat(
+            withContext(Dispatchers.IO) {
+                dokumentasjonRepository.findAllBySoknadId(soknad.id)
+            },
+        ).isEmpty()
     }
 
     @MockkBean

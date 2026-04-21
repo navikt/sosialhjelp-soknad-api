@@ -37,25 +37,28 @@ class KrrServiceTest {
     private val userContext: UserContextElement = UserContextElement("token", "12345612345")
 
     @Test
-    suspend fun `Person finnes skal gi ok-response`() = runTest(userContext) {
-        coEvery { krrClient.getDigitalKontaktinformasjon() } returns deserialize(okResponse)
+    suspend fun `Person finnes skal gi ok-response`() =
+        runTest(userContext) {
+            coEvery { krrClient.getDigitalKontaktinformasjon() } returns deserialize(okResponse)
 
-        assertThat(krrService.getMobilnummer()).isEqualTo(MOBILNUMMER)
-    }
-
-    @Test
-    suspend fun `Finnes i PDL men ikke KRR gir aktiv = false`() = runTest(userContext) {
-        coEvery { krrClient.getDigitalKontaktinformasjon() } returns deserialize(ikkeAktivResposne)
-
-        assertThat(krrService.getMobilnummer()).isNull()
-    }
+            assertThat(krrService.getMobilnummer()).isEqualTo(MOBILNUMMER)
+        }
 
     @Test
-    suspend fun `Personen finnes ikke i PDL`() = runTest(userContext) {
-        coEvery { krrClient.getDigitalKontaktinformasjon() } returns deserialize(feilResponse)
+    suspend fun `Finnes i PDL men ikke KRR gir aktiv = false`() =
+        runTest(userContext) {
+            coEvery { krrClient.getDigitalKontaktinformasjon() } returns deserialize(ikkeAktivResposne)
 
-        assertThat(krrService.getMobilnummer()).isNull()
-    }
+            assertThat(krrService.getMobilnummer()).isNull()
+        }
+
+    @Test
+    suspend fun `Personen finnes ikke i PDL`() =
+        runTest(userContext) {
+            coEvery { krrClient.getDigitalKontaktinformasjon() } returns deserialize(feilResponse)
+
+            assertThat(krrService.getMobilnummer()).isNull()
+        }
 
     companion object {
         const val PERSON_ID = "12345612345"
@@ -71,43 +74,43 @@ private fun deserialize(input: String) =
 
 private val okResponse =
     "{" +
-            "\"personer\": {" +
-            "\"$PERSON_ID\": {" +
-            "\"personident\": \"$PERSON_ID\"," +
-            "\"aktiv\": true," +
-            "\"kanVarsles\": true," +
-            "\"reservasjonOppdatert\": \"2025-06-23T08:49:14.066Z\"," +
-            "\"reservert\": true," +
-            "\"spraak\": \"Norsk\"," +
-            "\"spraakOppdatert\": \"2025-06-23T08:49:14.066Z\"," +
-            "\"epostadresse\": \"e@post.no\"," +
-            "\"epostadresseOppdatert\": \"2025-06-23T08:49:14.066Z\"," +
-            "\"epostadresseVerifisert\": \"2025-06-23T08:49:14.066Z\"," +
-            "\"mobiltelefonnummer\": \"$MOBILNUMMER\"," +
-            "\"mobiltelefonnummerOppdatert\": \"2025-06-23T08:49:14.066Z\"," +
-            "\"mobiltelefonnummerVerifisert\": \"2025-06-23T08:49:14.066Z\"," +
-            "\"sikkerDigitalPostkasse\": {" +
-            "\"adresse\": \"En adresse\"," +
-            "\"leverandoerAdresse\": \"Leverandoradresse\"," +
-            "\"leverandoerSertifikat\": \"Sertifikat\"" +
-            "}" +
-            "}" +
-            "}" +
-            "}"
+        "\"personer\": {" +
+        "\"$PERSON_ID\": {" +
+        "\"personident\": \"$PERSON_ID\"," +
+        "\"aktiv\": true," +
+        "\"kanVarsles\": true," +
+        "\"reservasjonOppdatert\": \"2025-06-23T08:49:14.066Z\"," +
+        "\"reservert\": true," +
+        "\"spraak\": \"Norsk\"," +
+        "\"spraakOppdatert\": \"2025-06-23T08:49:14.066Z\"," +
+        "\"epostadresse\": \"e@post.no\"," +
+        "\"epostadresseOppdatert\": \"2025-06-23T08:49:14.066Z\"," +
+        "\"epostadresseVerifisert\": \"2025-06-23T08:49:14.066Z\"," +
+        "\"mobiltelefonnummer\": \"$MOBILNUMMER\"," +
+        "\"mobiltelefonnummerOppdatert\": \"2025-06-23T08:49:14.066Z\"," +
+        "\"mobiltelefonnummerVerifisert\": \"2025-06-23T08:49:14.066Z\"," +
+        "\"sikkerDigitalPostkasse\": {" +
+        "\"adresse\": \"En adresse\"," +
+        "\"leverandoerAdresse\": \"Leverandoradresse\"," +
+        "\"leverandoerSertifikat\": \"Sertifikat\"" +
+        "}" +
+        "}" +
+        "}" +
+        "}"
 
 private val ikkeAktivResposne =
     "{\n" +
-            "  \"personer\": {\n" +
-            "    \"$PERSON_ID\": {\n" +
-            "      \"personident\": \"$PERSON_ID\",\n" +
-            "      \"aktiv\": false\n" +
-            "    }\n" +
-            "  }\n" +
-            "}"
+        "  \"personer\": {\n" +
+        "    \"$PERSON_ID\": {\n" +
+        "      \"personident\": \"$PERSON_ID\",\n" +
+        "      \"aktiv\": false\n" +
+        "    }\n" +
+        "  }\n" +
+        "}"
 
 private val feilResponse =
     "{\n" +
-            "  \"feil\": {\n" +
-            "    \"$PERSON_ID\": \"person_ikke_funnet\"\n" +
-            "  }\n" +
-            "}"
+        "  \"feil\": {\n" +
+        "    \"$PERSON_ID\": \"person_ikke_funnet\"\n" +
+        "  }\n" +
+        "}"

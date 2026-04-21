@@ -20,45 +20,46 @@ class EierDataFetcherTest : AbstractPersonDataFetcherTest() {
     private val userContext: UserContextElement = UserContextElement("token", "05058548523")
 
     @Test
-    suspend fun `Hente fra PDL skal lagre eier-data i db`() = runTest(userContext) {
-        val personDto = createAnswerForHentPersonUgift()
+    suspend fun `Hente fra PDL skal lagre eier-data i db`() =
+        runTest(userContext) {
+            val personDto = createAnswerForHentPersonUgift()
 
-        fetchPerson.fetchAndSave(soknad.id)
+            fetchPerson.fetchAndSave(soknad.id)
 
-        eierRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.navn.fornavn).isEqualTo(personDto.navn?.get(0)?.fornavn)
-            assertThat(it.navn.etternavn).isEqualTo(personDto.navn?.get(0)?.etternavn)
-            assertThat(it.statsborgerskap).isEqualTo(personDto.statsborgerskap?.get(0)?.land)
+            eierRepository.findByIdOrNull(soknad.id)?.let {
+                assertThat(it.navn.fornavn).isEqualTo(personDto.navn?.get(0)?.fornavn)
+                assertThat(it.navn.etternavn).isEqualTo(personDto.navn?.get(0)?.etternavn)
+                assertThat(it.statsborgerskap).isEqualTo(personDto.statsborgerskap?.get(0)?.land)
+            }
+                ?: fail("Fant ikke eier")
         }
-            ?: fail("Fant ikke eier")
-    }
 
     @Test
     suspend fun `Eier-data skal overskrives ved ny innhenting, men kontonummer skal besta`() =
         runTest(userContext) {
-        val existing =
-            eierRepository.save(
-                Eier(
-                    soknadId = soknad.id,
-                    statsborgerskap = "NOR",
-                    nordiskBorger = true,
-                    navn =
-                        Navn(
-                            fornavn = "Fornavn",
-                            etternavn = "Etternavnesen",
-                        ),
-                    kontonummer = Kontonummer(fraBruker = "98769898765", fraRegister = "12345678901"),
-                ),
-            )
-        val personDto = createAnswerForHentPersonUgift()
-        fetchPerson.fetchAndSave(soknad.id)
+            val existing =
+                eierRepository.save(
+                    Eier(
+                        soknadId = soknad.id,
+                        statsborgerskap = "NOR",
+                        nordiskBorger = true,
+                        navn =
+                            Navn(
+                                fornavn = "Fornavn",
+                                etternavn = "Etternavnesen",
+                            ),
+                        kontonummer = Kontonummer(fraBruker = "98769898765", fraRegister = "12345678901"),
+                    ),
+                )
+            val personDto = createAnswerForHentPersonUgift()
+            fetchPerson.fetchAndSave(soknad.id)
 
-        eierRepository.findByIdOrNull(soknad.id)!!.let { updated ->
-            assertThat(existing.navn).isNotEqualTo(updated.navn)
-            assertThat(updated.navn.fornavn).isEqualTo(personDto.navn?.get(0)?.fornavn)
+            eierRepository.findByIdOrNull(soknad.id)!!.let { updated ->
+                assertThat(existing.navn).isNotEqualTo(updated.navn)
+                assertThat(updated.navn.fornavn).isEqualTo(personDto.navn?.get(0)?.fornavn)
 
-            assertThat(updated.kontonummer.fraRegister).isEqualTo(existing.kontonummer.fraRegister)
-            assertThat(updated.kontonummer.fraBruker).isEqualTo(existing.kontonummer.fraBruker)
+                assertThat(updated.kontonummer.fraRegister).isEqualTo(existing.kontonummer.fraRegister)
+                assertThat(updated.kontonummer.fraBruker).isEqualTo(existing.kontonummer.fraBruker)
+            }
         }
-    }
 }

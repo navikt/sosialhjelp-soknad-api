@@ -36,14 +36,14 @@ class AdresseFetcherTest : AbstractPersonDataFetcherTest() {
     @Test
     suspend fun `Hente person med matrikkeladresse skal lagres i db`() =
         runTest(UserContextElement("token", "05058548523")) {
-        val dto = createAnswerForHentPersonUgiftMedMatrikkelAdresse()
+            val dto = createAnswerForHentPersonUgiftMedMatrikkelAdresse()
 
-        fetchPerson.fetchAndSave(soknad.id)
+            fetchPerson.fetchAndSave(soknad.id)
 
-        kontaktRepository.findByIdOrNull(soknad.id)?.adresser?.folkeregistrert?.let {
-            assertThat(it).isInstanceOf(MatrikkelAdresse::class.java)
-            assertThat((it as MatrikkelAdresse).gaardsnummer).isEqualTo(dto.matrikkelnummer?.gaardsnummer)
+            kontaktRepository.findByIdOrNull(soknad.id)?.adresser?.folkeregistrert?.let {
+                assertThat(it).isInstanceOf(MatrikkelAdresse::class.java)
+                assertThat((it as MatrikkelAdresse).gaardsnummer).isEqualTo(dto.matrikkelnummer?.gaardsnummer)
+            }
+                ?: fail("Fant ikke Kontakt i db")
         }
-            ?: fail("Fant ikke Kontakt i db")
-    }
 }
