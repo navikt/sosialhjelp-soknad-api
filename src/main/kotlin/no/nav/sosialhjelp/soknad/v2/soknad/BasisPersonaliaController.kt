@@ -18,7 +18,7 @@ class BasisPersonaliaController(
 ) {
     @GetMapping
     fun getBasisPersonalia(
-        @PathVariable("soknadId") soknadId: UUID,
+        @PathVariable soknadId: UUID,
     ): PersonaliaDto = eierService.findOrError(soknadId).toPersonaliaDto(eierService.findEierPersonId(soknadId))
 }
 
@@ -47,6 +47,4 @@ data class NavnDto(
     val fornavn: String,
     val mellomnavn: String? = null,
     val etternavn: String,
-) {
-    val fulltNavn: String = listOfNotNull(fornavn, mellomnavn, etternavn).filter { it.isNotBlank() }.joinToString(" ") { it.trim() }
-}
+)

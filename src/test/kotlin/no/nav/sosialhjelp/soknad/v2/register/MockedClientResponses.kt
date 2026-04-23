@@ -346,7 +346,6 @@ fun defaultResponseFromHentMatrikkelAdresse(): no.nav.sosialhjelp.soknad.persona
 }
 
 fun defaultResponseFromHentBarn(
-    fnr: String,
     vegAdresseDto: VegadresseDto = vegadresseDto,
     offsetYear: Int,
 ): BarnDto {
@@ -356,27 +355,6 @@ fun defaultResponseFromHentBarn(
         bostedsadresse = listOf(BostedsadresseDto(null, vegAdresseDto, null, null)),
         folkeregisterpersonstatus = null,
         foedselsdato = listOf(FoedselsdatoDto(foedselsdato = LocalDate.of(yearOfBirth, 5, 12), 1970)),
-        navn =
-            listOf(
-                no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto(
-                    fornavn = "Barn $fnr",
-                    mellomnavn = null,
-                    etternavn = "Barnetternavn $fnr",
-                    metadata =
-                        MetadataDto(
-                            master = "PDL",
-                            endringer =
-                                listOf(
-                                    EndringDto(
-                                        kilde = "PDL",
-                                        registrert = LocalDateTime.of(2006, 5, 15, 0, 0, 0),
-                                        type = "",
-                                    ),
-                                ),
-                        ),
-                    folkeregistermetadata = null,
-                ),
-            ),
     )
 }
 

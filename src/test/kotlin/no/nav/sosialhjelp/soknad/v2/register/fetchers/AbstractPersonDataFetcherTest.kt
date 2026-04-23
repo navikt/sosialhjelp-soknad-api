@@ -72,8 +72,8 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
         var offsetYear = 4
         return defaultResponseHentPersonWithEktefelleOgBarn().forelderBarnRelasjon!!
             .map {
-                val dto = defaultResponseFromHentBarn(fnr = it.relatertPersonsIdent!!, offsetYear = offsetYear)
-                every { hentPersonClient.hentBarn(it.relatertPersonsIdent) } returns dto
+                val dto = defaultResponseFromHentBarn(offsetYear = offsetYear)
+                every { hentPersonClient.hentBarn(it.relatertPersonsIdent!!) } returns dto
                 offsetYear += 2
                 dto
             }

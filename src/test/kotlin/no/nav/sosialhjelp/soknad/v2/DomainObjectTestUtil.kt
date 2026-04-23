@@ -245,13 +245,12 @@ fun opprettNavn(
 
 fun createBarn(
     personId: String = SetupLifecycleIntegrationTest.barnPersonId,
-    navn: Navn = Navn(fornavn = "Navn", etternavn = "Navnesen"),
     fodselsdato: String = "342434",
     borSammen: Boolean = true,
     folkeregistrertSammen: Boolean = true,
     deltBosted: Boolean = false,
     samvarsgrad: Int = 100,
-) = Barn(personId, navn, fodselsdato, borSammen, folkeregistrertSammen, deltBosted, samvarsgrad)
+) = Barn(personId, fodselsdato = fodselsdato, borSammen = borSammen, folkeregistrertSammen = folkeregistrertSammen, deltBosted = deltBosted, samvarsgrad = samvarsgrad)
 
 fun opprettMidlertidigAdresse(
     adresselinjer: List<String> =

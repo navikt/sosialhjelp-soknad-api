@@ -130,7 +130,7 @@ private fun Barn.toJson() =
             JsonBarn()
                 .withKilde(JsonKilde.SYSTEM)
                 .withFodselsdato(fodselsdato)
-                .withNavn(navn?.toJson())
+                .withNavn(toJsonBarnNavn())
                 .withPersonIdentifikator(personId)
                 .withHarDiskresjonskode(false),
         ).withErFolkeregistrertSammen(
@@ -152,7 +152,9 @@ private fun Barn.toJson() =
             },
         )
 
-// mellomnavn er required i json-modellen
+// DSOS-200 Det er besluttet at navn på barn ikke skal sendes med til fagsystem
+private fun toJsonBarnNavn() = JsonNavn().withFornavn("n").withMellomnavn("").withEtternavn("n")
+
 fun Navn.toJson(): JsonNavn = JsonNavn().withFornavn(fornavn ?: "").withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn ?: "")
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)

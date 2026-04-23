@@ -9,26 +9,12 @@ import org.junit.jupiter.api.Test
 
 class BasisPersonaliaIntegrationTest : AbstractIntegrationTest() {
     @Test
-    fun `Fullt navn skal slå sammen navn`() {
+    fun `Basis personalia returnerer felt uten navn`() {
         val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         eierRepository.save(Eier(soknad.id, "Norsk", true, Navn("Mons", null, "Monsen")))
         val result = doGet("/soknad/${soknad.id}/personalia/basisPersonalia", PersonaliaDto::class.java)
-        assertThat(result.navn.fulltNavn).isEqualTo("Mons Monsen")
-    }
-
-    @Test
-    fun `Fullt navn skal slå sammen navn med mellomnavn`() {
-        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
-        eierRepository.save(Eier(soknad.id, "Norsk", true, Navn("Mons", "Johan", "Monsen")))
-        val result = doGet("/soknad/${soknad.id}/personalia/basisPersonalia", PersonaliaDto::class.java)
-        assertThat(result.navn.fulltNavn).isEqualTo("Mons Johan Monsen")
-    }
-
-    @Test
-    fun `Fullt navn skal slå sammen navn uten ekstra mellomrom`() {
-        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
-        eierRepository.save(Eier(soknad.id, "Norsk", true, Navn("   Mons  ", "        Johan", "Monsen\t")))
-        val result = doGet("/soknad/${soknad.id}/personalia/basisPersonalia", PersonaliaDto::class.java)
-        assertThat(result.navn.fulltNavn).isEqualTo("Mons Johan Monsen")
+        assertThat(result.fodselsnummer).isEqualTo(userId)
+        assertThat(result.statsborgerskap).isEqualTo("Norsk")
+        assertThat(result.nordiskBorger).isTrue()
     }
 }

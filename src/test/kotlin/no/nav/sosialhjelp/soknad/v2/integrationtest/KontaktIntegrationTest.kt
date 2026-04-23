@@ -23,8 +23,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
-import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
-import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
@@ -89,9 +87,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @MockkBean
     private lateinit var personService: PersonService
-
-    @MockkBean
-    private lateinit var hentAdresseService: HentAdresseService
 
     @BeforeEach
     fun setup() {
@@ -177,8 +172,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 orgnummer = null,
             )
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhet
-        every { hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker() } returns
-            KartverketMatrikkelAdresse(KOMMUNENUMMER, "12", "1", null, null, null, null)
 
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())

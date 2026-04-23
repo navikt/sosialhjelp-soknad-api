@@ -29,8 +29,6 @@ data class Barn(
     // JsonAnsvar
 //    val familieKey: UUID, // syntetisk id for å ikke eksponere personId
     val personId: String? = null,
-    @Embedded.Nullable
-    val navn: Navn? = null,
     val fodselsdato: String? = null,
     val borSammen: Boolean? = null,
     val folkeregistrertSammen: Boolean? = null,

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -34,12 +35,12 @@ data class EktefelleDto(
     val navn: List<NavnDto>?,
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class BarnDto(
     val adressebeskyttelse: List<AdressebeskyttelseDto>?,
     val bostedsadresse: List<BostedsadresseDto>?,
     val folkeregisterpersonstatus: List<FolkeregisterpersonstatusDto>?,
     val foedselsdato: List<FoedselsdatoDto>?,
-    val navn: List<NavnDto>?,
 )
 
 enum class Gradering {

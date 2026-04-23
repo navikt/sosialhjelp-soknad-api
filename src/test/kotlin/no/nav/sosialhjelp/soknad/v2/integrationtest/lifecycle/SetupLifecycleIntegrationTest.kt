@@ -158,9 +158,6 @@ fun createPersonAnswer(): Person {
 fun createBarnAnswer(): List<Barn> {
     return listOf(
         Barn(
-            "Barnet",
-            null,
-            "Barnesen",
             barnPersonId,
             barnFoedselsDato,
             true,
