@@ -42,7 +42,6 @@ class VerdierIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = getUrl(soknad.id),
             requestBody = HarVerdierInput(hasBeskrivelseVerdi = true, beskrivelseVerdi = "beskrivelse"),
             responseBodyClass = VerdierDto::class.java,
-            soknadId = soknad.id,
         )
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
@@ -68,7 +67,6 @@ class VerdierIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = getUrl(soknad.id),
             requestBody = HarIkkeVerdierInput(),
             responseBodyClass = VerdierDto::class.java,
-            soknadId = soknad.id,
         )
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->

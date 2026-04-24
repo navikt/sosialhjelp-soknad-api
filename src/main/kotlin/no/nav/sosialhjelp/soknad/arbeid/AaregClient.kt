@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider.TOKENX
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.auth.texas.NonBlockingTexasService
 import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -20,7 +20,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class AaregClient(
     @param:Value("\${aareg_url}") private val aaregUrl: String,
     @param:Value("\${aareg_audience}") private val aaregAudience: String,
-    private val texasService: TexasService,
+    private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) {
     suspend fun finnArbeidsforholdForArbeidstaker(): List<ArbeidsforholdDto>? {
@@ -41,7 +41,7 @@ class AaregClient(
             .awaitSingleOrNull()
     }
 
-    private fun getTokenX(personId: String) = texasService.exchangeToken(personId, TOKENX, target = aaregAudience)
+    private suspend fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, TOKENX, target = aaregAudience)
 
     private val webClient: WebClient =
         webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient())

@@ -20,12 +20,10 @@ class FamilieDataHandler(
 ) : PersonRegisterDataHandler {
     private val logger by logger()
 
-    override fun saveData(
+    override suspend fun saveData(
         soknadId: UUID,
         person: Person,
     ) {
-        // TODO Hvis det av en eller annen årsak skulle finnes brukerinnfylte verdier, for så
-        // ..plutselig finnes informasjon om ektefelle i register - hva da ?
         person.checkEktefelle()?.let {
             logger.info("Oppdaterer informasjon om ektefelle fra PDL")
             familieService.updateSivilstatusFromRegister(
@@ -45,7 +43,7 @@ class FamilieDataHandler(
         }
     }
 
-    private fun handleForsorgerplikt(soknadId: UUID) {
+    private suspend fun handleForsorgerplikt(soknadId: UUID) {
         personService.hentBarnForPerson()
             ?.let { it.ifEmpty { null } }
             ?.let { barnlist ->

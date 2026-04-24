@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.auth.texas.NonBlockingTexasService
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
@@ -23,7 +23,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class KrrClient(
     @param:Value("\${krr_url}") private val krrUrl: String,
     @param:Value("\${krr_audience}") private val krrAudience: String,
-    private val texasService: TexasService,
+    private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient =
@@ -65,7 +65,7 @@ class KrrClient(
             .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
             .awaitSingleOrNull()
 
-    private fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, target = krrAudience)
+    private suspend fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, target = krrAudience)
 
     companion object {
         private val logger by logger()

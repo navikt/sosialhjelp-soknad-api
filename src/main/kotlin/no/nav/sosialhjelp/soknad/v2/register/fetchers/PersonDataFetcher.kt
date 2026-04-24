@@ -11,7 +11,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 interface PersonRegisterDataHandler {
-    fun saveData(
+    suspend fun saveData(
         soknadId: UUID,
         person: Person,
     )

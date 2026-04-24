@@ -118,7 +118,6 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = updateUrl(soknad.id),
             requestBody = true,
             responseBodyClass = SkattbarInntektDto::class.java,
-            soknadId = soknad.id,
         ).also {
             assertThat(it.samtykke?.verdi).isTrue()
             assertThat(it.inntektSkatteetaten).hasSize(2)
@@ -149,7 +148,6 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = updateUrl(soknad.id),
             requestBody = false,
             responseBodyClass = SkattbarInntektDto::class.java,
-            soknadId = soknad.id,
         ).also {
             assertThat(it.samtykke?.verdi).isFalse()
             assertThat(it.inntektFraSkatteetatenFeilet).isFalse()
@@ -171,7 +169,6 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = updateUrl(soknad.id),
             requestBody = true,
             responseBodyClass = SkattbarInntektDto::class.java,
-            soknadId = soknad.id,
         ).also {
             assertThat(it.samtykke?.verdi).isTrue()
         }

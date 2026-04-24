@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.LoggLevel
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -60,7 +59,7 @@ class InformasjonRessurs(
         val eier = personId()
         log.debug("Henter søknadsinfo for bruker")
 
-        return personService.hasAdressebeskyttelse(getUserIdFromToken())
+        return personService.hasAdressebeskyttelse(eier)
             .also { if (it) handleHasAdressebeskyttelse() }
             .let {
                 SessionResponse(

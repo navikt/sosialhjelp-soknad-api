@@ -15,7 +15,7 @@ class EierRegisterService(
     private val dokumentasjonService: DokumentasjonService,
 ) {
     @Transactional
-    fun updateFromRegister(eier: Eier) {
+    suspend fun updateFromRegister(eier: Eier) {
         // oppdatere eier hvis finnes
         eierRepository
             .findByIdOrNull(eier.soknadId)
@@ -34,10 +34,10 @@ class EierRegisterService(
     }
 
     @Transactional(readOnly = true)
-    fun getKontonummer(soknadId: UUID) = eierRepository.findByIdOrNull(soknadId)?.kontonummer
+    suspend fun getKontonummer(soknadId: UUID) = eierRepository.findByIdOrNull(soknadId)?.kontonummer
 
     @Transactional
-    fun updateKontonummerFromRegister(
+    suspend fun updateKontonummerFromRegister(
         soknadId: UUID,
         kontonummerRegister: String,
     ) {
@@ -52,7 +52,7 @@ class EierRegisterService(
             ?.also { eier -> eierRepository.save(eier) }
     }
 
-    private fun resolveOppholdstillatelse(eier: Eier) {
+    private suspend fun resolveOppholdstillatelse(eier: Eier) {
         if (eier.nordiskBorger == null || !eier.nordiskBorger) {
             dokumentasjonService.opprettDokumentasjon(
                 soknadId = eier.soknadId,

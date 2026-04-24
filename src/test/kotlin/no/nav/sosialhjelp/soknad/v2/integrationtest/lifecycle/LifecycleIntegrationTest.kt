@@ -55,7 +55,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         every { mellomlagringClient.hentDokumenterMetadata(soknadId.toString()) } returns createMellomlagringDto(soknadId)
         every { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) } just runs
 
-        doDelete(uri = deleteUri(soknadId), soknadId = soknadId)
+        doDelete(uri = deleteUri(soknadId))
 
         assertThat(soknadRepository.findByIdOrNull(soknadId)).isNull()
         verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) }
@@ -80,7 +80,6 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         doPost(
             uri = sendUri(soknadId),
             responseBodyClass = SoknadSendtDto::class.java,
-            soknadId = soknadId,
         )
             .also { dto ->
                 assertThat(dto.digisosId).isNotEqualTo(soknadId)
@@ -138,7 +137,6 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             uri = sendUri(soknadId),
             requestBody = "",
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
-            soknadId = soknadId,
         )
             .also { assertThat(it.deletionDate).isNotNull() }
 

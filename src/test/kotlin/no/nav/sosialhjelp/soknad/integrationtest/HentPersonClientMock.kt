@@ -8,17 +8,19 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseD
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.json.JsonMapper
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 import tools.jackson.module.kotlin.readValue
 import java.nio.charset.StandardCharsets
 
 class HentPersonClientMock : HentPersonClient {
-    val mapper =
+    val mapper: JsonMapper =
         jacksonMapperBuilder()
-            .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .build()
 
-    override fun hentPerson(
+    override suspend fun hentPerson(
         personId: String,
         userToken: String,
     ): PersonDto? {
@@ -30,7 +32,7 @@ class HentPersonClientMock : HentPersonClient {
         return pdlPersonResponse.data.hentPerson
     }
 
-    override fun hentEktefelle(ektefelleIdent: String): EktefelleDto? {
+    override suspend fun hentEktefelle(ektefelleIdent: String): EktefelleDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlEktefelleResponse.json")
         assertThat(resourceAsStream).isNotNull
         val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
@@ -39,7 +41,7 @@ class HentPersonClientMock : HentPersonClient {
         return pdlEktefelleResponse.data.hentPerson
     }
 
-    override fun hentBarn(barnIdent: String): BarnDto? {
+    override suspend fun hentBarn(barnIdent: String): BarnDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlBarnResponse.json")
         assertThat(resourceAsStream).isNotNull
         val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
@@ -48,10 +50,7 @@ class HentPersonClientMock : HentPersonClient {
         return pdlBarnResponse.data.hentPerson
     }
 
-    override fun hentAdressebeskyttelse(
-        personId: String,
-        userToken: String,
-    ): PersonAdressebeskyttelseDto? {
+    override suspend fun hentAdressebeskyttelse(): PersonAdressebeskyttelseDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlAdressebeskyttelseTomResponse.json")
         assertThat(resourceAsStream).isNotNull
         val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)

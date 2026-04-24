@@ -55,7 +55,6 @@ abstract class AbstractOkonomiIntegrationTest : AbstractIntegrationTest() {
             uri = OkonomiskeOpplysningerIntegrationTest.getUrl(soknad.id) + "?type=$type",
             requestBody = input,
             responseBodyClass = OkonomiskeOpplysningerDto::class.java,
-            soknadId = soknad.id,
         )
     }
 }

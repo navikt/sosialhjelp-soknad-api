@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider.TOKENX
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.auth.texas.NonBlockingTexasService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
@@ -27,7 +27,7 @@ interface UtbetalingerFraNavClient {
 class NavUtbetalingerClientImpl(
     @param:Value("\${utbetaldata_api_baseurl}") private val utbetalDataUrl: String,
     @param:Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
-    private val texasService: TexasService,
+    private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) : UtbetalingerFraNavClient {
     private val webClient =
@@ -56,8 +56,8 @@ class NavUtbetalingerClientImpl(
             }
     }
 
-    private fun getTokenX(personId: String) =
-        texasService.exchangeToken(personId, TOKENX, target = utbetalDataAudience)
+    private suspend fun getTokenX(userToken: String) =
+        texasService.exchangeToken(userToken, TOKENX, target = utbetalDataAudience)
 
     companion object {
         private val logger by logger()

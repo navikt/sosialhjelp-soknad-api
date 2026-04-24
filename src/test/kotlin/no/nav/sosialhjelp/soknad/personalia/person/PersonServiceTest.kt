@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
 import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -99,8 +101,8 @@ internal class PersonServiceTest {
 
     @Test
     fun skalHentePersonMedEktefelle() =
-        runTest(UserContextElement("ident", "token")) {
-            every { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+        runTest(UserContextElement("token", "ident")) {
+            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
             every { mapper.personDtoToDomain(any(), any()) } returns person
             every { mockPersonDto.sivilstand } returns
                 listOf(
@@ -111,7 +113,7 @@ internal class PersonServiceTest {
                         folkeregistermetadata = null,
                     ),
                 )
-            every { hentPersonClient.hentEktefelle(any()) } returns mockEktefelleDto
+            coEvery { hentPersonClient.hentEktefelle(any()) } returns mockEktefelleDto
             every { mapper.ektefelleDtoToDomain(any(), any(), any()) } returns ektefelle
 
             val result = personService.hentPerson(true)
@@ -121,7 +123,7 @@ internal class PersonServiceTest {
     @Test
     internal fun skalHentePersonMenIkkeEktefelleHvisEktefelleidentErNull() =
         runTest(UserContextElement("ident", "token")) {
-            every { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
             every { mapper.personDtoToDomain(any(), any()) } returns person
             every { mockPersonDto.sivilstand } returns
                 listOf(
@@ -136,14 +138,14 @@ internal class PersonServiceTest {
             val result = personService.hentPerson(true)
             assertThat(result!!.ektefelle).isNull()
 
-            verify(exactly = 0) { hentPersonClient.hentEktefelle(any()) }
+            coVerify(exactly = 0) { hentPersonClient.hentEktefelle(any()) }
             verify(exactly = 0) { mapper.ektefelleDtoToDomain(any(), any(), any()) }
         }
 
     @Test
     internal fun skalHentePersonMenIkkeEktefelleHvisEktefelleidentErFDAT() =
         runTest(UserContextElement("ident", "token")) {
-            every { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
             every { mapper.personDtoToDomain(any(), any()) } returns person
             every { mockPersonDto.sivilstand } returns
                 listOf(
@@ -158,14 +160,14 @@ internal class PersonServiceTest {
             val result = personService.hentPerson(true)
             assertThat(result!!.ektefelle).isNull()
 
-            verify(exactly = 0) { hentPersonClient.hentEktefelle(any()) }
+            coVerify(exactly = 0) { hentPersonClient.hentEktefelle(any()) }
             verify(exactly = 0) { mapper.ektefelleDtoToDomain(any(), any(), any()) }
         }
 
     @Test
     internal fun skalHentePersonUtenEktefelle() =
         runTest(UserContextElement("ident", "token")) {
-            every { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
             every { mapper.personDtoToDomain(any(), any()) } returns person
             every { mockPersonDto.sivilstand } returns emptyList()
 
@@ -174,56 +176,60 @@ internal class PersonServiceTest {
         }
 
     @Test
-    internal fun skalHenteBarn() {
-        every { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
-        every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR"))
-        every { hentPersonClient.hentBarn(any()) } returns mockBarnDto
-        every { mapper.barnDtoToDomain(any(), any(), any()) } returns barn
+    internal fun skalHenteBarn() =
+        runTest(UserContextElement("ident", "token")) {
+            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR"))
+            coEvery { hentPersonClient.hentBarn(any()) } returns mockBarnDto
+            every { mapper.barnDtoToDomain(any(), any(), any()) } returns barn
 
-        val result = personService.hentBarnForPerson()
-        assertThat(result).hasSize(1)
-        assertThat(result!![0]).isEqualTo(barn)
-    }
-
-    @Test
-    internal fun skalFiltrereVekkNullBarn() {
-        every { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
-        every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR"))
-        every { hentPersonClient.hentBarn(any()) } returns mockBarnDto
-        every { mapper.barnDtoToDomain(any(), any(), any()) } returns null
-
-        val result = personService.hentBarnForPerson()
-        assertThat(result).isEmpty()
-    }
+            val result = personService.hentBarnForPerson()
+            assertThat(result).hasSize(1)
+            assertThat(result!![0]).isEqualTo(barn)
+        }
 
     @Test
-    internal fun skalIkkeHenteBarnHvisIdentErNull() {
-        every { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
-        every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(null, "BARN", "MOR"))
+    internal fun skalFiltrereVekkNullBarn() =
+        runTest(UserContextElement("ident", "token")) {
+            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR"))
+            coEvery { hentPersonClient.hentBarn(any()) } returns mockBarnDto
+            every { mapper.barnDtoToDomain(any(), any(), any()) } returns null
 
-        val result = personService.hentBarnForPerson()
-        assertThat(result).isNull()
-
-        verify(exactly = 0) { hentPersonClient.hentBarn(any()) }
-        verify(exactly = 0) { mapper.barnDtoToDomain(any(), any(), any()) }
-    }
+            val result = personService.hentBarnForPerson()
+            assertThat(result).isEmpty()
+        }
 
     @Test
-    internal fun skalIkkeHenteBarnHvisIdentErFDAT() {
-        every { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
-        every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR"))
+    internal fun skalIkkeHenteBarnHvisIdentErNull() =
+        runTest(UserContextElement("ident", "token")) {
+            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(null, "BARN", "MOR"))
 
-        val result = personService.hentBarnForPerson()
-        assertThat(result).isNull()
+            val result = personService.hentBarnForPerson()
+            assertThat(result).isNull()
 
-        verify(exactly = 0) { hentPersonClient.hentBarn(any()) }
-        verify(exactly = 0) { mapper.barnDtoToDomain(any(), any(), any()) }
-    }
+            coVerify(exactly = 0) { hentPersonClient.hentBarn(any()) }
+            verify(exactly = 0) { mapper.barnDtoToDomain(any(), any(), any()) }
+        }
+
+    @Test
+    internal fun skalIkkeHenteBarnHvisIdentErFDAT() =
+        runTest(UserContextElement("ident", "token")) {
+            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR"))
+
+            val result = personService.hentBarnForPerson()
+            assertThat(result).isNull()
+
+            coVerify(exactly = 0) { hentPersonClient.hentBarn(any()) }
+            verify(exactly = 0) { mapper.barnDtoToDomain(any(), any(), any()) }
+        }
 
     @Test
     internal fun skalHenteAdressebeskyttelse() {
         val adressebeskyttelse = mockk<PersonAdressebeskyttelseDto>()
-        every { hentPersonClient.hentAdressebeskyttelse(any(), any()) } returns adressebeskyttelse
+        coEvery { hentPersonClient.hentAdressebeskyttelse() } returns adressebeskyttelse
         every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.UGRADERT
 
         val result = personService.hasAdressebeskyttelse("ident")
@@ -233,7 +239,7 @@ internal class PersonServiceTest {
 
     @Test
     internal fun gjenkjennerAdressebeskyttelse() {
-        every { hentPersonClient.hentAdressebeskyttelse(any(), any()) } returns mockk<PersonAdressebeskyttelseDto>()
+        coEvery { hentPersonClient.hentAdressebeskyttelse() } returns mockk<PersonAdressebeskyttelseDto>()
 
         // Ihht. https://pdl-docs.intern.nav.no/ekstern/index.html#_adressebeskyttelse er det som oftest null,
         // hvilket betyr ingen addressebeskyttelse.

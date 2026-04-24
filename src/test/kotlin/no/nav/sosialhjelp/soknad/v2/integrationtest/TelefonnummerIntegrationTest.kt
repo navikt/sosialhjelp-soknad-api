@@ -35,7 +35,6 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/personalia/telefonnummer",
             telefonnummerInput,
             TelefonnummerDto::class.java,
-            soknad.id,
         ).also {
             assertThat(it.telefonnummerBruker).isEqualTo(telefonnummerInput.telefonnummerBruker)
         }
@@ -49,13 +48,12 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
     // TODO Skal det være server side validering av telefonnummer?
     @Disabled("TODO: Fiks feilhåndtering")
     fun `Oppdatere telefonnummer med annet enn siffer gir 400 BadRequest`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         doPutExpectError(
             "/soknad/${soknad.id}/personalia/telefonnummer",
             TelefonnummerInput("asb23231"),
             HttpStatus.BAD_REQUEST,
-            soknad.id,
         )
     }
 }

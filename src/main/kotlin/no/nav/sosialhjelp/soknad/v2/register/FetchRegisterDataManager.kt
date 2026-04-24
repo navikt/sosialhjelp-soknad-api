@@ -105,7 +105,6 @@ class FetchRegisterDataManager(
     ) {
         runCatching {
             logger.info("${Thread.currentThread().name} running fetcher: $fetcher")
-            logger.info("MDCContext: ${MDC.getCopyOfContextMap()}")
             fetcher.fetchAndSave(soknadId)
             logger.info("${Thread.currentThread().name} finished fetcher: $fetcher")
         }

@@ -47,7 +47,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
             sivilstandDto = null,
             vegAdresseDto = null,
             matrikkeladresseDto = matrikkeladresseDto,
-        ).also { every { hentPersonClient.hentPerson(any(), any()) } returns it }
+        ).also { coEvery { hentPersonClient.hentPerson(any(), any()) } returns it }
 
         return defaultResponseFromHentMatrikkelAdresse().also {
             every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns it
@@ -56,7 +56,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
 
     fun createAnswerForHentPersonUgift(): PersonDto {
         return defaultResponseFromHentPerson(sivilstandDto = null).also {
-            every { hentPersonClient.hentPerson(soknad.eierPersonId, any()) } returns it
+            coEvery { hentPersonClient.hentPerson(soknad.eierPersonId, any()) } returns it
         }
     }
 
@@ -65,7 +65,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
         vegAdresse: VegadresseDto? = vegadresseDto,
     ): EktefelleDto {
         return defaultResponseFromHentEktefelle(vegAdresse).also {
-            every { hentPersonClient.hentEktefelle(fnr) } returns it
+            coEvery { hentPersonClient.hentEktefelle(fnr) } returns it
         }
     }
 
@@ -74,7 +74,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
         return defaultResponseHentPersonWithEktefelleOgBarn().forelderBarnRelasjon!!
             .map {
                 val dto = defaultResponseFromHentBarn(fnr = it.relatertPersonsIdent!!, offsetYear = offsetYear)
-                every { hentPersonClient.hentBarn(it.relatertPersonsIdent) } returns dto
+                coEvery { hentPersonClient.hentBarn(it.relatertPersonsIdent) } returns dto
                 offsetYear += 2
                 dto
             }

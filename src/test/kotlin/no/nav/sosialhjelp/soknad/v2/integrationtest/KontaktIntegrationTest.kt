@@ -147,7 +147,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${lagretSoknad.id}/adresser",
             requestBody = adresserInput,
             responseBodyClass = AdresserDto::class.java,
-            lagretSoknad.id,
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
@@ -192,7 +191,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${lagretSoknad.id}/adresser",
             requestBody = adresserInput,
             responseBodyClass = AdresserDto::class.java,
-            lagretSoknad.id,
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
@@ -236,7 +234,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${lagretSoknad.id}/adresser",
             requestBody = adresserInput,
             responseBodyClass = AdresserDto::class.java,
-            lagretSoknad.id,
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
@@ -334,7 +331,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${lagretSoknad.id}/adresser",
             requestBody = adresserInput,
             responseBodyClass = AdresserDto::class.java,
-            lagretSoknad.id,
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
@@ -456,7 +452,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${lagretSoknad.id}/adresser",
             requestBody = adresserInput,
             responseBodyClass = AdresserDto::class.java,
-            lagretSoknad.id,
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {

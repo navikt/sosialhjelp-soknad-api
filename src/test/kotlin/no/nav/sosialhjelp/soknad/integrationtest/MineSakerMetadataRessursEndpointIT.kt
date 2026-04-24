@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.coEvery
 import io.mockk.every
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
@@ -39,9 +40,8 @@ class MineSakerMetadataRessursEndpointIT {
     private lateinit var hentPersonClient: HentPersonClient
 
     @BeforeEach
-    fun setup() {
-        every { hentPersonClient.hentAdressebeskyttelse(any(), any()) } returns
-            HentPersonClientMock().hentAdressebeskyttelse("ident", "token")
+    suspend fun setup() {
+        coEvery { hentPersonClient.hentAdressebeskyttelse() } returns HentPersonClientMock().hentAdressebeskyttelse()
 
         every { texasService.getToken(any(), any()) } returns
             issueToken(mockOAuth2Server, BRUKER, issuer = SELVBETJENING).serialize()

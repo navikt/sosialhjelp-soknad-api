@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
@@ -12,13 +13,13 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.auth.texas.NonBlockingTexasService
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
-import org.slf4j.LoggerFactory.getLogger
+import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
@@ -33,19 +34,16 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Duration
 
 interface HentPersonClient {
-    fun hentPerson(
+    suspend fun hentPerson(
         personId: String,
         userToken: String,
     ): PersonDto?
 
-    fun hentAdressebeskyttelse(
-        personId: String,
-        userToken: String,
-    ): PersonAdressebeskyttelseDto?
+    suspend fun hentAdressebeskyttelse(): PersonAdressebeskyttelseDto?
 
-    fun hentEktefelle(ektefelleIdent: String): EktefelleDto?
+    suspend fun hentEktefelle(ektefelleIdent: String): EktefelleDto?
 
-    fun hentBarn(barnIdent: String): BarnDto?
+    suspend fun hentBarn(barnIdent: String): BarnDto?
 }
 
 @Component
@@ -53,24 +51,27 @@ class HentPersonClientImpl(
     @param:Value("\${pdl_api_url}") private val baseurl: String,
     @param:Value("\${pdl_api_scope}") private val pdlScope: String,
     @param:Value("\${pdl_api_audience}") private val pdlAudience: String,
-    private val texasService: TexasService,
+    private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
     // må caches på dette nivået da den kalles 2 steder i PersonService
     @Cacheable(HentPersonClientConfig.CACHE_NAME, key = "#personId", unless = "#result == null")
-    override fun hentPerson(
+    override suspend fun hentPerson(
         personId: String,
         userToken: String,
     ): PersonDto? =
         doPdlRequest(PdlRequest(HENT_PERSON, variables(personId)), "hentPerson", userToken)
 
-    override fun hentAdressebeskyttelse(
-        personId: String,
-        userToken: String,
-    ): PersonAdressebeskyttelseDto? =
-        doPdlRequest(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(personId)), "adressebeskyttelse", userToken)
+    override suspend fun hentAdressebeskyttelse(): PersonAdressebeskyttelseDto? =
+        doPdlRequest(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(currentUserContext().userId)), "adressebeskyttelse", currentUserContext().userToken)
 
-    private inline fun <reified T> doPdlRequest(
+    override suspend fun hentEktefelle(ektefelleIdent: String): EktefelleDto? =
+        doPdlRequest(PdlRequest(HENT_EKTEFELLE, variables(ektefelleIdent)), "hentEktefelle", azureAdToken())
+
+    override suspend fun hentBarn(barnIdent: String): BarnDto? =
+        doPdlRequest(PdlRequest(HENT_BARN, variables(barnIdent)), "hentBarn", azureAdToken())
+
+    private suspend inline fun <reified T> doPdlRequest(
         pdlRequest: PdlRequest,
         typeRequest: String,
         userToken: String,
@@ -91,7 +92,7 @@ class HentPersonClientImpl(
             .also { it.checkForPdlApiErrors() }
             .data.hentPerson
 
-    private fun doRequest(
+    private suspend fun doRequest(
         pdlRequest: PdlRequest,
         userToken: String,
     ): String? =
@@ -101,62 +102,18 @@ class HentPersonClientImpl(
             .retrieve()
             .bodyToMono<String>()
             .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-            .block()
+            .timeout(Duration.ofSeconds(10))
+            .awaitSingleOrNull()
 
-    // TODO Siden dette ikke skal fjernes - skriv også om dette til å bruke generisk logikk
-    override fun hentEktefelle(ektefelleIdent: String): EktefelleDto? =
-        try {
-            val response =
-                hentPersonRequest
-                    .header(AUTHORIZATION, BEARER + azureAdToken())
-                    .bodyValue(PdlRequest(HENT_EKTEFELLE, variables(ektefelleIdent)))
-                    .retrieve()
-                    .bodyToMono<String>()
-                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                    .block()
-                    ?: throw PdlApiException("Noe feilet mot PDL - hentEktefelle - response null?")
-            val pdlResponse = parse<HentPersonDto<EktefelleDto>>(response)
-            pdlResponse.checkForPdlApiErrors()
-            pdlResponse.data.hentPerson
-        } catch (e: PdlApiException) {
-            throw e
-        } catch (e: Exception) {
-            logger.error("Kall til PDL feilet (hentEktefelle)", e)
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
-        }
+    private suspend fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, target = pdlAudience)
 
-    // TODO Siden dette ikke skal fjernes - skriv også om dette til å bruke generisk logikk
-    override fun hentBarn(barnIdent: String): BarnDto? =
-        try {
-            val response: String =
-                hentPersonRequest
-                    .header(AUTHORIZATION, BEARER + azureAdToken())
-                    .bodyValue(PdlRequest(HENT_BARN, variables(barnIdent)))
-                    .retrieve()
-                    .bodyToMono<String>()
-                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                    .block()
-                    ?: throw PdlApiException("Noe feilet mot PDL - hentBarn - response null?")
-            val pdlResponse = parse<HentPersonDto<BarnDto>>(response)
-            pdlResponse.checkForPdlApiErrors()
-            pdlResponse.data.hentPerson
-        } catch (e: PdlApiException) {
-            throw e
-        } catch (e: Exception) {
-            logger.error("Kall til PDL feilet (hentBarn)", e)
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
-        }
-
-    private fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, target = pdlAudience)
-
-    private fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
+    private suspend fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
 
     private fun variables(ident: String): Map<String, Any> = mapOf("historikk" to false, "ident" to ident)
 
     private val hentPersonRequest get() = baseRequest.header(HEADER_TEMA, TEMA_KOM)
 
     companion object {
-        private val logger = getLogger(HentPersonClient::class.java)
         private const val TEMA_KOM = "KOM"
         private const val HEADER_TEMA = "Tema"
     }
