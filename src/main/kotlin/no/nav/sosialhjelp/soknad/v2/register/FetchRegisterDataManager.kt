@@ -50,7 +50,7 @@ class FetchRegisterDataManager(
 
     @PreDestroy
     private fun destroyScope() {
-        backgroundScope.cancel("Destroying fetcher background scope")
+        backgroundScope.cancel("Destroying async fetcher background scope")
     }
 
     @Transactional(propagation = Propagation.NEVER)
