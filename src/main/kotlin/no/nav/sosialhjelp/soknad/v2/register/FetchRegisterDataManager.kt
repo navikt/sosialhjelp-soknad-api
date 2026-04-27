@@ -1,10 +1,13 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
+import jakarta.annotation.PreDestroy
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -29,7 +32,7 @@ interface RegisterDataFetcher {
     fun exceptionOnError(): Boolean = false
 }
 
-// Fetcher som må kjøres først
+// Fetcher som må kjøres først: Skal bare være 1
 interface PrimaryFetcher : RegisterDataFetcher
 
 // Fetchere som må kjøres før request returneres
@@ -43,7 +46,12 @@ class FetchRegisterDataManager(
     private val allFetchers: List<RegisterDataFetcher>,
 ) {
     private val logger by logger()
-    private val backgroundScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val backgroundScope = CoroutineScope(SupervisorJob() + Dispatchers.IO + CoroutineName("Async Fetcher Scope"))
+
+    @PreDestroy
+    private fun destroyScope() {
+        backgroundScope.cancel("Destroying fetcher background scope")
+    }
 
     @Transactional(propagation = Propagation.NEVER)
     fun runAllRegisterDataFetchers(soknadId: UUID) {
