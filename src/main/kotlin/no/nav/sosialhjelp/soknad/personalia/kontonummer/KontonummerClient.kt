@@ -46,7 +46,7 @@ class KontonummerClientImpl(
                     .awaitSingleOrNull()
             }
                 .getOrElse {
-                    when(it) {
+                    when (it) {
                         is Unauthorized -> log.warn("Kontoregister konto - 401 Unauthorized - ${it.message}")
                         is NotFound -> log.info("Fant ingen konto i kontoregister - ${it.message}")
                         else -> log.error("Kontoregister konto  - Noe uventet feilet", it)
