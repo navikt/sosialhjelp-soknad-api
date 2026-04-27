@@ -24,7 +24,6 @@ class UnleashConfig(
             UnleashConfig
                 .builder()
                 .appName("sosialhjelp-soknad-api")
-                .environment(environment)
                 .unleashAPI("$baseurl/api")
                 .apiKey(apiToken)
                 .build()
