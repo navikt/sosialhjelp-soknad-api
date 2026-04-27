@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
@@ -32,26 +34,26 @@ class KontonummerClientImpl(
     private val webClient =
         webClientBuilder.configureWebClientBuilder(createDefaultHttpClient()).build()
 
-    override suspend fun getKontonummer(): KontoDto? {
-        return try {
-            webClient.get()
-                .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
-                .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
-                .retrieve()
-                .bodyToMono<KontoDto>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .awaitSingleOrNull()
-        } catch (e: Unauthorized) {
-            log.warn("Kontoregister konto  - 401 Unauthorized - ${e.message}")
-            null
-        } catch (e: NotFound) {
-            log.info("Fant ingen konto i kontoregister - ${e.message}")
-            null
-        } catch (e: Exception) {
-            log.error("Kontoregister konto  - Noe uventet feilet", e)
-            null
+    override suspend fun getKontonummer(): KontoDto? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                webClient.get()
+                    .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
+                    .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
+                    .retrieve()
+                    .bodyToMono<KontoDto>()
+                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                    .awaitSingleOrNull()
+            }
+                .getOrElse {
+                    when(it) {
+                        is Unauthorized -> log.warn("Kontoregister konto - 401 Unauthorized - ${it.message}")
+                        is NotFound -> log.info("Fant ingen konto i kontoregister - ${it.message}")
+                        else -> log.error("Kontoregister konto  - Noe uventet feilet", it)
+                    }
+                    null
+                }
         }
-    }
 
     private suspend fun getTokenX(personId: String) =
         texasService.exchangeToken(personId, IdentityProvider.TOKENX, kontoregisterAudience)

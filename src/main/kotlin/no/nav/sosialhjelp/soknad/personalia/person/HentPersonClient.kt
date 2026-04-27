@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
@@ -96,14 +98,16 @@ class HentPersonClientImpl(
         pdlRequest: PdlRequest,
         userToken: String,
     ): String? =
-        hentPersonRequest
-            .header(AUTHORIZATION, BEARER + getTokenX(userToken))
-            .bodyValue(pdlRequest)
-            .retrieve()
-            .bodyToMono<String>()
-            .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-            .timeout(Duration.ofSeconds(10))
-            .awaitSingleOrNull()
+        withContext(Dispatchers.IO) {
+            hentPersonRequest
+                .header(AUTHORIZATION, BEARER + getTokenX(userToken))
+                .bodyValue(pdlRequest)
+                .retrieve()
+                .bodyToMono<String>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .timeout(Duration.ofSeconds(10))
+                .awaitSingleOrNull()
+        }
 
     private suspend fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, target = pdlAudience)
 

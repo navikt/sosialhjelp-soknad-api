@@ -49,8 +49,8 @@ class FetchRegisterDataManager(
     private val backgroundScope = CoroutineScope(SupervisorJob() + Dispatchers.IO + CoroutineName("Async Fetcher Scope"))
 
     @PreDestroy
-    private fun destroyScope() {
-        backgroundScope.cancel("Destroying async fetcher background scope")
+    private fun cancelScope() {
+        backgroundScope.cancel("Cancelling async fetcher background scope")
     }
 
     @Transactional(propagation = Propagation.NEVER)

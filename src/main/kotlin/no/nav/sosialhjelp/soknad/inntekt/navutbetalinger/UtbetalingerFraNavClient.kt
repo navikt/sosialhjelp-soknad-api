@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
@@ -38,7 +41,15 @@ class NavUtbetalingerClientImpl(
 
         val request = NavUtbetalingerRequest(currentUserContext().userId, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
 
-        return runCatching {
+        return runCatching { doRequest(request) }
+            .onSuccess { logger.info("Hentet ${it?.size} utbetalinger fra utbetaldata tjeneste") }
+            .onFailure { logger.error("Hente utbetalinger fra Nav feilet", it) }
+            .getOrNull()
+            ?.let { UtbetalDataDto(it, false) }
+    }
+
+    private suspend fun doRequest(request: NavUtbetalingerRequest): List<Utbetaling>? =
+        withContext(Dispatchers.IO) {
             webClient.post()
                 .uri("$utbetalDataUrl/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
                 .header(HttpHeaders.AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
@@ -46,15 +57,8 @@ class NavUtbetalingerClientImpl(
                 .retrieve()
                 .bodyToMono<List<Utbetaling>>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .block()
+                .awaitSingleOrNull()
         }
-            .onSuccess { logger.info("Hentet ${it?.size} utbetalinger fra utbetaldata tjeneste") }
-            .onFailure { logger.error("Hente utbetalinger fra Nav feilet", it) }
-            .getOrNull()
-            ?.let {
-                UtbetalDataDto(it, false)
-            }
-    }
 
     private suspend fun getTokenX(userToken: String) =
         texasService.exchangeToken(userToken, TOKENX, target = utbetalDataAudience)

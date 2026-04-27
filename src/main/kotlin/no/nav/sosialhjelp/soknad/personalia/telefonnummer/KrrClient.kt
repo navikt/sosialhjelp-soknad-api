@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
@@ -55,15 +57,17 @@ class KrrClient(
             }
 
     private suspend fun doPostRequest(): KontaktInfoResponse? =
-        webClient
-            .post()
-            .uri("/rest/v1/personer")
-            .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
-            .bodyValue(KontaktInfoRequest(listOf(currentUserContext().userId)))
-            .retrieve()
-            .bodyToMono<KontaktInfoResponse>()
-            .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-            .awaitSingleOrNull()
+        withContext(Dispatchers.IO) {
+            webClient
+                .post()
+                .uri("/rest/v1/personer")
+                .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
+                .bodyValue(KontaktInfoRequest(listOf(currentUserContext().userId)))
+                .retrieve()
+                .bodyToMono<KontaktInfoResponse>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .awaitSingleOrNull()
+        }
 
     private suspend fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, target = krrAudience)
 
