@@ -63,7 +63,6 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
         doDelete(
             uri = "/soknad/$lagretSoknadId/delete",
-            soknadId = lagretSoknadId,
         )
             .expectStatus().isNoContent
 
@@ -76,7 +75,6 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
         doDelete(
             uri = "/soknad/$randomUUID/delete",
-            soknadId = randomUUID,
         )
             .expectStatus().isNotFound
     }

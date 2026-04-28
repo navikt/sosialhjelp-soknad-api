@@ -1,12 +1,15 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider.TOKENX
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.auth.texas.NonBlockingTexasService
+import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.JacksonJsonDecoder
@@ -19,28 +22,29 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class AaregClient(
     @param:Value("\${aareg_url}") private val aaregUrl: String,
     @param:Value("\${aareg_audience}") private val aaregAudience: String,
-    private val texasService: TexasService,
+    private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    fun finnArbeidsforholdForArbeidstaker(): List<ArbeidsforholdDto>? {
-        val request = ArbeidsforholdSokRequest(arbeidstakerId = getUserIdFromToken())
+    suspend fun finnArbeidsforholdForArbeidstaker(): List<ArbeidsforholdDto>? {
+        val request = ArbeidsforholdSokRequest(arbeidstakerId = currentUserContext().userId)
 
         return doFinnArbeidsforhold(request)
     }
 
-    private fun doFinnArbeidsforhold(request: ArbeidsforholdSokRequest): List<ArbeidsforholdDto>? {
-        return webClient.post()
-            .uri("/v2/arbeidstaker/arbeidsforhold")
-            .header(HttpHeaders.AUTHORIZATION, getAuthHeader())
-            .body(BodyInserters.fromValue(request))
-            .retrieve()
-            .bodyToMono<List<ArbeidsforholdDto>>()
-            .block()
-    }
+    private suspend fun doFinnArbeidsforhold(
+        request: ArbeidsforholdSokRequest,
+    ): List<ArbeidsforholdDto>? =
+        withContext(Dispatchers.IO) {
+            webClient.post()
+                .uri("/v2/arbeidstaker/arbeidsforhold")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer ${getTokenX(currentUserContext().userToken)}")
+                .body(BodyInserters.fromValue(request))
+                .retrieve()
+                .bodyToMono<List<ArbeidsforholdDto>>()
+                .awaitSingleOrNull()
+        }
 
-    private fun getAuthHeader() = "Bearer $tokenXToken"
-
-    private val tokenXToken: String get() = texasService.exchangeToken(TOKENX, target = aaregAudience)
+    private suspend fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, TOKENX, target = aaregAudience)
 
     private val webClient: WebClient =
         webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient())

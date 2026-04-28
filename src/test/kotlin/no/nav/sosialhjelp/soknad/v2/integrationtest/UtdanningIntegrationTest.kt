@@ -41,7 +41,6 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/utdanning",
             input,
             UtdanningDto::class.java,
-            soknad.id,
         )
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
@@ -61,7 +60,6 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/utdanning",
             input,
             UtdanningDto::class.java,
-            soknad.id,
         )
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {

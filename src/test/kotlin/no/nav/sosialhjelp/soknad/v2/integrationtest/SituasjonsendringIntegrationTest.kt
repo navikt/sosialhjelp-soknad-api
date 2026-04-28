@@ -33,7 +33,6 @@ class SituasjonsendringIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${storedSoknad.id}/situasjonsendring",
             requestBody = situasjonsendringDto,
             responseBodyClass = SituasjonsendringDto::class.java,
-            soknadId = storedSoknad.id,
         )
 
         situasjonsendringRepository.findByIdOrNull(storedSoknad.id)?.let {

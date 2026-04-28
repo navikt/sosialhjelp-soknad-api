@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
-import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
+import no.nav.sosialhjelp.soknad.v2.register.SynchronousFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -11,11 +11,13 @@ import java.util.UUID
 class TelefonnummerFetcher(
     private val krrService: KrrService,
     private val kontaktService: KontaktRegisterService,
-) : RegisterDataFetcher {
-    override fun fetchAndSave(soknadId: UUID) {
+) : SynchronousFetcher {
+    override suspend fun fetchAndSave(
+        soknadId: UUID,
+    ) {
         logger.info("Henter mobilnummer fra KRR")
 
-        krrService.getMobilnummer(soknadId)
+        krrService.getMobilnummer()
             ?.let { norskTelefonnummer(it) }
             ?.also { kontaktService.updateTelefonRegister(soknadId, it) }
             ?: logger.info("Fant ikke telefonnummer i KRR-registeret")

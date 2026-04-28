@@ -4,6 +4,7 @@ import com.nimbusds.jwt.SignedJWT
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.clearAllMocks
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
@@ -75,7 +76,7 @@ class AdressebeskyttelseInterceptorTest {
     fun before() {
         clearAllMocks()
         soknadMetadataRepository.deleteAll()
-        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
+        coEvery { hentPersonClient.hentAdressebeskyttelse() } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
         token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
     }
 
@@ -104,7 +105,7 @@ class AdressebeskyttelseInterceptorTest {
     fun `Kall til et annet endepunkt med adressebeskyttelse skal returnere FORBIDDEN`() {
         clearAllMocks()
 //        every { personService.hasAdressebeskyttelse(any())} returns true
-        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
+        coEvery { hentPersonClient.hentAdressebeskyttelse() } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
 
         webClient.doPostFullResponse(
             uri = "/soknad/create",
@@ -127,7 +128,6 @@ class AdressebeskyttelseInterceptorTest {
 
         webClient.doPostFullResponse(
             uri = "/soknad/$uuid/send",
-            soknadId = uuid,
             token = token,
         )
             .expectStatus().isForbidden
@@ -189,7 +189,6 @@ private fun WebTestClient.doGetFullReponse(
 
 private fun WebTestClient.doPostFullResponse(
     uri: String,
-    soknadId: UUID? = null,
     token: SignedJWT,
 ): WebTestClient.ResponseSpec {
     return post()

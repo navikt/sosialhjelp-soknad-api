@@ -62,7 +62,6 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${storedSoknad.id}/familie/forsorgerplikt",
             forsorgerInput,
             SivilstandDto::class.java,
-            storedSoknad.id,
         )
 
         familieRepository.findByIdOrNull(storedSoknad.id)?.let {
@@ -92,7 +91,6 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${storedSoknad.id}/familie/forsorgerplikt",
             forsorgerInput,
             SivilstandDto::class.java,
-            storedSoknad.id,
         )
 
         familieRepository.findByIdOrNull(storedSoknad.id)!!
@@ -123,7 +121,6 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${storedSoknad.id}/familie/sivilstatus",
             sivilstandInput,
             SivilstandDto::class.java,
-            storedSoknad.id,
         )
 
         familieRepository.findByIdOrNull(storedSoknad.id)?.let {

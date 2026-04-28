@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers.person
 
+import kotlinx.coroutines.test.runTest
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.register.UserContextElement
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.AbstractPersonDataFetcherTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
@@ -15,31 +17,33 @@ class AdresseFetcherTest : AbstractPersonDataFetcherTest() {
     private lateinit var kontaktRepository: KontaktRepository
 
     @Test
-    fun `Hente fra PDL skal lagre data i db`() {
-        val dto = createAnswerForHentPersonUgift().bostedsadresse?.let { it[0].vegadresse } ?: fail("Fant ikke adresse")
+    suspend fun `Hente fra PDL skal lagre data i db`() =
+        runTest(UserContextElement("token", "05058548523")) {
+            val dto = createAnswerForHentPersonUgift().bostedsadresse?.let { it[0].vegadresse } ?: fail("Fant ikke adresse")
 
-        fetchPerson.fetchAndSave(soknad.id)
+            fetchPerson.fetchAndSave(soknad.id)
 
-        kontaktRepository
-            .findByIdOrNull(soknad.id)?.adresser?.folkeregistrert
-            ?.let {
-                val vegAdresse = it as VegAdresse
-                assertThat(vegAdresse.gatenavn).isEqualTo(dto.adressenavn)
-                assertThat(vegAdresse.postnummer).isEqualTo(dto.postnummer)
-            }
-            ?: fail("Fant ikke Kontakt for soknad")
-    }
+            kontaktRepository
+                .findByIdOrNull(soknad.id)?.adresser?.folkeregistrert
+                ?.let {
+                    val vegAdresse = it as VegAdresse
+                    assertThat(vegAdresse.gatenavn).isEqualTo(dto.adressenavn)
+                    assertThat(vegAdresse.postnummer).isEqualTo(dto.postnummer)
+                }
+                ?: fail("Fant ikke Kontakt for soknad")
+        }
 
     @Test
-    fun `Hente person med matrikkeladresse skal lagres i db`() {
-        val dto = createAnswerForHentPersonUgiftMedMatrikkelAdresse()
+    suspend fun `Hente person med matrikkeladresse skal lagres i db`() =
+        runTest(UserContextElement("token", "05058548523")) {
+            val dto = createAnswerForHentPersonUgiftMedMatrikkelAdresse()
 
-        fetchPerson.fetchAndSave(soknad.id)
+            fetchPerson.fetchAndSave(soknad.id)
 
-        kontaktRepository.findByIdOrNull(soknad.id)?.adresser?.folkeregistrert?.let {
-            assertThat(it).isInstanceOf(MatrikkelAdresse::class.java)
-            assertThat((it as MatrikkelAdresse).gaardsnummer).isEqualTo(dto.matrikkelnummer?.gaardsnummer)
+            kontaktRepository.findByIdOrNull(soknad.id)?.adresser?.folkeregistrert?.let {
+                assertThat(it).isInstanceOf(MatrikkelAdresse::class.java)
+                assertThat((it as MatrikkelAdresse).gaardsnummer).isEqualTo(dto.matrikkelnummer?.gaardsnummer)
+            }
+                ?: fail("Fant ikke Kontakt i db")
         }
-            ?: fail("Fant ikke Kontakt i db")
-    }
 }

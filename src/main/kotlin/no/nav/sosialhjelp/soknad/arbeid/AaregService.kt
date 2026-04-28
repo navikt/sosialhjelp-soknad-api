@@ -13,7 +13,7 @@ class AaregService(
     private val organisasjonService: OrganisasjonService,
     private val aaregClient: AaregClient,
 ) {
-    fun hentArbeidsforhold(): List<Arbeidsforhold>? {
+    suspend fun hentArbeidsforhold(): List<Arbeidsforhold>? {
         logger.info("Henter arbeidsforhold for bruker fra Aareg-api")
 
         return runCatching {

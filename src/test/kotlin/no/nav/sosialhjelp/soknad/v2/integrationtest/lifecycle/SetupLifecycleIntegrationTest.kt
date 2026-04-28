@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.CapturingSlot
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.slot
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
@@ -96,14 +97,14 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
             .apply { setUser(userId) }
             .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
 
-        every { personService.hentPerson(any()) } returns createPersonAnswer()
-        every { personService.hentBarnForPerson(any()) } returns createBarnAnswer()
-        every { kontonummerService.getKontonummer(any()) } returns "12145534122"
-        every { arbeidsforholdService.hentArbeidsforhold() } returns createArbeidsforholdAnswer()
+        coEvery { personService.hentPerson(any()) } returns createPersonAnswer()
+        coEvery { personService.hentBarnForPerson() } returns createBarnAnswer()
+        coEvery { kontonummerService.getKontonummer() } returns "12145534122"
+        coEvery { arbeidsforholdService.hentArbeidsforhold() } returns createArbeidsforholdAnswer()
         every { skattbarInntektService.hentUtbetalinger(any()) } returns createSkattbarInntektAnswer()
         every { organisasjonService.hentOrgNavn(any()) } returns arbeidsgiverNavn
-        every { krrService.getMobilnummer(any()) } returns "44553366"
-        every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns createNavUtbetaling()
+        coEvery { krrService.getMobilnummer() } returns "44553366"
+        coEvery { navUtbetalingerService.getUtbetalingerSiste40Dager() } returns createNavUtbetaling()
         every { kommuneInfoClient.getAll() } returns createKommuneInfoList()
         every {
             digisosApiV2Client.krypterOgLastOppFiler(

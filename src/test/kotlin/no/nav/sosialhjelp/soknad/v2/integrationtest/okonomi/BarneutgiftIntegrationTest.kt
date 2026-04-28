@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.v2.createBarn
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
@@ -27,11 +29,13 @@ class BarneutgiftIntegrationTest : AbstractIntegrationTest() {
     private lateinit var dokRepository: DokumentasjonRepository
 
     @Test
-    fun `Hente barneutgifter skal returnere lagrede data`() {
+    suspend fun `Hente barneutgifter skal returnere lagrede data`() {
         setForsorgerplikt(true)
-        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BEKREFTELSE_BARNEUTGIFTER, verdi = true)
-        okonomiService.addElementToOkonomi(soknad.id, UtgiftType.UTGIFTER_BARNEHAGE)
-        okonomiService.addElementToOkonomi(soknad.id, UtgiftType.UTGIFTER_SFO)
+        withContext(Dispatchers.IO) {
+            okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BEKREFTELSE_BARNEUTGIFTER, verdi = true)
+            okonomiService.addElementToOkonomi(soknad.id, UtgiftType.UTGIFTER_BARNEHAGE)
+            okonomiService.addElementToOkonomi(soknad.id, UtgiftType.UTGIFTER_SFO)
+        }
 
         doGet(
             uri = getUrl(),
@@ -47,7 +51,7 @@ class BarneutgiftIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Ingen bekreftelse returnerer bekreftelse null`() {
+    suspend fun `Ingen bekreftelse returnerer bekreftelse null`() {
         setForsorgerplikt(true)
 
         doGet(
@@ -61,25 +65,26 @@ class BarneutgiftIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Oppdatere skal lagre data i db`() {
+    suspend fun `Oppdatere skal lagre data i db`() {
         setForsorgerplikt(true)
 
         doPut(
             uri = getUrl(),
             requestBody = HarBarneutgifterInput(hasBarnehage = true, hasSfo = true),
             responseBodyClass = BarneutgifterDto::class.java,
-            soknadId = soknad.id,
         )
 
-        assertThat(okonomiService.getBekreftelser(soknad.id).toList()).hasSize(1)
-            .allMatch { it.type == BekreftelseType.BEKREFTELSE_BARNEUTGIFTER }
-        assertThat(okonomiService.getUtgifter(soknad.id).toList()).hasSize(2)
-            .anyMatch { it.type == UtgiftType.UTGIFTER_BARNEHAGE }
-            .anyMatch { it.type == UtgiftType.UTGIFTER_SFO }
+        withContext(Dispatchers.IO) {
+            assertThat(okonomiService.getBekreftelser(soknad.id).toList()).hasSize(1)
+                .allMatch { it.type == BekreftelseType.BEKREFTELSE_BARNEUTGIFTER }
+            assertThat(okonomiService.getUtgifter(soknad.id).toList()).hasSize(2)
+                .anyMatch { it.type == UtgiftType.UTGIFTER_BARNEHAGE }
+                .anyMatch { it.type == UtgiftType.UTGIFTER_SFO }
 
-        assertThat(dokRepository.findAllBySoknadId(soknad.id)).hasSize(2)
-            .anyMatch { it.type == UtgiftType.UTGIFTER_BARNEHAGE }
-            .anyMatch { it.type == UtgiftType.UTGIFTER_SFO }
+            assertThat(dokRepository.findAllBySoknadId(soknad.id)).hasSize(2)
+                .anyMatch { it.type == UtgiftType.UTGIFTER_BARNEHAGE }
+                .anyMatch { it.type == UtgiftType.UTGIFTER_SFO }
+        }
     }
 
     @Test
@@ -95,7 +100,7 @@ class BarneutgiftIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Forsorgerplikt false skal returnere object med forsorgerplikt false og bekreftelse null`() {
+    suspend fun `Forsorgerplikt false skal returnere object med forsorgerplikt false og bekreftelse null`() {
         setForsorgerplikt(false)
 
         doGet(
@@ -114,7 +119,6 @@ class BarneutgiftIntegrationTest : AbstractIntegrationTest() {
             uri = getUrl(),
             requestBody = HarBarneutgifterInput(hasBarnehage = true, hasSfo = true),
             responseBodyClass = BarneutgifterDto::class.java,
-            soknadId = soknad.id,
         )
 
         assertThat(okonomiService.getBekreftelser(soknad.id)).isEmpty()
@@ -122,21 +126,22 @@ class BarneutgiftIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Oppdatere med Forsorgerplikt false skal ikke lagres i db`() {
+    suspend fun `Oppdatere med Forsorgerplikt false skal ikke lagres i db`() {
         setForsorgerplikt(false)
 
         doPut(
             uri = getUrl(),
             requestBody = HarBarneutgifterInput(hasBarnehage = true, hasSfo = true),
             responseBodyClass = BarneutgifterDto::class.java,
-            soknadId = soknad.id,
         )
 
-        assertThat(okonomiService.getBekreftelser(soknad.id)).isEmpty()
-        assertThat(okonomiService.getUtgifter(soknad.id)).isEmpty()
+        withContext(Dispatchers.IO) {
+            assertThat(okonomiService.getBekreftelser(soknad.id)).isEmpty()
+            assertThat(okonomiService.getUtgifter(soknad.id)).isEmpty()
+        }
     }
 
-    private fun setForsorgerplikt(value: Boolean) {
+    private suspend fun setForsorgerplikt(value: Boolean) {
         familieRegisterService.updateForsorgerpliktRegister(
             soknadId = soknad.id,
             harForsorgerplikt = value,

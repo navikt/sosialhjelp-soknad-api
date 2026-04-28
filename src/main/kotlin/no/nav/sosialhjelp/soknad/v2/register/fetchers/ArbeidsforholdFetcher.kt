@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRegisterService
-import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
+import no.nav.sosialhjelp.soknad.v2.register.AsynchronousFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -11,10 +11,12 @@ import java.util.UUID
 class ArbeidsforholdFetcher(
     private val arbeidsforholdService: AaregService,
     private val livssituasjonService: LivssituasjonRegisterService,
-) : RegisterDataFetcher {
+) : AsynchronousFetcher {
     private val logger by logger()
 
-    override fun fetchAndSave(soknadId: UUID) {
+    override suspend fun fetchAndSave(
+        soknadId: UUID,
+    ) {
         logger.info("Henter arbeidsforhold fra Aa-registeret")
 
         arbeidsforholdService.hentArbeidsforhold()

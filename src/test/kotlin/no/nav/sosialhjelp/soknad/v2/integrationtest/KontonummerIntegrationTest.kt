@@ -36,7 +36,6 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/$soknadId/personalia/kontonummer",
             input,
             KontoinformasjonDto::class.java,
-            soknadId,
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {
@@ -54,7 +53,6 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/$soknadId/personalia/kontonummer",
             KontoinformasjonInput(harIkkeKonto = true),
             KontoinformasjonDto::class.java,
-            soknadId,
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {
@@ -65,7 +63,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
     }
 
     private fun createSoknadOgEier(): UUID {
-        return soknadRepository.save(opprettSoknad(soknadId))
+        return soknadRepository.save(opprettSoknad(id = soknadId))
             .also { eierRepository.save(opprettEier(it.id, it.eierPersonId)) }
             .id
     }

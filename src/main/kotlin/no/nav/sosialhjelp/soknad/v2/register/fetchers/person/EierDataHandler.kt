@@ -14,7 +14,7 @@ import java.util.UUID
 class EierDataHandler(
     private val eierService: EierRegisterService,
 ) : PersonRegisterDataHandler {
-    override fun saveData(
+    override suspend fun saveData(
         soknadId: UUID,
         person: Person,
     ) {

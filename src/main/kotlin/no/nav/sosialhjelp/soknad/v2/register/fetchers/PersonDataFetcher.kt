@@ -5,16 +5,13 @@ import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
-import org.springframework.core.Ordered
-import org.springframework.core.annotation.Order
+import no.nav.sosialhjelp.soknad.v2.register.PrimaryFetcher
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 interface PersonRegisterDataHandler {
-    fun saveData(
+    suspend fun saveData(
         soknadId: UUID,
         person: Person,
     )
@@ -22,19 +19,20 @@ interface PersonRegisterDataHandler {
     fun continueOnError(): Boolean = true
 }
 
-// Sørger for at denne mapperen er den første som kjører
-@Order(Ordered.HIGHEST_PRECEDENCE)
+// PrimaryFetcher - er nødvendig å kjøre før "alle andre"
 @Component
 class PersonDataFetcher(
     private val personService: PersonService,
     private val personRegisterDataHandlers: List<PersonRegisterDataHandler>,
-) : RegisterDataFetcher {
+) : PrimaryFetcher {
     private val logger by logger()
 
-    override fun fetchAndSave(soknadId: UUID) {
+    override suspend fun fetchAndSave(
+        soknadId: UUID,
+    ) {
         logger.info("Henter person i PDL")
 
-        val hentPerson = personService.hentPerson(personId())
+        val hentPerson = personService.hentPerson()
         hentPerson
             ?.also { it.verifyOver18() }
             ?.let { person ->

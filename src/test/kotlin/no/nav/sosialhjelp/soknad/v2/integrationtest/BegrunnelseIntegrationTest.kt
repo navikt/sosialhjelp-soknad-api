@@ -38,7 +38,6 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/begrunnelse",
             input,
             BegrunnelseDto::class.java,
-            soknad.id,
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
@@ -62,7 +61,6 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/begrunnelse",
             input,
             BegrunnelseDto::class.java,
-            soknad.id,
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
@@ -89,7 +87,6 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/begrunnelse",
             input,
             BegrunnelseDto::class.java,
-            soknad.id,
         )
             .also { dto ->
                 assertThat(dto.kategorier.definerte.toList())
