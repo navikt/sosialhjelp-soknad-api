@@ -22,7 +22,6 @@ class HentPersonClientMock : HentPersonClient {
 
     override suspend fun hentPerson(
         personId: String,
-        userToken: String,
     ): PersonDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlPersonResponse.json")
         assertThat(resourceAsStream).isNotNull

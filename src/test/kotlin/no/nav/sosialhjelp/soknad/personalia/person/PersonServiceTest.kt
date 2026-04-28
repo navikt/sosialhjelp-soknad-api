@@ -102,7 +102,7 @@ internal class PersonServiceTest {
     @Test
     fun skalHentePersonMedEktefelle() =
         runTest(UserContextElement("token", "ident")) {
-            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any()) } returns mockPersonDto
             every { mapper.personDtoToDomain(any(), any()) } returns person
             every { mockPersonDto.sivilstand } returns
                 listOf(
@@ -123,7 +123,7 @@ internal class PersonServiceTest {
     @Test
     internal fun skalHentePersonMenIkkeEktefelleHvisEktefelleidentErNull() =
         runTest(UserContextElement("ident", "token")) {
-            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any()) } returns mockPersonDto
             every { mapper.personDtoToDomain(any(), any()) } returns person
             every { mockPersonDto.sivilstand } returns
                 listOf(
@@ -145,7 +145,7 @@ internal class PersonServiceTest {
     @Test
     internal fun skalHentePersonMenIkkeEktefelleHvisEktefelleidentErFDAT() =
         runTest(UserContextElement("ident", "token")) {
-            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any()) } returns mockPersonDto
             every { mapper.personDtoToDomain(any(), any()) } returns person
             every { mockPersonDto.sivilstand } returns
                 listOf(
@@ -167,7 +167,7 @@ internal class PersonServiceTest {
     @Test
     internal fun skalHentePersonUtenEktefelle() =
         runTest(UserContextElement("ident", "token")) {
-            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any()) } returns mockPersonDto
             every { mapper.personDtoToDomain(any(), any()) } returns person
             every { mockPersonDto.sivilstand } returns emptyList()
 
@@ -178,7 +178,7 @@ internal class PersonServiceTest {
     @Test
     internal fun skalHenteBarn() =
         runTest(UserContextElement("ident", "token")) {
-            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any()) } returns mockPersonDto
             every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR"))
             coEvery { hentPersonClient.hentBarn(any()) } returns mockBarnDto
             every { mapper.barnDtoToDomain(any(), any(), any()) } returns barn
@@ -191,7 +191,7 @@ internal class PersonServiceTest {
     @Test
     internal fun skalFiltrereVekkNullBarn() =
         runTest(UserContextElement("ident", "token")) {
-            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any()) } returns mockPersonDto
             every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR"))
             coEvery { hentPersonClient.hentBarn(any()) } returns mockBarnDto
             every { mapper.barnDtoToDomain(any(), any(), any()) } returns null
@@ -203,7 +203,7 @@ internal class PersonServiceTest {
     @Test
     internal fun skalIkkeHenteBarnHvisIdentErNull() =
         runTest(UserContextElement("ident", "token")) {
-            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any()) } returns mockPersonDto
             every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(null, "BARN", "MOR"))
 
             val result = personService.hentBarnForPerson()
@@ -216,7 +216,7 @@ internal class PersonServiceTest {
     @Test
     internal fun skalIkkeHenteBarnHvisIdentErFDAT() =
         runTest(UserContextElement("ident", "token")) {
-            coEvery { hentPersonClient.hentPerson(any(), any()) } returns mockPersonDto
+            coEvery { hentPersonClient.hentPerson(any()) } returns mockPersonDto
             every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR"))
 
             val result = personService.hentBarnForPerson()

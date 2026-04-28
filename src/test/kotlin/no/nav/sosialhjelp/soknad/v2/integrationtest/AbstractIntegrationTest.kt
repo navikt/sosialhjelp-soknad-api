@@ -90,7 +90,7 @@ abstract class AbstractIntegrationTest {
     }
 
     protected fun setupPdlAnswers() {
-        coEvery { hentPersonClient.hentPerson(any(), any()) } coAnswers { HentPersonClientMock().hentPerson("ident", "token") }
+        coEvery { hentPersonClient.hentPerson(any()) } coAnswers { HentPersonClientMock().hentPerson("ident") }
         coEvery { hentPersonClient.hentAdressebeskyttelse() } coAnswers { HentPersonClientMock().hentAdressebeskyttelse() }
         coEvery { hentPersonClient.hentEktefelle(any()) } coAnswers { HentPersonClientMock().hentEktefelle("ident") }
         coEvery { hentPersonClient.hentBarn(any()) } coAnswers { HentPersonClientMock().hentBarn("ident") }
