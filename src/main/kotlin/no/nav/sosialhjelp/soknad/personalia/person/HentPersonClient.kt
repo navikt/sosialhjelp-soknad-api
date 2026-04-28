@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.personalia.person
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
-import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_ADRESSEBESKYTTELSE
@@ -21,6 +20,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
+import no.nav.sosialhjelp.soknad.v2.register.UserContextElement
 import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
@@ -36,10 +36,7 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Duration
 
 interface HentPersonClient {
-    suspend fun hentPerson(
-        personId: String,
-        userToken: String,
-    ): PersonDto?
+    suspend fun hentPerson(personId: String): PersonDto?
 
     suspend fun hentAdressebeskyttelse(): PersonAdressebeskyttelseDto?
 
@@ -57,15 +54,12 @@ class HentPersonClientImpl(
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
     // må caches på dette nivået da den kalles 2 steder i PersonService
-    @Cacheable(HentPersonClientConfig.CACHE_NAME, key = "#personId", unless = "#result == null")
-    override suspend fun hentPerson(
-        personId: String,
-        userToken: String,
-    ): PersonDto? =
-        doPdlRequest(PdlRequest(HENT_PERSON, variables(personId)), "hentPerson", userToken)
+    @Cacheable(HentPersonClientConfig.CACHE_NAME, unless = "#result == null")
+    override suspend fun hentPerson(personId: String): PersonDto? =
+        doPdlRequest(PdlRequest(HENT_PERSON, variables(personId)), "hentPerson", currentUserContext().exchangeToken())
 
     override suspend fun hentAdressebeskyttelse(): PersonAdressebeskyttelseDto? =
-        doPdlRequest(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(currentUserContext().userId)), "adressebeskyttelse", currentUserContext().userToken)
+        doPdlRequest(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(currentUserContext().userId)), "adressebeskyttelse", currentUserContext().exchangeToken())
 
     override suspend fun hentEktefelle(ektefelleIdent: String): EktefelleDto? =
         doPdlRequest(PdlRequest(HENT_EKTEFELLE, variables(ektefelleIdent)), "hentEktefelle", azureAdToken())
@@ -76,10 +70,10 @@ class HentPersonClientImpl(
     private suspend inline fun <reified T> doPdlRequest(
         pdlRequest: PdlRequest,
         typeRequest: String,
-        userToken: String,
+        token: String,
     ): T? =
         runCatching {
-            doRequest(pdlRequest, userToken) ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
+            doRequest(pdlRequest, token) ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
         }
             .getOrElse {
                 when (it) {
@@ -96,11 +90,11 @@ class HentPersonClientImpl(
 
     private suspend fun doRequest(
         pdlRequest: PdlRequest,
-        userToken: String,
+        token: String,
     ): String? =
         withContext(Dispatchers.IO) {
             hentPersonRequest
-                .header(AUTHORIZATION, BEARER + getTokenX(userToken))
+                .header(AUTHORIZATION, "Bearer $token")
                 .bodyValue(pdlRequest)
                 .retrieve()
                 .bodyToMono<String>()
@@ -109,9 +103,14 @@ class HentPersonClientImpl(
                 .awaitSingleOrNull()
         }
 
-    private suspend fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, target = pdlAudience)
+    private suspend fun UserContextElement.exchangeToken() =
+        texasService.exchangeToken(
+            userToken,
+            IdentityProvider.TOKENX,
+            target = pdlAudience
+        )
 
-    private suspend fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
+    private suspend fun azureAdToken() = texasService.getToken(IdentityProvider.ENTRA_ID, pdlScope)
 
     private fun variables(ident: String): Map<String, Any> = mapOf("historikk" to false, "ident" to ident)
 

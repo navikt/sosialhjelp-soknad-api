@@ -5,7 +5,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
@@ -33,7 +32,7 @@ class PersonService(
         hentEktefelle: Boolean = true,
     ): Person? {
         val personDto =
-            hentPersonClient.hentPerson(currentUserContext().userId, currentUserContext().userToken)
+            hentPersonClient.hentPerson(currentUserContext().userId)
                 ?: return null
         val person = mapper.personDtoToDomain(personDto, currentUserContext().userId)
         if (person != null && hentEktefelle) {
@@ -59,7 +58,7 @@ class PersonService(
 
     suspend fun hentBarnForPerson(): List<Barn>? {
         // TODO Ikke nødvendig å hente person igjen -> refaktor
-        val personDto = hentPersonClient.hentPerson(getUserIdFromToken(), getToken())
+        val personDto = hentPersonClient.hentPerson(currentUserContext().userId)
         if (personDto?.forelderBarnRelasjon == null) {
             return null
         }

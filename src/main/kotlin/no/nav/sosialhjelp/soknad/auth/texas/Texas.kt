@@ -79,7 +79,7 @@ class NonBlockingTexasServiceImpl(
 }
 
 enum class IdentityProvider(val value: String) {
-    AZURE_AD("azuread"),
+    ENTRA_ID("entra_id"),
     M2M("maskinporten"),
     TOKENX("tokenx"),
 }
