@@ -107,7 +107,7 @@ class HentPersonClientImpl(
         texasService.exchangeToken(
             userToken,
             IdentityProvider.TOKENX,
-            target = pdlAudience
+            target = pdlAudience,
         )
 
     private suspend fun azureAdToken() = texasService.getToken(IdentityProvider.ENTRA_ID, pdlScope)
