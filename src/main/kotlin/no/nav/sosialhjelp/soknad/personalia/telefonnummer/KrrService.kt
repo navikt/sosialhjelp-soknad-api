@@ -1,18 +1,13 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
-import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.stereotype.Component
-import java.time.Duration
 
 @Component
 class KrrService(
     private val krrClient: KrrClient,
 ) {
-//    @Cacheable(KrrCacheConfig.CACHE_NAME, unless = "#result == null")
     suspend fun getMobilnummer(): String? {
         return doGet()
             ?.also { it.mobiltelefonnummer ?: logger.warn("KRR - mobiltelefonnummer er null") }
@@ -41,16 +36,6 @@ class KrrService(
     companion object {
         private val logger by logger()
         const val IKKE_FUNNET = "person_ikke_funnet"
-    }
-}
-
-@Configuration
-class KrrCacheConfig : SoknadApiCacheConfig(CACHE_NAME) {
-    override fun getConfig(): RedisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig().entryTtl(ONE_HOUR)
-
-    companion object {
-        const val CACHE_NAME = "krr-cache"
-        private val ONE_HOUR = Duration.ofHours(1)
     }
 }
 
