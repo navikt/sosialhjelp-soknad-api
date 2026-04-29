@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.stereotype.Component
@@ -13,7 +12,7 @@ import java.time.Duration
 class KrrService(
     private val krrClient: KrrClient,
 ) {
-    @Cacheable(KrrCacheConfig.CACHE_NAME, unless = "#result == null")
+//    @Cacheable(KrrCacheConfig.CACHE_NAME, unless = "#result == null")
     suspend fun getMobilnummer(): String? {
         return doGet()
             ?.also { it.mobiltelefonnummer ?: logger.warn("KRR - mobiltelefonnummer er null") }
