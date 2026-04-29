@@ -33,10 +33,10 @@ class KrrClient(
             .baseUrl(krrUrl)
             .build()
 
-    suspend fun getDigitalKontaktinformasjon(): KontaktInfoResponse? =
+    suspend fun getDigitalKontaktinformasjon(personId: String): KontaktInfoResponse? =
         runCatching {
             logger.info("Henter Digital kontaktinformasjon fra KRR")
-            doPostRequest()
+            doPostRequest(personId)
         }
             .getOrElse { e ->
                 when (e) {
@@ -56,13 +56,13 @@ class KrrClient(
                 }
             }
 
-    private suspend fun doPostRequest(): KontaktInfoResponse? =
+    private suspend fun doPostRequest(personId: String): KontaktInfoResponse? =
         withContext(Dispatchers.IO) {
             webClient
                 .post()
                 .uri("/rest/v1/personer")
                 .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
-                .bodyValue(KontaktInfoRequest(listOf(currentUserContext().userId)))
+                .bodyValue(KontaktInfoRequest(listOf(personId)))
                 .retrieve()
                 .bodyToMono<KontaktInfoResponse>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)

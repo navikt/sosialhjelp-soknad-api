@@ -39,7 +39,7 @@ class KrrServiceTest {
     @Test
     suspend fun `Person finnes skal gi ok-response`() =
         runTest(userContext) {
-            coEvery { krrClient.getDigitalKontaktinformasjon() } returns deserialize(okResponse)
+            coEvery { krrClient.getDigitalKontaktinformasjon(personId) } returns deserialize(okResponse)
 
             assertThat(krrService.getMobilnummer()).isEqualTo(MOBILNUMMER)
         }
@@ -47,7 +47,7 @@ class KrrServiceTest {
     @Test
     suspend fun `Finnes i PDL men ikke KRR gir aktiv = false`() =
         runTest(userContext) {
-            coEvery { krrClient.getDigitalKontaktinformasjon() } returns deserialize(ikkeAktivResposne)
+            coEvery { krrClient.getDigitalKontaktinformasjon(personId) } returns deserialize(ikkeAktivResposne)
 
             assertThat(krrService.getMobilnummer()).isNull()
         }
@@ -55,7 +55,7 @@ class KrrServiceTest {
     @Test
     suspend fun `Personen finnes ikke i PDL`() =
         runTest(userContext) {
-            coEvery { krrClient.getDigitalKontaktinformasjon() } returns deserialize(feilResponse)
+            coEvery { krrClient.getDigitalKontaktinformasjon(personId) } returns deserialize(feilResponse)
 
             assertThat(krrService.getMobilnummer()).isNull()
         }

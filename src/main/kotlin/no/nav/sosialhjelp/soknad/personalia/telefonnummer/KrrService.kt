@@ -13,15 +13,15 @@ import java.time.Duration
 class KrrService(
     private val krrClient: KrrClient,
 ) {
-    @Cacheable(KrrCacheConfig.CACHE_NAME, unless = "#result == null")
-    suspend fun getMobilnummer(): String? {
-        return doGet()
+    @Cacheable(KrrCacheConfig.CACHE_NAME,key ="" unless = "#result == null")
+    suspend fun getMobilnummer(personId: String): String? {
+        return doGet(personId)
             ?.also { it.mobiltelefonnummer ?: logger.warn("KRR - mobiltelefonnummer er null") }
             ?.mobiltelefonnummer
     }
 
-    private suspend fun doGet(): DigitalKontaktinformasjon? {
-        val kontaktInfoResponse = krrClient.getDigitalKontaktinformasjon() ?: return null
+    private suspend fun doGet(personId: String): DigitalKontaktinformasjon? {
+        val kontaktInfoResponse = krrClient.getDigitalKontaktinformasjon(personId) ?: return null
 
         return kontaktInfoResponse.personer
             ?.let { infoForPersonMap -> infoForPersonMap[currentUserContext().userId] }

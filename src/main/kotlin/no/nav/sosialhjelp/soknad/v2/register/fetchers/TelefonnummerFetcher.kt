@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
 import no.nav.sosialhjelp.soknad.v2.register.SynchronousFetcher
+import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -17,7 +18,7 @@ class TelefonnummerFetcher(
     ) {
         logger.info("Henter mobilnummer fra KRR")
 
-        krrService.getMobilnummer()
+        krrService.getMobilnummer(currentUserContext().userId)
             ?.let { norskTelefonnummer(it) }
             ?.also { kontaktService.updateTelefonRegister(soknadId, it) }
             ?: logger.info("Fant ikke telefonnummer i KRR-registeret")
