@@ -95,7 +95,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     // TODO Er dette riktig antakelse?
     @Test
     fun `Exception i fetcher med ContinueOnError = true skal ikke stoppe opprettelse av ny soknad`() {
-        coEvery { krrService.getMobilnummer() } throws IllegalArgumentException("Feil ved henting av telefonnummer")
+        coEvery { krrService.getMobilnummer("personid") } throws IllegalArgumentException("Feil ved henting av telefonnummer")
 
         createNewSoknad().also { soknadId ->
             soknadRepository.findByIdOrNull(soknadId).let { assertThat(it).isNotNull }

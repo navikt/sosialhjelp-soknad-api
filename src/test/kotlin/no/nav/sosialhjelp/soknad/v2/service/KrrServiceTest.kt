@@ -39,25 +39,25 @@ class KrrServiceTest {
     @Test
     suspend fun `Person finnes skal gi ok-response`() =
         runTest(userContext) {
-            coEvery { krrClient.getDigitalKontaktinformasjon(personId) } returns deserialize(okResponse)
+            coEvery { krrClient.getDigitalKontaktinformasjon(PERSON_ID) } returns deserialize(okResponse)
 
-            assertThat(krrService.getMobilnummer()).isEqualTo(MOBILNUMMER)
+            assertThat(krrService.getMobilnummer(PERSON_ID)).isEqualTo(MOBILNUMMER)
         }
 
     @Test
     suspend fun `Finnes i PDL men ikke KRR gir aktiv = false`() =
         runTest(userContext) {
-            coEvery { krrClient.getDigitalKontaktinformasjon(personId) } returns deserialize(ikkeAktivResposne)
+            coEvery { krrClient.getDigitalKontaktinformasjon(PERSON_ID) } returns deserialize(ikkeAktivResposne)
 
-            assertThat(krrService.getMobilnummer()).isNull()
+            assertThat(krrService.getMobilnummer(PERSON_ID)).isNull()
         }
 
     @Test
     suspend fun `Personen finnes ikke i PDL`() =
         runTest(userContext) {
-            coEvery { krrClient.getDigitalKontaktinformasjon(personId) } returns deserialize(feilResponse)
+            coEvery { krrClient.getDigitalKontaktinformasjon(PERSON_ID) } returns deserialize(feilResponse)
 
-            assertThat(krrService.getMobilnummer()).isNull()
+            assertThat(krrService.getMobilnummer(PERSON_ID)).isNull()
         }
 
     companion object {

@@ -13,7 +13,7 @@ import java.time.Duration
 class KrrService(
     private val krrClient: KrrClient,
 ) {
-    @Cacheable(KrrCacheConfig.CACHE_NAME,key ="" unless = "#result == null")
+    @Cacheable(KrrCacheConfig.CACHE_NAME,key ="#personId", unless = "#result == null")
     suspend fun getMobilnummer(personId: String): String? {
         return doGet(personId)
             ?.also { it.mobiltelefonnummer ?: logger.warn("KRR - mobiltelefonnummer er null") }
