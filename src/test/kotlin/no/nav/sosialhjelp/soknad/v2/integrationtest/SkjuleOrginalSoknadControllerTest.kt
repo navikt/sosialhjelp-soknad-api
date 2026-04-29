@@ -9,8 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-class SkjuleOrginalSoknadControllerTest: AbstractIntegrationTest() {
-
+class SkjuleOrginalSoknadControllerTest : AbstractIntegrationTest() {
     @Test
     fun `Ingen soknad funnet skal returnere true`() {
         doGet(
@@ -27,14 +26,15 @@ class SkjuleOrginalSoknadControllerTest: AbstractIntegrationTest() {
                 soknadId = UUID.randomUUID(),
                 personId = "12345612345",
                 status = SoknadStatus.SENDT,
-                tidspunkt = Tidspunkt(
-                    opprettet = createdSafetyZoneStart.plusMinutes(1),
-                    sendtInn = createdSafetyZoneStart.plusMinutes(20)
-                ),
+                tidspunkt =
+                    Tidspunkt(
+                        opprettet = createdSafetyZoneStart.plusMinutes(1),
+                        sendtInn = createdSafetyZoneStart.plusMinutes(20),
+                    ),
                 mottakerKommunenummer = "0301",
                 digisosId = UUID.randomUUID(),
-                soknadType = SoknadType.STANDARD
-            )
+                soknadType = SoknadType.STANDARD,
+            ),
         )
             .let { metadata ->
                 doGet(
@@ -52,14 +52,15 @@ class SkjuleOrginalSoknadControllerTest: AbstractIntegrationTest() {
                 soknadId = UUID.randomUUID(),
                 personId = "12345612345",
                 status = SoknadStatus.SENDT,
-                tidspunkt = Tidspunkt(
-                    opprettet = createdSafetyZoneStart.minusMinutes(1),
-                    sendtInn = createdSafetyZoneStart.plusMinutes(20)
-                ),
+                tidspunkt =
+                    Tidspunkt(
+                        opprettet = createdSafetyZoneStart.minusMinutes(1),
+                        sendtInn = createdSafetyZoneStart.plusMinutes(20),
+                    ),
                 mottakerKommunenummer = "0301",
                 digisosId = UUID.randomUUID(),
-                soknadType = SoknadType.STANDARD
-            )
+                soknadType = SoknadType.STANDARD,
+            ),
         )
             .let { metadata ->
                 doGet(
@@ -73,5 +74,4 @@ class SkjuleOrginalSoknadControllerTest: AbstractIntegrationTest() {
     companion object {
         private fun getUrl(digisosId: UUID): String = "/soknad/hide/$digisosId"
     }
-
 }

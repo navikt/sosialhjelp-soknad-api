@@ -18,17 +18,19 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/hide/{digisosId}")
 class SkjuleOrginalSoknadController(
-    private val metadataRepository: SoknadMetadataRepository
+    private val metadataRepository: SoknadMetadataRepository,
 ) {
     @GetMapping
-    fun skalSkjuleOrginalSoknad(@PathVariable digisosId: UUID): Boolean {
-
+    fun skalSkjuleOrginalSoknad(
+        @PathVariable digisosId: UUID,
+    ): Boolean {
         return runCatching {
             val metadata = metadataRepository.findMetadataByDigisosId(digisosId.toString()) ?: return true
             metadata.tidspunkt.opprettet.isInsideCriticalTimeslot()
         }
             .getOrElse { true }
     }
+
     private fun LocalDateTime.isInsideCriticalTimeslot() = isAfter(createdSafetyZoneStart) && isBefore(createdSafetyZoneEnd)
 
     companion object {
@@ -36,4 +38,3 @@ class SkjuleOrginalSoknadController(
         val createdSafetyZoneEnd: LocalDateTime = LocalDateTime.of(2026, 4, 29, 12, 45)
     }
 }
-
