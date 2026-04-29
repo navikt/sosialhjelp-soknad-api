@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.metadata
 
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,7 +15,6 @@ import java.util.UUID
 // TODO Dette kan slettes når bruker ikke lenger kan se søknad i innsyn (hvor lenge?)
 
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/hide/{digisosId}")
 class SkjuleOrginalSoknadController(
     private val metadataRepository: SoknadMetadataRepository,
@@ -24,16 +23,22 @@ class SkjuleOrginalSoknadController(
     fun skalSkjuleOrginalSoknad(
         @PathVariable digisosId: UUID,
     ): Boolean {
+        logger.info("Sjekker om original soknad skal skjules for digisosId: $digisosId ")
+
         return runCatching {
             val metadata = metadataRepository.findMetadataByDigisosId(digisosId.toString()) ?: return true
             metadata.tidspunkt.opprettet.isInsideCriticalTimeslot()
         }
-            .getOrElse { true }
+            .getOrElse {
+                logger.error("SkalSkjuleOriginalSoknad feilet for digisosId: $digisosId", it)
+                true
+            }
     }
 
     private fun LocalDateTime.isInsideCriticalTimeslot() = isAfter(createdSafetyZoneStart) && isBefore(createdSafetyZoneEnd)
 
     companion object {
+        private val logger by logger()
         val createdSafetyZoneStart: LocalDateTime = LocalDateTime.of(2026, 4, 28, 14, 15)
         val createdSafetyZoneEnd: LocalDateTime = LocalDateTime.of(2026, 4, 29, 12, 45)
     }
