@@ -57,6 +57,7 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
             getPath(soknad.id),
             input,
             ArbeidDto::class.java,
+            soknad.id,
         ).also {
             assertThat(it.kommentar).isEqualTo(input.kommentarTilArbeidsforhold)
         }

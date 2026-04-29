@@ -1,10 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
@@ -13,10 +9,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
-import no.nav.sosialhjelp.soknad.v2.register.UserContextElement
-import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.slf4j.LoggerFactory.getLogger
-import org.slf4j.MDC
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
@@ -28,13 +21,12 @@ class PersonService(
     private val hentPersonClient: HentPersonClient,
     private val mapper: PdlDtoMapper,
 ) {
-    suspend fun hentPerson(
+    fun hentPerson(
+        ident: String,
         hentEktefelle: Boolean = true,
     ): Person? {
-        val personDto =
-            hentPersonClient.hentPerson(currentUserContext().userId)
-                ?: return null
-        val person = mapper.personDtoToDomain(personDto, currentUserContext().userId)
+        val personDto = hentPersonClient.hentPerson(ident) ?: return null
+        val person = mapper.personDtoToDomain(personDto, ident)
         if (person != null && hentEktefelle) {
             person.ektefelle = hentEktefelle(personDto)
         }
@@ -48,17 +40,13 @@ class PersonService(
     fun onSendSoknadHasAdressebeskyttelse(ident: String): Boolean = hasGradering(ident)
 
     private fun hasGradering(ident: String): Boolean =
-        // For at hentPersonClient (og Texas) skal kunne gjøre kallene non-blocking
-        runBlocking(Dispatchers.IO + MDCContext(MDC.getCopyOfContextMap()) + UserContextElement(getToken(), ident)) {
-            hentPersonClient
-                .hentAdressebeskyttelse()
-                .let { dto -> mapper.personAdressebeskyttelseDtoToGradering(dto) }
-                .isGradert()
-        }
+        hentPersonClient
+            .hentAdressebeskyttelse(ident)
+            .let { dto -> mapper.personAdressebeskyttelseDtoToGradering(dto) }
+            .isGradert()
 
-    suspend fun hentBarnForPerson(): List<Barn>? {
-        // TODO Ikke nødvendig å hente person igjen -> refaktor
-        val personDto = hentPersonClient.hentPerson(currentUserContext().userId)
+    fun hentBarnForPerson(ident: String): List<Barn>? {
+        val personDto = hentPersonClient.hentPerson(ident)
         if (personDto?.forelderBarnRelasjon == null) {
             return null
         }
@@ -80,7 +68,7 @@ class PersonService(
             .filterNotNull()
     }
 
-    private suspend fun hentEktefelle(personDto: PersonDto?): Ektefelle? {
+    private fun hentEktefelle(personDto: PersonDto?): Ektefelle? {
         if (personDto?.sivilstand != null && personDto.sivilstand.isNotEmpty()) {
             val sivilstand = MapperHelper.utledGjeldendeSivilstand(personDto.sivilstand)
             if (sivilstand != null && (SivilstandType.GIFT === sivilstand.type || SivilstandType.REGISTRERT_PARTNER === sivilstand.type)) {

@@ -1,8 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerService
 import no.nav.sosialhjelp.soknad.v2.eier.service.EierRegisterService
-import no.nav.sosialhjelp.soknad.v2.register.SynchronousFetcher
+import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -10,11 +11,9 @@ import java.util.UUID
 class KontonummerFetcher(
     private val kontonummerService: KontonummerService,
     private val eierService: EierRegisterService,
-) : SynchronousFetcher {
-    override suspend fun fetchAndSave(
-        soknadId: UUID,
-    ) {
-        kontonummerService.getKontonummer()
+) : RegisterDataFetcher {
+    override fun fetchAndSave(soknadId: UUID) {
+        kontonummerService.getKontonummer(SubjectHandlerUtils.getUserIdFromToken())
             ?.let { eierService.updateKontonummerFromRegister(soknadId, kontonummerRegister = it) }
     }
 }

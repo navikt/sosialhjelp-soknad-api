@@ -149,6 +149,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = getUrl(soknad.id) + "?type=${FORMUE_BRUKSKONTO.toDokumentasjonType()}",
             requestBody = input,
             httpStatus = HttpStatus.NOT_FOUND,
+            soknadId = soknad.id,
         )
     }
 
@@ -168,6 +169,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = getUrl(soknad.id) + "?type=${HUSLEIEKONTRAKT.toDokumentasjonType()}",
             requestBody = input,
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
+            soknadId = soknad.id,
         )
     }
 

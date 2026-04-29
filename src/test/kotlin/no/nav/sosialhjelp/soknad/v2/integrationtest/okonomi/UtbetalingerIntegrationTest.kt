@@ -61,6 +61,7 @@ class UtbetalingerIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = getUrl(soknad.id),
             requestBody = input,
             responseBodyClass = UtbetalingerDto::class.java,
+            soknadId = soknad.id,
         )
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.let { okonomi ->
@@ -90,6 +91,7 @@ class UtbetalingerIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = getUrl(soknad.id),
             requestBody = HarIkkeUtbetalingerInput(),
             responseBodyClass = UtbetalingerDto::class.java,
+            soknadId = soknad.id,
         )
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.let { okonomi ->

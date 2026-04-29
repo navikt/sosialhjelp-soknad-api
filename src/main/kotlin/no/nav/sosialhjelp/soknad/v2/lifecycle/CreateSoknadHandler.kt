@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
-import no.nav.sosialhjelp.soknad.v2.register.FetchRegisterDataManager
+import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
@@ -18,7 +18,7 @@ class CreateSoknadHandler(
     private val soknadService: SoknadService,
     private val dokumentasjonService: DokumentasjonService,
     private val metadataService: SoknadMetadataService,
-    private val fetchRegisterDataManager: FetchRegisterDataManager,
+    private val registerDataService: RegisterDataService,
 ) {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun createSoknad(
@@ -37,7 +37,7 @@ class CreateSoknadHandler(
 
     @Transactional(propagation = Propagation.NEVER)
     fun runRegisterDataFetchers(soknadId: UUID) {
-        runCatching { fetchRegisterDataManager.runAllRegisterDataFetchers(soknadId = soknadId) }
+        runCatching { registerDataService.runAllRegisterDataFetchers(soknadId = soknadId) }
             .getOrElse {
                 metadataService.deleteMetadata(soknadId)
                 when (it) {

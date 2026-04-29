@@ -66,6 +66,7 @@ class BoutgiftIntegrasjonTest : AbstractIntegrationTest() {
                 uri = getUrl(soknad.id),
                 requestBody = it,
                 responseBodyClass = BoutgifterDto::class.java,
+                soknadId = soknad.id,
             )
         }
         assertThat(okonomiService.getBekreftelser(soknad.id).toList()).hasSize(1)
@@ -86,6 +87,7 @@ class BoutgiftIntegrasjonTest : AbstractIntegrationTest() {
             uri = getUrl(soknad.id),
             requestBody = HarIkkeBoutgifterInput(),
             responseBodyClass = BoutgifterDto::class.java,
+            soknadId = soknad.id,
         )
         assertThat(okonomiService.getBekreftelser(soknad.id).toList()).hasSize(1)
             .allMatch { it.type == BekreftelseType.BEKREFTELSE_BOUTGIFTER && !it.verdi }

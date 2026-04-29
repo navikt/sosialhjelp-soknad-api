@@ -35,8 +35,8 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     @Test
     fun `Verifisere CRUD-operasjoner for Soknad`() {
         // for "rot"-objektet vil det ikke være constraints som må testes
-        val original = soknadRepository.save(opprettSoknad(id = soknad.id))
-        val updated = soknadRepository.save(opprettSoknad(id = soknad.id).copy(eierPersonId = "NOE ANNET"))
+        val original = soknadRepository.save(opprettSoknad(soknad.id))
+        val updated = soknadRepository.save(opprettSoknad(soknad.id).copy(eierPersonId = "NOE ANNET"))
         assertThat(original).isNotEqualTo(updated)
     }
 
@@ -100,8 +100,8 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere CRUD-operasjoner for Dokumentasjon`() {
         val dbId = UUID.randomUUID()
         dokumentasjonRepository.verifyCRUDOperations(
-            originalEntity = opprettDokumentasjon(id = dbId, soknadId = soknad.id),
-            updatedEntity = opprettDokumentasjon(id = dbId, soknadId = soknad.id).copy(status = DokumentasjonStatus.LASTET_OPP),
+            originalEntity = opprettDokumentasjon(dbId, soknad.id),
+            updatedEntity = opprettDokumentasjon(dbId, soknad.id).copy(status = DokumentasjonStatus.LASTET_OPP),
         )
     }
 

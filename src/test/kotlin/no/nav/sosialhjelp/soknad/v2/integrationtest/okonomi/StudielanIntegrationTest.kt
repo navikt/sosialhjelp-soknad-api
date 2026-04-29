@@ -67,6 +67,7 @@ class StudielanIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = getStudielanUrl(soknad.id),
             requestBody = StudielanInput(mottarStudielan = true),
             responseBodyClass = StudielanDto::class.java,
+            soknadId = soknad.id,
         )
             .also { response ->
                 assertThat(response.erStudent).isTrue()
@@ -95,6 +96,7 @@ class StudielanIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = getStudielanUrl(soknad.id),
             requestBody = StudielanInput(mottarStudielan = true),
             responseBodyClass = StudielanDto::class.java,
+            soknadId = soknad.id,
         )
             .also { response ->
                 assertThat(response.erStudent).isFalse()

@@ -1,11 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.coEvery
 import io.mockk.every
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.arbeid.AaregClient
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.IdentInfoType
@@ -42,7 +38,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     private lateinit var dokumentasjonRepository: DokumentasjonRepository
 
     @Test
-    suspend fun `Hente arbeidsforhold fra Register skal lagres i db`() {
+    fun `Hente arbeidsforhold fra Register skal lagres i db`() {
         createAnswerForAaregClient().also { createAnswerForOrganisasjonClient(it) }
 
         arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
@@ -56,8 +52,8 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     }
 
     @Test
-    suspend fun `Aareg-client returnerer null skal ikke kaste feil eller lagre til db`() {
-        coEvery { aaregClient.finnArbeidsforholdForArbeidstaker() } returns null
+    fun `Aareg-client returnerer null skal ikke kaste feil eller lagre til db`() {
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns null
 
         arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
         assertThat(livssituasjonRepository.findByIdOrNull(soknad.id)).isNull()
@@ -65,18 +61,16 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
     @Test
     fun `Exception i Aareg-client kaster feil`() {
-        coEvery { aaregClient.finnArbeidsforholdForArbeidstaker() } throws
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } throws
             TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
 
         assertThatThrownBy {
-            runTest {
-                arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
-            }
+            arbeidsforholdFetcher.fetchAndSave(soknadId = soknad.id)
         }.isInstanceOf(TjenesteUtilgjengeligException::class.java)
     }
 
     @Test
-    suspend fun `OrganisasjonClient returnerer null lagrer orgnummer som arbeidsgivernavn`() {
+    fun `OrganisasjonClient returnerer null lagrer orgnummer som arbeidsgivernavn`() {
         createAnswerForAaregClient()
         every { organisasjonClient.hentOrganisasjonNoekkelinfo(any()) } returns null
 
@@ -91,7 +85,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     }
 
     @Test
-    suspend fun `OrganisasjonClient kaster exception`() {
+    fun `OrganisasjonClient kaster exception`() {
         createAnswerForAaregClient()
         every { organisasjonClient.hentOrganisasjonNoekkelinfo(any()) } throws
             TjenesteUtilgjengeligException("EREG", Exception("Dette tryna hardt"))
@@ -107,35 +101,29 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     }
 
     @Test
-    suspend fun `Arbeidsforhold genererer Inntekts-elementer`() {
+    fun `Arbeidsforhold genererer Inntekts-elementer`() {
         createAnswerForAaregClient()
 
         arbeidsforholdFetcher.fetchAndSave(soknad.id)
 
-        withContext(Dispatchers.IO) {
-            okonomiService.getInntekter(soknad.id)
-        }.let { inntekter ->
+        okonomiService.getInntekter(soknad.id).let { inntekter ->
             assertThat(inntekter).anyMatch { it.type == InntektType.JOBB }
             assertThat(inntekter).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
 
-        withContext(Dispatchers.IO) {
-            dokumentasjonRepository.findAllBySoknadId(soknad.id)
-        }.let { doks ->
+        dokumentasjonRepository.findAllBySoknadId(soknad.id).let { doks ->
             assertThat(doks).anyMatch { it.type == InntektType.JOBB }
             assertThat(doks).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
     }
 
     @Test
-    suspend fun `Oppdaterere med tom liste fjerner tidligere lagrede data`() {
+    fun `Oppdaterere med tom liste fjerner tidligere lagrede data`() {
         createAnswerForAaregClient().also { createAnswerForOrganisasjonClient(it) }
 
         arbeidsforholdFetcher.fetchAndSave(soknad.id)
 
-        withContext(Dispatchers.IO) {
-            okonomiService.getInntekter(soknad.id)
-        }.let { inntekter ->
+        okonomiService.getInntekter(soknad.id).let { inntekter ->
             assertThat(inntekter).anyMatch { it.type == InntektType.JOBB }
             assertThat(inntekter).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
@@ -147,16 +135,8 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
         livssituasjonRepository.findByIdOrNull(soknad.id)!!.arbeid.arbeidsforhold.also {
             assertThat(it).isEmpty()
         }
-        assertThat(
-            withContext(Dispatchers.IO) {
-                okonomiService.getInntekter(soknad.id)
-            },
-        ).isEmpty()
-        assertThat(
-            withContext(Dispatchers.IO) {
-                dokumentasjonRepository.findAllBySoknadId(soknad.id)
-            },
-        ).isEmpty()
+        assertThat(okonomiService.getInntekter(soknad.id)).isEmpty()
+        assertThat(dokumentasjonRepository.findAllBySoknadId(soknad.id)).isEmpty()
     }
 
     @MockkBean
@@ -168,7 +148,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     private fun createAnswerForAaregClient(
         answerV2: List<ArbeidsforholdDto> = defaultResponseFromAaregClientV2(soknad.eierPersonId),
     ): List<ArbeidsforholdDto> {
-        coEvery { aaregClient.finnArbeidsforholdForArbeidstaker() } returns answerV2
+        every { aaregClient.finnArbeidsforholdForArbeidstaker() } returns answerV2
         return answerV2
     }
 

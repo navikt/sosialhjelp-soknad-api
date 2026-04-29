@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 import com.nimbusds.jwt.SignedJWT
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
-import io.mockk.coEvery
 import io.mockk.every
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
@@ -90,10 +89,10 @@ abstract class AbstractIntegrationTest {
     }
 
     protected fun setupPdlAnswers() {
-        coEvery { hentPersonClient.hentPerson(any()) } coAnswers { HentPersonClientMock().hentPerson("ident") }
-        coEvery { hentPersonClient.hentAdressebeskyttelse() } coAnswers { HentPersonClientMock().hentAdressebeskyttelse() }
-        coEvery { hentPersonClient.hentEktefelle(any()) } coAnswers { HentPersonClientMock().hentEktefelle("ident") }
-        coEvery { hentPersonClient.hentBarn(any()) } coAnswers { HentPersonClientMock().hentBarn("ident") }
+        every { hentPersonClient.hentPerson(any()) } returns HentPersonClientMock().hentPerson("ident")
+        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns HentPersonClientMock().hentAdressebeskyttelse("ident")
+        every { hentPersonClient.hentEktefelle(any()) } returns HentPersonClientMock().hentEktefelle("ident")
+        every { hentPersonClient.hentBarn(any()) } returns HentPersonClientMock().hentBarn("ident")
     }
 
     protected fun <T : Any> doGet(
@@ -123,6 +122,7 @@ abstract class AbstractIntegrationTest {
     protected fun <T : Any> doPost(
         uri: String,
         responseBodyClass: Class<T>,
+        soknadId: UUID? = null,
     ): T {
         return webTestClient.post()
             .uri(uri)
@@ -150,6 +150,7 @@ abstract class AbstractIntegrationTest {
         uri: String,
         requestBody: Any,
         responseBodyClass: Class<T>,
+        soknadId: UUID? = null,
     ): T {
         return webTestClient.put()
             .uri(uri)
@@ -167,6 +168,7 @@ abstract class AbstractIntegrationTest {
         uri: String,
         requestBody: Any,
         responseBodyClass: Class<T>,
+        soknadId: UUID? = null,
     ): T {
         return webTestClient.post()
             .uri(uri)
@@ -185,11 +187,13 @@ abstract class AbstractIntegrationTest {
         uri: String,
         requestBody: Any,
         responseBodyClass: Class<T>,
+        soknadId: UUID? = null,
     ): T {
         return webTestClient.post()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
             .contentType(MediaType.MULTIPART_FORM_DATA)
+//            .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(requestBody))
             .exchange()
             .expectStatus().isOk
@@ -201,6 +205,7 @@ abstract class AbstractIntegrationTest {
     protected fun doPostFullResponse(
         uri: String,
         requestBody: Any,
+        soknadId: UUID?,
         contentType: MediaType = MediaType.APPLICATION_JSON,
     ): ResponseSpec {
         return webTestClient.post()
@@ -215,6 +220,7 @@ abstract class AbstractIntegrationTest {
         uri: String,
         requestBody: Any,
         httpStatus: HttpStatus,
+        soknadId: UUID? = null,
     ): SoknadApiError {
         return webTestClient.put()
             .uri(uri)
@@ -232,6 +238,7 @@ abstract class AbstractIntegrationTest {
         uri: String,
         requestBody: Any,
         httpStatus: HttpStatus,
+        soknadId: UUID? = null,
     ): InnsendingFeiletError {
         return webTestClient.post()
             .uri(uri)
@@ -247,6 +254,7 @@ abstract class AbstractIntegrationTest {
 
     protected fun doDelete(
         uri: String,
+        soknadId: UUID? = null,
     ): ResponseSpec {
         return webTestClient.delete()
             .uri(uri)

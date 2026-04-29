@@ -373,6 +373,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = bostottUrl(soknad.id),
             requestBody = BostotteInput(hasBostotte, hasSamtykke),
             responseBodyClass = BostotteDto::class.java,
+            soknadId = soknad.id,
         )
     }
 

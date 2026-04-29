@@ -53,7 +53,7 @@ class HentAdresseClient(
         }
     }
 
-    private fun azureAdToken() = texasService.getToken(IdentityProvider.ENTRA_ID, pdlScope)
+    private fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
 
     private fun variables(matrikkelId: String): Map<String, Any> = mapOf("matrikkelId" to matrikkelId)
 

@@ -26,7 +26,7 @@ class KodeverkClient(
     fun hentKodeverk(kodeverksnavn: String): KodeverkDto =
         doHentKodeverk(
             kodeverksnavn,
-            token = texasService.getToken(IdentityProvider.ENTRA_ID, scope),
+            token = texasService.getToken(IdentityProvider.AZURE_AD, scope),
         )
 
     private fun doHentKodeverk(

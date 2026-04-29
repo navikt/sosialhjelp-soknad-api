@@ -1,5 +1,4 @@
 .idea
-/gradle.properties
 /target
 */target
 !target/sosialhjelp-soknad-api

@@ -308,6 +308,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
             uri = updateAdresseUrl(soknadId),
             requestBody = AdresserInput(adresseValg = adresseValg, brukerAdresse = brukerAdresse),
             responseBodyClass = AdresserDto::class.java,
+            soknadId = soknadId,
         )
     }
 

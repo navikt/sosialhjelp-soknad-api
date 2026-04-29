@@ -36,6 +36,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
         doPost(
             uri = sendUrl(uuid),
             responseBodyClass = SoknadSendtDto::class.java,
+            soknadId = uuid,
         )
 
         metadataRepository.findByIdOrNull(uuid)!!
@@ -56,6 +57,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doDelete(
             uri = deleteUrl(uuid),
+            soknadId = uuid,
         )
 
         assertThat(metadataRepository.findByIdOrNull(uuid)).isNull()

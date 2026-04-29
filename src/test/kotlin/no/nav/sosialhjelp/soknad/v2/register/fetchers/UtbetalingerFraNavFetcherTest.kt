@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.coEvery
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavClient
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
@@ -37,7 +36,7 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
     }
 
     @Test
-    suspend fun `Utbetalinger fra NAV skal lagres i db`() {
+    fun `Utbetalinger fra NAV skal lagres i db`() {
         createAnswerForNavUtbetalingerClient()
         utbetalingerFraNavFetcher.fetchAndSave(soknad.id)
 
@@ -54,8 +53,8 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
     }
 
     @Test
-    suspend fun `Tom liste lagrer ingen Inntekt`() {
-        coEvery { navUtbetalingerClient.getUtbetalingerSiste40Dager() } returns
+    fun `Tom liste lagrer ingen Inntekt`() {
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns
             UtbetalDataDto(utbetalinger = emptyList(), feilet = false)
 
         utbetalingerFraNavFetcher.fetchAndSave(soknad.id)
@@ -65,8 +64,8 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
     }
 
     @Test
-    suspend fun `Returnerer null setter integrasjon-status feilet = true`() {
-        coEvery { navUtbetalingerClient.getUtbetalingerSiste40Dager() } returns null
+    fun `Returnerer null setter integrasjon-status feilet = true`() {
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns null
 
         utbetalingerFraNavFetcher.fetchAndSave(soknad.id)
 
@@ -76,6 +75,6 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
     }
 
     private fun createAnswerForNavUtbetalingerClient() {
-        coEvery { navUtbetalingerClient.getUtbetalingerSiste40Dager() } returns defaultResponseFromNavUtbetalingerClient()
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns defaultResponseFromNavUtbetalingerClient()
     }
 }

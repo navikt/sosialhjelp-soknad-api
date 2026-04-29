@@ -90,6 +90,7 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
             uri = getFormueUrl(soknad.id),
             requestBody = FormueInput(hasBeskrivelseSparing = false),
             responseBodyClass = FormueDto::class.java,
+            soknadId = soknad.id,
         )
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
@@ -167,6 +168,7 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
                         uri = getFormueUrl(soknad.id),
                         requestBody = input,
                         responseBodyClass = FormueDto::class.java,
+                        soknadId = soknad.id,
                     )
                 }
 
@@ -196,6 +198,7 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
             uri = getVerdiUrl(soknad.id),
             requestBody = input,
             responseBodyClass = VerdierDto::class.java,
+            soknadId = soknad.id,
         )
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.formuer.also { formuer ->
@@ -225,6 +228,7 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
             uri = getVerdiUrl(soknad.id),
             requestBody = HarIkkeVerdierInput(),
             responseBodyClass = VerdierDto::class.java,
+            soknadId = soknad.id,
         )
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also {
@@ -238,6 +242,7 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
             uri = getFormueUrl(soknad.id),
             requestBody = FormueInput(hasBrukskonto = true),
             responseBodyClass = FormueDto::class.java,
+            soknad.id,
         )
         assertThat(dokumentasjonsRepository.findAllBySoknadId(soknad.id))
             .hasSize(1).allMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
@@ -246,6 +251,7 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
             uri = getFormueUrl(soknad.id),
             requestBody = FormueInput(hasBrukskonto = false),
             responseBodyClass = FormueDto::class.java,
+            soknad.id,
         )
         assertThat(dokumentasjonsRepository.findAllBySoknadId(soknad.id)).isEmpty()
     }

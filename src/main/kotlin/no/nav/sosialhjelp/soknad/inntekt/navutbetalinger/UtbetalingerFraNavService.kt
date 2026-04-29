@@ -18,8 +18,8 @@ class UtbetalingerFraNavService(
     private val navUtbetalingerClient: UtbetalingerFraNavClient,
     private val orgService: OrganisasjonService,
 ) {
-    suspend fun getUtbetalingerSiste40Dager(): List<UtbetalingMedKomponent>? {
-        return navUtbetalingerClient.getUtbetalingerSiste40Dager()
+    fun getUtbetalingerSiste40Dager(personId: String): List<UtbetalingMedKomponent>? {
+        return navUtbetalingerClient.getUtbetalingerSiste40Dager(personId)
             ?.toUtbetalingMedKomponent(orgNavn)
             ?.also { utbetalinger ->
 

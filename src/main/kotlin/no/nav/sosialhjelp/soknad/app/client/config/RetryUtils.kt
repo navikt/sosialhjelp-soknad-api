@@ -8,7 +8,7 @@ import java.time.Duration
 
 object RetryUtils {
     private const val DEFAULT_MAX_ATTEMPTS: Long = 3
-    private const val DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS: Long = 100
+    private const val DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS: Long = 300
 
     val DEFAULT_RETRY_SERVER_ERRORS: RetryBackoffSpec =
         Retry

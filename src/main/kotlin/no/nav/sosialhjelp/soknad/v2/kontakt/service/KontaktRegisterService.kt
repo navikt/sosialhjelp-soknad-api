@@ -14,7 +14,7 @@ class KontaktRegisterService(private val kontaktRepository: KontaktRepository) {
     private val logger by logger()
 
     @Transactional
-    suspend fun saveAdresserRegister(
+    fun saveAdresserRegister(
         soknadId: UUID,
         folkeregistrert: Adresse?,
         midlertidig: Adresse?,
@@ -34,7 +34,7 @@ class KontaktRegisterService(private val kontaktRepository: KontaktRepository) {
     }
 
     @Transactional
-    suspend fun updateTelefonRegister(
+    fun updateTelefonRegister(
         soknadId: UUID,
         telefonRegister: String,
     ) {

@@ -32,7 +32,7 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun setUp() {
-        opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
+        opprettSoknad(soknadId).also { soknadRepository.save(it) }
         every { mellomlagerService.deleteDokument(soknadId, any()) } just runs
     }
 
@@ -62,6 +62,7 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
         doPutExpectError(
             uri = getUrl(UUID.randomUUID()),
             requestBody = DokumentasjonInput(DokumentasjonType.JOBB, true),
+            soknadId = UUID.randomUUID(),
             httpStatus = HttpStatus.NOT_FOUND,
         )
     }
@@ -74,6 +75,7 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
             uri = getUrl(soknadId),
             requestBody = DokumentasjonInput(DokumentasjonType.JOBB, true),
             responseBodyClass = ForventetDokumentasjonDto::class.java,
+            soknadId = soknadId,
         )
             .also { dto ->
                 assertThat(dto.dokumentasjon)
@@ -114,6 +116,7 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
             uri = getUrl(soknadId),
             requestBody = DokumentasjonInput(DokumentasjonType.JOBB, true),
             responseBodyClass = ForventetDokumentasjonDto::class.java,
+            soknadId,
         ).also { dto -> assertThat(dto.dokumentasjon.first().dokumenter).isEmpty() }
 
         dokumentasjonService.findDokumentasjonByType(soknadId, InntektType.JOBB)

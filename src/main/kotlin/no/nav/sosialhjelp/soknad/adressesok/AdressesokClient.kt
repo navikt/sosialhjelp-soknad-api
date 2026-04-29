@@ -47,7 +47,7 @@ class AdressesokClient(
         }
     }
 
-    private fun azureAdToken() = texasService.getToken(IdentityProvider.ENTRA_ID, pdlScope)
+    private fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
 
     companion object {
         private val log = getLogger(AdressesokClient::class.java)

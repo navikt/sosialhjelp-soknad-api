@@ -16,7 +16,7 @@ class FamilieRegisterService(private val familieRepository: FamilieRepository) {
     private val logger by logger()
 
     @Transactional
-    suspend fun updateSivilstatusFromRegister(
+    fun updateSivilstatusFromRegister(
         soknadId: UUID,
         sivilstatus: Sivilstatus,
         ektefelle: Ektefelle,
@@ -30,7 +30,7 @@ class FamilieRegisterService(private val familieRepository: FamilieRepository) {
     }
 
     @Transactional
-    suspend fun updateForsorgerpliktRegister(
+    fun updateForsorgerpliktRegister(
         soknadId: UUID,
         harForsorgerplikt: Boolean,
         barn: List<Barn>,

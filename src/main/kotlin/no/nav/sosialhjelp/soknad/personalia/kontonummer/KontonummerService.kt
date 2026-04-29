@@ -10,12 +10,13 @@ class KontonummerService(
     /**
      * Henter norsk kontonummer fra kontoregister.
      *
+     * @param ident Personidentifikator (fødselsnummer eller d-nummer)
      * @return Kontonummer 11 siffer dersom norsk, null dersom utenlandsk eller ikke funnet.
      */
-    suspend fun getKontonummer(): String? {
+    fun getKontonummer(ident: String): String? {
         log.info("Henter kontonummmer fra kontoregister")
 
-        val konto = kontonummerClient.getKontonummer()
+        val konto = kontonummerClient.getKontonummer(ident)
 
         return when {
             konto == null -> null

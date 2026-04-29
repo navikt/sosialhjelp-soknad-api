@@ -159,6 +159,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 uri = saveUrl(soknad.id, InntektType.UTBETALING_UTBYTTE),
                 requestBody = createFileUpload(),
                 responseBodyClass = DokumentDto::class.java,
+                soknadId = soknad.id,
             )
                 .also { dto -> assertThat(dto.filnavn).isEqualTo(filnavnSlot.captured) }
 
@@ -198,6 +199,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
         doPostFullResponse(
             uri = saveUrl(soknad.id, UtgiftType.UTGIFTER_BOLIGLAN),
             requestBody = createFileUpload(),
+            soknadId = soknad.id,
             contentType = MediaType.MULTIPART_FORM_DATA,
         )
             .expectStatus().isNotFound
@@ -240,6 +242,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
         dokumentasjon.dokumenter.first().also {
             doDelete(
                 uri = deleteUrl(soknad.id, it.dokumentId),
+                soknadId = soknad.id,
             )
         }
 
