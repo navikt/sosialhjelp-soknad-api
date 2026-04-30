@@ -4,7 +4,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 
 /**
- * Beskyttet ressurs som krever LoA Substantial (tidl. "level 3") fra TokenX.
+ * Beskyttet ressurs som krever LoA High (tidl. "level 4") fra TokenX.
  *
  * Eventuelle exceptions blir håndtert av no.nav.sosialhjelp.soknad.app.exceptions.ExceptionMapper
  * Se også dokumentasjon av sikkerhetsnivåer https://doc.nais.io/security/auth/idporten/#security-levels
