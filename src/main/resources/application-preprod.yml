@@ -129,5 +129,3 @@ resilience4j:
     configs:
       default:
         max-attempts: 5
-logging:
-  level.no.nav.security: debug
