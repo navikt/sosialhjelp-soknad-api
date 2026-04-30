@@ -1,7 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.metadata
 
+import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,7 +17,7 @@ import java.util.UUID
 // TODO Dette kan slettes når bruker ikke lenger kan se søknad i innsyn (hvor lenge?)
 
 @RestController
-@ProtectionSelvbetjeningHigh
+@ProtectedWithClaims("tokenx", claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknad/hide/{digisosId}")
 class SkjuleOrginalSoknadController(
     private val metadataRepository: SoknadMetadataRepository,
