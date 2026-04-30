@@ -21,6 +21,9 @@ interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudR
 
     @Query("select * from soknad_metadata where status = :status")
     fun findMetadataByStatus(status: SoknadStatus): List<SoknadMetadata>
+
+    @Query("select * from soknad_metadata where digisos_id = :digisosId")
+    fun findMetadataByDigisosId(digisosId: String): SoknadMetadata?
 }
 
 @Table

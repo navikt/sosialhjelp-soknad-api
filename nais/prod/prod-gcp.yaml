@@ -82,6 +82,7 @@ spec:
       rules:
         - application: sosialhjelp-soknad
         - application: sosialhjelp-innsyn
+        - application: sosialhjelp-innsyn-api
         - application: mine-saker-api
           namespace: min-side
         - application: dittnav-api
