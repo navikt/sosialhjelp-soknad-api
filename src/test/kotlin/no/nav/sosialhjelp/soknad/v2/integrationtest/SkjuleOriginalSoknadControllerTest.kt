@@ -9,7 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-class SkjuleOrginalSoknadControllerTest : AbstractIntegrationTest() {
+class SkjuleOriginalSoknadControllerTest : AbstractIntegrationTest(useTokenX = true) {
     @Test
     fun `Ingen soknad funnet skal returnere true`() {
         doGet(

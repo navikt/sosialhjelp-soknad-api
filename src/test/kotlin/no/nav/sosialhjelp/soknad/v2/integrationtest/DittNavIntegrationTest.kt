@@ -21,13 +21,12 @@ import tools.jackson.module.kotlin.readValue
 import java.time.LocalDateTime
 import java.util.UUID
 
-class DittNavIntegrationTest : AbstractIntegrationTest() {
+class DittNavIntegrationTest : AbstractIntegrationTest(useTokenX = true) {
     @Autowired
     private lateinit var webClient: WebTestClient
 
     @BeforeEach
     override fun before() {
-        useTokenX = true
         super.before()
 
         metadataRepository.deleteAll()

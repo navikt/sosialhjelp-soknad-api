@@ -32,7 +32,7 @@ import java.util.UUID
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT36000S")
 @ActiveProfiles("no-redis", "test", "test-container")
-abstract class AbstractIntegrationTest {
+abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false) {
     @Autowired
     protected lateinit var webTestClient: WebTestClient
 
@@ -63,8 +63,6 @@ abstract class AbstractIntegrationTest {
 
     protected var opprettSoknadBeforeEach = true
 
-    protected var useTokenX = false
-
     @BeforeEach
     fun before() {
         if (opprettSoknadBeforeEach) {
@@ -84,7 +82,7 @@ abstract class AbstractIntegrationTest {
                     issuerId = issuer,
                     subject = userId,
                     audience = audience,
-                    claims = mapOf("acr" to "idporten-loa-high"),
+                    claims = mapOf("acr" to "idporten-loa-high", "acr" to "Level4"),
                 )
             }
     }

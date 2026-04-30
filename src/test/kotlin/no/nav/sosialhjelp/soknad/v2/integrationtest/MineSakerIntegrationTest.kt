@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
@@ -19,15 +18,9 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 import tools.jackson.module.kotlin.readValue
 import java.util.UUID
 
-class MineSakerIntegrationTest : AbstractIntegrationTest() {
+class MineSakerIntegrationTest : AbstractIntegrationTest(useTokenX = true) {
     @Autowired
     private lateinit var webClient: WebTestClient
-
-    @BeforeEach
-    override fun before() {
-        useTokenX = true
-        super.before()
-    }
 
     @Test
     fun `Hente mine innsendte saker skal kun returnere SENDTE og MOTTATTE`() {
