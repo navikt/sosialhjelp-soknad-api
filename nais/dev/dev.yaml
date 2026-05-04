@@ -61,6 +61,8 @@ spec:
   accessPolicy:
     outbound:
       rules:
+        - application: logging
+          namespace: nais-system
         - application: clamav
           namespace: nais-system
         - application: digdir-krr-proxy
