@@ -79,26 +79,11 @@ dependencies {
     implementation(libs.sosialhjelp.common.api)
 
     // KS / Fiks
-//    implementation(libs.svarut.rest.klient)
     implementation(libs.kryptering)
 
     // springdoc
     implementation(libs.springdoc.openapi.starter.common)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
-
-    // TODO pga sårbarhet - når 3.parts-biblioteker har skiftet til tools.jackson kan denne fjernes
-    implementation("com.fasterxml.jackson.core:jackson-core") {
-        version {
-            strictly("2.21.1")
-        }
-    }
-
-    // TODO Pga sårbarhet - Når Spring boot får ny oppdatering (> 4.0.5) sjekk om dette fortsatt er aktuelt
-    implementation("org.apache.tomcat.embed:tomcat-embed-core") {
-        version {
-            strictly("11.0.21")
-        }
-    }
 
     // flyway / db
     implementation(libs.flyway.core)
