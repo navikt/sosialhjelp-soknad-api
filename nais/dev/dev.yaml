@@ -109,7 +109,7 @@ spec:
     - secret: sosialhjelp-soknad-api-unleash-api-token
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: "dev,log-kibana"
+      value: "dev,log-kibana,use-team-logs"
     - name: AAREG_AUDIENCE
       value: "dev-fss:arbeidsforhold:aareg-services-nais"
     - name: AAREG_URL
