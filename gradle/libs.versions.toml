@@ -142,4 +142,3 @@ kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref 
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-

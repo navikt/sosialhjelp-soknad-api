@@ -67,6 +67,12 @@ dependencies {
     // Spring
     implementation(libs.bundles.spring.boot)
 
+    constraints {
+        implementation("io.netty:netty-codec-http:4.2.13.Final") {
+            because("Temporary security override for GHSA-f6hv-jmp6-3vwv until Spring-managed transitive Netty version includes the fix")
+        }
+    }
+
     implementation(libs.jsonassert)
 
     // Coroutines
