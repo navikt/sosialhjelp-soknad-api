@@ -74,6 +74,9 @@ dependencies {
         implementation("io.netty:netty-codec-http:4.2.13.Final") {
             because("Temporary security override for GHSA-f6hv-jmp6-3vwv until Spring-managed transitive Netty version includes the fix")
         }
+        implementation("io.netty:netty-codec-http2:4.2.13.Final") {
+            because("Security override for CVE-2026-42587 / GHSA-f6hv-jmp6-3vwv: decompression bomb bypass in netty-codec-http2 <= 4.2.12.Final")
+        }
         implementation("io.netty:netty-transport-native-epoll:4.2.13.Final") {
             because("Temporary security override for GHSA-rwm7-x88c-3g2p / CVE-2026-42577 until Spring-managed transitive Netty version includes the fix")
         }
