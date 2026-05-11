@@ -66,6 +66,7 @@ configurations {
 dependencies {
     // Spring
     implementation(libs.bundles.spring.boot)
+    implementation(libs.netty.codec.http)
 
     implementation(libs.jsonassert)
 

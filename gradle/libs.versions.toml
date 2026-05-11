@@ -31,6 +31,7 @@ opentelemetry-logback = "2.27.0-alpha"
 testcontainers = "1.21.4"
 ninja-springmockk = "5.0.1"
 jsonassert = "1.5.3"
+netty-codec-http = "4.2.13.Final"
 
 [libraries]
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
@@ -100,6 +101,7 @@ testcontainers-junit = { module = "org.testcontainers:junit-jupiter", version.re
 
 ninja-springmockk = { module = "com.ninja-squad:springmockk", version.ref = "ninja-springmockk" }
 jsonassert = { module = "org.skyscreamer:jsonassert", version.ref = "jsonassert" }
+netty-codec-http = { module = "io.netty:netty-codec-http", version.ref = "netty-codec-http" }
 
 [bundles]
 spring-boot = [
@@ -142,4 +144,3 @@ kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref 
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-
