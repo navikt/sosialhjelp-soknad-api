@@ -1,17 +1,20 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
+import no.nav.sosialhjelp.soknad.app.config.CacheWithKey
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkCacheConfig.Companion.CACHE_NAME
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 import java.time.Duration
 
 @Component
 class KodeverkStore(private val client: KodeverkClient) {
-    @Cacheable(CACHE_NAME)
+    @CacheWithKey(
+        cacheNames = [CACHE_NAME],
+        key = "#kodeverksnavn",
+    )
     fun hentKodeverk(kodeverksnavn: String): Map<String, String?> = client.hentKodeverk(kodeverksnavn).toMap()
 
     @CacheEvict(CACHE_NAME, key = "#kodeverksnavn")
