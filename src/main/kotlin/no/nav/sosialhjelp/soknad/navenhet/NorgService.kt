@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.config.CacheWithKey
+import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import org.springframework.context.annotation.Configuration
@@ -10,7 +10,7 @@ import java.time.Duration
 
 @Component
 class NorgService(private val norgClient: NorgClient) {
-    @CacheWithKey(
+    @KeyRequiredCache(
         cacheNames = [NorgCacheConfig.CACHE_NAME],
         key = "#gt",
         unless = "#result == null",

@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.personalia.person
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
-import no.nav.sosialhjelp.soknad.app.config.CacheWithKey
+import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
@@ -40,7 +40,7 @@ class PersonService(
         return person
     }
 
-    @CacheWithKey(
+    @KeyRequiredCache(
         cacheNames = [AdressebeskyttelseCacheConfig.CACHE_NAME],
         key = "#ident",
         unless = "#result == true",

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
-import no.nav.sosialhjelp.soknad.app.config.CacheWithKey
+import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkCacheConfig.Companion.CACHE_NAME
 import org.springframework.beans.factory.annotation.Value
@@ -11,7 +11,7 @@ import java.time.Duration
 
 @Component
 class KodeverkStore(private val client: KodeverkClient) {
-    @CacheWithKey(
+    @KeyRequiredCache(
         cacheNames = [CACHE_NAME],
         key = "#kodeverksnavn",
     )

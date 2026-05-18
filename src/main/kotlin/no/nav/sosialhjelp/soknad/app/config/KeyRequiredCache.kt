@@ -11,7 +11,7 @@ import kotlin.annotation.AnnotationTarget.FUNCTION
 @Retention(RUNTIME)
 @MustBeDocumented
 @Cacheable(cacheNames = ["cacheWithKey"])
-annotation class CacheWithKey(
+annotation class KeyRequiredCache(
     @get:AliasFor(annotation = Cacheable::class, attribute = "cacheNames")
     val cacheNames: Array<String>,
     @get:AliasFor(annotation = Cacheable::class, attribute = "key")
