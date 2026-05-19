@@ -5,17 +5,19 @@ import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.CachingConfigurer
 import org.springframework.cache.annotation.EnableCaching
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager
 import org.springframework.cache.interceptor.CacheErrorHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.serializer.SerializationException
-import java.lang.RuntimeException
 import java.time.Duration
 
 @Configuration(proxyBeanMethods = false)
+@Profile("!no-redis")
 @EnableCaching
 class CacheConfig : CachingConfigurer {
     @Bean
@@ -29,6 +31,23 @@ class CacheConfig : CachingConfigurer {
             .withInitialCacheConfigurations(cacheConfigs.associate { it.cacheName to it.getConfig() })
             .enableStatistics()
             .build()
+
+    override fun errorHandler(): CacheErrorHandler = CustomCacheErrorHandler
+}
+
+@Configuration(proxyBeanMethods = false)
+@Profile("no-redis")
+@EnableCaching
+class CacheConfigTest : CachingConfigurer {
+    @Bean
+    fun cacheManager(
+        cacheConfigs: List<SoknadApiCacheConfig>,
+    ): CacheManager =
+        ConcurrentMapCacheManager(
+            *cacheConfigs
+                .map { it.cacheName }
+                .toTypedArray())
+            .apply { isAllowNullValues = false }
 
     override fun errorHandler(): CacheErrorHandler = CustomCacheErrorHandler
 }
