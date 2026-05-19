@@ -4,21 +4,20 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 import java.time.Duration
 
 @Component
 class NorgService(private val norgClient: NorgClient) {
-//    @KeyRequiredCache(
-//        cacheNames = [NorgCacheConfig.CACHE_NAME],
-//        key = "#gt",
-//        unless = "#result == null",
-//    )
-    @Cacheable(NorgCacheConfig.CACHE_NAME)
-    fun getEnhetForGt(gt: String): NavEnhet? {
-        return runCatching { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
+    @KeyRequiredCache(
+        cacheNames = [NorgCacheConfig.CACHE_NAME],
+        key = "#geografiskTilknytning",
+        unless = "#result == null",
+    )
+//    @Cacheable(NorgCacheConfig.CACHE_NAME)
+    fun getEnhetForGt(geografiskTilknytning: String): NavEnhet? {
+        return runCatching { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(geografiskTilknytning)) }
             .onSuccess { dto -> if (dto != null) logger.info("Hentet NavEnhet fra Norg: $dto") }
             .getOrThrow()
             ?.toNavEnhet()
