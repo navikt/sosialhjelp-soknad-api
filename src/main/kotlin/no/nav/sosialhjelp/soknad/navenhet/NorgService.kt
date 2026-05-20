@@ -15,7 +15,6 @@ class NorgService(private val norgClient: NorgClient) {
         key = "#geografiskTilknytning",
         unless = "#result == null",
     )
-//    @Cacheable(NorgCacheConfig.CACHE_NAME)
     fun getEnhetForGt(geografiskTilknytning: String): NavEnhet? {
         return runCatching { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(geografiskTilknytning)) }
             .onSuccess { dto -> if (dto != null) logger.info("Hentet NavEnhet fra Norg: $dto") }

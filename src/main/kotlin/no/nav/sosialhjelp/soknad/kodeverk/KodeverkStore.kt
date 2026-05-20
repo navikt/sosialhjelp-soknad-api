@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.kodeverk
 import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkCacheConfig.Companion.CACHE_NAME
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
@@ -15,10 +14,10 @@ class KodeverkStore(private val client: KodeverkClient) {
         cacheNames = [CACHE_NAME],
         key = "#kodeverksnavn",
     )
-    fun hentKodeverk(kodeverksnavn: String): Map<String, String?> = client.hentKodeverk(kodeverksnavn).toMap()
+    fun hentKodeverk(kodeverksnavn: Kodeverksnavn): Map<String, String?> = client.hentKodeverk(kodeverksnavn).toMap()
 
     @CacheEvict(CACHE_NAME, key = "#kodeverksnavn")
-    fun hentKodeverkNoCache(kodeverksnavn: String): Map<String, String?> = client.hentKodeverk(kodeverksnavn).toMap()
+    fun hentKodeverkNoCache(kodeverksnavn: Kodeverksnavn): Map<String, String?> = client.hentKodeverk(kodeverksnavn).toMap()
 }
 
 private fun KodeverkDto.toMap(): Map<String, String?> =
@@ -27,10 +26,9 @@ private fun KodeverkDto.toMap(): Map<String, String?> =
         .toMap()
 
 @Configuration
-class KodeverkCacheConfig(
-    @param:Value("\${digisos.cache.kodeverk.time-to-live}") private val kodeverkTTL: Long,
-) : SoknadApiCacheConfig(CACHE_NAME, Duration.ofSeconds(kodeverkTTL)) {
+class KodeverkCacheConfig : SoknadApiCacheConfig(CACHE_NAME, kodeverkTTL) {
     companion object {
         const val CACHE_NAME: String = "kodeverk"
+        private val kodeverkTTL: Duration = Duration.ofSeconds(86400L)
     }
 }
