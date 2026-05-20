@@ -44,7 +44,7 @@ jobs:
 
       - uses: nais/deploy/actions/deploy@v2
         env:
-          RESOURCE: nais/prod/prod.yaml
+          RESOURCE: nais/prod/prod-gcp.yaml
           CLUSTER: 'prod-gcp'
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
