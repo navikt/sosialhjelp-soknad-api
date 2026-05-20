@@ -1,0 +1,51 @@
+name: "Deploy all environments"
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build_image-job:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
+    steps:
+      - uses: navikt/sosialhjelp-ci/actions/build-for-deploy-kotlin@v19
+        id: build-image
+
+  deploy_to_test_envs:
+    name: 'Deploy to ${{ matrix.env }}'
+    strategy:
+      matrix:
+        env: [dev, mock, preprod]
+    runs-on: ubuntu-latest
+    needs: build_image-job
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: nais/deploy/actions/deploy@v2
+        env:
+          RESOURCE: nais/dev/${{ matrix.env }}.yaml
+          CLUSTER: 'dev-gcp'
+          REF: ${{ github.sha }}
+          PRINT_PAYLOAD: true
+          VAR: image=${{ needs.build_image-job.outputs.image }}
+
+  deploy_prod:
+    name: 'Deploy to prod'
+    runs-on: ubuntu-latest
+    needs: build_image-job
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: nais/deploy/actions/deploy@v2
+        env:
+          RESOURCE: nais/prod/prod.yaml
+          CLUSTER: 'prod-gcp'
+          REF: ${{ github.sha }}
+          PRINT_PAYLOAD: true
+          VAR: image=${{ needs.build_image-job.outputs.image }}
