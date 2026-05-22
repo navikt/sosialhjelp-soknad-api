@@ -47,7 +47,7 @@ class FamilieDataHandler(
     ) {
         barn.isNotEmpty()
             .also { forsorgerplikt ->
-                logger.info("Oppdaterer informasjon om barn fra PDL")
+                if (barn.isNotEmpty()) logger.info("Oppdaterer informasjon om barn fra PDL")
 
                 familieService.updateForsorgerpliktRegister(
                     soknadId = soknadId,

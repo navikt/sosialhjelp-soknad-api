@@ -91,6 +91,7 @@ internal class PersonServiceTest {
     @BeforeEach
     internal fun setUp() {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        every { mockPersonDto.forelderBarnRelasjon } returns null
     }
 
     @AfterEach

@@ -56,7 +56,6 @@ class PersonService(
         }
 
     suspend fun hentBarnForPerson(personDto: PersonDto): List<Barn>? {
-        // TODO Ikke nødvendig å hente person igjen -> refaktor
         if (personDto.forelderBarnRelasjon == null) {
             return null
         }
