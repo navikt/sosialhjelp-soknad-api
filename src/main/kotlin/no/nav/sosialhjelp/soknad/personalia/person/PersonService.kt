@@ -55,7 +55,7 @@ class PersonService(
                 .isGradert()
         }
 
-    suspend fun hentBarnForPerson(personDto: PersonDto): List<Barn>? {
+    private suspend fun hentBarnForPerson(personDto: PersonDto): List<Barn>? {
         if (personDto.forelderBarnRelasjon == null) {
             return null
         }
