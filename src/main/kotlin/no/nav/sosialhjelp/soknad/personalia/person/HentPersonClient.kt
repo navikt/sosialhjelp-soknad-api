@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_EKTEFELLE
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_PERSON
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
-import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.NonBlockingTexasService
@@ -23,15 +22,10 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.v2.register.UserContextElement
 import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.cache.RedisCacheConfiguration
-import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer
-import org.springframework.data.redis.serializer.RedisSerializationContext
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Duration
 
 interface HentPersonClient {
@@ -116,23 +110,5 @@ class HentPersonClientImpl(
     companion object {
         private const val TEMA_KOM = "KOM"
         private const val HEADER_TEMA = "Tema"
-    }
-}
-
-@Configuration
-class HentPersonClientConfig : SoknadApiCacheConfig(CACHE_NAME, TTL) {
-    override fun getConfig(): RedisCacheConfiguration {
-        return super
-            .getConfig()
-            .serializeValuesWith(
-                RedisSerializationContext.SerializationPair.fromSerializer(
-                    JacksonJsonRedisSerializer(jacksonObjectMapper(), PersonDto::class.java),
-                ),
-            )
-    }
-
-    companion object {
-        const val CACHE_NAME = "hentPersonCache"
-        private val TTL = Duration.ofMinutes(10)
     }
 }
