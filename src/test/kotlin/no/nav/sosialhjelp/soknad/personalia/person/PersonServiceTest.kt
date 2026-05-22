@@ -116,7 +116,7 @@ internal class PersonServiceTest {
             coEvery { hentPersonClient.hentEktefelle(any()) } returns mockEktefelleDto
             every { mapper.ektefelleDtoToDomain(any(), any(), any()) } returns ektefelle
 
-            val result = personService.hentPerson(true)
+            val result = personService.hentPerson()
             assertThat(result!!.ektefelle).isEqualTo(ektefelle)
         }
 
@@ -135,7 +135,7 @@ internal class PersonServiceTest {
                     ),
                 )
 
-            val result = personService.hentPerson(true)
+            val result = personService.hentPerson()
             assertThat(result!!.ektefelle).isNull()
 
             coVerify(exactly = 0) { hentPersonClient.hentEktefelle(any()) }
@@ -157,7 +157,7 @@ internal class PersonServiceTest {
                     ),
                 )
 
-            val result = personService.hentPerson(true)
+            val result = personService.hentPerson()
             assertThat(result!!.ektefelle).isNull()
 
             coVerify(exactly = 0) { hentPersonClient.hentEktefelle(any()) }
@@ -183,7 +183,7 @@ internal class PersonServiceTest {
             coEvery { hentPersonClient.hentBarn(any()) } returns mockBarnDto
             every { mapper.barnDtoToDomain(any(), any(), any()) } returns barn
 
-            val result = personService.hentBarnForPerson()
+            val result = personService.hentBarnForPerson(mockPersonDto)
             assertThat(result).hasSize(1)
             assertThat(result!![0]).isEqualTo(barn)
         }
@@ -196,7 +196,7 @@ internal class PersonServiceTest {
             coEvery { hentPersonClient.hentBarn(any()) } returns mockBarnDto
             every { mapper.barnDtoToDomain(any(), any(), any()) } returns null
 
-            val result = personService.hentBarnForPerson()
+            val result = personService.hentBarnForPerson(mockPersonDto)
             assertThat(result).isEmpty()
         }
 
@@ -206,7 +206,7 @@ internal class PersonServiceTest {
             coEvery { hentPersonClient.hentPerson(any()) } returns mockPersonDto
             every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(null, "BARN", "MOR"))
 
-            val result = personService.hentBarnForPerson()
+            val result = personService.hentBarnForPerson(mockPersonDto)
             assertThat(result).isNull()
 
             coVerify(exactly = 0) { hentPersonClient.hentBarn(any()) }
@@ -219,7 +219,7 @@ internal class PersonServiceTest {
             coEvery { hentPersonClient.hentPerson(any()) } returns mockPersonDto
             every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR"))
 
-            val result = personService.hentBarnForPerson()
+            val result = personService.hentBarnForPerson(mockPersonDto)
             assertThat(result).isNull()
 
             coVerify(exactly = 0) { hentPersonClient.hentBarn(any()) }

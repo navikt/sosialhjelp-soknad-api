@@ -42,13 +42,7 @@ class PdlDtoMapper(private val kodeverkService: KodeverkService) {
             )
     }
 
-    fun personDtoToDomain(
-        personDto: PersonDto?,
-        ident: String,
-    ): Person? {
-        return if (personDto == null) {
-            null
-        } else {
+    fun personDtoToDomain(personDto: PersonDto, ident: String, ): Person =
             Person(
                 findFornavn(personDto.navn),
                 findMellomnavn(personDto.navn),
@@ -61,8 +55,6 @@ class PdlDtoMapper(private val kodeverkService: KodeverkService) {
                 mapToBostedsadresse(personDto.bostedsadresse),
                 mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse),
             )
-        }
-    }
 
     fun barnDtoToDomain(
         barnDto: BarnDto?,

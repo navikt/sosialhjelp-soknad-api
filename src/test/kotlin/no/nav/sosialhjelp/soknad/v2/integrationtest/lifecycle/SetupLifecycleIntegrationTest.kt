@@ -97,8 +97,8 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
             .apply { setUser(userId) }
             .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
 
-        coEvery { personService.hentPerson(any()) } returns createPersonAnswer()
-        coEvery { personService.hentBarnForPerson() } returns createBarnAnswer()
+        coEvery { personService.hentPerson() } returns createPersonAnswer()
+        coEvery { personService.hentBarnForPerson(any()) } returns createBarnAnswer()
         coEvery { kontonummerService.getKontonummer() } returns "12145534122"
         coEvery { arbeidsforholdService.hentArbeidsforhold() } returns createArbeidsforholdAnswer()
         every { skattbarInntektService.hentUtbetalinger(any()) } returns createSkattbarInntektAnswer()

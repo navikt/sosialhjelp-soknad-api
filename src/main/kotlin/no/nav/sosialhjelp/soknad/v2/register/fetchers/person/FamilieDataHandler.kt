@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers.person
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
@@ -16,7 +15,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as V2Ektefel
 @Component
 class FamilieDataHandler(
     private val familieService: FamilieRegisterService,
-    private val personService: PersonService,
 ) : PersonRegisterDataHandler {
     private val logger by logger()
 
@@ -32,7 +30,7 @@ class FamilieDataHandler(
                 ektefelle = it,
             )
         }
-        handleForsorgerplikt(soknadId)
+        handleForsorgerplikt(soknadId, person.barn)
     }
 
     private fun Person.checkEktefelle(): Ektefelle? {
@@ -43,24 +41,17 @@ class FamilieDataHandler(
         }
     }
 
-    private suspend fun handleForsorgerplikt(soknadId: UUID) {
-        personService.hentBarnForPerson()
-            ?.let { it.ifEmpty { null } }
-            ?.let { barnlist ->
-
+    private suspend fun handleForsorgerplikt(soknadId: UUID, barn: List<Barn>) {
+        barn.isNotEmpty()
+            .also { forsorgerplikt ->
                 logger.info("Oppdaterer informasjon om barn fra PDL")
 
                 familieService.updateForsorgerpliktRegister(
                     soknadId = soknadId,
-                    harForsorgerplikt = true,
-                    barn = barnlist.map { it.toV2Barn() },
+                    harForsorgerplikt = forsorgerplikt,
+                    barn = barn.map { it.toV2Barn() },
                 )
             }
-            ?: familieService.updateForsorgerpliktRegister(
-                soknadId = soknadId,
-                harForsorgerplikt = false,
-                barn = emptyList(),
-            )
     }
 }
 

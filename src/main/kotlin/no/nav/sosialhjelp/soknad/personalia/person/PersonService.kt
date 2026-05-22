@@ -28,16 +28,14 @@ class PersonService(
     private val hentPersonClient: HentPersonClient,
     private val mapper: PdlDtoMapper,
 ) {
-    suspend fun hentPerson(
-        hentEktefelle: Boolean = true,
-    ): Person? {
-        val personDto =
-            hentPersonClient.hentPerson(currentUserContext().userId)
-                ?: return null
+    suspend fun hentPerson(): Person? {
+        val personDto = hentPersonClient.hentPerson(currentUserContext().userId) ?: return null
         val person = mapper.personDtoToDomain(personDto, currentUserContext().userId)
-        if (person != null && hentEktefelle) {
-            person.ektefelle = hentEktefelle(personDto)
-        }
+            .apply {
+                ektefelle = hentEktefelle(personDto)
+                barn = hentBarnForPerson(personDto) ?: emptyList()
+            }
+
         return person
     }
 
@@ -56,10 +54,9 @@ class PersonService(
                 .isGradert()
         }
 
-    suspend fun hentBarnForPerson(): List<Barn>? {
+    suspend fun hentBarnForPerson(personDto: PersonDto): List<Barn>? {
         // TODO Ikke nødvendig å hente person igjen -> refaktor
-        val personDto = hentPersonClient.hentPerson(currentUserContext().userId)
-        if (personDto?.forelderBarnRelasjon == null) {
+        if (personDto.forelderBarnRelasjon == null) {
             return null
         }
         return personDto.forelderBarnRelasjon
