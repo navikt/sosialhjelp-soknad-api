@@ -54,7 +54,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
     @MockkSpyBean
     protected lateinit var personIdService: PersonIdService
 
-    @MockkBean
+    @MockkSpyBean
     protected lateinit var hentPersonClient: HentPersonClient
 
     protected lateinit var token: SignedJWT

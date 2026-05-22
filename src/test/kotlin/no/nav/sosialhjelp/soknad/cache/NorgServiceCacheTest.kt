@@ -15,8 +15,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 
-class NorgServiceCacheTest: AbstractIntegrationTest() {
-
+class NorgServiceCacheTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var norgService: NorgService
 
@@ -26,10 +25,8 @@ class NorgServiceCacheTest: AbstractIntegrationTest() {
     @MockkSpyBean
     private lateinit var norgClient: NorgClient
 
-
     @Test
     fun `NorgService skal cache med riktig key`() {
-
         val gt = "0301"
 
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) } returns createNavEnhetDto()

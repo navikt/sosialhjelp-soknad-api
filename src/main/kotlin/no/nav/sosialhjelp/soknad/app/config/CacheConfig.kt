@@ -46,7 +46,8 @@ class CacheConfigTest : CachingConfigurer {
         ConcurrentMapCacheManager(
             *cacheConfigs
                 .map { it.cacheName }
-                .toTypedArray())
+                .toTypedArray(),
+        )
             .apply { isAllowNullValues = false }
 
     override fun errorHandler(): CacheErrorHandler = CustomCacheErrorHandler

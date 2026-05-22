@@ -21,8 +21,7 @@ import tools.jackson.core.type.TypeReference
 import tools.jackson.databind.json.JsonMapper
 import java.time.LocalDate
 
-class KodeverkStoreCacheTest: AbstractIntegrationTest() {
-
+class KodeverkStoreCacheTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var kodeverkService: KodeverkService
 
@@ -50,12 +49,12 @@ class KodeverkStoreCacheTest: AbstractIntegrationTest() {
         val kommunenavn = kodeverkService.getKommunenavn(kommunenummer)!!
 
         assertCacheExists(Kodeverksnavn.KOMMUNER, kommunenummer, kommunenavn)
-        verify (exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.KOMMUNER) }
+        verify(exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.KOMMUNER) }
 
         every { kodeverkClient.hentKodeverk(Kodeverksnavn.KOMMUNER) } returns createKommuner(null)
 
         kodeverkService.getKommunenavn(kommunenummer).also { assertThat(it).isEqualTo(kommunenavn) }
-        verify (exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.KOMMUNER) }
+        verify(exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.KOMMUNER) }
     }
 
     @Test
@@ -66,12 +65,12 @@ class KodeverkStoreCacheTest: AbstractIntegrationTest() {
         val poststed = kodeverkService.getPoststed(postnummer)!!
 
         assertCacheExists(Kodeverksnavn.POSTNUMMER, postnummer, poststed)
-        verify (exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.POSTNUMMER) }
+        verify(exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.POSTNUMMER) }
 
         every { kodeverkClient.hentKodeverk(Kodeverksnavn.POSTNUMMER) } returns createPoststed(null)
 
         kodeverkService.getPoststed(postnummer).also { assertThat(it).isEqualTo(poststed) }
-        verify (exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.POSTNUMMER) }
+        verify(exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.POSTNUMMER) }
     }
 
     @Test
@@ -84,14 +83,14 @@ class KodeverkStoreCacheTest: AbstractIntegrationTest() {
 
         assertCacheExists(Kodeverksnavn.LANDKODER, landkode, land)
 
-        verify (exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.LANDKODER) }
+        verify(exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.LANDKODER) }
 
         every { kodeverkClient.hentKodeverk(Kodeverksnavn.LANDKODER) } returns createKommuner(null)
 
         kodeverkService.getLand(landkode)
             .also { assertThat(it).isEqualTo(land) }
 
-        verify (exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.LANDKODER) }
+        verify(exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.LANDKODER) }
     }
 
     @Test
@@ -108,8 +107,8 @@ class KodeverkStoreCacheTest: AbstractIntegrationTest() {
         assertCacheExists(Kodeverksnavn.KOMMUNER, kommunenummerOslo, kommunenavnOslo)
         assertCacheExists(Kodeverksnavn.LANDKODER, landkode, land)
 
-        verify (exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.KOMMUNER) }
-        verify (exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.LANDKODER) }
+        verify(exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.KOMMUNER) }
+        verify(exactly = 1) { kodeverkClient.hentKodeverk(Kodeverksnavn.LANDKODER) }
 
         // tømmer cachen for nevnt key
         kodeverkStore.hentKodeverkNoCache(Kodeverksnavn.KOMMUNER)[kommunenummerOslo]
@@ -121,75 +120,100 @@ class KodeverkStoreCacheTest: AbstractIntegrationTest() {
             .let { cache -> cache.get(Kodeverksnavn.KOMMUNER)?.get() }
             .also { assertThat(it).isNull() }
 
-        verify (exactly = 2) { kodeverkClient.hentKodeverk(Kodeverksnavn.KOMMUNER) }
+        verify(exactly = 2) { kodeverkClient.hentKodeverk(Kodeverksnavn.KOMMUNER) }
     }
 
-    private fun assertCacheExists(cacheKey: Kodeverksnavn, kode: String, kodeValue: String) =
+    private fun assertCacheExists(
+        cacheKey: Kodeverksnavn,
+        kode: String,
+        kodeValue: String,
+    ) =
         cacheManager.getCache(KodeverkCacheConfig.CACHE_NAME)!!
             .let { cache -> cache.get(cacheKey)!!.get() }
-            .let {  mapper.convertValue(it, object : TypeReference<Map<String, String?>>() {})  }
+            .let { mapper.convertValue(it, object : TypeReference<Map<String, String?>>() {}) }
             .also { assertThat(it[kode]).isEqualTo(kodeValue) }
 }
 
-private fun createKommuner(kommunenummer: String? = "0301", navn: String? = "Oslo"): KodeverkDto {
-    return if (kommunenummer == null || navn == null) KodeverkDto(betydninger = emptyMap())
-    else
+private fun createKommuner(
+    kommunenummer: String? = "0301",
+    navn: String? = "Oslo",
+): KodeverkDto {
+    return if (kommunenummer == null || navn == null) {
+        KodeverkDto(betydninger = emptyMap())
+    } else {
         KodeverkDto(
-            betydninger = mapOf(
-                kommunenummer to listOf(
-                    BetydningDto(
-                        gyldigFra = LocalDate.of(2024, 1, 1),
-                        gyldigTil = LocalDate.now().plusYears(10),
-                        beskrivelser = mapOf(
-                            "nb" to BeskrivelseDto(
-                                term = navn,
-                                tekst = navn,
-                            )
-                        )
-                    )
-                )
-            )
+            betydninger =
+                mapOf(
+                    kommunenummer to
+                        listOf(
+                            BetydningDto(
+                                gyldigFra = LocalDate.of(2024, 1, 1),
+                                gyldigTil = LocalDate.now().plusYears(10),
+                                beskrivelser =
+                                    mapOf(
+                                        "nb" to
+                                            BeskrivelseDto(
+                                                term = navn,
+                                                tekst = navn,
+                                            ),
+                                    ),
+                            ),
+                        ),
+                ),
         )
+    }
 }
 
 private fun createPoststed(postnummer: String? = "2730"): KodeverkDto {
-    return if (postnummer == null) KodeverkDto(betydninger = emptyMap())
-    else
+    return if (postnummer == null) {
+        KodeverkDto(betydninger = emptyMap())
+    } else {
         KodeverkDto(
-            betydninger = mapOf(
-                postnummer to listOf(
-                    BetydningDto(
-                        gyldigFra = LocalDate.of(2024, 1, 1),
-                        gyldigTil = LocalDate.now().plusYears(10),
-                        beskrivelser = mapOf(
-                            "nb" to BeskrivelseDto(
-                                term = "Lunner",
-                                tekst = "Lunner",
-                            )
-                        )
-                    )
-                )
-            )
+            betydninger =
+                mapOf(
+                    postnummer to
+                        listOf(
+                            BetydningDto(
+                                gyldigFra = LocalDate.of(2024, 1, 1),
+                                gyldigTil = LocalDate.now().plusYears(10),
+                                beskrivelser =
+                                    mapOf(
+                                        "nb" to
+                                            BeskrivelseDto(
+                                                term = "Lunner",
+                                                tekst = "Lunner",
+                                            ),
+                                    ),
+                            ),
+                        ),
+                ),
         )
+    }
 }
 
 private fun createLand(landkode: String? = "nor"): KodeverkDto {
-    return if (landkode == null) KodeverkDto(betydninger = emptyMap())
-    else
+    return if (landkode == null) {
+        KodeverkDto(betydninger = emptyMap())
+    } else {
         KodeverkDto(
-            betydninger = mapOf(
-                landkode to listOf(
-                    BetydningDto(
-                        gyldigFra = LocalDate.of(2024, 1, 1),
-                        gyldigTil = LocalDate.now().plusYears(10),
-                        beskrivelser = mapOf(
-                            "nb" to BeskrivelseDto(
-                                term = "Norge",
-                                tekst = "Norge",
-                            )
-                        )
-                    )
-                )
-            )
+            betydninger =
+                mapOf(
+                    landkode to
+                        listOf(
+                            BetydningDto(
+                                gyldigFra = LocalDate.of(2024, 1, 1),
+                                gyldigTil = LocalDate.now().plusYears(10),
+                                beskrivelser =
+                                    mapOf(
+                                        "nb" to
+                                            BeskrivelseDto(
+                                                term = "Norge",
+                                                tekst = "Norge",
+                                            ),
+                                    ),
+                            ),
+                        ),
+                ),
         )
+    }
 }

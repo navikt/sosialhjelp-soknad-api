@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Profile
 @Profile("test", "test-container", "no-redis")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class HentPersonClientCacheTest {
-
     @Autowired
     private lateinit var hentPersonClient: HentPersonClient
 
@@ -19,6 +18,5 @@ class HentPersonClientCacheTest {
 
     @Test
     fun `Hente person skal caches`() {
-
     }
 }
