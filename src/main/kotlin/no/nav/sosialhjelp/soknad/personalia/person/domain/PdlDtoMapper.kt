@@ -42,19 +42,22 @@ class PdlDtoMapper(private val kodeverkService: KodeverkService) {
             )
     }
 
-    fun personDtoToDomain(personDto: PersonDto, ident: String, ): Person =
-            Person(
-                findFornavn(personDto.navn),
-                findMellomnavn(personDto.navn),
-                findEtternavn(personDto.navn),
-                ident,
-                findFodselsdato(personDto.foedselsdato),
-                findSivilstatus(personDto.sivilstand),
-                findStatsborgerskap(personDto.statsborgerskap),
-                null,
-                mapToBostedsadresse(personDto.bostedsadresse),
-                mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse),
-            )
+    fun personDtoToDomain(
+        personDto: PersonDto,
+        ident: String,
+    ): Person =
+        Person(
+            findFornavn(personDto.navn),
+            findMellomnavn(personDto.navn),
+            findEtternavn(personDto.navn),
+            ident,
+            findFodselsdato(personDto.foedselsdato),
+            findSivilstatus(personDto.sivilstand),
+            findStatsborgerskap(personDto.statsborgerskap),
+            null,
+            mapToBostedsadresse(personDto.bostedsadresse),
+            mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse),
+        )
 
     fun barnDtoToDomain(
         barnDto: BarnDto?,

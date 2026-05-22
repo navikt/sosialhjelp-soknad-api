@@ -41,7 +41,10 @@ class FamilieDataHandler(
         }
     }
 
-    private suspend fun handleForsorgerplikt(soknadId: UUID, barn: List<Barn>) {
+    private suspend fun handleForsorgerplikt(
+        soknadId: UUID,
+        barn: List<Barn>,
+    ) {
         barn.isNotEmpty()
             .also { forsorgerplikt ->
                 logger.info("Oppdaterer informasjon om barn fra PDL")

@@ -30,11 +30,12 @@ class PersonService(
 ) {
     suspend fun hentPerson(): Person? {
         val personDto = hentPersonClient.hentPerson(currentUserContext().userId) ?: return null
-        val person = mapper.personDtoToDomain(personDto, currentUserContext().userId)
-            .apply {
-                ektefelle = hentEktefelle(personDto)
-                barn = hentBarnForPerson(personDto) ?: emptyList()
-            }
+        val person =
+            mapper.personDtoToDomain(personDto, currentUserContext().userId)
+                .apply {
+                    ektefelle = hentEktefelle(personDto)
+                    barn = hentBarnForPerson(personDto) ?: emptyList()
+                }
 
         return person
     }
