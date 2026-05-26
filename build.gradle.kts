@@ -68,19 +68,19 @@ dependencies {
     implementation(libs.bundles.spring.boot)
 
     constraints {
-        implementation("io.netty:netty-codec-dns:4.2.13.Final") {
+        implementation("io.netty:netty-codec-dns:4.2.14.Final") {
             because("Security override for CVE-2026-42579 / GHSA-cm33-6792-r9fm: DNS codec input validation bypass in netty-codec-dns <= 4.2.12.Final")
         }
-        implementation("io.netty:netty-codec-http:4.2.13.Final") {
+        implementation("io.netty:netty-codec-http:4.2.14.Final") {
             because("Temporary security override for GHSA-f6hv-jmp6-3vwv until Spring-managed transitive Netty version includes the fix")
         }
-        implementation("io.netty:netty-codec-http2:4.2.13.Final") {
+        implementation("io.netty:netty-codec-http2:4.2.14.Final") {
             because("Security override for CVE-2026-42587 / GHSA-f6hv-jmp6-3vwv: decompression bomb bypass in netty-codec-http2 <= 4.2.12.Final")
         }
-        implementation("io.netty:netty-transport-native-epoll:4.2.13.Final") {
+        implementation("io.netty:netty-transport-native-epoll:4.2.14.Final") {
             because("Temporary security override for GHSA-rwm7-x88c-3g2p / CVE-2026-42577 until Spring-managed transitive Netty version includes the fix")
         }
-        implementation("io.netty:netty-codec-http3:4.2.13.Final") {
+        implementation("io.netty:netty-codec-http3:4.2.14.Final") {
             because("Security override for CVE-2026-42582 / GHSA-2c5c-chwr-9hqw: QPACK literal unbounded allocation in netty-codec-http3 <= 4.2.12.Final")
         }
     }
