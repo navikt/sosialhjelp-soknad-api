@@ -13,4 +13,5 @@ data class Person(
     var ektefelle: Ektefelle?,
     val bostedsadresse: Bostedsadresse?,
     val oppholdsadresse: Oppholdsadresse?,
+    var barn: List<Barn> = emptyList(),
 )

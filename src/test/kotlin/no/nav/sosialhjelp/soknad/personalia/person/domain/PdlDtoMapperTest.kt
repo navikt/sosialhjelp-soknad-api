@@ -162,7 +162,7 @@ internal class PdlDtoMapperTest {
             )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
-        assertThat(person!!.fornavn).isEqualTo(FORNAVN)
+        assertThat(person.fornavn).isEqualTo(FORNAVN)
         assertThat(person.mellomnavn).isEqualTo(MELLOMNAVN)
         assertThat(person.etternavn).isEqualTo(ETTERNAVN)
         assertThat(person.fnr).isEqualTo(IDENT)
@@ -176,12 +176,6 @@ internal class PdlDtoMapperTest {
         assertThat(person.bostedsadresse.matrikkeladresse).isNull()
         assertThat(person.oppholdsadresse!!.coAdressenavn).isEqualTo("Test McTest")
         assertThat(person.oppholdsadresse.vegadresse!!.adressenavn).isEqualTo("midlertidig")
-    }
-
-    @Test
-    fun personNull() {
-        val person = mapper.personDtoToDomain(null, IDENT)
-        assertThat(person).isNull()
     }
 
     @Test
@@ -206,7 +200,7 @@ internal class PdlDtoMapperTest {
             )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
-        assertThat(person!!.bostedsadresse!!.vegadresse).isNull()
+        assertThat(person.bostedsadresse!!.vegadresse).isNull()
         assertThat(person.bostedsadresse.matrikkeladresse).isNotNull
         assertThat(person.bostedsadresse.matrikkeladresse!!.matrikkelId).isEqualTo("matrikkelid")
     }
@@ -225,7 +219,7 @@ internal class PdlDtoMapperTest {
             )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
-        assertThat(person!!.bostedsadresse).isNull()
+        assertThat(person.bostedsadresse).isNull()
     }
 
     @Test
@@ -259,7 +253,7 @@ internal class PdlDtoMapperTest {
             )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
-        assertThat(person!!.oppholdsadresse).isNull()
+        assertThat(person.oppholdsadresse).isNull()
     }
 
     private fun createFoedselsdatoDtoList(): List<FoedselsdatoDto> {
@@ -306,7 +300,7 @@ internal class PdlDtoMapperTest {
             )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
-        assertThat(person!!.bostedsadresse!!.coAdressenavn).isNull()
+        assertThat(person.bostedsadresse!!.coAdressenavn).isNull()
         assertThat(person.bostedsadresse.vegadresse!!.adressenavn).isEqualTo(defaultVegadresse.adressenavn)
         assertThat(person.bostedsadresse.matrikkeladresse).isNull()
         assertThat(person.oppholdsadresse!!.coAdressenavn).isNull()
@@ -336,7 +330,7 @@ internal class PdlDtoMapperTest {
             )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
-        assertThat(person!!.bostedsadresse).isNull()
+        assertThat(person.bostedsadresse).isNull()
         assertThat(person.oppholdsadresse).isNotNull
         assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn).isEqualTo(defaultVegadresse.adressenavn)
     }

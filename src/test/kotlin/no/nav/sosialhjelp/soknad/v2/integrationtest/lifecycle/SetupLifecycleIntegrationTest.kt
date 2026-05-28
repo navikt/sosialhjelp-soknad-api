@@ -21,7 +21,6 @@ import no.nav.sosialhjelp.soknad.metrics.MetricsManager
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
@@ -35,8 +34,6 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleInte
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.tilleggsinformasjonSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.vedleggJsonSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.arbeidsgiverNavn
-import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.barnFoedselsDato
-import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.barnPersonId
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.ektefelleFoedselDato
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.ektefelleId
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.orgnr
@@ -97,8 +94,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
             .apply { setUser(userId) }
             .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
 
-        coEvery { personService.hentPerson(any()) } returns createPersonAnswer()
-        coEvery { personService.hentBarnForPerson() } returns createBarnAnswer()
+        coEvery { personService.hentPerson() } returns createPersonAnswer()
         coEvery { kontonummerService.getKontonummer() } returns "12145534122"
         coEvery { arbeidsforholdService.hentArbeidsforhold() } returns createArbeidsforholdAnswer()
         every { skattbarInntektService.hentUtbetalinger(any()) } returns createSkattbarInntektAnswer()
@@ -153,19 +149,6 @@ fun createPersonAnswer(): Person {
         createEktefelleAnswer(),
         createBostedsadresse(),
         null,
-    )
-}
-
-fun createBarnAnswer(): List<Barn> {
-    return listOf(
-        Barn(
-            "Barnet",
-            null,
-            "Barnesen",
-            barnPersonId,
-            barnFoedselsDato,
-            true,
-        ),
     )
 }
 

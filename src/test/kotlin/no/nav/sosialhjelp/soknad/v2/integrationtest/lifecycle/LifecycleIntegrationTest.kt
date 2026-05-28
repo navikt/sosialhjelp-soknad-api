@@ -105,7 +105,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     @Test
     fun `Exception i fetcher med ContinueOnError = false skal stoppe innhenting og ingenting skal lagres`() {
         metadataRepository.deleteAll()
-        coEvery { personService.hentPerson(any()) } throws IllegalArgumentException("Feil ved henting av person")
+        coEvery { personService.hentPerson() } throws IllegalArgumentException("Feil ved henting av person")
 
         doPostFullResponse(uri = createUri)
             .expectStatus().is5xxServerError
@@ -258,7 +258,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `Hvis soker er under 18 skal det returneres error`() {
-        coEvery { personService.hentPerson(any()) } returns
+        coEvery { personService.hentPerson() } returns
             createPersonAnswer().copy(fodselsdato = LocalDate.now().minusYears(17))
 
         doPostFullResponse(uri = createUri)
