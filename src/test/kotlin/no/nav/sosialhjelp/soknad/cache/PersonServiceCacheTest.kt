@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -65,7 +64,6 @@ class PersonServiceCacheTest : AbstractIntegrationTest() {
 
     @Test
     fun `Ved sending skal cache evictes`() {
-
         coEvery { hentPersonClient.hentAdressebeskyttelse() } returns createPersonAdressebeskyttelseDto()
 
         personService.hasAdressebeskyttelse("ident")
