@@ -92,6 +92,8 @@ internal class PersonServiceTest {
     internal fun setUp() {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
         every { mockPersonDto.forelderBarnRelasjon } returns null
+        every { mapper.personDtoToDomain(any(), any()) } returns person
+        every { mockPersonDto.sivilstand } returns emptyList()
     }
 
     @AfterEach
@@ -208,7 +210,7 @@ internal class PersonServiceTest {
             every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(null, "BARN", "MOR"))
 
             val result = personService.hentPerson()
-            assertThat(result?.barn).isNull()
+            assertThat(result?.barn).isEmpty()
 
             coVerify(exactly = 0) { hentPersonClient.hentBarn(any()) }
             verify(exactly = 0) { mapper.barnDtoToDomain(any(), any(), any()) }
@@ -221,7 +223,7 @@ internal class PersonServiceTest {
             every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR"))
 
             val result = personService.hentPerson()
-            assertThat(result?.barn).isNull()
+            assertThat(result?.barn).isEmpty()
 
             coVerify(exactly = 0) { hentPersonClient.hentBarn(any()) }
             verify(exactly = 0) { mapper.barnDtoToDomain(any(), any(), any()) }
