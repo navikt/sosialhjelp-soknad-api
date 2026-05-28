@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import com.nimbusds.jwt.SignedJWT
-import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.coEvery
 import io.mockk.every
@@ -54,7 +53,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
     @MockkSpyBean
     protected lateinit var personIdService: PersonIdService
 
-    @MockkBean
+    @MockkSpyBean
     protected lateinit var hentPersonClient: HentPersonClient
 
     protected lateinit var token: SignedJWT

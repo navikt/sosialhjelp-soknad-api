@@ -23,14 +23,14 @@ class KodeverkClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    fun hentKodeverk(kodeverksnavn: String): KodeverkDto =
+    fun hentKodeverk(kodeverksnavn: Kodeverksnavn): KodeverkDto =
         doHentKodeverk(
             kodeverksnavn,
             token = texasService.getToken(IdentityProvider.ENTRA_ID, scope),
         )
 
     private fun doHentKodeverk(
-        kodeverksnavn: String,
+        kodeverksnavn: Kodeverksnavn,
         token: String,
     ): KodeverkDto =
         runCatching {
@@ -42,7 +42,7 @@ class KodeverkClient(
                     builder
                         .path("/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger")
                         .queryParam("spraak", SPRAK_NORSK_BOKMAL)
-                        .build(kodeverksnavn)
+                        .build(kodeverksnavn.value)
                 }
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $token")
                 .retrieve()

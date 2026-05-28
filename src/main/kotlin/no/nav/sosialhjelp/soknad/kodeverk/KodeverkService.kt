@@ -19,8 +19,8 @@ class KodeverkService(private val kodeverkStore: KodeverkStore) {
     fun getLand(landkode: String): String? = hentKodeverk(LANDKODER)[landkode]
 
     private fun hentKodeverk(navn: Kodeverksnavn): Map<String, String?> {
-        return doHentKodeverk { kodeverkStore.hentKodeverk(navn.value) }
-            ?: doHentKodeverk { kodeverkStore.hentKodeverkNoCache(navn.value) }
+        return doHentKodeverk { kodeverkStore.hentKodeverk(navn) }
+            ?: doHentKodeverk { kodeverkStore.hentKodeverkNoCache(navn) }
             ?: emptyMap()
     }
 

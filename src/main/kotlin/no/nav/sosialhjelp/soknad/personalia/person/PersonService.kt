@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.personalia.person
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
+import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
@@ -18,7 +19,6 @@ import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.slf4j.LoggerFactory.getLogger
 import org.slf4j.MDC
 import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 import java.time.Duration
@@ -40,7 +40,11 @@ class PersonService(
         return person
     }
 
-    @Cacheable(AdressebeskyttelseCacheConfig.CACHE_NAME, unless = "#result == true")
+    @KeyRequiredCache(
+        cacheNames = [AdressebeskyttelseCacheConfig.CACHE_NAME],
+        key = "#ident",
+        unless = "#result == true",
+    )
     fun hasAdressebeskyttelse(ident: String): Boolean = hasGradering(ident)
 
     @CacheEvict(AdressebeskyttelseCacheConfig.CACHE_NAME, key = "#ident")
