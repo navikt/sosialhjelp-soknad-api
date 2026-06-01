@@ -55,10 +55,8 @@ class InntektSkatteetatenUseCaseHandler(
         hasSamtykke: Boolean,
     ): Boolean {
         return hasSamtykke == getExistingSamtykke(soknadId)?.verdi &&
-                integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId) == false
+            integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId) == false
     }
-
-
 
     private fun getExistingSamtykke(soknadId: UUID): Bekreftelse? {
         return inntektSkatteetatenService.getSamtykkeSkatt(soknadId = soknadId)

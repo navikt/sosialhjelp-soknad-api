@@ -97,10 +97,6 @@ class HusbankenService(
         }
 }
 
-
-
-
-
 private fun Sak.toBostotteSak() =
     BostotteSak(
         dato = dato,
