@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2
 
+import io.opentelemetry.api.trace.Span
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
@@ -40,8 +41,8 @@ class SoknadLifecycleHandlerImpl(
     private val cancelSoknadHandler: CancelSoknadHandler,
 ) : SoknadLifecycleUseCaseHandler {
     override fun startSoknad(isKort: Boolean): UUID {
-        // legger det i MDC manuelt siden det ikke finnes i request enda
-        val soknadId = UUID.randomUUID().also { MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, it.toString()) }
+        // legger det manuelt i context siden det ikke finnes i request enda
+        val soknadId = UUID.randomUUID().also { addSoknadIdToContext(it) }
 
         return runCatching { createSoknadHandler.createSoknad(soknadId, isKort) }
             .onSuccess {
@@ -103,6 +104,11 @@ class SoknadLifecycleHandlerImpl(
                 )
             }
         }
+    }
+
+    private fun addSoknadIdToContext(soknadId: UUID) {
+        MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
+        if (Span.current().spanContext.isValid) Span.current().setAttribute("soknadId", soknadId.toString())
     }
 
     companion object {

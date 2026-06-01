@@ -24,6 +24,7 @@ class InntektSkatteetatenFetcher(
             .getOrElse {
                 Span.current().recordException(it)
                 Span.current().setStatus(StatusCode.ERROR)
+
                 throw it
             }
             ?: throw SkatteetatenException("Fetch av inntekt fra Skatteetaten var null")

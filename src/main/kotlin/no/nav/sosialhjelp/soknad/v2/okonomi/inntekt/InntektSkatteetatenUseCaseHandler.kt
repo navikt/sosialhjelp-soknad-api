@@ -42,7 +42,6 @@ class InntektSkatteetatenUseCaseHandler(
                     logger.error("Fetching fra Skatteetaten feilet", e)
                     integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, true)
                     inntektSkatteetatenService.createJobbElement(soknadId)
-                    throw e
                 }
         } else {
             integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, false)
