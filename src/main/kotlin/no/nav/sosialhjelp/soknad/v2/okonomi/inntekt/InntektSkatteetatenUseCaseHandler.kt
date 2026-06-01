@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
-import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
@@ -23,7 +22,6 @@ class InntektSkatteetatenUseCaseHandler(
         )
     }
 
-    @WithSpan("update")
     fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,
@@ -54,7 +52,7 @@ class InntektSkatteetatenUseCaseHandler(
         hasSamtykke: Boolean,
     ): Boolean {
         return hasSamtykke == getExistingSamtykke(soknadId)?.verdi &&
-            integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId) == false
+                integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId) == false
     }
 
     private fun getExistingSamtykke(soknadId: UUID): Bekreftelse? {
