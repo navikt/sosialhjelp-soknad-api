@@ -44,6 +44,8 @@ kontoregister_api_audience: dummyAudience
 pdl_api_audience: dummyAudience
 krr_audience: dummyAudience
 aareg_audience: dummyAudience
+sosialhjelp_upload_url: http://localhost:3007
+sosialhjelp_upload_audience: dummyAudience
 
 # azuread
 azure_token_endpoint: azure_token_endpoint

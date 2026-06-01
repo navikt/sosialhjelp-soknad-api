@@ -89,6 +89,8 @@ kontoregister_api_audience: ${KONTOREGISTER_API_AUDIENCE}
 pdl_api_audience: ${PDL_API_AUDIENCE}
 krr_audience: ${KRR_AUDIENCE}
 aareg_audience: ${AAREG_AUDIENCE}
+sosialhjelp_upload_url: ${SOSIALHJELP_UPLOAD_URL}
+sosialhjelp_upload_audience: ${SOSIALHJELP_UPLOAD_AUDIENCE}
 
 # azuread
 azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}

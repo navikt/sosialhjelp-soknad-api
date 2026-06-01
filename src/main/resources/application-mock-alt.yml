@@ -53,6 +53,8 @@ pdl_api_audience: dummyAudience
 utbetaldata_audience: dummyAudience
 krr_audience: dummyAudience
 aareg_audience: dummyAudience
+sosialhjelp_upload_url: http://localhost:3007
+sosialhjelp_upload_audience: dummyAudience
 
 # azuread
 azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/azuretoken/azuread}

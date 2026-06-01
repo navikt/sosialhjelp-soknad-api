@@ -65,6 +65,7 @@ spec:
         - application: sokos-kontoregister-person
           namespace: okonomi
         - application: sosialhjelp-konvertering-til-pdf
+        - application: sosialhjelp-upload
         - application: norg2
           namespace: org
       external:

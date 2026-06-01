@@ -55,6 +55,7 @@ spec:
       rules:
         - application: sosialhjelp-mock-alt-api-mock
         - application: sosialhjelp-konvertering-til-pdf
+        - application: sosialhjelp-upload
         - application: sosialhjelp-texas-mock
   resources:
     limits:
