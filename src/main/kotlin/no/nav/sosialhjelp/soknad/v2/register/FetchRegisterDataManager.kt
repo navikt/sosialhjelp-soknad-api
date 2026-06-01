@@ -1,5 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
+import io.opentelemetry.api.common.AttributeKey
+import io.opentelemetry.api.common.Attributes
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import jakarta.annotation.PreDestroy
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +58,7 @@ class FetchRegisterDataManager(
         backgroundScope.cancel("Cancelling async fetcher background scope")
     }
 
+    @WithSpan("runAllRegisterDataFetchers")
     @Transactional(propagation = Propagation.NEVER)
     fun runAllRegisterDataFetchers(soknadId: UUID) {
         logger.info("Henter Register-data")
@@ -118,6 +124,9 @@ class FetchRegisterDataManager(
         }
             .onFailure {
                 if (it is AuthorizationException) throw it
+
+                Span.current().recordException(it, Attributes.of(AttributeKey.stringKey("fetcher"), fetcher::class.simpleName ?: "ukjent"))
+                Span.current().setStatus(StatusCode.ERROR)
 
                 logger.warn("Registerdata-fetcher feilet: $fetcher", it)
                 if (fetcher.exceptionOnError()) throw it

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
@@ -22,6 +23,7 @@ class InntektSkatteetatenUseCaseHandler(
         )
     }
 
+    @WithSpan("update")
     fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,
@@ -31,9 +33,17 @@ class InntektSkatteetatenUseCaseHandler(
         inntektSkatteetatenService.updateSamtykkeSkatt(soknadId, hasSamtykke)
 
         if (hasSamtykke) {
-            runCatching { handleFetchFromSkatt(soknadId) }
-                .onSuccess { integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, false) }
-                .onFailure { integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, true) }
+            runCatching { inntektSkatteetatenFetcher.fetchInntekt() }
+                .onSuccess { utbetalinger ->
+                    inntektSkatteetatenService.saveUtbetalinger(soknadId, utbetalinger)
+                    integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, false)
+                }
+                .onFailure { e ->
+                    logger.error("Fetching fra Skatteetaten feilet", e)
+                    integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, true)
+                    inntektSkatteetatenService.createJobbElement(soknadId)
+                    throw e
+                }
         } else {
             integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, false)
             inntektSkatteetatenService.createJobbElement(soknadId)
@@ -45,18 +55,10 @@ class InntektSkatteetatenUseCaseHandler(
         hasSamtykke: Boolean,
     ): Boolean {
         return hasSamtykke == getExistingSamtykke(soknadId)?.verdi &&
-            integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId) == false
+                integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId) == false
     }
 
-    private fun handleFetchFromSkatt(soknadId: UUID) {
-        runCatching { inntektSkatteetatenFetcher.fetchInntekt() }
-            .onSuccess { utbetalinger -> inntektSkatteetatenService.saveUtbetalinger(soknadId, utbetalinger) }
-            .onFailure { ex ->
-                logger.error("Fetching fra Skatteetaten feilet", ex)
-                inntektSkatteetatenService.createJobbElement(soknadId)
-                throw ex
-            }
-    }
+
 
     private fun getExistingSamtykke(soknadId: UUID): Bekreftelse? {
         return inntektSkatteetatenService.getSamtykkeSkatt(soknadId = soknadId)

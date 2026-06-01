@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
@@ -15,10 +18,14 @@ class InntektSkatteetatenFetcher(
     private val skattbarInntektService: SkattbarInntektService,
     private val organisasjonService: OrganisasjonService,
 ) {
+    @WithSpan("fetchInntektSkatt")
     fun fetchInntekt(): List<V2Utbetaling> {
-        return skattbarInntektService
-            .hentUtbetalinger(getUserIdFromToken())
-            ?.map { it.toUtbetalingDomain() }
+        return runCatching { skattbarInntektService.hentUtbetalinger(getUserIdFromToken())?.map { it.toUtbetalingDomain() } }
+            .getOrElse {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
+                throw it
+            }
             ?: throw SkatteetatenException("Fetch av inntekt fra Skatteetaten var null")
     }
 

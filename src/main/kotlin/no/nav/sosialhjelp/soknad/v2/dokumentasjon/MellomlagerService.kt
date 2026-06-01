@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
@@ -105,9 +108,17 @@ class FiksDokumentService(
             ?: logger.warn("Kunne ikke finne dokument for sletting $dokumentId")
     }
 
+    @WithSpan("deleteAllDokumenterForSoknad")
     override fun deleteAllDokumenterForSoknad(soknadId: UUID) {
-        mellomlagringClient.hentDokumenterMetadata(soknadId.toString())
-            ?.also { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) }
+        runCatching {
+            mellomlagringClient.hentDokumenterMetadata(soknadId.toString())
+                ?.also { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) }
+        }
+            .onFailure {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
+                throw it
+            }
     }
 
     companion object {
