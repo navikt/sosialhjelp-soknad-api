@@ -41,20 +41,23 @@ class DokumentasjonToJsonMapper(
         ) {
             json.vedlegg ?: json.withVedlegg(JsonVedleggSpesifikasjon())
 
-            val uploadByKey = uploadVedlegg.vedlegg
-                .orEmpty()
-                .associateBy { VedleggKey(it.type, it.tilleggsinfo) }
+            val uploadByKey =
+                uploadVedlegg.vedlegg
+                    .orEmpty()
+                    .associateBy { VedleggKey(it.type, it.tilleggsinfo) }
 
             val localKeys = mutableSetOf<VedleggKey>()
 
-            val mergedVedlegg = dokumentasjonList.map { dokumentasjon ->
-                val key = VedleggKey(
-                    type = dokumentasjon.type.getVedleggTypeString(),
-                    tilleggsinfo = dokumentasjon.mapToTilleggsinfo(),
-                )
-                localKeys += key
-                uploadByKey[key] ?: dokumentasjon.toJsonVedleggWithoutFiler()
-            }
+            val mergedVedlegg =
+                dokumentasjonList.map { dokumentasjon ->
+                    val key =
+                        VedleggKey(
+                            type = dokumentasjon.type.getVedleggTypeString(),
+                            tilleggsinfo = dokumentasjon.mapToTilleggsinfo(),
+                        )
+                    localKeys += key
+                    uploadByKey[key] ?: dokumentasjon.toJsonVedleggWithoutFiler()
+                }
 
             val extraFromUpload = uploadByKey.keys - localKeys
             if (extraFromUpload.isNotEmpty()) {

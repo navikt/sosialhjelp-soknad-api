@@ -9,14 +9,10 @@ import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.auth.texas.TexasClient
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
@@ -24,7 +20,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.UGRADERT
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest.Companion.userId
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
