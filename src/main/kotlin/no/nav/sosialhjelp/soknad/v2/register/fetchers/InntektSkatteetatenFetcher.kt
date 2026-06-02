@@ -18,15 +18,16 @@ class InntektSkatteetatenFetcher(
     private val skattbarInntektService: SkattbarInntektService,
     private val organisasjonService: OrganisasjonService,
 ) {
-    @WithSpan("fetchInntektSkatt")
+    @WithSpan("Fetching inntekt from Skatteetaten")
     fun fetchInntekt(): List<V2Utbetaling> {
-        return runCatching { skattbarInntektService.hentUtbetalinger(getUserIdFromToken())?.map { it.toUtbetalingDomain() } }
+        return runCatching { skattbarInntektService.hentUtbetalinger(getUserIdFromToken()) }
             .getOrElse {
                 Span.current().recordException(it)
                 Span.current().setStatus(StatusCode.ERROR)
 
                 throw it
             }
+            ?.map { it.toUtbetalingDomain() }
             ?: throw SkatteetatenException("Fetch av inntekt fra Skatteetaten var null")
     }
 

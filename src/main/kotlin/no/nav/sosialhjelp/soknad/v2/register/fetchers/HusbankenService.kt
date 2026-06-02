@@ -27,7 +27,7 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling as Utbetali
 class HusbankenService(
     private val husbankenClient: HusbankenClient,
 ) {
-    @WithSpan("getBostotte")
+    @WithSpan("Fetching bostotte from Husbanken")
     fun getBostotte(): Pair<List<BostotteSak>, Inntekt?> {
         return doGetBostotte(LocalDate.now().minusDays(60), LocalDate.now())
             .toDomain()

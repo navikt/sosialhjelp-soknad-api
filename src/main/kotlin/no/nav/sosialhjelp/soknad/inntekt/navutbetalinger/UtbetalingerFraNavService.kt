@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavService.Companion.ORGNR_NAV
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
@@ -18,22 +21,18 @@ class UtbetalingerFraNavService(
     private val navUtbetalingerClient: UtbetalingerFraNavClient,
     private val orgService: OrganisasjonService,
 ) {
+    @WithSpan("Fetching utbetalinger from Nav")
     suspend fun getUtbetalingerSiste40Dager(): List<UtbetalingMedKomponent>? {
-        return navUtbetalingerClient.getUtbetalingerSiste40Dager()
+        return runCatching { navUtbetalingerClient.getUtbetalingerSiste40Dager() }
+            .onSuccess { dto -> logger.info("Hentet ${dto?.utbetalinger?.size} utbetalinger fra utbetaldata tjeneste") }
+            .onFailure { e ->
+                logger.error("Hente utbetalinger fra Nav feilet", e)
+                Span.current().recordException(e)
+                Span.current().setStatus(StatusCode.ERROR)
+            }
+            .getOrNull()
             ?.toUtbetalingMedKomponent(orgNavn)
             ?.also { utbetalinger ->
-
-                val duplicates =
-                    utbetalinger.groupBy {
-                        listOf(it.utbetaling.tittel, it.utbetaling.netto, it.utbetaling.brutto, it.utbetaling.utbetalingsdato)
-                    }.filter { it.value.size > 1 }
-
-                val totalDuplicatesCount = duplicates.values.sumOf { it.size }
-
-                if (totalDuplicatesCount > 0) {
-                    logger.info("Ut av ${utbetalinger.size} utbetaling(er) så er det $totalDuplicatesCount som er identiske utbetaling(er)")
-                }
-
                 logger.info("Antall navytelser utbetaling: ${utbetalinger.size}. ${utbetalinger.komponenterLogg()}")
             }
     }
@@ -49,29 +48,7 @@ class UtbetalingerFraNavService(
                     .filter { it.isUtbetaltBruker(utbetaling.utbetaltTil?.navn) }
                     .map { it.toUtbetalingMedKomponent(utbetaling.utbetalingsdato, orgNavn) }
             }
-            // TODO Ekstra logging
-            .also { if (utbetalinger.isNotEmpty()) logYtelser(utbetalinger, it) }
     }
-
-    // TODO Ekstra logging
-    private fun logYtelser(
-        utbetalinger: List<no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling>,
-        utbetalingMedKomponents: List<UtbetalingMedKomponent>,
-    ) {
-        OversiktUtbetalinger(
-            utbetalinger.size,
-            utbetalinger.flatMap { it.ytelseListe }.size,
-            utbetalingMedKomponents.size,
-        )
-            .also { logger.info("Oversikt Utbetalinger fra Nav: $it") }
-    }
-
-    // TODO Ekstra logging
-    private data class OversiktUtbetalinger(
-        val antallUtbetalingerDto: Int,
-        val antallYtelserDto: Int,
-        val antallUtbetalingerMedKomponent: Int,
-    )
 
     private val orgNavn get() = orgService.hentOrgNavn(ORGNR_NAV)
 

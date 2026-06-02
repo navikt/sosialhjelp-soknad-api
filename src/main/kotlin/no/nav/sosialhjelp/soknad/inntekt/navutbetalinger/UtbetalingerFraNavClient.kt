@@ -41,11 +41,7 @@ class NavUtbetalingerClientImpl(
 
         val request = NavUtbetalingerRequest(currentUserContext().userId, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
 
-        return runCatching { doRequest(request) }
-            .onSuccess { logger.info("Hentet ${it?.size} utbetalinger fra utbetaldata tjeneste") }
-            .onFailure { logger.error("Hente utbetalinger fra Nav feilet", it) }
-            .getOrNull()
-            ?.let { UtbetalDataDto(it, false) }
+        return doRequest(request)?.let { UtbetalDataDto(it, false) }
     }
 
     private suspend fun doRequest(request: NavUtbetalingerRequest): List<Utbetaling>? =

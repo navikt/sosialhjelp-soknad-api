@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.stereotype.Component
@@ -8,8 +11,14 @@ import org.springframework.stereotype.Component
 class KrrService(
     private val krrClient: KrrClient,
 ) {
+    @WithSpan("Fetching mobilenumber from KRR")
     suspend fun getMobilnummer(): String? {
-        return doGet()
+        return runCatching { doGet() }
+            .getOrElse {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
+                throw it
+            }
             ?.also { it.mobiltelefonnummer ?: logger.warn("KRR - mobiltelefonnummer er null") }
             ?.mobiltelefonnummer
     }
