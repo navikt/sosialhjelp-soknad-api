@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
 import io.mockk.coEvery
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.UtenlandskKontoInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

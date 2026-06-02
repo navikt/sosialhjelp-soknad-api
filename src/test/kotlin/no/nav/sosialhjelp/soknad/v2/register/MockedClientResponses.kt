@@ -29,7 +29,7 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelseskomponent
 import no.nav.sosialhjelp.soknad.organisasjon.dto.NavnDto
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkelNummer
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontoDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BostedsadresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
