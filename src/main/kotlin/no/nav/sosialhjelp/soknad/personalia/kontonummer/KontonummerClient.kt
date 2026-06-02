@@ -63,6 +63,8 @@ class KontonummerClientImpl(
 
 sealed interface KontoResponse {
     data class Success(val kontoDto: KontoDto?) : KontoResponse
+
     data class Error(val message: String) : KontoResponse
+
     object Null : KontoResponse
 }
