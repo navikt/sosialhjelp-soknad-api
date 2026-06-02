@@ -21,11 +21,12 @@ class KontonummerService(
 
         val konto =
             runCatching { kontonummerClient.getKontonummer() }
-                .getOrElse {
+                .onFailure {
                     Span.current().recordException(it)
                     Span.current().setStatus(StatusCode.ERROR)
                     throw it
                 }
+                .getOrNull()
 
         return when {
             konto == null -> null

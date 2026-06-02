@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
-import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized
 import org.springframework.web.reactive.function.client.bodyToMono
 
 interface KontonummerClient {
@@ -36,23 +34,23 @@ class KontonummerClientImpl(
 
     override suspend fun getKontonummer(): KontoDto? =
         withContext(Dispatchers.IO) {
-            runCatching {
-                webClient.get()
-                    .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
-                    .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
-                    .retrieve()
-                    .bodyToMono<KontoDto>()
-                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                    .awaitSingleOrNull()
-            }
-                .getOrElse {
-                    when (it) {
-                        is Unauthorized -> log.warn("Kontoregister konto - 401 Unauthorized - ${it.message}")
-                        is NotFound -> log.info("Fant ingen konto i kontoregister - ${it.message}")
-                        else -> log.error("Kontoregister konto  - Noe uventet feilet", it)
-                    }
-                    null
-                }
+//            runCatching {
+            webClient.get()
+                .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
+                .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
+                .retrieve()
+                .bodyToMono<KontoDto>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .awaitSingleOrNull()
+
+//                .getOrElse {
+//                    when (it) {
+//                        is Unauthorized -> log.warn("Kontoregister konto - 401 Unauthorized - ${it.message}")
+//                        is NotFound -> log.info("Fant ingen konto i kontoregister - ${it.message}")
+//                        else -> log.error("Kontoregister konto  - Noe uventet feilet", it)
+//                    }
+//                    null
+//                }
         }
 
     private suspend fun getTokenX(personId: String) =
