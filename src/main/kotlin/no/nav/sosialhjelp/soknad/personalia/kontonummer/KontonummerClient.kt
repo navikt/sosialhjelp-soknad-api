@@ -89,4 +89,3 @@ data class UtenlandskKontoInfo(
     val bankadresse2: String?,
     val bankadresse3: String?,
 )
-
