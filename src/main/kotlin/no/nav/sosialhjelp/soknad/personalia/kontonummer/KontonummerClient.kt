@@ -1,15 +1,16 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.NonBlockingTexasService
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
 import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
@@ -32,6 +33,7 @@ class KontonummerClientImpl(
     private val webClient =
         webClientBuilder.configureWebClientBuilder(createDefaultHttpClient()).build()
 
+    @WithSpan("Fetching kontonummer from Kontoregister")
     override suspend fun getKontonummer(): KontoDto? =
         withContext(Dispatchers.IO) {
 //            runCatching {
@@ -40,7 +42,10 @@ class KontonummerClientImpl(
                 .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
                 .retrieve()
                 .bodyToMono<KontoDto>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .doOnError {
+                    Span.current().recordException(it)
+                    Span.current().setStatus(StatusCode.ERROR)
+                }
                 .awaitSingleOrNull()
 
 //                .getOrElse {
@@ -68,3 +73,20 @@ sealed interface KontoResponse {
 
     object Null : KontoResponse
 }
+
+data class KontoDto(
+    val kontonummer: String,
+    val utenlandskKontoInfo: UtenlandskKontoInfo?,
+)
+
+data class UtenlandskKontoInfo(
+    val banknavn: String?,
+    val bankkode: String?,
+    val bankLandkode: String,
+    val valutakode: String,
+    val swiftBicKode: String?,
+    val bankadresse1: String?,
+    val bankadresse2: String?,
+    val bankadresse3: String?,
+)
+

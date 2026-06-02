@@ -1,8 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
-import io.opentelemetry.api.trace.Span
-import io.opentelemetry.api.trace.StatusCode
-import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.stereotype.Component
 
@@ -15,18 +12,10 @@ class KontonummerService(
      *
      * @return Kontonummer 11 siffer dersom norsk, null dersom utenlandsk eller ikke funnet.
      */
-    @WithSpan("Fetching kontonummer from Kontoregister")
     suspend fun getKontonummer(): String? {
         log.info("Henter kontonummmer fra kontoregister")
 
-        val konto =
-            runCatching { kontonummerClient.getKontonummer() }
-                .onFailure {
-                    Span.current().recordException(it)
-                    Span.current().setStatus(StatusCode.ERROR)
-                    throw it
-                }
-                .getOrNull()
+        val konto = kontonummerClient.getKontonummer()
 
         return when {
             konto == null -> null
