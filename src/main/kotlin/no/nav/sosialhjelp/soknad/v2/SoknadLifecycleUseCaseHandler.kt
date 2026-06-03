@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2
 
 import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
@@ -40,6 +42,7 @@ class SoknadLifecycleHandlerImpl(
     private val sendSoknadHandler: SendSoknadHandler,
     private val cancelSoknadHandler: CancelSoknadHandler,
 ) : SoknadLifecycleUseCaseHandler {
+    @WithSpan("startSoknad")
     override fun startSoknad(isKort: Boolean): UUID {
         // legger det manuelt i context siden det ikke finnes i request enda
         val soknadId = UUID.randomUUID().also { addSoknadIdToContext(it) }
@@ -56,6 +59,8 @@ class SoknadLifecycleHandlerImpl(
                 when (it) {
                     is AuthorizationException -> throw it
                     else -> {
+                        Span.current().recordException(it)
+                        Span.current().setStatus(StatusCode.ERROR)
                         lifecycleMetricsService.reportStartSoknadFeilet()
                         throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
                     }
@@ -63,6 +68,7 @@ class SoknadLifecycleHandlerImpl(
             }
     }
 
+    @WithSpan("sendSoknad")
     override fun sendSoknad(
         soknadId: UUID,
     ): Pair<UUID, LocalDateTime> {
@@ -74,6 +80,7 @@ class SoknadLifecycleHandlerImpl(
             .let { Pair(it.digisosId, it.innsendingTidspunkt) }
     }
 
+    @WithSpan("cancelSoknad")
     override fun cancelSoknad(
         soknadId: UUID,
         referer: String?,
@@ -83,7 +90,11 @@ class SoknadLifecycleHandlerImpl(
                 cancelSoknadHandler.cleanUploadedDocuments(soknadId)
                 logger.info("Søknad avbrutt. Sletter data.")
             }
-            .getOrElse { throw SoknadLifecycleException("Feil ved avbrutt søknad.", it, soknadId) }
+            .getOrElse {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
+                throw SoknadLifecycleException("Feil ved avbrutt søknad.", it, soknadId)
+            }
     }
 
     private fun handleError(
@@ -95,6 +106,8 @@ class SoknadLifecycleHandlerImpl(
             is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
             -> throw e
             else -> {
+                Span.current().recordException(e)
+                Span.current().setStatus(StatusCode.ERROR)
                 lifecycleMetricsService.reportSendSoknadFeilet()
                 throw InnsendingFeiletException(
                     deletionDate = sendSoknadHandler.getDeletionDate(soknadId),

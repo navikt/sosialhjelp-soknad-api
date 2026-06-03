@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
@@ -22,6 +23,7 @@ class SendSoknadHandler(
     private val sendSoknadManager: SendSoknadManager,
     private val metadataService: SoknadMetadataService,
 ) {
+    @WithSpan("doSendAndReturnInfo")
     fun doSendAndReturnInfo(
         soknadId: UUID,
     ): SoknadSendtInfo {

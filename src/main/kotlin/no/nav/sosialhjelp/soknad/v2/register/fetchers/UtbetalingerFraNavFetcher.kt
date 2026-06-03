@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
@@ -20,6 +21,7 @@ class UtbetalingerFraNavFetcher(
 ) : AsynchronousFetcher {
     private val logger by logger()
 
+    @WithSpan("UtbetalingerFraNavFetcher")
     override suspend fun fetchAndSave(
         soknadId: UUID,
     ) {

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRegisterService
@@ -14,6 +15,7 @@ class ArbeidsforholdFetcher(
 ) : AsynchronousFetcher {
     private val logger by logger()
 
+    @WithSpan("ArbeidsforholdFetcher")
     override suspend fun fetchAndSave(
         soknadId: UUID,
     ) {

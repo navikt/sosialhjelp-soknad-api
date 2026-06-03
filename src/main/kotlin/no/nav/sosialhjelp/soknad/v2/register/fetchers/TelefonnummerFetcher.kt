@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
@@ -12,6 +13,7 @@ class TelefonnummerFetcher(
     private val krrService: KrrService,
     private val kontaktService: KontaktRegisterService,
 ) : SynchronousFetcher {
+    @WithSpan("TelefonnummerFetcher")
     override suspend fun fetchAndSave(
         soknadId: UUID,
     ) {

@@ -1,5 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
+import io.opentelemetry.api.common.AttributeKey
+import io.opentelemetry.api.common.Attributes
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
@@ -27,9 +31,8 @@ class PersonDataFetcher(
 ) : PrimaryFetcher {
     private val logger by logger()
 
-    override suspend fun fetchAndSave(
-        soknadId: UUID,
-    ) {
+    @WithSpan("PersonDataFetcher")
+    override suspend fun fetchAndSave(soknadId: UUID) {
         logger.info("Henter person i PDL")
 
         val hentPerson = personService.hentPerson()
@@ -39,9 +42,13 @@ class PersonDataFetcher(
                 personRegisterDataHandlers
                     .forEach { personDataHandler ->
                         runCatching { personDataHandler.saveData(soknadId, person) }
-                            .onFailure {
-                                logger.warn("Feil i PersonData-fetcher: $personDataHandler", it)
-                                if (!personDataHandler.continueOnError()) throw it
+                            .onFailure { throwable ->
+                                logger.warn("Feil i PersonData-fetcher: $personDataHandler", throwable)
+                                if (personDataHandler.continueOnError()) {
+                                    handleTracing(personDataHandler, throwable)
+                                } else {
+                                    throw throwable
+                                }
                             }
                     }
             }
@@ -50,6 +57,23 @@ class PersonDataFetcher(
 
     // En Exception i denne logikken skal avbryte alt
     override fun exceptionOnError(): Boolean = true
+
+    private fun handleTracing(
+        handler: PersonRegisterDataHandler,
+        throwable: Throwable,
+    ) {
+        Span.current().addEvent(
+            "person_register_data_handler_failed",
+            Attributes.of(
+                AttributeKey.stringKey("handler"),
+                handler::class.simpleName ?: "ukjent",
+                AttributeKey.stringKey("error.type"),
+                throwable::class.simpleName ?: "ukjent",
+                AttributeKey.stringKey("error.message"),
+                throwable.message ?: "",
+            ),
+        )
+    }
 }
 
 private fun Person.verifyOver18() {

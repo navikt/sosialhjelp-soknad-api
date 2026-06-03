@@ -80,6 +80,7 @@ class FiksDokumentService(
         }
     }
 
+    @WithSpan("uploadDokument")
     override fun uploadDokument(
         soknadId: UUID,
         data: ByteArray,
@@ -98,6 +99,7 @@ class FiksDokumentService(
             ?: throw FiksException("Klarte ikke å laste opp dokument: Dto er null", null)
     }
 
+    @WithSpan("deleteDokument")
     override fun deleteDokument(
         soknadId: UUID,
         dokumentId: UUID,

@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
@@ -22,6 +24,7 @@ class InntektSkatteetatenUseCaseHandler(
         )
     }
 
+    @WithSpan("updateSamtykke-Skatteetaten")
     fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,
@@ -38,6 +41,9 @@ class InntektSkatteetatenUseCaseHandler(
                 }
                 .onFailure { e ->
                     logger.error("Fetching fra Skatteetaten feilet", e)
+                    // Soft failure: record exception for observability without marking span ERROR
+                    // since the application recovers gracefully (creates jobb element for retry)
+                    Span.current().recordException(e)
                     integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, true)
                     inntektSkatteetatenService.createJobbElement(soknadId)
                 }
