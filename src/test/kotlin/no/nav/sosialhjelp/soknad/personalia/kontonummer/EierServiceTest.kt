@@ -11,7 +11,7 @@ internal class EierServiceTest {
 
     @Test
     internal suspend fun clientReturnererKontonummer() {
-        coEvery { kontonummerClient.getKontonummer() } returns KontoDto("1337", null)
+        coEvery { kontonummerClient.getKontonummer() } returns KontoResponse.Success(KontoDto("1337", null))
 
         val kontonummer = kontonummerService.getKontonummer()
 
@@ -20,7 +20,7 @@ internal class EierServiceTest {
 
     @Test
     internal suspend fun clientReturnererNull() {
-        coEvery { kontonummerClient.getKontonummer() } returns null
+        coEvery { kontonummerClient.getKontonummer() } returns KontoResponse.Null
 
         val kontonummer = kontonummerService.getKontonummer()
 
@@ -30,9 +30,11 @@ internal class EierServiceTest {
     @Test
     internal suspend fun kontonummerSkalIkkeSettesNaarKlientReturnererUtenlandskontoNr() {
         coEvery { kontonummerClient.getKontonummer() } returns
-            KontoDto(
-                "1337",
-                UtenlandskKontoInfo(null, null, bankLandkode = "SWE", valutakode = "SEK", null, null, null, null),
+            KontoResponse.Success(
+                KontoDto(
+                    "1337",
+                    UtenlandskKontoInfo(null, null, bankLandkode = "SWE", valutakode = "SEK", null, null, null, null),
+                ),
             )
 
         val kontonummer = kontonummerService.getKontonummer()

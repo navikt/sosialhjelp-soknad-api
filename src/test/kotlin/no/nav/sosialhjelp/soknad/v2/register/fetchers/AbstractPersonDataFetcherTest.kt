@@ -5,6 +5,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseClient
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkeladresseDto
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontoResponse
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerClient
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
@@ -39,7 +40,7 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
 
     @BeforeEach
     fun mockKontonummer() {
-        coEvery { kontonummerClient.getKontonummer() } returns kontoDto
+        coEvery { kontonummerClient.getKontonummer() } returns KontoResponse.Success(kontoDto)
     }
 
     fun createAnswerForHentPersonUgiftMedMatrikkelAdresse(): MatrikkeladresseDto {
