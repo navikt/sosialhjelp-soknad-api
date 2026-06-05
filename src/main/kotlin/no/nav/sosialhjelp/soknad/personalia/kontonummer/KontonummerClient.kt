@@ -14,8 +14,8 @@ import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 
@@ -35,28 +35,18 @@ class KontonummerClientImpl(
 
     override suspend fun getKontonummer(): KontoResponse =
         withContext(Dispatchers.IO) {
+            val withContextSpan = Span.current()
             webClient.get()
                 .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
                 .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
-                .exchangeToMono { handleResponse(it) }
-                .onErrorResume { e -> Mono.just(KontoResponse.Error(throwable = e)) }
+                .retrieve()
+                .bodyToMono<KontoDto>()
+                .map<KontoResponse> { dto -> KontoResponse.Success(dto) }
+                .onErrorResume { e ->
+                    if (e is WebClientResponseException.NotFound) withContextSpan.setStatus(StatusCode.UNSET)
+                    Mono.just(KontoResponse.Error(e))
+                }
                 .awaitSingle()
-        }
-
-    private fun handleResponse(response: ClientResponse): Mono<KontoResponse> =
-        response.statusCode().let { code ->
-            when {
-                code.is2xxSuccessful -> {
-                    response.bodyToMono<KontoDto>()
-                        .map<KontoResponse> { dto -> KontoResponse.Success(dto) }
-                        .switchIfEmpty(Mono.just(KontoResponse.Null))
-                }
-                code.value() == 404 -> {
-                    Span.current().setStatus(StatusCode.UNSET)
-                    Mono.just(KontoResponse.Error(code.value()))
-                }
-                else -> response.createException().map { e -> KontoResponse.Error(code.value(), e) }
-            }
         }
 
     private suspend fun getTokenX(personId: String) =
@@ -66,9 +56,7 @@ class KontonummerClientImpl(
 sealed interface KontoResponse {
     data class Success(val kontoDto: KontoDto) : KontoResponse
 
-    data class Error(val statusCode: Int? = null, val throwable: Throwable? = null) : KontoResponse
-
-    object Null : KontoResponse
+    data class Error(val throwable: Throwable) : KontoResponse
 }
 
 data class KontoDto(

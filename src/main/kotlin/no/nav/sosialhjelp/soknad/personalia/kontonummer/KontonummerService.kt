@@ -7,6 +7,7 @@ import io.opentelemetry.api.trace.StatusCode
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.WebClientResponseException
 
 @Component
 class KontonummerService(
@@ -27,7 +28,6 @@ class KontonummerService(
                 handleError(response)
                 null
             }
-            is KontoResponse.Null -> null
         }
     }
 
@@ -42,16 +42,16 @@ class KontonummerService(
 
     private fun handleError(response: KontoResponse.Error) {
         when {
-            response.statusCode == 404 -> {
+            response.throwable is WebClientResponseException.NotFound -> {
                 log.info("Fant ingen konto i kontoregister")
                 Span.current().addEvent(
                     "Fant ingen konto i kontoregister",
-                    Attributes.of(AttributeKey<Int>.stringKey("StatusCode"), response.statusCode.toString()),
+                    Attributes.of(AttributeKey<Int>.stringKey("StatusCode"), "404 Not Found"),
                 )
             }
             else -> {
                 log.error("Kontoregister konto - Noe uventet feilet", response.throwable)
-                response.throwable?.also { Span.current().recordException(it) }
+                Span.current().recordException(response.throwable)
                 Span.current().setStatus(StatusCode.ERROR)
             }
         }
