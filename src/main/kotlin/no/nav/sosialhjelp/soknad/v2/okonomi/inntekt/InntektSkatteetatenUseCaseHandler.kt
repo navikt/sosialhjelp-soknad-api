@@ -24,7 +24,7 @@ class InntektSkatteetatenUseCaseHandler(
         )
     }
 
-    @WithSpan("updateSamtykke-Skatteetaten")
+    @WithSpan("Update Samtykke Inntekt Skatteetaten")
     fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,

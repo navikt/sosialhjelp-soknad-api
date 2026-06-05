@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
+import io.opentelemetry.api.common.AttributeKey
+import io.opentelemetry.api.common.Attributes
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.StatusCode
 import io.opentelemetry.instrumentation.annotations.WithSpan
@@ -40,7 +42,13 @@ class KontonummerService(
 
     private fun handleError(response: KontoResponse.Error) {
         when {
-            response.statusCode == 404 -> log.info("Fant ingen konto i kontoregister")
+            response.statusCode == 404 -> {
+                log.info("Fant ingen konto i kontoregister")
+                Span.current().addEvent(
+                    "Fant ingen konto i kontoregister",
+                    Attributes.of(AttributeKey<Int>.stringKey("StatusCode"), response.statusCode.toString())
+                )
+            }
             else -> {
                 log.error("Kontoregister konto - Noe uventet feilet", response.throwable)
                 response.throwable?.also { Span.current().recordException(it) }
