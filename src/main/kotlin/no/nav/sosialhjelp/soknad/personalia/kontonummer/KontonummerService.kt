@@ -46,7 +46,7 @@ class KontonummerService(
                 log.info("Fant ingen konto i kontoregister")
                 Span.current().addEvent(
                     "Fant ingen konto i kontoregister",
-                    Attributes.of(AttributeKey<Int>.stringKey("StatusCode"), response.statusCode.toString())
+                    Attributes.of(AttributeKey<Int>.stringKey("StatusCode"), response.statusCode.toString()),
                 )
             }
             else -> {
