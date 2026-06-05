@@ -108,14 +108,16 @@ class SoknadLifecycleHandlerImpl(
                 Span.current().addEvent(
                     "Søknad er allerede sendt",
                     Attributes.of(
-                        AttributeKey<String>.stringKey("Sendt Inn"), e.sendtInfo.innsendingTidspunkt.toString(),
-                        AttributeKey<String>.stringKey("DigisosId"), e.sendtInfo.digisosId.toString(),
+                        AttributeKey<String>.stringKey("Sendt Inn"),
+                        e.sendtInfo.innsendingTidspunkt.toString(),
+                        AttributeKey<String>.stringKey("DigisosId"),
+                        e.sendtInfo.digisosId.toString(),
                     ),
                 )
                 e.sendtInfo
             }
             is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
-                -> {
+            -> {
                 Span.current().recordException(e)
                 Span.current().setStatus(StatusCode.ERROR)
                 throw e
