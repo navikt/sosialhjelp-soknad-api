@@ -44,8 +44,8 @@ class DokumentController(
     )
     @ApiResponse(responseCode = "404", description = "Filen ble ikke funnet", content = [Content(schema = Schema(hidden = true))])
     fun getDokument(
-        @PathVariable("soknadId") soknadId: UUID,
-        @PathVariable("dokumentId") dokumentId: UUID,
+        @PathVariable soknadId: UUID,
+        @PathVariable dokumentId: UUID,
         response: HttpServletResponse,
     ): ResponseEntity<ByteArray> {
         return when (dokumentRefService.getRef(soknadId, dokumentId)) {
@@ -74,7 +74,7 @@ class DokumentController(
 
     @PostMapping("/{soknadId}/{type}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun saveDokument(
-        @PathVariable("soknadId") soknadId: UUID,
+        @PathVariable soknadId: UUID,
         @PathVariable("type") opplysningTypeString: String,
         @RequestParam("file") dokument: MultipartFile,
     ): DokumentDto {

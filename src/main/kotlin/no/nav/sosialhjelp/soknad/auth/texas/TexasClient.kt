@@ -1,6 +1,9 @@
 package no.nav.sosialhjelp.soknad.auth.texas
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 import org.springframework.beans.factory.annotation.Value
@@ -17,6 +20,7 @@ class TexasClient(
     @param:Value("\${token_exchange_endpoint:null}") private val tokenExchangeEndpoint: String,
     webClientBuilder: WebClient.Builder,
 ) {
+    @WithSpan("Get Token from Texas")
     fun getToken(
         identityProvider: String,
         target: String,
@@ -27,6 +31,7 @@ class TexasClient(
         )
     }
 
+    @WithSpan("Exchange Token from Texas")
     fun exchangeToken(
         identityProvider: String,
         target: String,
@@ -46,30 +51,35 @@ class TexasClient(
     private fun doFetchToken(
         params: TokenRequestBody,
         endpoint: String,
-    ): TokenResponse {
-        val response =
-            try {
-                texasWebClient
-                    .post()
-                    .uri(endpoint)
-                    .body(BodyInserters.fromValue(params))
-                    .retrieve()
-                    .bodyToMono<TokenResponse.Success>()
-                    .block() ?: error("Empty response from Texas")
-            } catch (e: WebClientResponseException) {
-                val error = e.responseBodyAsString
-                logger.error("Failed to fetch token from Texas: $error")
-                TokenResponse.Error(
-                    error =
-                        TokenErrorResponse(
-                            "Unknown error: ${e.statusCode}",
-                            e.statusText,
-                        ),
-                    errorDescription = e.responseBodyAsString,
-                )
+    ): TokenResponse =
+        runCatching {
+            texasWebClient
+                .post()
+                .uri(endpoint)
+                .body(BodyInserters.fromValue(params))
+                .retrieve()
+                .bodyToMono<TokenResponse.Success>()
+                .block() ?: error("Empty response from Texas")
+        }
+            .getOrElse { e ->
+                Span.current().recordException(e)
+                Span.current().setStatus(StatusCode.ERROR)
+
+                if (e !is WebClientResponseException) {
+                    throw e
+                } else {
+                    val error = e.responseBodyAsString
+                    logger.error("Failed to fetch token from Texas: $error")
+                    TokenResponse.Error(
+                        error =
+                            TokenErrorResponse(
+                                "Unknown error: ${e.statusCode}",
+                                e.statusText,
+                            ),
+                        errorDescription = e.responseBodyAsString,
+                    )
+                }
             }
-        return response
-    }
 
     private val texasWebClient: WebClient =
         webClientBuilder
