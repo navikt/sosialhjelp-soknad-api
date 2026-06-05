@@ -43,16 +43,17 @@ class KontonummerClientImpl(
 
     private fun handleResponse(response: ClientResponse): Mono<KontoResponse> =
         response.statusCode().let { code ->
-                when {
-                     code.is2xxSuccessful -> {
-                        response.bodyToMono<KontoDto>()
-                            .map<KontoResponse> { dto -> KontoResponse.Success(dto) }
-                            .switchIfEmpty(Mono.just(KontoResponse.Null))
-                    }
-                    code.value() == 404 -> { Mono.just(KontoResponse.Error(code.value()))
-                    }
-                    else -> response.createException().map { e -> KontoResponse.Error(code.value(),e) }
+            when {
+                code.is2xxSuccessful -> {
+                    response.bodyToMono<KontoDto>()
+                        .map<KontoResponse> { dto -> KontoResponse.Success(dto) }
+                        .switchIfEmpty(Mono.just(KontoResponse.Null))
                 }
+                code.value() == 404 -> {
+                    Mono.just(KontoResponse.Error(code.value()))
+                }
+                else -> response.createException().map { e -> KontoResponse.Error(code.value(), e) }
+            }
         }
 
     private suspend fun getTokenX(personId: String) =

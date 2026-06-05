@@ -21,21 +21,25 @@ class KontonummerService(
 
         return when (val response = kontonummerClient.getKontonummer()) {
             is KontoResponse.Success -> handleSuccess(response.kontoDto)
-            is KontoResponse.Error -> { handleError(response); null }
+            is KontoResponse.Error -> {
+                handleError(response)
+                null
+            }
             is KontoResponse.Null -> null
         }
     }
 
     private fun handleSuccess(dto: KontoDto): String? =
-        if (dto.utenlandskKontoInfo == null) dto.kontonummer
-        else {
+        if (dto.utenlandskKontoInfo == null) {
+            dto.kontonummer
+        } else {
             // Dersom utenlandskKontoInfo ikke er null, vil "kontonummer" være et utenlandsk kontonummer.
             log.info("Kontonummer fra kontoregister er utenlandskonto og kontonummer settes ikke")
             null
         }
 
     private fun handleError(response: KontoResponse.Error) {
-        when  {
+        when {
             response.statusCode == 404 -> log.info("Fant ingen konto i kontoregister")
             else -> {
                 log.error("Kontoregister konto - Noe uventet feilet", response.throwable)
