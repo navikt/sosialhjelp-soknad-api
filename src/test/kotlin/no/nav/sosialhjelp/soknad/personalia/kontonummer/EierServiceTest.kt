@@ -20,7 +20,7 @@ internal class EierServiceTest {
 
     @Test
     internal suspend fun clientReturnererNull() {
-        coEvery { kontonummerClient.getKontonummer() } returns KontoResponse.Null
+        coEvery { kontonummerClient.getKontonummer() } returns KontoResponse.Error(RuntimeException())
 
         val kontonummer = kontonummerService.getKontonummer()
 
