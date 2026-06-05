@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
-import io.opentelemetry.api.trace.Span
-import io.opentelemetry.api.trace.StatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.withContext
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 
@@ -35,17 +32,13 @@ class KontonummerClientImpl(
 
     override suspend fun getKontonummer(): KontoResponse =
         withContext(Dispatchers.IO) {
-            val withContextSpan = Span.current()
             webClient.get()
                 .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
                 .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
                 .retrieve()
                 .bodyToMono<KontoDto>()
                 .map<KontoResponse> { dto -> KontoResponse.Success(dto) }
-                .onErrorResume { e ->
-                    if (e is WebClientResponseException.NotFound) withContextSpan.setStatus(StatusCode.UNSET)
-                    Mono.just(KontoResponse.Error(e))
-                }
+                .onErrorResume { e -> Mono.just(KontoResponse.Error(e)) }
                 .awaitSingle()
         }
 
