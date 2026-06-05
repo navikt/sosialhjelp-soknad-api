@@ -32,12 +32,13 @@ class KontonummerService(
     }
 
     private fun handleSuccess(dto: KontoDto): String? =
-        if (dto.utenlandskKontoInfo == null) {
-            dto.kontonummer
-        } else {
-            // Dersom utenlandskKontoInfo ikke er null, vil "kontonummer" være et utenlandsk kontonummer.
-            log.info("Kontonummer fra kontoregister er utenlandskonto og kontonummer settes ikke")
-            null
+        when {
+            dto.utenlandskKontoInfo == null -> dto.kontonummer
+            else -> {
+                // Dersom utenlandskKontoInfo ikke er null, vil "kontonummer" være et utenlandsk kontonummer.
+                log.info("Kontonummer fra kontoregister er utenlandskonto og kontonummer settes ikke")
+                null
+            }
         }
 
     private fun handleError(response: KontoResponse.Error) {

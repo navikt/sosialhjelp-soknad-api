@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2
 
+import io.opentelemetry.api.common.AttributeKey
+import io.opentelemetry.api.common.Attributes
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.StatusCode
 import io.opentelemetry.instrumentation.annotations.WithSpan
@@ -42,7 +44,7 @@ class SoknadLifecycleHandlerImpl(
     private val sendSoknadHandler: SendSoknadHandler,
     private val cancelSoknadHandler: CancelSoknadHandler,
 ) : SoknadLifecycleUseCaseHandler {
-    @WithSpan("startSoknad")
+    @WithSpan("Starting a new Soknad")
     override fun startSoknad(isKort: Boolean): UUID {
         // legger det manuelt i context siden det ikke finnes i request enda
         val soknadId = UUID.randomUUID().also { addSoknadIdToContext(it) }
@@ -56,11 +58,11 @@ class SoknadLifecycleHandlerImpl(
             }
             .also { MdcOperations.clearMDC() }
             .getOrElse {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
                 when (it) {
                     is AuthorizationException -> throw it
                     else -> {
-                        Span.current().recordException(it)
-                        Span.current().setStatus(StatusCode.ERROR)
                         lifecycleMetricsService.reportStartSoknadFeilet()
                         throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
                     }
@@ -68,7 +70,7 @@ class SoknadLifecycleHandlerImpl(
             }
     }
 
-    @WithSpan("sendSoknad")
+    @WithSpan("Sending Soknad")
     override fun sendSoknad(
         soknadId: UUID,
     ): Pair<UUID, LocalDateTime> {
@@ -76,11 +78,11 @@ class SoknadLifecycleHandlerImpl(
 
         return runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId) }
             .onSuccess { lifecycleMetricsService.reportSendt(it.isKortSoknad) }
-            .getOrElse { e -> handleError(soknadId, e) }
+            .getOrElse { e -> handleErrorOnSend(soknadId, e) }
             .let { Pair(it.digisosId, it.innsendingTidspunkt) }
     }
 
-    @WithSpan("cancelSoknad")
+    @WithSpan("Cancel Soknad")
     override fun cancelSoknad(
         soknadId: UUID,
         referer: String?,
@@ -97,14 +99,27 @@ class SoknadLifecycleHandlerImpl(
             }
     }
 
-    private fun handleError(
+    private fun handleErrorOnSend(
         soknadId: UUID,
         e: Throwable,
     ): SoknadSendtInfo {
         return when (e) {
-            is SoknadAlleredeSendtException -> e.sendtInfo
+            is SoknadAlleredeSendtException -> {
+                Span.current().addEvent(
+                    "Søknad er allerede sendt",
+                    Attributes.of(
+                        AttributeKey<String>.stringKey("Sendt Inn"), e.sendtInfo.innsendingTidspunkt.toString(),
+                        AttributeKey<String>.stringKey("DigisosId"), e.sendtInfo.digisosId.toString(),
+                    ),
+                )
+                e.sendtInfo
+            }
             is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
-            -> throw e
+                -> {
+                Span.current().recordException(e)
+                Span.current().setStatus(StatusCode.ERROR)
+                throw e
+            }
             else -> {
                 Span.current().recordException(e)
                 Span.current().setStatus(StatusCode.ERROR)

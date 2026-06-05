@@ -27,7 +27,7 @@ interface PersonRegisterDataHandler {
 @Component
 class PersonDataFetcher(
     private val personService: PersonService,
-    private val personRegisterDataHandlers: List<PersonRegisterDataHandler>,
+    private val handlers: List<PersonRegisterDataHandler>,
 ) : PrimaryFetcher {
     private val logger by logger()
 
@@ -35,28 +35,29 @@ class PersonDataFetcher(
     override suspend fun fetchAndSave(soknadId: UUID) {
         logger.info("Henter person i PDL")
 
-        val hentPerson = personService.hentPerson()
-        hentPerson
+        personService.hentPerson()
             ?.also { it.verifyOver18() }
-            ?.let { person ->
-                personRegisterDataHandlers
-                    .forEach { personDataHandler ->
-                        runCatching { personDataHandler.saveData(soknadId, person) }
-                            .onFailure { throwable ->
-                                logger.warn("Feil i PersonData-fetcher: $personDataHandler", throwable)
-                                if (personDataHandler.continueOnError()) {
-                                    handleTracing(personDataHandler, throwable)
-                                } else {
-                                    throw throwable
-                                }
-                            }
-                    }
-            }
+            ?.let { handlers.forEach { handler -> handler.runHandler(soknadId, it) } }
             ?: error("Fant ikke søker i PDL")
     }
 
-    // En Exception i denne logikken skal avbryte alt
+    // Hvis denne fetcheren kaster exception, skal det avbryte opprettelese av ny søknad
     override fun exceptionOnError(): Boolean = true
+
+    private suspend fun PersonRegisterDataHandler.runHandler(
+        soknadId: UUID,
+        person: Person,
+    ) {
+        runCatching { this.saveData(soknadId, person) }
+            .onFailure { throwable ->
+                logger.warn("Feil i PersonData-fetcher: $this", throwable)
+                if (this.continueOnError()) {
+                    handleTracing(this, throwable)
+                } else {
+                    throw throwable
+                }
+            }
+    }
 
     private fun handleTracing(
         handler: PersonRegisterDataHandler,

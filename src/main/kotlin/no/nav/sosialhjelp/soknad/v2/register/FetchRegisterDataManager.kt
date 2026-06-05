@@ -58,7 +58,7 @@ class FetchRegisterDataManager(
         backgroundScope.cancel("Cancelling async fetcher background scope")
     }
 
-    @WithSpan("runAllRegisterDataFetchers")
+    @WithSpan("Run All Register Data Fetchers")
     @Transactional(propagation = Propagation.NEVER)
     fun runAllRegisterDataFetchers(soknadId: UUID) {
         logger.info("Henter Register-data")
