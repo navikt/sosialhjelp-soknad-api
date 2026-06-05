@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.withContext
@@ -50,6 +52,7 @@ class KontonummerClientImpl(
                         .switchIfEmpty(Mono.just(KontoResponse.Null))
                 }
                 code.value() == 404 -> {
+                    Span.current().setStatus(StatusCode.UNSET)
                     Mono.just(KontoResponse.Error(code.value()))
                 }
                 else -> response.createException().map { e -> KontoResponse.Error(code.value(), e) }
