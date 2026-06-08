@@ -14,7 +14,7 @@ jobs:
     outputs:
       image: ${{ steps.build-image.outputs.image }}
     steps:
-      - uses: navikt/sosialhjelp-ci/actions/build-for-deploy-kotlin@v19
+      - uses: navikt/sosialhjelp-ci/actions/build-for-deploy-kotlin@v21
         id: build-image
 
   deploy_to_test_envs:
