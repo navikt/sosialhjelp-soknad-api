@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
@@ -35,20 +38,28 @@ class SendSoknadManager(
             ?: error("Søknad mangler NavEnhet")
     }
 
+    @WithSpan("doSendSoknad")
     fun doSendSoknad(
         soknadId: UUID,
         json: JsonInternalSoknad,
         kommunenummer: String,
     ): UUID {
         // lager nødvendige filer
-        return doKrypterAndSend(
-            navEksternRefId = soknadId,
-            soknadJson = json.toSoknadJson(),
-            vedleggJson = json.toVedleggJson(),
-            tilleggsinformasjon = json.createTilleggsinformasjonJson(),
-            pdfDokumenter = getFilOpplastingList(json),
-            kommunenummer = kommunenummer,
-        )
+        return runCatching {
+            doKrypterAndSend(
+                navEksternRefId = soknadId,
+                soknadJson = json.toSoknadJson(),
+                vedleggJson = json.toVedleggJson(),
+                tilleggsinformasjon = json.createTilleggsinformasjonJson(),
+                pdfDokumenter = getFilOpplastingList(json),
+                kommunenummer = kommunenummer,
+            )
+        }
+            .getOrElse {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
+                throw it
+            }
     }
 
     private fun doKrypterAndSend(

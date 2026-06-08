@@ -11,9 +11,7 @@ class KontonummerFetcher(
     private val kontonummerService: KontonummerService,
     private val eierService: EierRegisterService,
 ) : SynchronousFetcher {
-    override suspend fun fetchAndSave(
-        soknadId: UUID,
-    ) {
+    override suspend fun fetchAndSave(soknadId: UUID) {
         kontonummerService.getKontonummer()
             ?.let { eierService.updateKontonummerFromRegister(soknadId, kontonummerRegister = it) }
     }

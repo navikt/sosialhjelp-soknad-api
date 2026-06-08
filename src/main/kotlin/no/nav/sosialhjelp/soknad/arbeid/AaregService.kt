@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsstedType
@@ -13,15 +16,18 @@ class AaregService(
     private val organisasjonService: OrganisasjonService,
     private val aaregClient: AaregClient,
 ) {
+    @WithSpan("Fetching arbeidsforhold from Aareg")
     suspend fun hentArbeidsforhold(): List<Arbeidsforhold>? {
         logger.info("Henter arbeidsforhold for bruker fra Aareg-api")
 
-        return runCatching {
-            aaregClient.finnArbeidsforholdForArbeidstaker()
-                ?.let { dto -> dto.map { it.createArbeidsforhold() } }
-        }
-            .onFailure { logger.error("Hente fra Aareg-api feilet", it) }
-            .getOrThrow()
+        return runCatching { aaregClient.finnArbeidsforholdForArbeidstaker() }
+            .getOrElse {
+                logger.error("Hente fra Aareg-api feilet", it)
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
+                throw it
+            }
+            ?.let { dto -> dto.map { it.createArbeidsforhold() } }
     }
 
     private fun ArbeidsforholdDto.createArbeidsforhold(): Arbeidsforhold {

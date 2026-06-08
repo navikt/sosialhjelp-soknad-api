@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.ks.kryptering.CMSKrypteringImpl
 import no.ks.kryptering.CMSStreamKryptering
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -27,21 +30,10 @@ class KrypteringService(private val dokumentlagerClient: DokumentlagerClient) {
 
     private val certificate: X509Certificate get() = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
 
+    @WithSpan("Doing File-encryption")
     fun krypter(
         dokumentStream: InputStream,
         krypteringFutureList: MutableList<Future<Void>>,
-    ): InputStream {
-        return krypter(
-            dokumentStream = dokumentStream,
-            krypteringFutureList = krypteringFutureList,
-            fiksX509Certificate = certificate,
-        )
-    }
-
-    fun krypter(
-        dokumentStream: InputStream,
-        krypteringFutureList: MutableList<Future<Void>>,
-        fiksX509Certificate: X509Certificate,
     ): InputStream {
         val pipedInputStream = PipedInputStream()
         try {
@@ -55,11 +47,12 @@ class KrypteringService(private val dokumentlagerClient: DokumentlagerClient) {
                             kryptering.krypterData(
                                 pipedOutputStream,
                                 dokumentStream,
-                                fiksX509Certificate,
+                                certificate,
                                 Security.getProvider("BC"),
                             )
                         }
                     } catch (e: Exception) {
+                        recordSpanError(e)
                         log.error("Encryption failed, setting exception on encrypted InputStream", e)
                         throw IllegalStateException("An error occurred during encryption", e)
                     } finally {
@@ -68,6 +61,7 @@ class KrypteringService(private val dokumentlagerClient: DokumentlagerClient) {
                             pipedOutputStream.close()
                             log.debug("Encryption OutputStream closed")
                         } catch (e: IOException) {
+                            recordSpanError(e)
                             log.error("Failed closing encryption OutputStream", e)
                         }
                     }
@@ -75,6 +69,7 @@ class KrypteringService(private val dokumentlagerClient: DokumentlagerClient) {
                 }
             krypteringFutureList.add(krypteringFuture)
         } catch (e: IOException) {
+            recordSpanError(e)
             throw RuntimeException(e)
         } finally {
             log.debug("Closing dokumentStream InputStream")
@@ -83,22 +78,27 @@ class KrypteringService(private val dokumentlagerClient: DokumentlagerClient) {
         return pipedInputStream
     }
 
+    private fun recordSpanError(e: Throwable) {
+        Span.current().recordException(e)
+        Span.current().setStatus(StatusCode.ERROR)
+    }
+
     companion object {
         private val log by logger()
 
         fun waitForFutures(krypteringFutureList: List<Future<Void>>) {
             for (voidFuture in krypteringFutureList) {
-                try {
-                    voidFuture[300, TimeUnit.SECONDS]
-                } catch (e: CompletionException) {
-                    throw IllegalStateException(e.cause)
-                } catch (e: ExecutionException) {
-                    throw IllegalStateException(e)
-                } catch (e: TimeoutException) {
-                    throw IllegalStateException(e)
-                } catch (e: InterruptedException) {
-                    throw IllegalStateException(e)
-                }
+                runCatching { voidFuture[300, TimeUnit.SECONDS] }
+                    .onFailure {
+                        Span.current().recordException(it)
+                        Span.current().setStatus(StatusCode.ERROR)
+
+                        when (it) {
+                            is CompletionException -> throw IllegalStateException(it.cause)
+                            is ExecutionException, is TimeoutException, is InterruptedException -> throw IllegalStateException(it)
+                            else -> throw it
+                        }
+                    }
             }
         }
     }

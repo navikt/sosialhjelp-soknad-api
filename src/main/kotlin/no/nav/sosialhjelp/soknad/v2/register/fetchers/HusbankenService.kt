@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenResponse
@@ -24,6 +27,7 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling as Utbetali
 class HusbankenService(
     private val husbankenClient: HusbankenClient,
 ) {
+    @WithSpan("Fetching bostotte from Husbanken")
     fun getBostotte(): Pair<List<BostotteSak>, Inntekt?> {
         return doGetBostotte(LocalDate.now().minusDays(60), LocalDate.now())
             .toDomain()
@@ -36,10 +40,7 @@ class HusbankenService(
     ): BostotteDto =
         when (val response = husbankenClient.getBostotte(fra, til)) {
             is HusbankenResponse.Success -> response.bostotte
-            is HusbankenResponse.Error -> throw HusbankenException(
-                melding = resolveErrorMessage(response.e),
-                cause = response.e,
-            )
+            is HusbankenResponse.Error -> handleError(response.e)
             is HusbankenResponse.Null -> error("Response from Husbanken was null")
         }
 
@@ -77,14 +78,24 @@ class HusbankenService(
             }
         return if (hasSaker || hasUtbetalinger) 31 else 62
     }
-}
 
-private fun resolveErrorMessage(e: WebClientResponseException): String? =
-    when {
-        e.statusCode.is4xxClientError -> "Problemer med å koble opp mot Husbanken!"
-        e.statusCode.is5xxServerError -> "Problemer med å hente bostøtte fra Husbanken! Ekstern error: ${e.message}"
-        else -> "Problemer med å hente bostøtte informasjon fra Husbanken!"
+    private fun handleError(e: WebClientResponseException): Nothing {
+        Span.current().recordException(e)
+        Span.current().setStatus(StatusCode.ERROR)
+
+        throw HusbankenException(
+            melding = resolveErrorMessage(e),
+            cause = e,
+        )
     }
+
+    private fun resolveErrorMessage(e: WebClientResponseException): String? =
+        when {
+            e.statusCode.is4xxClientError -> "Problemer med å koble opp mot Husbanken!"
+            e.statusCode.is5xxServerError -> "Problemer med å hente bostøtte fra Husbanken! Ekstern error: ${e.message}"
+            else -> "Problemer med å hente bostøtte informasjon fra Husbanken!"
+        }
+}
 
 private fun Sak.toBostotteSak() =
     BostotteSak(

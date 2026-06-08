@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.bostotte
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.HusbankenService
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
@@ -47,6 +49,7 @@ class BostotteUseCaseHandler(
     ): Boolean =
         hasSamtykke == existingHasSamtykke(soknadId) && integrasjonStatusService.hasFetchHusbankenFailed(soknadId) == false
 
+    @WithSpan("getFromHusbanken")
     private fun handleGetFromHusbanken(soknadId: UUID) {
         runCatching { husbankenService.getBostotte() }
             .onSuccess { (saker, inntekt) ->
@@ -62,6 +65,9 @@ class BostotteUseCaseHandler(
             }
             .onFailure {
                 logger.error("Henting fra Husbanken feilet", it)
+                // Soft failure: record exception for observability without marking span ERROR
+                // since the application recovers gracefully (adds forventet dokumentasjon)
+                Span.current().recordException(it)
 
                 // gir bruker mulighet til å legge ved denne informasjonen selv
                 bostotteService.addForventetDokumentasjon(soknadId)

@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -29,11 +32,6 @@ interface MellomlagringClient {
 
     fun lastOppDokument(
         navEksternId: String,
-        filOpplasting: FilOpplasting,
-    ): MellomlagringDto
-
-    fun lastOppDokument(
-        navEksternId: String,
         filnavn: String,
         data: ByteArray,
     ): MellomlagringDto
@@ -56,20 +54,26 @@ class MellomlagringClientImpl(
     private val texasService: TexasService,
     private val webClient: WebClient,
 ) : MellomlagringClient {
+    @WithSpan("Get Metadata for Documents as Fiks Mellomlager")
     override fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto? =
         runCatching { doHentDokumenterMetadata(navEksternId) }
             .getOrElse {
-                when (it) {
-                    is WebClientResponseException.NotFound -> return null
-                    is WebClientResponseException ->
-                        logger.error(
-                            "Fiks - getMellomlagredeVedlegg feilet: ${it.statusCode} -> ${it.responseBodyAsString}",
-                            it,
-                        )
-
-                    else -> logger.error("Fiks - getMellomlagredeVedlegg feilet ukjent feil: ${it.message}", it)
+                if (it is WebClientResponseException.NotFound) {
+                    return null
+                } else {
+                    Span.current().recordException(it)
+                    Span.current().setStatus(StatusCode.ERROR)
+                    when (it) {
+                        is WebClientResponseException -> {
+                            logger.error(
+                                "Fiks - getMellomlagredeVedlegg feilet: ${it.statusCode} -> ${it.responseBodyAsString}",
+                                it,
+                            )
+                        }
+                        else -> logger.error("Fiks - getMellomlagredeVedlegg feilet", it)
+                    }
+                    throw it
                 }
-                throw it
             }
 
     private fun doHentDokumenterMetadata(navEksternId: String): MellomlagringDto {
@@ -82,6 +86,7 @@ class MellomlagringClientImpl(
             .block() ?: throw FiksException("MellomlagringDto er null?", null)
     }
 
+    @WithSpan("Upload Document to Fiks Mellomlager")
     override fun lastOppDokument(
         navEksternId: String,
         filnavn: String,
@@ -105,7 +110,7 @@ class MellomlagringClientImpl(
     /**
      * Last opp vedlegg til mellomlagring for `navEksternId`
      */
-    override fun lastOppDokument(
+    private fun lastOppDokument(
         navEksternId: String,
         filOpplasting: FilOpplasting,
     ): MellomlagringDto {
@@ -118,7 +123,11 @@ class MellomlagringClientImpl(
             )
                 .also { waitForFutures(krypteringFutureList) }
         }
-            .getOrElse { throw FiksException("Feil ved opplasting av dokument", it) }
+            .getOrElse {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
+                throw FiksException("Feil ved opplasting av dokument", it)
+            }
             .also {
                 krypteringFutureList
                     .filter { !it.isDone && !it.isCancelled }
@@ -143,6 +152,7 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<MellomlagringDto>()
             .doOnError(WebClientResponseException::class.java) {
+                // TODO Logging utenfor MDC Context
                 logger.warn(
                     "Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}",
                     it,
@@ -155,53 +165,74 @@ class MellomlagringClientImpl(
     /**
      * Slett alle mellomlagrede vedlegg for `navEksternId`
      */
+    @WithSpan("Delete all documents for Soknad in Fiks Mellomlager")
     override fun slettAlleDokumenter(navEksternId: String) {
-        webClient.delete()
-            .uri(MELLOMLAGRING_PATH, navEksternId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
-            .retrieve()
-            .bodyToMono<String>()
-            .doOnError(WebClientResponseException::class.java) {
-                logger.warn("Fiks - deleteAll mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+        runCatching {
+            webClient.delete()
+                .uri(MELLOMLAGRING_PATH, navEksternId)
+                .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
+                .retrieve()
+                .bodyToMono<String>()
+                .block()
+        }
+            .onFailure {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
+
+                if (it is WebClientResponseException) {
+                    logger.warn("Fiks - deleteAll mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+                }
+
+                throw it
             }
-            .block()
     }
 
     /**
      * Last ned mellomlagret vedlegg
      */
+    @WithSpan("Get Document from Fiks Mellomlager")
     override fun hentDokument(
         navEksternId: String,
         digisosDokumentId: String,
-    ): ByteArray {
-        return webClient.get()
-            .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
-            .retrieve()
-            .bodyToMono<ByteArray>()
-            .block()
-            ?: throw FiksException("Mellomlagret vedlegg er null?", null)
-    }
+    ): ByteArray =
+        runCatching {
+            webClient.get()
+                .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
+                .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
+                .retrieve()
+                .bodyToMono<ByteArray>()
+                .block()
+                ?: throw FiksException("Mellomlagret vedlegg er null?", null)
+        }
+            .getOrElse {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
+                throw it
+            }
 
     /**
      * Slett mellomlagret vedlegg
      */
+    @WithSpan("Delete Document from Fiks Mellomlager")
     override fun slettDokument(
         navEksternId: String,
         digisosDokumentId: String,
     ) {
-        webClient.delete()
-            .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
-            .retrieve()
-            .bodyToMono<String>()
-            .doOnSuccess {
-                logger.info("Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId, behandlingsId=$navEksternId")
+        runCatching {
+            webClient.delete()
+                .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
+                .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
+                .retrieve()
+                .bodyToMono<String>()
+                .block()
+        }
+            .onSuccess { logger.info("Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId") }
+            .onFailure {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
+                if (it is WebClientResponseException) logger.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+                throw it
             }
-            .doOnError(WebClientResponseException::class.java) {
-                logger.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
-            }
-            .block()
     }
 
     private fun getToken(): String = texasService.getToken(IdentityProvider.M2M, "ks:fiks")

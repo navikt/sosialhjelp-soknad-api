@@ -1,5 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
+import io.opentelemetry.api.common.AttributeKey
+import io.opentelemetry.api.common.Attributes
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import jakarta.annotation.PreDestroy
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +58,7 @@ class FetchRegisterDataManager(
         backgroundScope.cancel("Cancelling async fetcher background scope")
     }
 
+    @WithSpan("Run All Register Data Fetchers")
     @Transactional(propagation = Propagation.NEVER)
     fun runAllRegisterDataFetchers(soknadId: UUID) {
         logger.info("Henter Register-data")
@@ -117,11 +123,39 @@ class FetchRegisterDataManager(
             logger.info("${Thread.currentThread().name} finished fetcher: $fetcher")
         }
             .onFailure {
+                handleTracing(fetcher, it)
+
                 if (it is AuthorizationException) throw it
 
                 logger.warn("Registerdata-fetcher feilet: $fetcher", it)
                 if (fetcher.exceptionOnError()) throw it
             }
+    }
+
+    private fun handleTracing(
+        fetcher: RegisterDataFetcher,
+        throwable: Throwable,
+    ) {
+        val fetcherName = fetcher::class.simpleName ?: "ukjent"
+
+        if (fetcher.exceptionOnError()) {
+            // Hard failure: exception will propagate — mark span as broken
+            Span.current().recordException(throwable, Attributes.of(AttributeKey.stringKey("fetcher"), fetcherName))
+            Span.current().setStatus(StatusCode.ERROR)
+        } else {
+            // Soft failure: application handles this gracefully — record as event, not error
+            Span.current().addEvent(
+                "fetcher_soft_failure",
+                Attributes.of(
+                    AttributeKey.stringKey("fetcher"),
+                    fetcherName,
+                    AttributeKey.stringKey("error.type"),
+                    throwable::class.simpleName ?: "ukjent",
+                    AttributeKey.stringKey("error.message"),
+                    throwable.message ?: "",
+                ),
+            )
+        }
     }
 }
 

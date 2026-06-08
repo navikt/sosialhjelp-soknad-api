@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
@@ -50,7 +51,6 @@ class DigisosApiV2Client(
     @param:Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @param:Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
-    private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
@@ -78,6 +78,7 @@ class DigisosApiV2Client(
             .filter(MdcExchangeFilter)
             .build()
 
+    @WithSpan("Sending - Encrypt and upload all files to digisos-api")
     fun krypterOgLastOppFiler(
         soknadJson: String,
         tilleggsinformasjonJson: String,
@@ -97,7 +98,7 @@ class DigisosApiV2Client(
                     pdfDokumenter.map { dokument: FilOpplasting ->
                         FilOpplasting(
                             metadata = dokument.metadata,
-                            data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate),
+                            data = krypteringService.krypter(dokument.data, krypteringFutureList),
                         )
                     },
                     kommunenr,
@@ -292,7 +293,6 @@ class DigisosApiV2Client(
         )
     }
 
-    private val fiksX509Certificate get() = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
     private val maskinportenToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
     private val userToken get() = SubjectHandlerUtils.getTokenOrNull() ?: error("Mangler userToken")
 

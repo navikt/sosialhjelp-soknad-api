@@ -1,5 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
+import io.opentelemetry.api.common.AttributeKey
+import io.opentelemetry.api.common.Attributes
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
@@ -23,33 +27,54 @@ interface PersonRegisterDataHandler {
 @Component
 class PersonDataFetcher(
     private val personService: PersonService,
-    private val personRegisterDataHandlers: List<PersonRegisterDataHandler>,
+    private val handlers: List<PersonRegisterDataHandler>,
 ) : PrimaryFetcher {
     private val logger by logger()
 
-    override suspend fun fetchAndSave(
-        soknadId: UUID,
-    ) {
+    @WithSpan("PersonDataFetcher")
+    override suspend fun fetchAndSave(soknadId: UUID) {
         logger.info("Henter person i PDL")
 
-        val hentPerson = personService.hentPerson()
-        hentPerson
+        personService.hentPerson()
             ?.also { it.verifyOver18() }
-            ?.let { person ->
-                personRegisterDataHandlers
-                    .forEach { personDataHandler ->
-                        runCatching { personDataHandler.saveData(soknadId, person) }
-                            .onFailure {
-                                logger.warn("Feil i PersonData-fetcher: $personDataHandler", it)
-                                if (!personDataHandler.continueOnError()) throw it
-                            }
-                    }
-            }
+            ?.let { handlers.forEach { handler -> handler.runHandler(soknadId, it) } }
             ?: error("Fant ikke søker i PDL")
     }
 
-    // En Exception i denne logikken skal avbryte alt
+    // Hvis denne fetcheren kaster exception, skal det avbryte opprettelese av ny søknad
     override fun exceptionOnError(): Boolean = true
+
+    private suspend fun PersonRegisterDataHandler.runHandler(
+        soknadId: UUID,
+        person: Person,
+    ) {
+        runCatching { this.saveData(soknadId, person) }
+            .onFailure { throwable ->
+                logger.warn("Feil i PersonData-fetcher: $this", throwable)
+                if (this.continueOnError()) {
+                    handleTracing(this, throwable)
+                } else {
+                    throw throwable
+                }
+            }
+    }
+
+    private fun handleTracing(
+        handler: PersonRegisterDataHandler,
+        throwable: Throwable,
+    ) {
+        Span.current().addEvent(
+            "person_register_data_handler_failed",
+            Attributes.of(
+                AttributeKey.stringKey("handler"),
+                handler::class.simpleName ?: "ukjent",
+                AttributeKey.stringKey("error.type"),
+                throwable::class.simpleName ?: "ukjent",
+                AttributeKey.stringKey("error.message"),
+                throwable.message ?: "",
+            ),
+        )
+    }
 }
 
 private fun Person.verifyOver18() {

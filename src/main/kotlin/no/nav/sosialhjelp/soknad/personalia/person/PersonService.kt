@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
@@ -28,16 +31,23 @@ class PersonService(
     private val hentPersonClient: HentPersonClient,
     private val mapper: PdlDtoMapper,
 ) {
+    @WithSpan("Fetching person, ektefelle and barn")
     suspend fun hentPerson(): Person? {
-        val personDto = hentPersonClient.hentPerson(currentUserContext().userId) ?: return null
-        val person =
+        return runCatching {
+            val personDto = hentPersonClient.hentPerson(currentUserContext().userId) ?: return null
+
             mapper.personDtoToDomain(personDto, currentUserContext().userId)
                 .apply {
                     ektefelle = hentEktefelle(personDto)
                     barn = hentBarnForPerson(personDto) ?: emptyList()
                 }
+        }
+            .getOrElse {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR)
 
-        return person
+                throw it
+            }
     }
 
     @KeyRequiredCache(

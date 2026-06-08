@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
+import io.opentelemetry.api.GlobalOpenTelemetry
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.slf4j.Logger
@@ -13,17 +16,38 @@ abstract class AbstractJob(
     protected fun doInJob(function: () -> Unit) {
         runBlocking {
             if (leaderElection.isLeader()) {
-                logger.info("Starter jobb: $jobName")
+                val span = createSpan(jobName)
+                val scope = span.makeCurrent()
+                try {
+                    logger.info("Starter jobb: $jobName")
 
-                runCatching {
-                    withTimeoutOrNull(60.seconds) { function.invoke() }
-                        ?: logger.error("$jobName tok for lang tid å starte")
+                    runCatching {
+                        withTimeoutOrNull(60.seconds) { function.invoke() }
+                            ?: logger.error("$jobName tok for lang tid å starte")
+                    }
+                        .onFailure { e ->
+                            logger.error("Feil i job ($jobName)", e)
+                            span.recordException(e)
+                            span.setStatus(StatusCode.ERROR)
+                            throw e
+                        }
+                        .also {
+                            scope.close()
+                            span.end()
+                        }
+
+                    logger.info("Jobb ferdig: $jobName")
+                } finally {
+                    scope.close()
+                    span.end()
                 }
-                    .onFailure { e -> logger.error("Feil i job ($jobName)", e) }
-                    .getOrThrow()
-
-                logger.info("Jobb ferdig: $jobName")
             }
         }
     }
+
+    private fun createSpan(jobName: String): Span =
+        GlobalOpenTelemetry.getTracer("sosialhjelp-soknad-api")
+            .spanBuilder("scheduledJob")
+            .setAttribute("job.name", jobName)
+            .startSpan()
 }

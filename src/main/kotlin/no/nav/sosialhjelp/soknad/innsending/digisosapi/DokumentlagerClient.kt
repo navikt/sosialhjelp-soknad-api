@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
@@ -38,33 +41,44 @@ class DokumentlagerClient(
             .codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }
             .build()
 
+    @WithSpan("Get Dokumentlager Public Key")
     fun getDokumentlagerPublicKeyX509Certificate(): X509Certificate {
         cachedPublicKey?.let { return it }
 
-        val publicKey =
-            fiksWebClient.get()
-                .uri("/digisos/api/v1/dokumentlager-public-key")
-                .header(ACCEPT, MediaType.ALL_VALUE)
-                .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-                .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-                .header(AUTHORIZATION, BEARER + getMaskinportenToken())
-                .retrieve()
-                .bodyToMono<ByteArray>()
-                .onErrorMap(WebClientResponseException::class.java) { e ->
-                    log.warn("Fiks - getDokumentlagerPublicKey feilet - ${e.statusCode} ${e.statusText}", e)
-                    TjenesteUtilgjengeligException("Noe feilet ved henting av dokumentlager publickey fra Fiks - ${e.message}", e)
-                }
-                .block()
-
-        log.info("Hentet public key for dokumentlager")
-
-        try {
-            val certificateFactory = CertificateFactory.getInstance("X.509")
-            return (certificateFactory.generateCertificate(ByteArrayInputStream(publicKey)) as X509Certificate)
+        return runCatching {
+            doGetPrivateKey()
+                .also { log.info("Hentet public key for dokumentlager") }
+                .let { generateCertificate(it) }
                 .also { cachedPublicKey = it }
-        } catch (e: CertificateException) {
-            throw RuntimeException(e)
         }
+            .getOrElse { e ->
+                Span.current().recordException(e)
+                Span.current().setStatus(StatusCode.ERROR)
+
+                if (e is CertificateException) throw RuntimeException(e)
+
+                if (e is WebClientResponseException) {
+                    log.warn("Fiks - getDokumentlagerPublicKey feilet - ${e.statusCode} ${e.statusText}", e)
+                    throw TjenesteUtilgjengeligException("Noe feilet ved henting av dokumentlager publickey fra Fiks - ${e.message}", e)
+                }
+                throw e
+            }
+    }
+
+    private fun doGetPrivateKey() =
+        fiksWebClient.get()
+            .uri("/digisos/api/v1/dokumentlager-public-key")
+            .header(ACCEPT, MediaType.ALL_VALUE)
+            .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+            .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+            .header(AUTHORIZATION, BEARER + getMaskinportenToken())
+            .retrieve()
+            .bodyToMono<ByteArray>()
+            .block()
+
+    private fun generateCertificate(publicKey: ByteArray?): X509Certificate {
+        val certificateFactory = CertificateFactory.getInstance("X.509")
+        return (certificateFactory.generateCertificate(ByteArrayInputStream(publicKey)) as X509Certificate)
     }
 
     private fun getMaskinportenToken(): String =
