@@ -24,7 +24,7 @@ interface SoknadValidators {
 class SoknadMottakerValidator(
     private val adresseService: AdresseService,
     private val kommuneInfoService: KommuneInfoService,
-): SoknadValidators {
+) : SoknadValidators {
     override fun validate(soknadId: UUID) {
         val mottaker = harSoknadMottaker(soknadId)
         kanKommuneMottaSoknad(mottaker)
@@ -34,7 +34,6 @@ class SoknadMottakerValidator(
         adresseService.findMottaker(soknadId)
             ?.also { if (it.kommunenummer == null) error("Mottaker Mangler kommunenummer") }
             ?: error("Søknad mangler NavEnhet")
-
 
     private fun kanKommuneMottaSoknad(mottaker: NavEnhet) {
         val kommunenummer = mottaker.kommunenummer ?: error("NavEnhet ${mottaker.enhetsnavn} mangler kommunenummer")
@@ -68,8 +67,7 @@ class SoknadMottakerValidator(
 class DocumentValidator(
     private val dokumentasjonRepository: DokumentasjonRepository,
     private val mellomlagerService: MellomlagerService,
-): SoknadValidators {
-
+) : SoknadValidators {
     override fun validate(soknadId: UUID) {
         validateDocumentsExistsInMellomlager(soknadId)
     }
@@ -85,7 +83,7 @@ class DocumentValidator(
                             null -> {
                                 logger.error(
                                     "Dokument(${dokument.dokumentId}) på dokumentasjon(type=${dokumentasjon.type}) " +
-                                            "mangler i FIKS mellomlager. Sletter.",
+                                        "mangler i FIKS mellomlager. Sletter.",
                                 )
                                 dokumentasjonRepository.removeDokumentFromDokumentasjon(soknadId, dokument.dokumentId)
                             }
@@ -102,11 +100,10 @@ class DocumentValidator(
 }
 
 @Component
-class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerService): SoknadValidators {
+class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerService) : SoknadValidators {
     override fun validate(soknadId: UUID) {
-
         mineSakerService.hentInnsendteSoknaderSisteDogn()
-            .also { (antall, innsendingTillattFra ) ->
+            .also { (antall, innsendingTillattFra) ->
                 if (antall >= 10) {
                     if (innsendingTillattFra == null) error("Soker har flere enn 10 soknader sendt siste 24 timer, men innsendingTillattFra er null")
                     throw AntallSoknaderSendtException(antall, soknadId, innsendingTillattFra)
@@ -119,10 +116,4 @@ data class AntallSoknaderSendtException(
     val antall: Int,
     val soknadId: UUID,
     val innsendingTillattFra: LocalDateTime,
-): SosialhjelpSoknadApiException("$antall soknader sendt siste 24 timer", null, soknadId.toString())
-
-
-
-
-
-
+) : SosialhjelpSoknadApiException("$antall soknader sendt siste 24 timer", null, soknadId.toString())

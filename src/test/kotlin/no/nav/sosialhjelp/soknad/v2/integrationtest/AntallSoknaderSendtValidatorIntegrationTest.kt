@@ -107,4 +107,3 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
         )
     }
 }
-
