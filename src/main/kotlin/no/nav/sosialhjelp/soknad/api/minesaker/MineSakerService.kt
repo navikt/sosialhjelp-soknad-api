@@ -18,8 +18,14 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
             .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
             .filter { it.tidspunkt.sendtInn?.isAfter(LocalDateTime.now().minusDays(1)) ?: false }
             .let { metadatas ->
-                val antall = metadatas.size
-                val eldsteDatoSoknad = metadatas.map { it.tidspunkt.sendtInn }.sortedBy { it }.firstOrNull()
-                Pair(antall, eldsteDatoSoknad)
+                Pair(
+                    first = metadatas.size,
+                    second =
+                        if (metadatas.size == 10) {
+                            metadatas.map { it.tidspunkt.sendtInn }.sortedBy { it }.firstOrNull()
+                        } else {
+                            null
+                        },
+                )
             }
 }
