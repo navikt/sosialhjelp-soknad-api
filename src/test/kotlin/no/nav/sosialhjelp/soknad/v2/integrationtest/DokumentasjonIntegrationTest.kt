@@ -9,7 +9,7 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DocumentValidator
+import no.nav.sosialhjelp.soknad.v2.DocumentValidator
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
@@ -275,7 +275,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 }.toSet(),
         ).also { dokumentasjonRepository.save(it) }
 
-        documentValidator.validateDocumentsExistsInMellomlager(soknad.id)
+        documentValidator.validate(soknad.id)
 
         dokumentasjonRepository.findAllBySoknadId(soknad.id).also {
             assertThat(it).hasSize(1)
@@ -312,7 +312,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                     }.toSet(),
         ).also { dokumentasjonRepository.save(it) }
 
-        documentValidator.validateDocumentsExistsInMellomlager(soknad.id)
+        documentValidator.validate(soknad.id)
 
         dokumentasjonRepository.findAllBySoknadId(soknad.id).also {
             assertThat(it).hasSize(1)
@@ -355,7 +355,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             assertThat(it.first().dokumenter).hasSize(4)
         }
 
-        documentValidator.validateDocumentsExistsInMellomlager(soknad.id)
+        documentValidator.validate(soknad.id)
 
         dokumentasjonRepository.findAllBySoknadId(soknad.id).also {
             assertThat(it).hasSize(1)

@@ -1,0 +1,110 @@
+package no.nav.sosialhjelp.soknad.v2.integrationtest
+
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtException
+import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtValidator
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatCode
+import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import java.time.LocalDateTime
+import java.util.UUID
+
+class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
+    override var opprettSoknadBeforeEach = false
+
+    @Autowired
+    private lateinit var antallSoknaderSendtValidator: AntallSoknaderSendtValidator
+
+    @BeforeEach
+    fun setup() {
+        metadataRepository.deleteAll()
+        StaticSubjectHandlerImpl()
+            .apply { setUser(userId) }
+            .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
+    }
+
+    @AfterEach
+    fun tearDown() {
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
+    }
+
+    @Test
+    fun `validering passerer naar bruker har under 10 sendte soknader siste 24 timer`() {
+        repeat(9) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+
+        assertThatCode {
+            antallSoknaderSendtValidator.validate(UUID.randomUUID())
+        }.doesNotThrowAnyException()
+    }
+
+    @Test
+    fun `validering feiler naar bruker har 10 sendte soknader siste 24 timer`() {
+        val eldsteTidspunkt = nowWithMillis().minusHours(20)
+        sendtSoknadForBruker(sendtInn = eldsteTidspunkt)
+        repeat(9) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+
+        assertThatThrownBy {
+            antallSoknaderSendtValidator.validate(UUID.randomUUID())
+        }
+            .isInstanceOfSatisfying(AntallSoknaderSendtException::class.java) { exception ->
+                assertThat(exception.antall).isEqualTo(10)
+                assertThat(exception.innsendingTillattFra).isEqualTo(eldsteTidspunkt.plusDays(1))
+            }
+    }
+
+    @Test
+    fun `validering ignorerer soknader eldre enn 24 timer`() {
+        repeat(10) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(25)) }
+
+        assertThatCode {
+            antallSoknaderSendtValidator.validate(UUID.randomUUID())
+        }.doesNotThrowAnyException()
+    }
+
+    @Test
+    fun `validering ignorerer soknader for annen bruker`() {
+        repeat(10) {
+            metadataRepository.save(
+                opprettSoknadMetadata(
+                    status = SoknadStatus.SENDT,
+                    personId = "annenbruker",
+                    innsendtDato = nowWithMillis().minusHours(1),
+                ),
+            )
+        }
+
+        assertThatCode {
+            antallSoknaderSendtValidator.validate(UUID.randomUUID())
+        }.doesNotThrowAnyException()
+    }
+
+    @Test
+    fun `validering ignorerer soknader med status OPPRETTET og INNSENDING_FEILET`() {
+        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.OPPRETTET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
+        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.INNSENDING_FEILET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
+        repeat(9) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+
+        assertThatCode {
+            antallSoknaderSendtValidator.validate(UUID.randomUUID())
+        }.doesNotThrowAnyException()
+    }
+
+    private fun sendtSoknadForBruker(sendtInn: LocalDateTime) {
+        metadataRepository.save(
+            opprettSoknadMetadata(
+                status = SoknadStatus.SENDT,
+                personId = userId,
+                innsendtDato = sendtInn,
+            ),
+        )
+    }
+}
+
