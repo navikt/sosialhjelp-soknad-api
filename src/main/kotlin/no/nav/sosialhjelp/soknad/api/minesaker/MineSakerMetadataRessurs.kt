@@ -43,7 +43,7 @@ class MineSakerMetadataRessurs(
             .let { (antall, eldsteInnsendte) ->
                 AntallInnsendteSoknaderDto(
                     antall = antall,
-                    innsendingTillat = eldsteInnsendte?.plusDays(1),
+                    innsendingTillatt = eldsteInnsendte?.plusDays(1),
                 )
             }
     }
@@ -57,7 +57,7 @@ class MineSakerMetadataRessurs(
 
 data class AntallInnsendteSoknaderDto(
     val antall: Int,
-    val innsendingTillat: LocalDateTime?,
+    val innsendingTillatt: LocalDateTime?,
 )
 
 data class InnsendtSoknadDto(

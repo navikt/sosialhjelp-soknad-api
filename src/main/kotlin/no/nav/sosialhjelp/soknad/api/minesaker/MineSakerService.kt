@@ -19,13 +19,13 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
 
         return metadataService.getAllMetadataForPerson(getUserIdFromToken())
             .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
-            .filter { it.tidspunkt.sendtInn?.isAfter(cutOff) ?: false }
+            .filter { it.tidspunkt.sendtInn?.isAfter(cutOff) ?: error("Fant ikke tidspunkt for innsending") }
             .let { metadatas ->
                 Pair(
                     first = metadatas.size,
                     second =
                         if (metadatas.size >= 10) {
-                            metadatas.eldsteSoknad()
+                            metadatas.findInnsendingTillatt()
                         } else {
                             null
                         },
@@ -34,8 +34,5 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
     }
 }
 
-private fun List<SoknadMetadata>.eldsteSoknad(): LocalDateTime =
-    this
-        .mapNotNull { it.tidspunkt.sendtInn }
-        .minOrNull()
-        ?: error("Fant ikke sendt inn for søknad")
+private fun List<SoknadMetadata>.findInnsendingTillatt(): LocalDateTime =
+    this.mapNotNull { it.tidspunkt.sendtInn }.sorted()[9]

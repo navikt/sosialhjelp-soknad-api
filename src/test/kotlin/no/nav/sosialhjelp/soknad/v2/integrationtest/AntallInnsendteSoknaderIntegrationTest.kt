@@ -7,14 +7,9 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.web.reactive.server.WebTestClient
 import java.time.LocalDateTime
 
 class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX = true) {
-    @Autowired
-    private lateinit var webClient: WebTestClient
-
     override var opprettSoknadBeforeEach = false
 
     @BeforeEach
@@ -26,7 +21,7 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
     fun `antallSisteDogn returnerer 0 naar bruker har ingen innsendte soknader`() {
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(0)
-            assertThat(it.innsendingTillat).isNull()
+            assertThat(it.innsendingTillatt).isNull()
         }
     }
 
@@ -36,7 +31,7 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(3)
-            assertThat(it.innsendingTillat).isNull()
+            assertThat(it.innsendingTillatt).isNull()
         }
     }
 
@@ -69,7 +64,7 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(10)
-            assertThat(it.innsendingTillat).isEqualTo(eldsteTidspunkt.plusDays(1))
+            assertThat(it.innsendingTillatt).isEqualTo(eldsteTidspunkt.plusDays(1))
         }
     }
 
@@ -79,7 +74,7 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(9)
-            assertThat(it.innsendingTillat).isNull()
+            assertThat(it.innsendingTillatt).isNull()
         }
     }
 
@@ -96,6 +91,34 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun `antallSisteDogn with more than 10 soknader returnerer innsendingTillatt for 10th timestamp`() {
+        val tidspunkter = listOf(
+            nowWithMillis().minusHours(10),  // 11th (newest)
+            nowWithMillis().minusHours(11),  // 10th oldest - this should be used for innsendingTillatt
+            nowWithMillis().minusHours(12),  // 9th
+            nowWithMillis().minusHours(13),  // 8th
+            nowWithMillis().minusHours(14),  // 7th
+            nowWithMillis().minusHours(15),  // 6th
+            nowWithMillis().minusHours(16),  // 5th
+            nowWithMillis().minusHours(17),  // 4th
+            nowWithMillis().minusHours(18),  // 3rd
+            nowWithMillis().minusHours(19),  // 2nd
+            nowWithMillis().minusHours(20),  // 1st oldest
+        )
+
+        tidspunkter.forEach { tidspunkt ->
+            sendtSoknadForBruker(sendtInn = tidspunkt)
+        }
+
+        val tiende = tidspunkter[1]
+
+        doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
+            assertThat(it.antall).isEqualTo(11)
+            assertThat(it.innsendingTillatt).isEqualTo(tiende.plusDays(1))
         }
     }
 
