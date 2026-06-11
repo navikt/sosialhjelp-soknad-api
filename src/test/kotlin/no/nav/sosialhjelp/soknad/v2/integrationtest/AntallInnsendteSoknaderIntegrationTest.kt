@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +20,11 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
     @BeforeEach
     fun setup() {
+        metadataRepository.deleteAll()
+    }
+
+    @AfterEach
+    fun teardown() {
         metadataRepository.deleteAll()
     }
 
