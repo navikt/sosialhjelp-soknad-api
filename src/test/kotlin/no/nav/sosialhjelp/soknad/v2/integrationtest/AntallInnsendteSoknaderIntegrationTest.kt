@@ -21,7 +21,7 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
     fun `antallSisteDogn returnerer 0 naar bruker har ingen innsendte soknader`() {
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(0)
-            assertThat(it.innsendingTillatt).isNull()
+            assertThat(it.innsendingTillattFra).isNull()
         }
     }
 
@@ -31,7 +31,7 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(3)
-            assertThat(it.innsendingTillatt).isNull()
+            assertThat(it.innsendingTillattFra).isNull()
         }
     }
 
@@ -64,7 +64,7 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(10)
-            assertThat(it.innsendingTillatt).isEqualTo(eldsteTidspunkt.plusDays(1))
+            assertThat(it.innsendingTillattFra).isEqualTo(eldsteTidspunkt.plusDays(1))
         }
     }
 
@@ -74,7 +74,7 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(9)
-            assertThat(it.innsendingTillatt).isNull()
+            assertThat(it.innsendingTillattFra).isNull()
         }
     }
 
@@ -115,11 +115,11 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
             sendtSoknadForBruker(sendtInn = tidspunkt)
         }
 
-        val tiende = tidspunkter[1]
+        val tiende = tidspunkter[9]
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(11)
-            assertThat(it.innsendingTillatt).isEqualTo(tiende.plusDays(1))
+            assertThat(it.innsendingTillattFra).isEqualTo(tiende.plusDays(1))
         }
     }
 
