@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.UUID
 
-interface SoknadValidators {
+interface SoknadValidator {
     fun validate(soknadId: UUID)
 }
 
@@ -24,7 +24,7 @@ interface SoknadValidators {
 class SoknadMottakerValidator(
     private val adresseService: AdresseService,
     private val kommuneInfoService: KommuneInfoService,
-) : SoknadValidators {
+) : SoknadValidator {
     override fun validate(soknadId: UUID) {
         val mottaker = harSoknadMottaker(soknadId)
         kanKommuneMottaSoknad(mottaker)
@@ -67,7 +67,7 @@ class SoknadMottakerValidator(
 class DocumentValidator(
     private val dokumentasjonRepository: DokumentasjonRepository,
     private val mellomlagerService: MellomlagerService,
-) : SoknadValidators {
+) : SoknadValidator {
     override fun validate(soknadId: UUID) {
         validateDocumentsExistsInMellomlager(soknadId)
     }
@@ -100,7 +100,7 @@ class DocumentValidator(
 }
 
 @Component
-class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerService) : SoknadValidators {
+class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerService) : SoknadValidator {
     override fun validate(soknadId: UUID) {
         mineSakerService.hentInnsendteSoknaderSisteDogn()
             .also { (antall, innsendingTillattFra) ->
