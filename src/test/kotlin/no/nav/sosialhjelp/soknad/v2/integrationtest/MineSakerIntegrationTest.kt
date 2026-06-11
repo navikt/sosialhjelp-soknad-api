@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
+import no.nav.sosialhjelp.soknad.api.minesaker.InnsendtSoknadDto
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
