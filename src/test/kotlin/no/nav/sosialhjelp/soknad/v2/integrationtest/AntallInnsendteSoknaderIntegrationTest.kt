@@ -96,19 +96,20 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
     @Test
     fun `antallSisteDogn with more than 10 soknader returnerer innsendingTillatt for 10th timestamp`() {
-        val tidspunkter = listOf(
-            nowWithMillis().minusHours(10),  // 11th (newest)
-            nowWithMillis().minusHours(11),  // 10th oldest - this should be used for innsendingTillatt
-            nowWithMillis().minusHours(12),  // 9th
-            nowWithMillis().minusHours(13),  // 8th
-            nowWithMillis().minusHours(14),  // 7th
-            nowWithMillis().minusHours(15),  // 6th
-            nowWithMillis().minusHours(16),  // 5th
-            nowWithMillis().minusHours(17),  // 4th
-            nowWithMillis().minusHours(18),  // 3rd
-            nowWithMillis().minusHours(19),  // 2nd
-            nowWithMillis().minusHours(20),  // 1st oldest
-        )
+        val tidspunkter =
+            listOf(
+                nowWithMillis().minusHours(10), // 11th (newest)
+                nowWithMillis().minusHours(11), // 10th oldest - this should be used for innsendingTillatt
+                nowWithMillis().minusHours(12), // 9th
+                nowWithMillis().minusHours(13), // 8th
+                nowWithMillis().minusHours(14), // 7th
+                nowWithMillis().minusHours(15), // 6th
+                nowWithMillis().minusHours(16), // 5th
+                nowWithMillis().minusHours(17), // 4th
+                nowWithMillis().minusHours(18), // 3rd
+                nowWithMillis().minusHours(19), // 2nd
+                nowWithMillis().minusHours(20), // 1st oldest
+            )
 
         tidspunkter.forEach { tidspunkt ->
             sendtSoknadForBruker(sendtInn = tidspunkt)
