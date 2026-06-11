@@ -7,6 +7,7 @@ import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnaut
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
+import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtException
 import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
@@ -117,6 +118,10 @@ class ExceptionMapper(
             is UpdateBostotteException -> {
                 log.error("Feil ved oppdatering av Bostotte", e)
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
+            }
+            is AntallSoknaderSendtException -> {
+                log.error(e.message)
+                buildError(HttpStatus.NOT_ACCEPTABLE, SoknadApiError(SoknadApiErrorType.AntallSoknaderSendt, e))
             }
             else -> {
                 log.error("REST-kall feilet", e)

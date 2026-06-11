@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
-import no.nav.sosialhjelp.soknad.v2.SoknadValidator
+import no.nav.sosialhjelp.soknad.v2.SoknadValidators
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -18,14 +18,14 @@ import java.util.UUID
 @Component
 class SendSoknadHandler(
     private val jsonGenerator: JsonInternalSoknadGenerator,
-    private val soknadValidator: SoknadValidator,
+    private val validators: List<SoknadValidators>,
     private val sendSoknadManager: SendSoknadManager,
     private val metadataService: SoknadMetadataService,
 ) {
     fun doSendAndReturnInfo(
         soknadId: UUID,
     ): SoknadSendtInfo {
-        soknadValidator.validateSoknad(soknadId)
+        validators.forEach { it.validate(soknadId) }
 
         val innsendingstidspunkt = metadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
 

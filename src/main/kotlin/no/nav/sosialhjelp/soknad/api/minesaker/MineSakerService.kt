@@ -25,7 +25,7 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
                     first = metadatas.size,
                     second =
                         if (metadatas.size >= 10) {
-                            metadatas.findInnsendingTillatt()
+                            metadatas.findInnsendingTillattFra()
                         } else {
                             null
                         },
@@ -34,5 +34,5 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
     }
 }
 
-private fun List<SoknadMetadata>.findInnsendingTillatt(): LocalDateTime =
-    this.mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[9]
+private fun List<SoknadMetadata>.findInnsendingTillattFra(): LocalDateTime =
+    this.mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[9].plusDays(1)

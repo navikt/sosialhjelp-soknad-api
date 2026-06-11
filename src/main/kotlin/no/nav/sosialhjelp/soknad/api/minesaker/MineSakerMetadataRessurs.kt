@@ -40,10 +40,10 @@ class MineSakerMetadataRessurs(
     @GetMapping("/innsendte/antallSisteDogn")
     fun hentAntallInnsendteSoknader(): AntallInnsendteSoknaderDto {
         return mineSakerService.hentInnsendteSoknaderSisteDogn()
-            .let { (antall, eldsteInnsendte) ->
+            .let { (antall, innsendingTillattFra) ->
                 AntallInnsendteSoknaderDto(
                     antall = antall,
-                    innsendingTillattFra = eldsteInnsendte?.plusDays(1),
+                    innsendingTillattFra = innsendingTillattFra,
                 )
             }
     }
