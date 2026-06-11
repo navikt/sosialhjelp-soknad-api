@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,11 +19,6 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
     @BeforeEach
     fun setup() {
-        metadataRepository.deleteAll()
-    }
-
-    @AfterEach
-    fun teardown() {
         metadataRepository.deleteAll()
     }
 
@@ -48,8 +42,8 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
     @Test
     fun `antallSisteDogn inkluderer ikke soknader eldre enn 24 timer`() {
-        sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(12))
-        sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(25))
+        sendtSoknadForBruker(sendtInn = LocalDateTime.now().minusHours(12))
+        sendtSoknadForBruker(sendtInn = LocalDateTime.now().minusHours(25))
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(1)
