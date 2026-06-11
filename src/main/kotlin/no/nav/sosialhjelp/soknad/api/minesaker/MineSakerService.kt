@@ -13,19 +13,22 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
         metadataService.getAllMetadataForPerson(getUserIdFromToken())
             .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
 
-    fun hentInnsendteSoknaderSisteDogn() =
+    fun hentInnsendteSoknaderSisteDogn() {
+        val cutOff = LocalDateTime.now().minusDays(1)
+
         metadataService.getAllMetadataForPerson(getUserIdFromToken())
             .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
-            .filter { it.tidspunkt.sendtInn?.isAfter(LocalDateTime.now().minusDays(1)) ?: false }
+            .filter { it.tidspunkt.sendtInn?.isAfter(cutOff) ?: false }
             .let { metadatas ->
                 Pair(
                     first = metadatas.size,
                     second =
                         if (metadatas.size == 10) {
-                            metadatas.map { it.tidspunkt.sendtInn }.sortedBy { it }.firstOrNull()
+                            metadatas.minOfOrNull { it.tidspunkt.sendtInn ?: error("Sendt inn var null") }
                         } else {
                             null
                         },
                 )
             }
+    }
 }
