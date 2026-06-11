@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.api.minesaker
 
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
@@ -14,7 +15,7 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
             .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
 
     fun hentInnsendteSoknaderSisteDogn(): Pair<Int, LocalDateTime?> {
-        val cutOff = LocalDateTime.now().minusDays(1)
+        val cutOff = nowWithMillis().minusDays(1)
 
         return metadataService.getAllMetadataForPerson(getUserIdFromToken())
             .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
