@@ -13,10 +13,10 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
         metadataService.getAllMetadataForPerson(getUserIdFromToken())
             .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
 
-    fun hentInnsendteSoknaderSisteDogn() {
+    fun hentInnsendteSoknaderSisteDogn(): Pair<Int, LocalDateTime?> {
         val cutOff = LocalDateTime.now().minusDays(1)
 
-        metadataService.getAllMetadataForPerson(getUserIdFromToken())
+        return metadataService.getAllMetadataForPerson(getUserIdFromToken())
             .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
             .filter { it.tidspunkt.sendtInn?.isAfter(cutOff) ?: false }
             .let { metadatas ->
@@ -24,7 +24,7 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
                     first = metadatas.size,
                     second =
                         if (metadatas.size == 10) {
-                            metadatas.minOfOrNull { it.tidspunkt.sendtInn ?: error("Sendt inn var null") }
+                            metadatas.eldsteSoknad()
                         } else {
                             null
                         },
@@ -32,3 +32,9 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
             }
     }
 }
+
+private fun List<SoknadMetadata>.eldsteSoknad(): LocalDateTime =
+    this
+        .mapNotNull { it.tidspunkt.sendtInn }
+        .minOrNull()
+        ?: error("Fant ikke sendt inn for søknad")
