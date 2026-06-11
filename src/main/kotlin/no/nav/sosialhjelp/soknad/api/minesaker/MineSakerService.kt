@@ -24,7 +24,7 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
                 Pair(
                     first = metadatas.size,
                     second =
-                        if (metadatas.size == 10) {
+                        if (metadatas.size >= 10) {
                             metadatas.eldsteSoknad()
                         } else {
                             null

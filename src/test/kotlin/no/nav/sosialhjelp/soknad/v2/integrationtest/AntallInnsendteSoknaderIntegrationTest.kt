@@ -42,8 +42,8 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
     @Test
     fun `antallSisteDogn inkluderer ikke soknader eldre enn 24 timer`() {
-        sendtSoknadForBruker(sendtInn = LocalDateTime.now().minusHours(12))
-        sendtSoknadForBruker(sendtInn = LocalDateTime.now().minusHours(25))
+        sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(12))
+        sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(25))
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(1)
