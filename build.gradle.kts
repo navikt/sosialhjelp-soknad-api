@@ -105,6 +105,7 @@ dependencies {
     // springdoc
     implementation(libs.springdoc.openapi.starter.common)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
+    runtimeOnly(libs.jackson.module.kotlin.compat) // satisfies springdoc's @ConditionalOnClass(KotlinModule) check for Kotlin nullability → required fields
 
     // flyway / db
     implementation(libs.flyway.core)
