@@ -75,7 +75,7 @@ micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-p
 micrometer-context-propagation = { module = "io.micrometer:context-propagation", version.ref = "micrometer_context_propagation" }
 
 jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
-jackson-module-kotlin-compat = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.19.0" }
+jackson-module-kotlin-compat = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.21.4" }
 
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash" }
