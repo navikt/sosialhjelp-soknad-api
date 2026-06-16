@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX = true) {
+class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX = false) {
     override var opprettSoknadBeforeEach = false
 
     @BeforeEach
@@ -132,6 +132,6 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
     }
 
     companion object {
-        private const val URL = "/minesaker/innsendte/antallSisteDogn"
+        private const val URL = "/minesaker/antallSisteDogn"
     }
 }
