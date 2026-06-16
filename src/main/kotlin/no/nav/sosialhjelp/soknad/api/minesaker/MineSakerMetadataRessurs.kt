@@ -46,6 +46,7 @@ class MineSakerMetadataRessurs(
                 AntallInnsendteSoknaderDto(
                     antall = antall,
                     innsendingTillattFra = innsendingTillattFra,
+                    maxAntall = MineSakerService.MAX_ANTALL_SOKNADER,
                 )
             }
     }
@@ -60,6 +61,7 @@ class MineSakerMetadataRessurs(
 data class AntallInnsendteSoknaderDto(
     val antall: Int,
     val innsendingTillattFra: LocalDateTime?,
+    val maxAntall: Int,
 )
 
 data class InnsendtSoknadDto(

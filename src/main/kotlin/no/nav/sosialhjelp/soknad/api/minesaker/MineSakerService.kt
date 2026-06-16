@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.minesaker
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
@@ -17,17 +18,24 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
 
     fun hentInnsendteSoknaderSisteDogn(): Pair<Int, LocalDateTime?> =
         metadataService.findMetadataForPersonSendtInnAfter(getUserIdFromToken(), nowWithMillis().minusDays(1))
+            .also { if (it.size > MAX_ANTALL_SOKNADER) logger.warn("Bruker har sendt inn ${it.size} søknader siste 24 timer") }
             .let { metadatas -> Pair(metadatas.size, metadatas.findInnsendingTillattFra()) }
-}
 
-private fun List<SoknadMetadata>.findInnsendingTillattFra(): LocalDateTime? =
-    if (size < 3) {
-        return null
-    } else {
-        mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[2]
-            // ett døgn etter den 3 nyeste søknaden
-            .plusDays(1)
-            // pluss ett minutt så bruker ikke må forholde seg til sekunder
-            .plusMinutes(1)
-            .truncatedTo(ChronoUnit.MINUTES)
+    private fun List<SoknadMetadata>.findInnsendingTillattFra(): LocalDateTime? =
+        if (size < MAX_ANTALL_SOKNADER) {
+            return null
+        } else {
+            mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[MAX_ANTALL_SOKNADER - 1]
+                // ett døgn etter den 3 nyeste søknaden
+                .plusDays(1)
+                // pluss ett minutt så bruker ikke må forholde seg til sekunder
+                .plusMinutes(1)
+                .truncatedTo(ChronoUnit.MINUTES)
+        }
+
+    companion object {
+        private val logger by logger()
+
+        const val MAX_ANTALL_SOKNADER = 2
     }
+}
