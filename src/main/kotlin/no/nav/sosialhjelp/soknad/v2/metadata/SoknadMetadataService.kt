@@ -147,8 +147,13 @@ class SoknadMetadataService(
     }
 
     @Transactional(readOnly = true)
-    override fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata> =
-        metadataRepository.findMetadataByStatus(status)
+    override fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata> = metadataRepository.findMetadataByStatus(status)
+
+    @Transactional(readOnly = true)
+    fun findMetadataForPersonSendtInnAfter(
+        personId: String,
+        date: LocalDateTime,
+    ): List<SoknadMetadata> = metadataRepository.findInnsendteSoknaderForPersonAfter(personId, date)
 
     private fun findMetadataOrError(soknadId: UUID): SoknadMetadata {
         return metadataRepository.findByIdOrNull(soknadId) ?: throw SoknadFinnesIkkeException(soknadId)

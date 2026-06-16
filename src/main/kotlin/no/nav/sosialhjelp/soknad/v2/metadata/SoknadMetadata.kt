@@ -24,6 +24,12 @@ interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudR
 
     @Query("select * from soknad_metadata where digisos_id = :digisosId")
     fun findMetadataByDigisosId(digisosId: String): SoknadMetadata?
+
+    @Query("select * from soknad_metadata where person_id = :personId and status in ('SENDT', 'MOTTATT_FSL') and sendt_inn > :fromDate")
+    fun findInnsendteSoknaderForPersonAfter(
+        personId: String,
+        fromDate: LocalDateTime,
+    ): List<SoknadMetadata>
 }
 
 @Table
@@ -40,7 +46,7 @@ data class SoknadMetadata(
     override fun getDbId() = soknadId
 
     init {
-        status.validate(this)
+        validate()
     }
 }
 
@@ -62,11 +68,11 @@ enum class SoknadStatus {
     MOTTATT_FSL,
 }
 
-private fun SoknadStatus.validate(metadata: SoknadMetadata) {
-    if (this == SoknadStatus.SENDT || this == SoknadStatus.MOTTATT_FSL) {
-        if (metadata.tidspunkt.sendtInn == null) error("Mangler innsendt dato for ferdig søknad.")
-        if (metadata.mottakerKommunenummer == null) error("Mangler mottaker for ferdig søknad.")
-        if (metadata.digisosId == null) error("Mangler digisosId for ferdig søknad.")
-        if (metadata.mottakerKommunenummer.length != 4) error("Kommunenummer ikke 4 siffer")
+private fun SoknadMetadata.validate() {
+    if (status == SoknadStatus.SENDT || status == SoknadStatus.MOTTATT_FSL) {
+        if (tidspunkt.sendtInn == null) error("Mangler innsendt dato for ferdig søknad.")
+        if (mottakerKommunenummer == null) error("Mangler mottaker for ferdig søknad.")
+        if (digisosId == null) error("Mangler digisosId for ferdig søknad.")
+        if (mottakerKommunenummer.length != 4) error("Kommunenummer ikke 4 siffer")
     }
 }

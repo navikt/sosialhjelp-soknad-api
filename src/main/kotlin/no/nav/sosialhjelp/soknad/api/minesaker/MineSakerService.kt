@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Component
 class MineSakerService(private val metadataService: SoknadMetadataService) {
@@ -14,25 +15,19 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
         metadataService.getAllMetadataForPerson(getUserIdFromToken())
             .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
 
-    fun hentInnsendteSoknaderSisteDogn(): Pair<Int, LocalDateTime?> {
-        val cutOff = nowWithMillis().minusDays(1)
-
-        return metadataService.getAllMetadataForPerson(getUserIdFromToken())
-            .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
-            .filter { it.tidspunkt.sendtInn?.isAfter(cutOff) ?: error("Fant ikke tidspunkt for innsending") }
-            .let { metadatas ->
-                Pair(
-                    first = metadatas.size,
-                    second =
-                        if (metadatas.size >= 10) {
-                            metadatas.findInnsendingTillattFra()
-                        } else {
-                            null
-                        },
-                )
-            }
-    }
+    fun hentInnsendteSoknaderSisteDogn(): Pair<Int, LocalDateTime?> =
+        metadataService.findMetadataForPersonSendtInnAfter(getUserIdFromToken(), nowWithMillis().minusDays(1))
+            .let { metadatas -> Pair(metadatas.size, metadatas.findInnsendingTillattFra()) }
 }
 
-private fun List<SoknadMetadata>.findInnsendingTillattFra(): LocalDateTime =
-    this.mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[9].plusDays(1)
+private fun List<SoknadMetadata>.findInnsendingTillattFra(): LocalDateTime? =
+    if (size < 10) {
+        return null
+    } else {
+        mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[9]
+            // ett døgn etter den 10 nyeste søknaden
+            .plusDays(1)
+            // pluss ett minutt så bruker ikke må forholde seg til sekunder
+            .plusMinutes(1)
+            .truncatedTo(ChronoUnit.MINUTES)
+    }
