@@ -105,7 +105,7 @@ class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerServic
         mineSakerService.hentInnsendteSoknaderSisteDogn()
             .also { (antall, innsendingTillattFra) ->
                 if (antall >= 3) {
-                    if (innsendingTillattFra == null) error("Soker har flere enn 3 soknader sendt siste 24 timer, men innsendingTillattFra er null")
+                    if (innsendingTillattFra == null) error("Soker har 3 eller flere soknader sendt siste 24 timer, men innsendingTillattFra er null")
                     throw AntallSoknaderSendtException(antall, soknadId, innsendingTillattFra)
                 }
             }

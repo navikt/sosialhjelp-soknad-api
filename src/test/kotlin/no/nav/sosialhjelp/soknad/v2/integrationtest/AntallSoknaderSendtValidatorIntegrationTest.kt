@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
@@ -37,8 +38,8 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `validering passerer naar bruker har under 10 sendte soknader siste 24 timer`() {
-        repeat(9) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+    fun `validering passerer naar bruker har under 3 sendte soknader siste 24 timer`() {
+        repeat(2) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
 
         assertThatCode {
             antallSoknaderSendtValidator.validate(UUID.randomUUID())
@@ -46,23 +47,25 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `validering feiler naar bruker har 10 sendte soknader siste 24 timer`() {
+    fun `validering feiler naar bruker har 3 sendte soknader siste 24 timer`() {
         val eldsteTidspunkt = nowWithMillis().minusHours(20)
         sendtSoknadForBruker(sendtInn = eldsteTidspunkt)
-        repeat(9) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+        repeat(2) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
 
         assertThatThrownBy {
             antallSoknaderSendtValidator.validate(UUID.randomUUID())
         }
             .isInstanceOfSatisfying(AntallSoknaderSendtException::class.java) { exception ->
-                assertThat(exception.antall).isEqualTo(10)
-                assertThat(exception.innsendingTillattFra).isEqualTo(eldsteTidspunkt.plusDays(1))
+                assertThat(exception.antall).isEqualTo(3)
+                assertThat(exception.innsendingTillattFra).isEqualTo(
+                    eldsteTidspunkt.plusDays(1).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES),
+                )
             }
     }
 
     @Test
     fun `validering ignorerer soknader eldre enn 24 timer`() {
-        repeat(10) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(25)) }
+        repeat(3) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(25)) }
 
         assertThatCode {
             antallSoknaderSendtValidator.validate(UUID.randomUUID())
@@ -71,7 +74,7 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `validering ignorerer soknader for annen bruker`() {
-        repeat(10) {
+        repeat(3) {
             metadataRepository.save(
                 opprettSoknadMetadata(
                     status = SoknadStatus.SENDT,
@@ -90,7 +93,7 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     fun `validering ignorerer soknader med status OPPRETTET og INNSENDING_FEILET`() {
         metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.OPPRETTET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
         metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.INNSENDING_FEILET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
-        repeat(9) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+        repeat(2) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
 
         assertThatCode {
             antallSoknaderSendtValidator.validate(UUID.randomUUID())

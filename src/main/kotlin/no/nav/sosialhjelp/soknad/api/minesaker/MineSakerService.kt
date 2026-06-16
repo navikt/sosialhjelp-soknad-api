@@ -21,7 +21,7 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
 }
 
 private fun List<SoknadMetadata>.findInnsendingTillattFra(): LocalDateTime? =
-    if (size < 10) {
+    if (size < 3) {
         return null
     } else {
         mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[2]

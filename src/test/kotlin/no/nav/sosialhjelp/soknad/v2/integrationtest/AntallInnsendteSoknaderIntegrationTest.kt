@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX = true) {
     override var opprettSoknadBeforeEach = false
@@ -27,10 +28,10 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
     @Test
     fun `antallSisteDogn returnerer antall innsendte soknader siste 24 timer`() {
-        repeat(3) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(12)) }
+        repeat(2) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(12)) }
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
-            assertThat(it.antall).isEqualTo(3)
+            assertThat(it.antall).isEqualTo(2)
             assertThat(it.innsendingTillattFra).isNull()
         }
     }
@@ -57,24 +58,50 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
     }
 
     @Test
-    fun `antallSisteDogn returnerer eldsteSendtInn kun naar antall er 10`() {
+    fun `antallSisteDogn returnerer innsendingTillattFra naar antall er 3`() {
         val eldsteTidspunkt = nowWithMillis().minusHours(20)
         sendtSoknadForBruker(sendtInn = eldsteTidspunkt)
-        repeat(9) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+        repeat(2) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
-            assertThat(it.antall).isEqualTo(10)
-            assertThat(it.innsendingTillattFra).isEqualTo(eldsteTidspunkt.plusDays(1))
+            assertThat(it.antall).isEqualTo(3)
+            assertThat(it.innsendingTillattFra).isEqualTo(
+                eldsteTidspunkt.plusDays(1).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES),
+            )
         }
     }
 
     @Test
-    fun `antallSisteDogn returnerer null for eldsteSendtInn naar antall er under 10`() {
-        repeat(9) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+    fun `antallSisteDogn returnerer null for innsendingTillattFra naar antall er under 3`() {
+        repeat(2) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
-            assertThat(it.antall).isEqualTo(9)
+            assertThat(it.antall).isEqualTo(2)
             assertThat(it.innsendingTillattFra).isNull()
+        }
+    }
+
+    @Test
+    fun `antallSisteDogn with more than 3 soknader returnerer innsendingTillatt for 3rd newest timestamp`() {
+        val tidspunkter =
+            listOf(
+                nowWithMillis().minusHours(10), // newest
+                nowWithMillis().minusHours(11), // 2nd newest
+                nowWithMillis().minusHours(12), // 3rd newest — this should be used for innsendingTillatt
+                nowWithMillis().minusHours(13), // oldest
+            )
+
+        tidspunkter.forEach { tidspunkt ->
+            sendtSoknadForBruker(sendtInn = tidspunkt)
+        }
+
+        val tredje = tidspunkter[2]
+
+        doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
+            assertThat(it.antall).isEqualTo(4)
+            assertThat(it.innsendingTillattFra).isEqualTo(
+                tredje.plusDays(1).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES),
+            )
         }
     }
 
@@ -91,35 +118,6 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
             assertThat(it.antall).isEqualTo(1)
-        }
-    }
-
-    @Test
-    fun `antallSisteDogn with more than 10 soknader returnerer innsendingTillatt for 10th timestamp`() {
-        val tidspunkter =
-            listOf(
-                nowWithMillis().minusHours(10), // 11th (newest)
-                nowWithMillis().minusHours(11), // 10th oldest - this should be used for innsendingTillatt
-                nowWithMillis().minusHours(12), // 9th
-                nowWithMillis().minusHours(13), // 8th
-                nowWithMillis().minusHours(14), // 7th
-                nowWithMillis().minusHours(15), // 6th
-                nowWithMillis().minusHours(16), // 5th
-                nowWithMillis().minusHours(17), // 4th
-                nowWithMillis().minusHours(18), // 3rd
-                nowWithMillis().minusHours(19), // 2nd
-                nowWithMillis().minusHours(20), // 1st oldest
-            )
-
-        tidspunkter.forEach { tidspunkt ->
-            sendtSoknadForBruker(sendtInn = tidspunkt)
-        }
-
-        val tiende = tidspunkter[9]
-
-        doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
-            assertThat(it.antall).isEqualTo(11)
-            assertThat(it.innsendingTillattFra).isEqualTo(tiende.plusDays(1))
         }
     }
 
