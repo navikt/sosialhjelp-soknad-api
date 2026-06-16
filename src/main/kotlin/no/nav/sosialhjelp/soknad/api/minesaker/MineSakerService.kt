@@ -24,8 +24,8 @@ private fun List<SoknadMetadata>.findInnsendingTillattFra(): LocalDateTime? =
     if (size < 10) {
         return null
     } else {
-        mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[9]
-            // ett døgn etter den 10 nyeste søknaden
+        mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[2]
+            // ett døgn etter den 3 nyeste søknaden
             .plusDays(1)
             // pluss ett minutt så bruker ikke må forholde seg til sekunder
             .plusMinutes(1)

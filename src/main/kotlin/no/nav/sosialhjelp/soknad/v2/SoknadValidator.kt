@@ -104,8 +104,8 @@ class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerServic
     override fun validate(soknadId: UUID) {
         mineSakerService.hentInnsendteSoknaderSisteDogn()
             .also { (antall, innsendingTillattFra) ->
-                if (antall >= 10) {
-                    if (innsendingTillattFra == null) error("Soker har flere enn 10 soknader sendt siste 24 timer, men innsendingTillattFra er null")
+                if (antall >= 3) {
+                    if (innsendingTillattFra == null) error("Soker har flere enn 3 soknader sendt siste 24 timer, men innsendingTillattFra er null")
                     throw AntallSoknaderSendtException(antall, soknadId, innsendingTillattFra)
                 }
             }
