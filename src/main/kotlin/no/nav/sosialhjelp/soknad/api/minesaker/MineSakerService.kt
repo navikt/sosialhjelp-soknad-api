@@ -26,7 +26,7 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
             return null
         } else {
             mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[MAX_ANTALL_SOKNADER - 1]
-                // ett døgn etter den 3 nyeste søknaden
+                // ett døgn etter den MAX_ANTALL_SOKNADER nyeste søknaden
                 .plusDays(1)
                 // pluss ett minutt så bruker ikke må forholde seg til sekunder
                 .plusMinutes(1)

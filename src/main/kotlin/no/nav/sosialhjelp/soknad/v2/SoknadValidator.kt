@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerService
+import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerService.Companion.MAX_ANTALL_SOKNADER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
@@ -104,8 +105,8 @@ class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerServic
     override fun validate(soknadId: UUID) {
         mineSakerService.hentInnsendteSoknaderSisteDogn()
             .also { (antall, innsendingTillattFra) ->
-                if (antall >= 3) {
-                    if (innsendingTillattFra == null) error("Soker har 3 eller flere soknader sendt siste 24 timer, men innsendingTillattFra er null")
+                if (antall >= MAX_ANTALL_SOKNADER) {
+                    if (innsendingTillattFra == null) error("Soker har ${MAX_ANTALL_SOKNADER} eller flere soknader sendt siste 24 timer, men innsendingTillattFra er null")
                     throw AntallSoknaderSendtException(antall, soknadId, innsendingTillattFra)
                 }
             }

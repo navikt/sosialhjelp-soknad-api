@@ -121,7 +121,7 @@ class ExceptionMapper(
             }
             is AntallSoknaderSendtException -> {
                 log.error(e.message, e)
-                buildError(HttpStatus.NOT_ACCEPTABLE, SoknadApiError(SoknadApiErrorType.AntallSoknaderSendt, e))
+                buildError(HttpStatus.TOO_MANY_REQUESTS, SoknadApiError(SoknadApiErrorType.AntallSoknaderSendt, e))
             }
             else -> {
                 log.error("REST-kall feilet", e)
