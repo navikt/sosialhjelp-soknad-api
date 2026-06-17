@@ -120,7 +120,7 @@ class ExceptionMapper(
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
             }
             is AntallSoknaderSendtException -> {
-                log.error(e.message)
+                log.error(e.message, e)
                 buildError(HttpStatus.NOT_ACCEPTABLE, SoknadApiError(SoknadApiErrorType.AntallSoknaderSendt, e))
             }
             else -> {
