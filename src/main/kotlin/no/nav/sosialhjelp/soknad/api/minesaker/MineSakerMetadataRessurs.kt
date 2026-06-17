@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.api.minesaker
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionTokenXSubstantial
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 
 @RestController
-@ProtectionTokenXSubstantial
 @RequestMapping("/minesaker", produces = [MediaType.APPLICATION_JSON_VALUE])
 class MineSakerMetadataRessurs(
     private val mineSakerService: MineSakerService,
@@ -19,6 +19,7 @@ class MineSakerMetadataRessurs(
      * Henter informasjon om innsendte søknader via SoknadMetadataRepository.
      * På sikt vil vi hente denne informasjonen fra Fiks (endepunkt vil da høre mer hjemme i innsyn-api)
      */
+    @ProtectionTokenXSubstantial
     @GetMapping("/innsendte")
     fun hentInnsendteSoknaderForBruker(): List<InnsendtSoknadDto> {
         return mineSakerService.hentInnsendteSoknader().map {
@@ -37,13 +38,15 @@ class MineSakerMetadataRessurs(
         return "pong"
     }
 
-    @GetMapping("/innsendte/antallSisteDogn")
+    @ProtectionSelvbetjeningHigh
+    @GetMapping("/antallSisteDogn")
     fun hentAntallInnsendteSoknader(): AntallInnsendteSoknaderDto {
         return mineSakerService.hentInnsendteSoknaderSisteDogn()
-            .let { (antall, eldsteInnsendte) ->
+            .let { (antall, innsendingTillattFra) ->
                 AntallInnsendteSoknaderDto(
                     antall = antall,
-                    innsendingTillattFra = eldsteInnsendte?.plusDays(1),
+                    innsendingTillattFra = innsendingTillattFra,
+                    maxAntall = MineSakerService.MAX_ANTALL_SOKNADER,
                 )
             }
     }
@@ -58,6 +61,7 @@ class MineSakerMetadataRessurs(
 data class AntallInnsendteSoknaderDto(
     val antall: Int,
     val innsendingTillattFra: LocalDateTime?,
+    val maxAntall: Int,
 )
 
 data class InnsendtSoknadDto(

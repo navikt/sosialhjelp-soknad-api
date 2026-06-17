@@ -91,7 +91,7 @@ class SoknadLifecycleHandlerImpl(
     ): SoknadSendtInfo {
         return when (e) {
             is SoknadAlleredeSendtException -> e.sendtInfo
-            is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
+            is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException, is AntallSoknaderSendtException,
             -> throw e
             else -> {
                 lifecycleMetricsService.reportSendSoknadFeilet()

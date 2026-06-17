@@ -18,14 +18,15 @@ import java.util.UUID
 @Component
 class SendSoknadHandler(
     private val jsonGenerator: JsonInternalSoknadGenerator,
-    private val soknadValidator: SoknadValidator,
+    private val validators: List<SoknadValidator>,
     private val sendSoknadManager: SendSoknadManager,
     private val metadataService: SoknadMetadataService,
 ) {
     fun doSendAndReturnInfo(
         soknadId: UUID,
     ): SoknadSendtInfo {
-        soknadValidator.validateSoknad(soknadId)
+        // TODO Er rekkefølge på valideringer viktig?
+        validators.forEach { it.validate(soknadId) }
 
         val innsendingstidspunkt = metadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
 

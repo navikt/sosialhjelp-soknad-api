@@ -62,4 +62,7 @@ enum class SoknadApiErrorType {
 
     // Søker er under 18 år
     SokerUnder18,
+
+    // For mange soknader sendt siste 24 timer
+    AntallSoknaderSendt,
 }
