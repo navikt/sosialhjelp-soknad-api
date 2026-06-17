@@ -16,6 +16,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.ArbeidOgFamilieSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.BehovSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.SituasjonsendringSteg
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -24,6 +25,7 @@ import java.util.UUID
 class OppsummeringService(
     private val mellomlagerService: MellomlagerService,
     private val jsonGenerator: JsonInternalSoknadGenerator,
+    private val uploadClient: UploadClient,
 ) {
     fun hentOppsummering(
         soknadId: UUID,

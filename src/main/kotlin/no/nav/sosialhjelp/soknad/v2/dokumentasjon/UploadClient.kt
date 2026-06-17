@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
@@ -7,6 +9,8 @@ import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
+import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOpplysningTypeConverter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.JacksonJsonDecoder
@@ -33,12 +37,46 @@ class UploadClient(
         val userToken = SubjectHandlerUtils.getToken()
         val tokenXToken = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, uploadAudience)
 
-        return webClient
-            .get()
-            .uri("/sosialhjelp/upload/vedlegg/{soknadId}", soknadId)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer $tokenXToken")
-            .retrieve()
-            .bodyToMono<JsonVedleggSpesifikasjon>()
-            .block() ?: throw IllegalStateException("Fikk null-respons fra sosialhjelp-upload for soknadId $soknadId")
+        val spec =
+            webClient
+                .get()
+                .uri("/sosialhjelp/upload/vedlegg/{soknadId}", soknadId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $tokenXToken")
+                .retrieve()
+                .bodyToMono<VedleggSpesifikasjon>()
+                .block() ?: throw IllegalStateException("Fikk null-respons fra sosialhjelp-upload for soknadId $soknadId")
+        return JsonVedleggSpesifikasjon().withVedlegg(
+            spec.vedlegg.map { vedlegg ->
+                val (type, tilleggsinfo) =
+                    VedleggType[StringToOpplysningTypeConverter.convert(vedlegg.kategori!!)].let {
+                        it.getTypeString() to it.getTilleggsinfoString()
+                    }
+                JsonVedlegg()
+                    .withType(type)
+                    .withTilleggsinfo(tilleggsinfo)
+                    .withStatus("LASTET_OPP")
+                    .withFiler(
+                        vedlegg.filer.map { fil ->
+                            JsonFiler()
+                                .withFilnavn(fil.filnavn)
+                                .withSha512(fil.sha512)
+                        },
+                    )
+            },
+        )
     }
 }
+
+data class VedleggSpesifikasjon(
+    val vedlegg: List<Vedlegg>,
+)
+
+data class Vedlegg(
+    val kategori: String? = null,
+    val filer: List<Fil>,
+)
+
+data class Fil(
+    val filnavn: String,
+    val sha512: String? = null,
+)
