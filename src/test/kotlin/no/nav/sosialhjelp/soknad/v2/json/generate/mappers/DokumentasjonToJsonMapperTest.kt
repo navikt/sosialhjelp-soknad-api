@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.DokumentasjonToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.toVedleggStatusString
@@ -111,5 +112,62 @@ class DokumentasjonToJsonMapperTest {
         val vedlegg = json.vedlegg.vedlegg
         assertThat(vedlegg).hasSize(1)
         assertThat(vedlegg[0]).isSameAs(extraVedlegg)
+    }
+
+    @Test
+    fun `Legacy-mapping - Dokumentasjon skal mappes til JsonVedlegg med filer fra dokumenter`() {
+        val json2 = createJsonInternalSoknadWithInitializedSuperObjects()
+        val dokList =
+            listOf(
+                opprettDokumentasjon(
+                    soknadId = UUID.randomUUID(),
+                    type = UtgiftType.UTGIFTER_STROM,
+                    status = DokumentasjonStatus.FORVENTET,
+                    dokumenter = emptySet(),
+                ),
+                opprettDokumentasjon(
+                    soknadId = UUID.randomUUID(),
+                    type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+                    dokumenter =
+                        setOf(
+                            DokumentRef(dokumentId = UUID.randomUUID(), filnavn = "ett filnavn"),
+                        ),
+                ),
+                opprettDokumentasjon(
+                    soknadId = UUID.randomUUID(),
+                    type = InntektType.STUDIELAN_INNTEKT,
+                    dokumenter = emptySet(),
+                ),
+            )
+
+        DokumentasjonToJsonMapper.doMappingLegacy(dokList, json2)
+
+        json2.vedlegg.also { jsonVedleggSpek ->
+            assertThat(jsonVedleggSpek.vedlegg).hasSize(3)
+
+            dokList.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.let { dokumentasjon ->
+                assertThat(jsonVedleggSpek.vedlegg).anyMatch {
+                    it.type == dokumentasjon.type.getVedleggTypeString() &&
+                        it.status == dokumentasjon.status.toVedleggStatusString() &&
+                        it.filer.size == dokumentasjon.dokumenter.size
+                }
+            }
+
+            dokList.find { it.type == UtgiftType.UTGIFTER_STROM }!!.let { dokumentasjon ->
+                assertThat(jsonVedleggSpek.vedlegg).anyMatch {
+                    it.type == dokumentasjon.type.getVedleggTypeString() &&
+                        it.status == dokumentasjon.status.toVedleggStatusString() &&
+                        it.filer.isEmpty()
+                }
+            }
+
+            dokList.find { it.type == InntektType.STUDIELAN_INNTEKT }!!.let { dokumentasjon ->
+                assertThat(jsonVedleggSpek.vedlegg).anyMatch {
+                    it.type == dokumentasjon.type.getVedleggTypeString() &&
+                        it.status == dokumentasjon.status.toVedleggStatusString() &&
+                        it.filer.isEmpty()
+                }
+            }
+        }
     }
 }

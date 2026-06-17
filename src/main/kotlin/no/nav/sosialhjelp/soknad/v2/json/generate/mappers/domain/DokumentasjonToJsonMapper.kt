@@ -1,10 +1,13 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
+import io.getunleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.metrics.Vedleggstatus
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
@@ -21,14 +24,19 @@ import java.util.UUID
 class DokumentasjonToJsonMapper(
     private val dokumentasjonRepository: DokumentasjonRepository,
     private val uploadClient: UploadClient,
+    private val unleash: Unleash,
 ) : DomainToJsonMapper {
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
         val dokumentasjonList = dokumentasjonRepository.findAllBySoknadId(soknadId)
-        val uploadVedlegg = uploadClient.getVedleggSpesifikasjon(soknadId)
-        doMapping(dokumentasjonList, uploadVedlegg, jsonInternalSoknad)
+        if (unleash.isEnabled("sosialhjelp.soknad.tusUpload", false)) {
+            val uploadVedlegg = uploadClient.getVedleggSpesifikasjon(soknadId)
+            doMapping(dokumentasjonList, uploadVedlegg, jsonInternalSoknad)
+        } else {
+            doMappingLegacy(dokumentasjonList, jsonInternalSoknad)
+        }
     }
 
     internal companion object Mapper {
@@ -70,10 +78,28 @@ class DokumentasjonToJsonMapper(
 
             json.vedlegg.withVedlegg(mergedVedlegg + extraFromUpload.map { uploadByKey.getValue(it) })
         }
+
+        fun doMappingLegacy(
+            dokumentasjonList: List<Dokumentasjon>,
+            json: JsonInternalSoknad,
+        ) {
+            json.vedlegg ?: json.withVedlegg(JsonVedleggSpesifikasjon())
+            json.vedlegg.withVedlegg(dokumentasjonList.map { it.toJsonVedlegg() })
+        }
     }
 }
 
 private data class VedleggKey(val type: String?, val tilleggsinfo: String?)
+
+private fun Dokumentasjon.toJsonVedlegg() =
+    JsonVedlegg()
+        .withType(type.getVedleggTypeString())
+        .withStatus(status.toVedleggStatusString())
+        .withTilleggsinfo(mapToTilleggsinfo())
+        .withFiler(dokumenter.map { it.toJsonFiler() })
+        .withHendelseType(if (type.isUtgiftTypeAnnet()) JsonVedlegg.HendelseType.BRUKER else JsonVedlegg.HendelseType.SOKNAD)
+        // TODO Hvordan ønsker vi å benytte denne referansen... Altså hva skal den peke på?
+        .withHendelseReferanse(if (type.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
 
 private fun Dokumentasjon.toJsonVedleggWithoutFiler() =
     JsonVedlegg()
@@ -95,5 +121,9 @@ private fun Dokumentasjon.mapToTilleggsinfo(): String {
     return type.getVedleggTillegginfoString()
         ?: error("Mangler mapping for vedleggType.tilleggsinfo: $type")
 }
+
+private fun DokumentRef.toJsonFiler() =
+    JsonFiler()
+        .withFilnavn(filnavn)
 
 private fun OpplysningType.isUtgiftTypeAnnet() = this == UtgiftType.UTGIFTER_ANDRE_UTGIFTER
