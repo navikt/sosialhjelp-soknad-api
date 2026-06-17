@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 import java.util.UUID
 
 @Repository
@@ -27,6 +28,7 @@ data class Eier(
     val navn: Navn,
     @Embedded.Empty
     val kontonummer: Kontonummer = Kontonummer(),
+    val fodselsdato: LocalDate? = null,
 ) : DomainRoot {
     override fun getDbId() = soknadId
 }

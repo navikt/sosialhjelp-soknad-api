@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Component
@@ -40,6 +41,7 @@ class EierToJsonMapper(
 
             with(json.soknad.data.personalia) {
                 this.navn = eier.navn.toJsonSokerNavn()
+                this.fodselsdato = eier.fodselsdato?.format(DateTimeFormatter.ISO_LOCAL_DATE)
                 this.nordiskBorger = eier.toJsonNordiskBorger()
                 this.statsborgerskap = eier.toJsonStatsborgerskap()
 
