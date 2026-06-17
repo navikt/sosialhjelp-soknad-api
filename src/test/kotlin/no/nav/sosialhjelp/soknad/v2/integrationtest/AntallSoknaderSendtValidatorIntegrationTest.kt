@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
+import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerService
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtException
@@ -20,6 +21,7 @@ import java.util.UUID
 
 class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     override var opprettSoknadBeforeEach = false
+    private val maksAntallSoknader = MineSakerService.MAX_ANTALL_SOKNADER
 
     @Autowired
     private lateinit var antallSoknaderSendtValidator: AntallSoknaderSendtValidator
@@ -38,8 +40,8 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `validering passerer naar bruker har under 3 sendte soknader siste 24 timer`() {
-        repeat(2) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+    fun `validering passerer naar bruker har under maks antall sendte soknader siste 24 timer`() {
+        repeat(maksAntallSoknader - 1) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
 
         assertThatCode {
             antallSoknaderSendtValidator.validate(UUID.randomUUID())
@@ -47,25 +49,28 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `validering feiler naar bruker har 3 sendte soknader siste 24 timer`() {
-        val eldsteTidspunkt = nowWithMillis().minusHours(20)
-        sendtSoknadForBruker(sendtInn = eldsteTidspunkt)
-        repeat(2) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+    fun `validering feiler naar bruker har over maks antall sendte soknader siste 24 timer`() {
+        val tidspunkter =
+            (0 until maksAntallSoknader + 1).map {
+                nowWithMillis().minusHours((1 + it).toLong())
+            }
+        tidspunkter.forEach { sendtSoknadForBruker(sendtInn = it) }
+        val maksgrenseTeNyeste = tidspunkter[maksAntallSoknader - 1]
 
         assertThatThrownBy {
             antallSoknaderSendtValidator.validate(UUID.randomUUID())
         }
             .isInstanceOfSatisfying(AntallSoknaderSendtException::class.java) { exception ->
-                assertThat(exception.antall).isEqualTo(3)
+                assertThat(exception.antall).isEqualTo(maksAntallSoknader + 1)
                 assertThat(exception.innsendingTillattFra).isEqualTo(
-                    eldsteTidspunkt.plusDays(1).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES),
+                    maksgrenseTeNyeste.plusDays(1).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES),
                 )
             }
     }
 
     @Test
     fun `validering ignorerer soknader eldre enn 24 timer`() {
-        repeat(3) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(25)) }
+        repeat(maksAntallSoknader + 1) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(25)) }
 
         assertThatCode {
             antallSoknaderSendtValidator.validate(UUID.randomUUID())
@@ -74,7 +79,7 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `validering ignorerer soknader for annen bruker`() {
-        repeat(3) {
+        repeat(maksAntallSoknader + 1) {
             metadataRepository.save(
                 opprettSoknadMetadata(
                     status = SoknadStatus.SENDT,
@@ -93,7 +98,7 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     fun `validering ignorerer soknader med status OPPRETTET og INNSENDING_FEILET`() {
         metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.OPPRETTET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
         metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.INNSENDING_FEILET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
-        repeat(2) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
+        repeat(maksAntallSoknader - 1) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
 
         assertThatCode {
             antallSoknaderSendtValidator.validate(UUID.randomUUID())
