@@ -10,7 +10,9 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOpplysningTypeConverter
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.JacksonJsonDecoder
@@ -47,14 +49,17 @@ class UploadClient(
                 .block() ?: throw IllegalStateException("Fikk null-respons fra sosialhjelp-upload for soknadId $soknadId")
         return JsonVedleggSpesifikasjon().withVedlegg(
             spec.vedlegg.map { vedlegg ->
+                val opplysningType = StringToOpplysningTypeConverter.convert(vedlegg.kategori!!)
                 val (type, tilleggsinfo) =
-                    VedleggType[StringToOpplysningTypeConverter.convert(vedlegg.kategori!!)].let {
+                    VedleggType[opplysningType].let {
                         it.getTypeString() to it.getTilleggsinfoString()
                     }
                 JsonVedlegg()
                     .withType(type)
                     .withTilleggsinfo(tilleggsinfo)
                     .withStatus("LastetOpp")
+                    .withHendelseType(if (opplysningType.isUtgiftTypeAnnet()) JsonVedlegg.HendelseType.BRUKER else JsonVedlegg.HendelseType.SOKNAD)
+                    .withHendelseReferanse(if (opplysningType.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
                     .withFiler(
                         vedlegg.filer.map { fil ->
                             JsonFiler()
@@ -80,3 +85,5 @@ data class Fil(
     val filnavn: String,
     val sha512: String? = null,
 )
+
+private fun OpplysningType.isUtgiftTypeAnnet() = this == UtgiftType.UTGIFTER_ANDRE_UTGIFTER
