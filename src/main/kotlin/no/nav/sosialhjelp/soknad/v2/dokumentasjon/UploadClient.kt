@@ -54,7 +54,7 @@ class UploadClient(
                 JsonVedlegg()
                     .withType(type)
                     .withTilleggsinfo(tilleggsinfo)
-                    .withStatus("LASTET_OPP")
+                    .withStatus("LastetOpp")
                     .withFiler(
                         vedlegg.filer.map { fil ->
                             JsonFiler()
