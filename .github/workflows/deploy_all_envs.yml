@@ -11,8 +11,15 @@ permissions:
 jobs:
   build_image-job:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      packages: read
     outputs:
       image: ${{ steps.build-image.outputs.image }}
+    env:
+      ORG_GRADLE_PROJECT_githubUser: x-access-token
+      ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: navikt/sosialhjelp-ci/actions/build-for-deploy-kotlin@v21
         id: build-image
