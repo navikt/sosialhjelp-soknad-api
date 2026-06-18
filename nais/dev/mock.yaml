@@ -55,7 +55,7 @@ spec:
       rules:
         - application: sosialhjelp-mock-alt-api-mock
         - application: sosialhjelp-konvertering-til-pdf
-        - application: sosialhjelp-upload
+        - application: sosialhjelp-upload-mock
         - application: sosialhjelp-texas-mock
   resources:
     limits:
@@ -112,3 +112,7 @@ spec:
       value: "http://sosialhjelp-texas-mock/api/v1/token/exchange"
     - name: NAIS_TOKEN_ENDPOINT
       value: "http://sosialhjelp-texas-mock/api/v1/token"
+    - name: SOSIALHJELP_UPLOAD_URL
+      value: "http://sosialhjelp-upload-mock"
+    - name: SOSIALHJELP_UPLOAD_AUDIENCE
+      value: "dev-gcp:teamdigisos:sosialhjelp-upload-mock"

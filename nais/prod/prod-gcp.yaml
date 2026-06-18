@@ -157,3 +157,7 @@ spec:
       value: "true"
     - name: GOTENBERG_URL
       value: "http://sosialhjelp-konvertering-til-pdf/"
+    - name: SOSIALHJELP_UPLOAD_URL
+      value: "http://sosialhjelp-upload"
+    - name: SOSIALHJELP_UPLOAD_AUDIENCE
+      value: "prod-gcp:teamdigisos:sosialhjelp-upload"

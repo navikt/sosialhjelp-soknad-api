@@ -68,7 +68,7 @@ spec:
         - application: sokos-kontoregister-person
           namespace: okonomi
         - application: sosialhjelp-konvertering-til-pdf
-        - application: sosialhjelp-upload
+        - application: sosialhjelp-upload-dev
         - application: norg2
           namespace: org
       external:
@@ -163,3 +163,7 @@ spec:
       value: "true"
     - name: GOTENBERG_URL
       value: "http://sosialhjelp-konvertering-til-pdf/"
+    - name: SOSIALHJELP_UPLOAD_URL
+      value: "http://sosialhjelp-upload-dev"
+    - name: SOSIALHJELP_UPLOAD_AUDIENCE
+      value: "dev-gcp:teamdigisos:sosialhjelp-upload-dev"
