@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.metrics.Vedleggstatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOpplysningTypeConverter
@@ -48,8 +49,9 @@ class UploadClient(
                 .bodyToMono<VedleggSpesifikasjon>()
                 .block() ?: throw IllegalStateException("Fikk null-respons fra sosialhjelp-upload for soknadId $soknadId")
         return JsonVedleggSpesifikasjon().withVedlegg(
-            spec.vedlegg.map { vedlegg ->
-                val opplysningType = StringToOpplysningTypeConverter.convert(vedlegg.kategori!!)
+            spec.vedlegg.mapNotNull { vedlegg ->
+                if (vedlegg.kategori == null) return@mapNotNull null
+                val opplysningType = StringToOpplysningTypeConverter.convert(vedlegg.kategori)
                 val (type, tilleggsinfo) =
                     VedleggType[opplysningType].let {
                         it.getTypeString() to it.getTilleggsinfoString()
@@ -57,7 +59,7 @@ class UploadClient(
                 JsonVedlegg()
                     .withType(type)
                     .withTilleggsinfo(tilleggsinfo)
-                    .withStatus("LastetOpp")
+                    .withStatus(Vedleggstatus.LastetOpp.toString())
                     .withHendelseType(if (opplysningType.isUtgiftTypeAnnet()) JsonVedlegg.HendelseType.BRUKER else JsonVedlegg.HendelseType.SOKNAD)
                     .withHendelseReferanse(if (opplysningType.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
                     .withFiler(
