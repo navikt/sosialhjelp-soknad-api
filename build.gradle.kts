@@ -84,7 +84,7 @@ dependencies {
         implementation("io.netty:netty-codec-http3:4.2.15.Final") {
             because("Security override for CVE-2026-42582 / GHSA-2c5c-chwr-9hqw: QPACK literal unbounded allocation in netty-codec-http3 <= 4.2.12.Final")
         }
-        implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.22") {
+        implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.23") {
             because("Security override for CVE-2026-41293 / GHSA-r29c-68gh-xp6x: HTTP/2 request headers not validated in Apache Tomcat <= 11.0.21")
         }
     }
