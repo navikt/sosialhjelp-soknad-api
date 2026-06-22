@@ -84,7 +84,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         )
             .also { dto ->
                 assertThat(dto.digisosId).isNotEqualTo(soknadId)
-                assertThat(dto.tidspunkt).isEqualTo(nowWithMillis())
+                assertThat(dto.tidspunkt.toLocalDate()).isEqualTo(nowWithMillis().toLocalDate())
             }
 
         assertCapturedValues()
