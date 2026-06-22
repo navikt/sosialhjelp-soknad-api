@@ -46,14 +46,16 @@ class AdresseUseCaseHandler(
                 AdresseValg.SOKNAD -> brukerAdresse
             }
 
+        valgtAdresse?.also { adresseService.validateValgtAdresse(it) }
+
         val mottaker =
             runCatching { valgtAdresse?.let { navEnhetService.findNavEnhetByAdresse(it) } }
-                .onFailure {
+                .getOrElse {
                     if (it is SosialhjelpSoknadApiException) {
                         logger.error("Kunne ikke finne Nav-Enhet. AdresseValg: $adresseValg, GT: ${valgtAdresse?.getGtFromAdresse()}", it)
                     }
+                    throw it
                 }
-                .getOrThrow()
 
         runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker) }
             .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad(soknadId, currentAdresser, currentMottaker, mottaker) }

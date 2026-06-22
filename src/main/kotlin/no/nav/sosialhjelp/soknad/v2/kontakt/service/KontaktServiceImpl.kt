@@ -1,15 +1,23 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt.service
 
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktServiceImpl.Companion.MAX_ANTALL_KOMMUNER
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import java.util.UUID
 
 interface AdresseService {
@@ -28,6 +36,8 @@ interface AdresseService {
         soknadId: UUID,
         kommunenavn: String,
     ): String?
+
+    fun validateValgtAdresse(valgtAdresse: Adresse)
 }
 
 interface TelefonService {
@@ -42,6 +52,7 @@ interface TelefonService {
 @Service
 class KontaktServiceImpl(
     private val kontaktRepository: KontaktRepository,
+    private val metadataService: SoknadMetadataService,
 ) : AdresseService, TelefonService {
     @Transactional(readOnly = true)
     override fun findTelefonInfo(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)?.telefonnummer
@@ -96,7 +107,71 @@ class KontaktServiceImpl(
             ?: error("Kunne ikke oppdatere mottakers kommunenavn")
     }
 
+    override fun validateValgtAdresse(valgtAdresse: Adresse) {
+
+        // TODO Midlertidig for test
+        if (valgtAdresse.getKommunenummer() == "0301") {
+            throw ForMangeMottakereException(
+                message = "For mange mottakere",
+                info = ForMangeMottakereInfo(
+                    innsendingGyldigFra = LocalDateTime.now(),
+                    antallMottakere = MAX_ANTALL_KOMMUNER,
+                    maksAntallMotatkere = MAX_ANTALL_KOMMUNER,
+                )
+            )
+        }
+
+        metadataService.findMetadataForPersonSendtInnAfter(
+            personId = getUserIdFromToken(),
+            date = LocalDateTime.now().minusDays(ANTALL_DAGER_BEGRENSET)
+        )
+            .also { metadatas ->
+                metadatas.numberOfMottakere()
+                    .also { numberOfMottakere ->
+                        if (numberOfMottakere >= MAX_ANTALL_KOMMUNER) {
+                            throw ForMangeMottakereException(
+                                message =  "Du har sendt soknad til $numberOfMottakere forskjellige kommuner de siste $ANTALL_DAGER_BEGRENSET dagene. " +
+                                        "Maks antall kommuner innenfor $ANTALL_DAGER_BEGRENSET dager er $MAX_ANTALL_KOMMUNER.",
+                                info = ForMangeMottakereInfo(
+                                    innsendingGyldigFra = metadatas.getInnsendingGyldigIfra(),
+                                    antallMottakere = numberOfMottakere,
+                                    maksAntallMotatkere = MAX_ANTALL_KOMMUNER,
+                                )
+                            )
+                        }
+                    }
+            }
+    }
+
     private fun findOrCreate(soknadId: UUID) =
         kontaktRepository.findByIdOrNull(soknadId)
             ?: kontaktRepository.save(Kontakt(soknadId))
+
+    companion object {
+        // bruker skal kun få lov til å søke i x kommuner innenfor n dager
+        const val ANTALL_DAGER_BEGRENSET = 5L
+        const val MAX_ANTALL_KOMMUNER = 2
+    }
 }
+
+private fun List<SoknadMetadata>.getInnsendingGyldigIfra(): LocalDateTime = mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[MAX_ANTALL_KOMMUNER - 1]
+
+private fun List<SoknadMetadata>.numberOfMottakere(): Int = distinctBy { it.mottakerKommunenummer }.size
+
+private fun Adresse.getKommunenummer() =
+    when(this) {
+        is VegAdresse -> this.kommunenummer
+        is MatrikkelAdresse -> this.kommunenummer
+        else -> error("Feil adresse type: ${this::class.simpleName}")
+    }
+
+data class ForMangeMottakereException(
+    override val message: String,
+    val info: ForMangeMottakereInfo
+) : SosialhjelpSoknadApiException(message)
+
+data class ForMangeMottakereInfo(
+    val innsendingGyldigFra: LocalDateTime,
+    val antallMottakere: Int,
+    val maksAntallMotatkere: Int,
+)

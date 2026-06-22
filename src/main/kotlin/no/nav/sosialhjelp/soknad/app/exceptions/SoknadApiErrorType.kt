@@ -65,4 +65,7 @@ enum class SoknadApiErrorType {
 
     // For mange soknader sendt siste 24 timer
     AntallSoknaderSendt,
+
+    // For mange mottakere (kommuner) innenfor x antall dager
+    ForMangeMottakere,
 }

@@ -22,12 +22,12 @@ class AdresseController(
 ) {
     @GetMapping
     fun getAdresser(
-        @PathVariable("soknadId") soknadId: UUID,
+        @PathVariable soknadId: UUID,
     ): AdresserDto = adresseUseCaseHandler.getAdresseAndMottakerInfo(soknadId)
 
     @PutMapping
     fun updateAdresser(
-        @PathVariable("soknadId") soknadId: UUID,
+        @PathVariable soknadId: UUID,
         @RequestBody(required = true) adresserInput: AdresserInput,
     ): AdresserDto {
         adresseUseCaseHandler.updateBrukerAdresse(

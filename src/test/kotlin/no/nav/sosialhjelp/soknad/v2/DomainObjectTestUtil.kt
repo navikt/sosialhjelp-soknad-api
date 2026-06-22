@@ -167,6 +167,7 @@ fun opprettSoknadMetadata(
 fun opprettSoknadMetadata(
     id: UUID = UUID.randomUUID(),
     kort: Boolean = false,
+    mottaker: String = "1234"
 ): SoknadMetadata =
     SoknadMetadata(
         soknadId = id,
@@ -177,7 +178,7 @@ fun opprettSoknadMetadata(
             no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt(
                 opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
             ),
-        mottakerKommunenummer = "1234",
+        mottakerKommunenummer = mottaker,
         digisosId = UUID.randomUUID(),
     )
 

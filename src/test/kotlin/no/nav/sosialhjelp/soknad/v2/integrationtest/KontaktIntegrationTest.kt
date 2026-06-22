@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.adressesok.AdressesokClient
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
@@ -38,6 +39,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
@@ -55,7 +57,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 class KontaktIntegrationTest : AbstractIntegrationTest() {
@@ -276,50 +280,50 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 null,
             )
         every { adressesokClient.getAdressesokResult(any()) } returns
-            AdressesokResultDto(
-                listOf(
-                    AdressesokHitDto(vegadresse, 1F),
-                ),
-                1,
-                1,
-                1,
-            )
+                AdressesokResultDto(
+                    listOf(
+                        AdressesokHitDto(vegadresse, 1F),
+                    ),
+                    1,
+                    1,
+                    1,
+                )
         val navEnhet = NavEnhet("Sandvika Nav-senter", "1212", null, "123", KOMMUNENAVN)
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns
-            MellomlagringDto(
-                lagretSoknad.id.toString(),
-                listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")),
-            )
+                MellomlagringDto(
+                    lagretSoknad.id.toString(),
+                    listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")),
+                )
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
 
         every { digisosApiV2Client.getSoknader() } returns
-            listOf(
-                DigisosSak(
-                    "abc",
-                    "fnr",
-                    "org",
-                    KOMMUNENUMMER,
-                    0L,
-                    null,
-                    null,
-                    DigisosSoker("metadataid", emptyList(), 1L),
-                    null,
-                ),
-            )
-        every { digisosApiV2Client.getInnsynsfil("abc", "metadataid") } returns
-            JsonDigisosSoker()
-                .withHendelser(
-                    listOf(
-                        createUpcomingUtbetaling(
-                            tidspunkt = "${LocalDate.now().minusDays(10)}T00:00:00Z",
-                            forfallsdato = "${LocalDate.now().plusDays(10)}T00:00:00Z",
-                            status = JsonUtbetaling.Status.UTBETALT,
-                            utbetalingsdato = "${LocalDate.now()}T00:00:00Z",
-                        ),
+                listOf(
+                    DigisosSak(
+                        "abc",
+                        "fnr",
+                        "org",
+                        KOMMUNENUMMER,
+                        0L,
+                        null,
+                        null,
+                        DigisosSoker("metadataid", emptyList(), 1L),
+                        null,
                     ),
                 )
+        every { digisosApiV2Client.getInnsynsfil("abc", "metadataid") } returns
+                JsonDigisosSoker()
+                    .withHendelser(
+                        listOf(
+                            createUpcomingUtbetaling(
+                                tidspunkt = "${LocalDate.now().minusDays(10)}T00:00:00Z",
+                                forfallsdato = "${LocalDate.now().plusDays(10)}T00:00:00Z",
+                                status = JsonUtbetaling.Status.UTBETALT,
+                                utbetalingsdato = "${LocalDate.now()}T00:00:00Z",
+                            ),
+                        ),
+                    )
 
         val adresserInput =
             AdresserInput(
@@ -408,30 +412,30 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
 
         every { digisosApiV2Client.getSoknader() } returns
-            listOf(
-                DigisosSak(
-                    "abc",
-                    "fnr",
-                    "org",
-                    KOMMUNENUMMER,
-                    0L,
-                    null,
-                    null,
-                    DigisosSoker("metadataid", emptyList(), 1L),
-                    null,
-                ),
-            )
+                listOf(
+                    DigisosSak(
+                        "abc",
+                        "fnr",
+                        "org",
+                        KOMMUNENUMMER,
+                        0L,
+                        null,
+                        null,
+                        DigisosSoker("metadataid", emptyList(), 1L),
+                        null,
+                    ),
+                )
         every {
             digisosApiV2Client.getInnsynsfil("abc", "metadataid")
         } returns
-            JsonDigisosSoker()
-                .withHendelser(
-                    listOf(
-                        JsonSoknadsStatus()
-                            .withStatus(JsonSoknadsStatus.Status.MOTTATT)
-                            .withHendelsestidspunkt(LocalDate.now().minusMonths(1).toIsoString()),
-                    ),
-                )
+                JsonDigisosSoker()
+                    .withHendelser(
+                        listOf(
+                            JsonSoknadsStatus()
+                                .withStatus(JsonSoknadsStatus.Status.MOTTATT)
+                                .withHendelsestidspunkt(LocalDate.now().minusMonths(1).toIsoString()),
+                        ),
+                    )
 
         dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id).find { it.type == AnnenDokumentasjonType.BEHOV }!!
             .run {
@@ -471,6 +475,32 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(any()) }
     }
 
+    @Test
+    fun `Skal ikke kunne velge en 3 kommune hvis soknader er sendt til 2 forskjellige kommuner innenfor x antall dager`() {
+        val lagretSoknad =
+            opprettSoknadMetadata()
+                .let { metadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId) }
+                .let { soknadRepository.save(it) }
+
+        metadataRepository.save(opprettSoknadMetadata(status = SENDT, kommunenummer = "3201", innsendtDato = LocalDateTime.now()))
+        metadataRepository.save(opprettSoknadMetadata(kommunenummer = "1234", status = SENDT, innsendtDato = LocalDateTime.now()))
+
+        val adresseInput = AdresserInput(
+            adresseValg = AdresseValg.SOKNAD,
+            brukerAdresse = VegAdresse(
+                kommunenummer = "9999",
+            )
+        )
+
+        doPutExpectError(
+            uri = "/soknad/${lagretSoknad.id}/adresser",
+            requestBody = adresseInput,
+            httpStatus = HttpStatus.NOT_ACCEPTABLE
+        )
+            .also { assertThat(it.error).isEqualTo(SoknadApiErrorType.ForMangeMottakere) }
+    }
+
     companion object {
         const val KOMMUNENUMMER = "3201"
         const val KOMMUNENAVN = "Bærum"
@@ -478,16 +508,16 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         fun createKommuneInfos(): Map<String, KommuneInfo> {
             return mapOf(
                 KOMMUNENUMMER to
-                    KommuneInfo(
-                        KOMMUNENUMMER,
-                        true,
-                        true,
-                        false,
-                        false,
-                        null,
-                        true,
-                        KOMMUNENAVN,
-                    ),
+                        KommuneInfo(
+                            KOMMUNENUMMER,
+                            true,
+                            true,
+                            false,
+                            false,
+                            null,
+                            true,
+                            KOMMUNENAVN,
+                        ),
             )
         }
     }

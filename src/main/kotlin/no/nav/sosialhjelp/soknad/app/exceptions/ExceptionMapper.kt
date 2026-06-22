@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtException
 import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.ForMangeMottakereException
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
@@ -122,6 +123,10 @@ class ExceptionMapper(
             is AntallSoknaderSendtException -> {
                 log.error(e.message, e)
                 buildError(HttpStatus.TOO_MANY_REQUESTS, SoknadApiError(SoknadApiErrorType.AntallSoknaderSendt, e))
+            }
+            is ForMangeMottakereException -> {
+                log.error(e.message, e)
+                buildError(HttpStatus.NOT_ACCEPTABLE, SoknadApiError(SoknadApiErrorType.ForMangeMottakere))
             }
             else -> {
                 log.error("REST-kall feilet", e)
