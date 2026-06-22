@@ -7,6 +7,7 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
@@ -15,7 +16,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
-import java.time.LocalDate
 import java.util.UUID
 
 class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
@@ -31,7 +31,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
         val uuid = opprettSoknadMedEierOgKontaktForInnsending()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-            MellomlagringDto(uuid.toString(), emptyList())
+                MellomlagringDto(uuid.toString(), emptyList())
 
         doPost(
             uri = sendUrl(uuid),
@@ -40,7 +40,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
 
         metadataRepository.findByIdOrNull(uuid)!!
             .also {
-                assertThat(it.tidspunkt.sendtInn!!.toLocalDate()).isEqualTo(LocalDate.now())
+                assertThat(it.tidspunkt.sendtInn!!).isEqualTo(nowWithMillis())
                 assertThat(it.mottakerKommunenummer).isEqualTo(opprettNavEnhet().kommunenummer)
                 assertThat(it.status).isEqualTo(SoknadStatus.SENDT)
             }
@@ -52,7 +52,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.slettAlleDokumenter(uuid.toString()) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-            MellomlagringDto(uuid.toString(), emptyList())
+                MellomlagringDto(uuid.toString(), emptyList())
 
         doDelete(
             uri = deleteUrl(uuid),
