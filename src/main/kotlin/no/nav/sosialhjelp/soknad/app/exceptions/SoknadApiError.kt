@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo
 import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
 import io.swagger.v3.oas.annotations.media.Schema
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "responseType")
 @Schema(
     discriminatorProperty = "responseType",
     discriminatorMapping = [
