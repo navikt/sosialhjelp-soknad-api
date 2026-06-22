@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
@@ -83,8 +84,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         )
             .also { dto ->
                 assertThat(dto.digisosId).isNotEqualTo(soknadId)
-                assertThat(dto.tidspunkt.toLocalDate())
-                    .isEqualTo(LocalDate.now())
+                assertThat(dto.tidspunkt.toLocalDate()).isEqualTo(nowWithMillis().toLocalDate())
             }
 
         assertCapturedValues()
