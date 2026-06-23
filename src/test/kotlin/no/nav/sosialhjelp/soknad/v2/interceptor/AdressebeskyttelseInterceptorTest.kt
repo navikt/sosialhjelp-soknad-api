@@ -37,6 +37,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import java.util.UUID
 
 @Import(TestCacheConfig::class)
@@ -93,7 +94,7 @@ class AdressebeskyttelseInterceptorTest {
             token = token,
         )
             .expectStatus().isForbidden
-            .expectBody(SoknadApiError::class.java)
+            .expectBody<SoknadApiError>()
             .returnResult().responseBody
             .also { assertThat(it?.error).isEqualTo(SoknadApiErrorType.NoAccess) }
 
@@ -112,7 +113,7 @@ class AdressebeskyttelseInterceptorTest {
             token = token,
         )
             .expectStatus().isForbidden
-            .expectBody(SoknadApiError::class.java)
+            .expectBody<SoknadApiError>()
             .returnResult().responseBody
             .also { soknadApiError ->
                 assertThat(soknadApiError?.error).isEqualTo(SoknadApiErrorType.NoAccess)
@@ -131,7 +132,7 @@ class AdressebeskyttelseInterceptorTest {
             token = token,
         )
             .expectStatus().isForbidden
-            .expectBody(SoknadApiError::class.java)
+            .expectBody<SoknadApiError>()
             .returnResult().responseBody
             .also { soknadApiError ->
                 assertThat(soknadApiError?.error).isEqualTo(SoknadApiErrorType.NoAccess)
@@ -151,6 +152,7 @@ class AdressebeskyttelseInterceptorTest {
                 .let { metadata -> opprettSoknad(id = metadata.soknadId) }
                 .also { soknad -> soknadRepository.save(soknad) }
 
+        every { SubjectHandlerUtils.getTokenOrNull() } returns "test-token"
         every { SubjectHandlerUtils.getUserIdFromToken() } returns metadata.eierPersonId
 
         soknadService.findOpenSoknadIds(metadata.eierPersonId).also { assertThat(it).hasSize(1) }
@@ -160,7 +162,7 @@ class AdressebeskyttelseInterceptorTest {
             token = token,
         )
             .expectStatus().isForbidden
-            .expectBody(SoknadApiError::class.java)
+            .expectBody<SoknadApiError>()
             .returnResult().responseBody
             .also { assertThat(it?.error).isEqualTo(SoknadApiErrorType.NoAccess) }
 

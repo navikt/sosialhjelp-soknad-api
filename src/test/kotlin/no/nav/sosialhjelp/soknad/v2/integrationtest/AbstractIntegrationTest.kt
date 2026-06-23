@@ -1,14 +1,17 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import com.nimbusds.jwt.SignedJWT
+import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.coEvery
 import io.mockk.every
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.integrationtest.HentPersonClientMock
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
@@ -56,6 +59,9 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
     @MockkSpyBean
     protected lateinit var hentPersonClient: HentPersonClient
 
+    @MockkBean
+    protected lateinit var uploadClient: UploadClient
+
     protected lateinit var token: SignedJWT
 
     protected lateinit var soknadId: UUID
@@ -71,6 +77,8 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
         }
 
         setupPdlAnswers()
+
+        every { uploadClient.getVedleggSpesifikasjon(any()) } returns JsonVedleggSpesifikasjon()
 
         token =
             when (useTokenX) {

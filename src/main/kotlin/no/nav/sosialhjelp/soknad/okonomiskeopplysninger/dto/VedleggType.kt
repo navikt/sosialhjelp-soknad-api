@@ -63,9 +63,14 @@ enum class VedleggType(
 
     companion object {
         private val map = entries.associateBy(VedleggType::stringName)
+        private val opplysningTypeMap = entries.associateBy(VedleggType::opplysningType)
 
         operator fun get(stringName: String): VedleggType =
             map[stringName]
                 ?: throw IllegalArgumentException("Fant ikke VedleggType lik $stringName")
+
+        operator fun get(opplysningType: OpplysningType): VedleggType =
+            opplysningTypeMap[opplysningType]
+                ?: throw IllegalArgumentException("Fant ikke VedleggType lik $opplysningType")
     }
 }

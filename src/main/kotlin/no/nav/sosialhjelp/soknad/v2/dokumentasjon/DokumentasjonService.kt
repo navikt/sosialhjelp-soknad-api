@@ -28,11 +28,6 @@ interface DokumentasjonService {
 
     fun findDokumentasjonForSoknad(soknadId: UUID): List<Dokumentasjon>
 
-    fun hasDokumenterForType(
-        soknadId: UUID,
-        type: OpplysningType,
-    ): Boolean
-
     fun updateDokumentasjon(dokumentasjon: Dokumentasjon)
 
     fun opprettObligatoriskDokumentasjon(
@@ -105,12 +100,6 @@ class DokumentasjonServiceImpl(
 
     @Transactional(readOnly = true)
     override fun findDokumentasjonForSoknad(soknadId: UUID): List<Dokumentasjon> = dokumentasjonRepository.findAllBySoknadId(soknadId)
-
-    @Transactional(readOnly = true)
-    override fun hasDokumenterForType(
-        soknadId: UUID,
-        type: OpplysningType,
-    ): Boolean = findDokumentasjonForSoknad(soknadId).find { it.type == type }?.dokumenter?.isNotEmpty() ?: false
 
     @Transactional
     override fun updateDokumentasjon(dokumentasjon: Dokumentasjon) {
