@@ -9,11 +9,11 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.stereotype.Component
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -107,8 +107,8 @@ class KortSoknadUseCaseHandler(
     }
 
     private fun JsonDigisosSoker.hasRecentOrUpcomingUtbetalinger(): Boolean {
-        val fourMonthsAgo = LocalDateTime.now().minusDays(50)
-        val in14Days = LocalDateTime.now().plusDays(14)
+        val fourMonthsAgo = nowWithMillis().minusDays(50)
+        val in14Days = nowWithMillis().plusDays(14)
 
         val utbetaltSiste120Dager =
             hendelser
@@ -129,7 +129,7 @@ class KortSoknadUseCaseHandler(
                 ?.filterIsInstance<JsonUtbetaling>()
                 ?.filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
                 ?.map { it.forfallsdato.toLocalDateTime() }
-                ?.filter { it >= LocalDateTime.now() }
+                ?.filter { it >= nowWithMillis() }
                 ?.firstOrNull { it < in14Days }
 
         if (planlagtInnen14Dager != null) {

@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.reactive.function.client.WebClient
 import tools.jackson.module.kotlin.jacksonObjectMapper
@@ -30,7 +31,7 @@ class LeaderElectionImpl(
             log.warn("LeaderElection - manglende systemvariabel=$ELECTOR_PATH.")
             return true
         }
-        val now = LocalDateTime.now()
+        val now = nowWithMillis()
         if (leader == null || lastCallTime.isBefore(now.minusMinutes(2))) {
             try {
                 val response =

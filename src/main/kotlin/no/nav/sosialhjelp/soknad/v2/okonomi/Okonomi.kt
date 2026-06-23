@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.repository.query.Modifying
 import org.springframework.data.jdbc.repository.query.Query
@@ -129,7 +130,7 @@ data class Okonomi(
 @Table
 data class Bekreftelse(
     val type: BekreftelseType,
-    val tidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+    val tidspunkt: LocalDateTime = nowWithMillis().truncatedTo(ChronoUnit.MILLIS),
     val verdi: Boolean,
 )
 

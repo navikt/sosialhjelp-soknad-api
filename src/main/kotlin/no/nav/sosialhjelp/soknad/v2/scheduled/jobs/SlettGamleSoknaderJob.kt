@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
@@ -8,7 +9,6 @@ import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
 import java.util.UUID
 
 @Component
@@ -39,6 +39,6 @@ class SlettGamleSoknaderJob(
 
         const val NUMBER_OF_DAYS = 14L
 
-        private fun getTimestamp() = LocalDateTime.now().minusDays(NUMBER_OF_DAYS)
+        private fun getTimestamp() = nowWithMillis().minusDays(NUMBER_OF_DAYS)
     }
 }

@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerService
-import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerService.Companion.MAX_ANTALL_SOKNADER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
@@ -110,6 +109,18 @@ class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerServic
                     throw AntallSoknaderSendtException(antall, soknadId, innsendingTillattFra)
                 }
             }
+    }
+
+    companion object {
+        const val MAX_ANTALL_SOKNADER = 2
+    }
+}
+
+@Component
+class BegrenseAntallMottakereValidator(private val adresseService: AdresseService) : SoknadValidator {
+    override fun validate(soknadId: UUID) {
+        adresseService.findAdresser(soknadId).getOppholdsadresse()
+            .also { valgtAdresse -> adresseService.validateValgtAdresse(valgtAdresse) }
     }
 }
 

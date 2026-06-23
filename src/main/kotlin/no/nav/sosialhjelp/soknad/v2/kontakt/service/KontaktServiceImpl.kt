@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.kontakt.service
 
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
@@ -108,35 +109,37 @@ class KontaktServiceImpl(
     }
 
     override fun validateValgtAdresse(valgtAdresse: Adresse) {
-
         // TODO Midlertidig for test
         if (valgtAdresse.getKommunenummer() == "0301") {
             throw ForMangeMottakereException(
                 message = "For mange mottakere",
-                info = ForMangeMottakereInfo(
-                    innsendingGyldigFra = LocalDateTime.now(),
-                    antallMottakere = MAX_ANTALL_KOMMUNER,
-                    maksAntallMotatkere = MAX_ANTALL_KOMMUNER,
-                )
+                info =
+                    ForMangeMottakereInfo(
+                        innsendingGyldigFra = nowWithMillis(),
+                        antallMottakere = MAX_ANTALL_KOMMUNER,
+                        maksAntallMotatkere = MAX_ANTALL_KOMMUNER,
+                    ),
             )
         }
 
         metadataService.findMetadataForPersonSendtInnAfter(
             personId = getUserIdFromToken(),
-            date = LocalDateTime.now().minusDays(ANTALL_DAGER_BEGRENSET)
+            date = nowWithMillis().minusDays(ANTALL_DAGER_BEGRENSET),
         )
             .also { metadatas ->
                 metadatas.numberOfMottakere()
                     .also { numberOfMottakere ->
                         if (numberOfMottakere >= MAX_ANTALL_KOMMUNER) {
                             throw ForMangeMottakereException(
-                                message =  "Du har sendt soknad til $numberOfMottakere forskjellige kommuner de siste $ANTALL_DAGER_BEGRENSET dagene. " +
+                                message =
+                                    "Du har sendt soknad til $numberOfMottakere forskjellige kommuner de siste $ANTALL_DAGER_BEGRENSET dagene. " +
                                         "Maks antall kommuner innenfor $ANTALL_DAGER_BEGRENSET dager er $MAX_ANTALL_KOMMUNER.",
-                                info = ForMangeMottakereInfo(
-                                    innsendingGyldigFra = metadatas.getInnsendingGyldigIfra(),
-                                    antallMottakere = numberOfMottakere,
-                                    maksAntallMotatkere = MAX_ANTALL_KOMMUNER,
-                                )
+                                info =
+                                    ForMangeMottakereInfo(
+                                        innsendingGyldigFra = metadatas.getInnsendingGyldigIfra(),
+                                        antallMottakere = numberOfMottakere,
+                                        maksAntallMotatkere = MAX_ANTALL_KOMMUNER,
+                                    ),
                             )
                         }
                     }
@@ -159,7 +162,7 @@ private fun List<SoknadMetadata>.getInnsendingGyldigIfra(): LocalDateTime = mapN
 private fun List<SoknadMetadata>.numberOfMottakere(): Int = distinctBy { it.mottakerKommunenummer }.size
 
 private fun Adresse.getKommunenummer() =
-    when(this) {
+    when (this) {
         is VegAdresse -> this.kommunenummer
         is MatrikkelAdresse -> this.kommunenummer
         else -> error("Feil adresse type: ${this::class.simpleName}")
@@ -167,7 +170,7 @@ private fun Adresse.getKommunenummer() =
 
 data class ForMangeMottakereException(
     override val message: String,
-    val info: ForMangeMottakereInfo
+    val info: ForMangeMottakereInfo,
 ) : SosialhjelpSoknadApiException(message)
 
 data class ForMangeMottakereInfo(

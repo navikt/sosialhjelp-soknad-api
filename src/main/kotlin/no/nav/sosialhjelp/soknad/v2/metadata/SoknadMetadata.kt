@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.metadata
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Embedded
@@ -56,7 +57,7 @@ enum class SoknadType {
 }
 
 data class Tidspunkt(
-    val opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+    val opprettet: LocalDateTime = nowWithMillis().truncatedTo(ChronoUnit.MILLIS),
     var sistEndret: LocalDateTime = opprettet,
     var sendtInn: LocalDateTime? = null,
 )

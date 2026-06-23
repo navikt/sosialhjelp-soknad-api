@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.api.minesaker
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
+import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtValidator.Companion.MAX_ANTALL_SOKNADER
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -35,7 +36,5 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
 
     companion object {
         private val logger by logger()
-
-        const val MAX_ANTALL_SOKNADER = 2
     }
 }

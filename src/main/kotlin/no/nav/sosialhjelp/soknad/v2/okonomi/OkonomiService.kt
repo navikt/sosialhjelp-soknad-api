@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
@@ -37,7 +38,7 @@ class OkonomiService(
         soknadId: UUID,
         type: BekreftelseType,
         verdi: Boolean,
-        tidspunkt: LocalDateTime = LocalDateTime.now(),
+        tidspunkt: LocalDateTime = nowWithMillis(),
     ) {
         findOrCreateOkonomi(soknadId)
         okonomiRepository.deleteBekreftelse(soknadId, type)

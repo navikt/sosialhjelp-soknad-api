@@ -167,7 +167,7 @@ fun opprettSoknadMetadata(
 fun opprettSoknadMetadata(
     id: UUID = UUID.randomUUID(),
     kort: Boolean = false,
-    mottaker: String = "1234"
+    mottaker: String = "1234",
 ): SoknadMetadata =
     SoknadMetadata(
         soknadId = id,

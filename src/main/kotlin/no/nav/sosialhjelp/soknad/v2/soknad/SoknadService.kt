@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
@@ -115,7 +116,7 @@ class SoknadServiceImpl(
             }
         }
 
-    private fun LocalDateTime.isNotOlderThan(days: Long): Boolean = isAfter(LocalDateTime.now().minusDays(days))
+    private fun LocalDateTime.isNotOlderThan(days: Long): Boolean = isAfter(nowWithMillis().minusDays(days))
 
     private fun deleteTooOldOpenSoknadIds(
         openIds: List<UUID>,
