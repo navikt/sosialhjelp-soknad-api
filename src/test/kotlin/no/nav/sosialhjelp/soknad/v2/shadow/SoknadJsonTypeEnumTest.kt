@@ -18,14 +18,12 @@ class SoknadJsonTypeEnumTest {
     fun `VedleggTyper skal mappes til OpplysningTyper`() {
         VedleggType.entries.forEach { type ->
 
-            type.opplysningType?.let {
+            type.opplysningType?.also {
                 when (it) {
                     is InntektType -> createInntekt(it)
                     is FormueType -> createFormue(it)
                     is UtgiftType -> createUtgift(it)
-                    else -> {
-                        null
-                    }
+                    else -> return
                 }
             }
         }

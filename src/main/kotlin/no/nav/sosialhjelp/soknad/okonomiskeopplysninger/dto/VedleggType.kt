@@ -60,12 +60,4 @@ enum class VedleggType(
     fun getTypeString() = stringName.substring(0, stringName.indexOf('|'))
 
     fun getTilleggsinfoString() = stringName.substring(stringName.indexOf('|') + 1)
-
-    companion object {
-        private val map = entries.associateBy(VedleggType::stringName)
-
-        operator fun get(stringName: String): VedleggType =
-            map[stringName]
-                ?: throw IllegalArgumentException("Fant ikke VedleggType lik $stringName")
-    }
 }

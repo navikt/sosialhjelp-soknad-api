@@ -216,7 +216,7 @@ fun opprettNavEnhet(
     kommunenummer: String = "5555",
     orgnummer: String? = null,
     kommunenavn: String = "Nav-kommunen",
-): NavEnhet = NavEnhet(navn, enhetNr, kommunenummer, orgnummer, kommunenavn)
+): NavEnhet = NavEnhet(navn, enhetNr, kommunenummer, kommunenavn, orgnummer,)
 
 fun opprettEier(
     soknadId: UUID,

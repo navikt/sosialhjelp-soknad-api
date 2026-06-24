@@ -39,16 +39,16 @@ class NorgServiceCacheTest : AbstractIntegrationTest() {
             .let { cache -> cache!!.get("0301") }
             .let { wrapper -> wrapper!!.get() as NavEnhet }
             .also { navEnhet ->
-                assertThat(navEnhet.enhetsnavn).isEqualTo(enhetForGt!!.enhetsnavn)
-                assertThat(navEnhet.enhetsnummer).isEqualTo(enhetForGt.enhetsnummer)
+                assertThat(navEnhet.enhetsnavn).isEqualTo(enhetForGt!!.navn)
+                assertThat(navEnhet.enhetsnummer).isEqualTo(enhetForGt.enhetNr)
             }
         // markere at norgClient ikke kalles på runde 2
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) } returns null
 
         norgService.getEnhetForGt("0301")
             ?.also {
-                assertThat(it.enhetsnavn).isEqualTo(enhetForGt!!.enhetsnavn)
-                assertThat(it.enhetsnummer).isEqualTo(enhetForGt.enhetsnummer)
+                assertThat(it.navn).isEqualTo(enhetForGt!!.navn)
+                assertThat(it.enhetNr).isEqualTo(enhetForGt.enhetNr)
             }
 
         verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }

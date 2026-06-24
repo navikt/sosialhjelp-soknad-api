@@ -297,7 +297,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         return NavEnhet(
             "navEnhet",
             "1234456",
-            createVegadresse().kommunenummer,
+            createVegadresse().kommunenummer ?: error("Kommunenummer mangler"),
             "12345678",
             "kommunen",
         )
