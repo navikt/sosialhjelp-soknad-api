@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.navenhet
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
-import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 import java.time.Duration
@@ -15,11 +14,10 @@ class NorgService(private val norgClient: NorgClient) {
         key = "#geografiskTilknytning",
         unless = "#result == null",
     )
-    fun getEnhetForGt(geografiskTilknytning: String): NavEnhet? {
+    fun getEnhetForGt(geografiskTilknytning: String): NavEnhetDto? {
         return runCatching { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(geografiskTilknytning)) }
             .onSuccess { dto -> if (dto != null) logger.info("Hentet NavEnhet fra Norg: $dto") }
             .getOrThrow()
-            ?.toNavEnhet()
     }
 
     companion object {
@@ -42,13 +40,4 @@ class NorgCacheConfig : SoknadApiCacheConfig(CACHE_NAME, ETT_DOGN) {
         const val CACHE_NAME = "norg"
         private val ETT_DOGN = Duration.ofDays(1)
     }
-}
-
-fun NavEnhetDto.toNavEnhet(): NavEnhet {
-    return NavEnhet(
-        enhetsnummer = enhetNr,
-        enhetsnavn = navn,
-        kommunenavn = null,
-        orgnummer = null,
-    )
 }

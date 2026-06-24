@@ -31,12 +31,10 @@ class SoknadMottakerValidator(
     }
 
     private fun harSoknadMottaker(soknadId: UUID): NavEnhet =
-        adresseService.findMottaker(soknadId)
-            ?.also { if (it.kommunenummer == null) error("Mottaker Mangler kommunenummer") }
-            ?: error("Søknad mangler NavEnhet")
+        adresseService.findMottaker(soknadId) ?: error("Søknad mangler NavEnhet")
 
     private fun kanKommuneMottaSoknad(mottaker: NavEnhet) {
-        val kommunenummer = mottaker.kommunenummer ?: error("NavEnhet ${mottaker.enhetsnavn} mangler kommunenummer")
+        val kommunenummer = mottaker.kommunenummer
         kommuneInfoService.hentAlleKommuneInfo()
             ?.let { kommuneInfoMap -> kommuneInfoMap[kommunenummer] }
             ?.also { kommuneInfo ->
@@ -120,7 +118,7 @@ class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerServic
 class BegrenseAntallMottakereValidator(private val adresseService: AdresseService) : SoknadValidator {
     override fun validate(soknadId: UUID) {
         adresseService.findAdresser(soknadId).getOppholdsadresse()
-            .also { valgtAdresse -> adresseService.validateValgtAdresse(valgtAdresse) }
+            .also { valgtAdresse -> adresseService.validateMottaker(valgtAdresse) }
     }
 }
 

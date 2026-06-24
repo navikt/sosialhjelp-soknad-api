@@ -46,7 +46,7 @@ class AdresseUseCaseHandler(
                 AdresseValg.SOKNAD -> brukerAdresse
             }
 
-        valgtAdresse?.also { adresseService.validateValgtAdresse(it) }
+        valgtAdresse?.also { adresseService.validateMottaker(it) }
 
         val mottaker =
             runCatching { valgtAdresse?.let { navEnhetService.findNavEnhetByAdresse(it) } }
@@ -66,7 +66,7 @@ class AdresseUseCaseHandler(
         navEnhet: NavEnhet,
     ): RelevantKommuneInfo {
         return navEnhet.kommunenummer
-            ?.let {
+            .let {
                 val kommuneInfo = kommuneInfoService.hentAlleKommuneInfo()?.get(it)
 
                 RelevantKommuneInfo(
@@ -74,7 +74,7 @@ class AdresseUseCaseHandler(
                     isMidlertidigDeaktivert = kommuneInfo?.harMidlertidigDeaktivertMottak ?: true,
                     kommunenavn = getKommunenavn(soknadId, navEnhet.kommunenavn, it),
                 )
-            } ?: error("NavEnhet ${navEnhet.enhetsnavn} mangler kommunenummer")
+            }
     }
 
     private fun getKommunenavn(

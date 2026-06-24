@@ -38,7 +38,7 @@ interface AdresseService {
         kommunenavn: String,
     ): String?
 
-    fun validateValgtAdresse(valgtAdresse: Adresse)
+    fun validateMottaker(valgtAdresse: Adresse)
 }
 
 interface TelefonService {
@@ -108,7 +108,7 @@ class KontaktServiceImpl(
             ?: error("Kunne ikke oppdatere mottakers kommunenavn")
     }
 
-    override fun validateValgtAdresse(valgtAdresse: Adresse) {
+    override fun validateMottaker(valgtAdresse: Adresse) {
         // TODO Midlertidig for test
         if (valgtAdresse.getKommunenummer() == "0301") {
             throw ForMangeMottakereException(
@@ -129,6 +129,15 @@ class KontaktServiceImpl(
             .also { metadatas ->
                 metadatas.numberOfMottakere()
                     .also { numberOfMottakere ->
+
+
+                        // større enn er pga. bakover-kompatibilitet
+                        if (numberOfMottakere >= MAX_ANTALL_KOMMUNER) {
+                            // Sjekk om gjeldende kommunenummer finnes i listen
+                        }
+
+
+
                         if (numberOfMottakere >= MAX_ANTALL_KOMMUNER) {
                             throw ForMangeMottakereException(
                                 message =

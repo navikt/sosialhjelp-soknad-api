@@ -28,7 +28,7 @@ class SendSoknadManager(
         return adresseService.findMottaker(soknadId)
             ?.let { navEnhet ->
                 NavEnhetForSending(
-                    kommunenummer = navEnhet.kommunenummer ?: error("NavEnhet mangler kommunenummer"),
+                    kommunenummer = navEnhet.kommunenummer,
                     enhetsnavn = navEnhet.enhetsnavn,
                 )
             }

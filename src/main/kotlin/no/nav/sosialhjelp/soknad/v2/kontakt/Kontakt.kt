@@ -63,10 +63,9 @@ enum class AdresseValg {
 }
 
 data class NavEnhet(
-    val enhetsnavn: String? = null,
-    val enhetsnummer: String? = null,
-    // TODO Skal denne være nullable?
-    val kommunenummer: String? = null,
+    val enhetsnavn: String,
+    val enhetsnummer: String,
+    val kommunenummer: String,
+    val kommunenavn: String,
     val orgnummer: String? = null,
-    val kommunenavn: String? = null,
 ) : Serializable

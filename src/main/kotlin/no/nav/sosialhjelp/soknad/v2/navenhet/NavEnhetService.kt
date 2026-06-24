@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.navenhet
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetDto
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
@@ -20,17 +21,11 @@ class NavEnhetService(
     fun findNavEnhetByAdresse(
         adresse: Adresse,
     ): NavEnhet {
-        val navEnhet =
-            adresse.checkBydelFordelingMarka()
-                .let { norgService.getEnhetForGt(it) }
-                ?: error("Fant ingen Nav-enhet for gt: ${adresse.getGtFromAdresse()}")
-
-        log.info("Fant Nav-enhet ${navEnhet.enhetsnavn} (${navEnhet.enhetsnummer}) for gt: ${adresse.getGtFromAdresse()}")
-
-        return navEnhet.copy(
-            kommunenummer = adresse.getKommunenummer(),
-            kommunenavn = getKommunenavn(adresse.getKommunenummer()),
-        )
+        return adresse.checkBydelFordelingMarka()
+            .let { gt -> norgService.getEnhetForGt(gt) }
+            ?.toNavEnhet(adresse.getKommunenummer())
+            ?.also { log.info("Fant Nav-enhet ${it.enhetsnavn} (${it.enhetsnummer}) for gt: ${adresse.getGtFromAdresse()}") }
+            ?: error("Fant ingen Nav-enhet for gt: ${adresse.getGtFromAdresse()}")
     }
 
     private fun getKommunenavn(kommunenummer: String): String? = kodeverkService.getKommunenavn(kommunenummer)
@@ -42,6 +37,16 @@ class NavEnhetService(
             true -> bydelFordelingService.getBydelTilForMarka(this)
             false -> getGtFromAdresse() ?: error("AdresseForslag mangler geografisk tilknytning")
         } ?: error("Adresse mangler geografisk tilknytning")
+    }
+
+    fun NavEnhetDto.toNavEnhet(kommunenummer: String): NavEnhet {
+        return NavEnhet(
+            enhetsnummer = enhetNr,
+            enhetsnavn = navn,
+            kommunenummer = kommunenummer,
+            kommunenavn = getKommunenavn(kommunenummer) ?: "ikke funnet",
+            orgnummer = null,
+        )
     }
 
     companion object {

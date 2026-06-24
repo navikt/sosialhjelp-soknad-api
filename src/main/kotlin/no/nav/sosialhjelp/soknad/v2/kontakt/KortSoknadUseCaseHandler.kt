@@ -42,7 +42,7 @@ class KortSoknadUseCaseHandler(
         // Hvis soknad er standard - og det er gjort et adressevalg, så skal den ikke transformeres til kort
         if (isSoknadTypeStandard(soknadId) && oldAdresser.adressevalg != null) return
 
-        val kommunenummer = nyMottaker?.getMottakerKommunenummerOrNull() ?: return
+        val kommunenummer = nyMottaker?.kommunenummer ?: return
 
         val qualifiesForKort =
             when {
@@ -67,13 +67,6 @@ class KortSoknadUseCaseHandler(
         adresseValg: AdresseValg?,
     ): Boolean {
         return kommunenummer == other?.kommunenummer && adresseValg != null
-    }
-
-    private fun NavEnhet.getMottakerKommunenummerOrNull(): String? {
-        kommunenummer?.let { return it }
-
-        logger.warn("Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
-        return null
     }
 
     fun isEnabled(kommunenummer: String?): Boolean {

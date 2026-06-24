@@ -135,10 +135,10 @@ class ExceptionMapper(
         }
 
     @ExceptionHandler(value = [DokumentUploadError::class])
-    @ResponseStatus(value = HttpStatus.PAYLOAD_TOO_LARGE)
+    @ResponseStatus(value = HttpStatus.CONTENT_TOO_LARGE)
     fun handleDokumentUploadError(e: DokumentUploadError): ResponseEntity<SoknadApiError> {
         log.warn("Feil ved opplasting av dokument", e)
-        return buildError(HttpStatus.PAYLOAD_TOO_LARGE, SoknadApiError(SoknadApiErrorType.DokumentUploadError))
+        return buildError(HttpStatus.CONTENT_TOO_LARGE, SoknadApiError(SoknadApiErrorType.DokumentUploadError))
     }
 
     @ExceptionHandler(value = [AuthorizationException::class])
@@ -227,7 +227,7 @@ class ExceptionMapper(
         request: WebRequest,
     ): ResponseEntity<Any> {
         log.warn("Feilet opplasting", ex)
-        return buildError(HttpStatus.PAYLOAD_TOO_LARGE, SoknadApiError(SoknadApiErrorType.DokumentUploadTooLarge))
+        return buildError(HttpStatus.CONTENT_TOO_LARGE, SoknadApiError(SoknadApiErrorType.DokumentUploadTooLarge))
     }
 
     companion object {
