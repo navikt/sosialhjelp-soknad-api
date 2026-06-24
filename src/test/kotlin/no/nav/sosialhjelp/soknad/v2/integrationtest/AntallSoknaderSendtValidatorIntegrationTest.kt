@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerService
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtException
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtValidator
+import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtValidator.Companion.MAX_ANTALL_SOKNADER
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
@@ -21,7 +21,7 @@ import java.util.UUID
 
 class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     override var opprettSoknadBeforeEach = false
-    private val maksAntallSoknader = MineSakerService.MAX_ANTALL_SOKNADER
+    private val maksAntallSoknader = MAX_ANTALL_SOKNADER
 
     @Autowired
     private lateinit var antallSoknaderSendtValidator: AntallSoknaderSendtValidator

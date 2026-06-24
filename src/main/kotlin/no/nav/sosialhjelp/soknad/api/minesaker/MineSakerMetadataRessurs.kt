@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.api.minesaker
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionTokenXSubstantial
+import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtValidator.Companion.MAX_ANTALL_SOKNADER
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -46,7 +47,7 @@ class MineSakerMetadataRessurs(
                 AntallInnsendteSoknaderDto(
                     antall = antall,
                     innsendingTillattFra = innsendingTillattFra,
-                    maxAntall = MineSakerService.MAX_ANTALL_SOKNADER,
+                    maxAntall = MAX_ANTALL_SOKNADER,
                 )
             }
     }

@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.api.minesaker.AntallInnsendteSoknaderDto
-import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerService
+import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtValidator.Companion.MAX_ANTALL_SOKNADER
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
@@ -13,7 +13,7 @@ import java.time.temporal.ChronoUnit
 
 class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX = false) {
     override var opprettSoknadBeforeEach = false
-    private val maksAntallSoknader = MineSakerService.MAX_ANTALL_SOKNADER
+    private val maksAntallSoknader = MAX_ANTALL_SOKNADER
 
     @BeforeEach
     fun setup() {

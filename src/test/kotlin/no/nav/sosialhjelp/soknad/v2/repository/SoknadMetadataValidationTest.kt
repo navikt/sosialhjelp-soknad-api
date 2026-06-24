@@ -41,63 +41,63 @@ class SoknadMetadataValidationTest {
     }
 
     // FIXME: Se SoknadMetadata.validate
-//    @Test
-//    fun `Status FERDIGSTILT uten innsendt-dato skal feile`() {
-//        assertThatThrownBy { soknadMetadata.copy(status = SoknadStatus.SENDT) }
-//            .isInstanceOf(IllegalStateException::class.java)
-//    }
-//
-//    @Test
-//    fun `Status FERDIGSTILT uten mottaker skal feile`() {
-//        assertThatThrownBy {
-//            soknadMetadata.copy(
-//                status = SoknadStatus.SENDT,
-//                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
-//            )
-//        }.isInstanceOf(IllegalStateException::class.java)
-//    }
-//
-//    @Test
-//    fun `Status FERDIGSTILT uten DigisosId skal feile`() {
-//        assertThatThrownBy {
-//            soknadMetadata.copy(
-//                status = SoknadStatus.SENDT,
-//                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
-//                mottakerKommunenummer = "1234",
-//            )
-//        }.isInstanceOf(IllegalStateException::class.java)
-//    }
-//
-//    @Test
-//    fun `Status MOTTATT_FSL uten mottaker skal feile`() {
-//        assertThatThrownBy {
-//            soknadMetadata.copy(
-//                status = SoknadStatus.MOTTATT_FSL,
-//                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
-//            )
-//        }.isInstanceOf(IllegalStateException::class.java)
-//    }
-//
-//    @Test
-//    fun `Status MOTTATT_FSL uten DigisosId skal feile`() {
-//        assertThatThrownBy {
-//            soknadMetadata.copy(
-//                status = SoknadStatus.MOTTATT_FSL,
-//                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
-//                mottakerKommunenummer = "1234",
-//            )
-//        }.isInstanceOf(IllegalStateException::class.java)
-//    }
-//
-//    @Test
-//    fun `Mottaker med feil lengde pa kommunenummer skal feile`() {
-//        assertThatThrownBy {
-//            soknadMetadata.copy(
-//                status = SoknadStatus.SENDT,
-//                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
-//                mottakerKommunenummer = "12345",
-//            )
-//        }
-//            .isInstanceOf(IllegalStateException::class.java)
-//    }
+    @Test
+    fun `Status FERDIGSTILT uten innsendt-dato skal feile`() {
+        assertThatThrownBy { soknadMetadata.copy(status = SoknadStatus.SENDT) }
+            .isInstanceOf(IllegalStateException::class.java)
+    }
+
+    @Test
+    fun `Status FERDIGSTILT uten mottaker skal feile`() {
+        assertThatThrownBy {
+            soknadMetadata.copy(
+                status = SoknadStatus.SENDT,
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+            )
+        }.isInstanceOf(IllegalStateException::class.java)
+    }
+
+    @Test
+    fun `Status FERDIGSTILT uten DigisosId skal feile`() {
+        assertThatThrownBy {
+            soknadMetadata.copy(
+                status = SoknadStatus.SENDT,
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+                mottakerKommunenummer = "1234",
+            )
+        }.isInstanceOf(IllegalStateException::class.java)
+    }
+
+    @Test
+    fun `Status MOTTATT_FSL uten mottaker skal feile`() {
+        assertThatThrownBy {
+            soknadMetadata.copy(
+                status = SoknadStatus.MOTTATT_FSL,
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+            )
+        }.isInstanceOf(IllegalStateException::class.java)
+    }
+
+    @Test
+    fun `Status MOTTATT_FSL uten DigisosId skal feile`() {
+        assertThatThrownBy {
+            soknadMetadata.copy(
+                status = SoknadStatus.MOTTATT_FSL,
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+                mottakerKommunenummer = "1234",
+            )
+        }.isInstanceOf(IllegalStateException::class.java)
+    }
+
+    @Test
+    fun `Mottaker med feil lengde pa kommunenummer skal feile`() {
+        assertThatThrownBy {
+            soknadMetadata.copy(
+                status = SoknadStatus.SENDT,
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+                mottakerKommunenummer = "12345",
+            )
+        }
+            .isInstanceOf(IllegalStateException::class.java)
+    }
 }
