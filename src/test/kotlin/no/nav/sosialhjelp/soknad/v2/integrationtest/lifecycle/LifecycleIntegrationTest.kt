@@ -216,6 +216,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `Kommune har deaktivert mottak av soknader skal gi 503`() {
+        metadataRepository.deleteAll()
+
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
@@ -241,6 +243,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `Kommune har midlertidig deaktivert soknader skal gi 503`() {
+        metadataRepository.deleteAll()
+
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
@@ -278,6 +282,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `For mange mottakere ved innsending skal kaste exception`() {
+        metadataRepository.deleteAll()
+
         val eldsteInnsendte = nowWithMillis().minusDays(2)
         metadataRepository.save(SoknadMetadata(UUID.randomUUID(), userId, status = SoknadStatus.SENDT, tidspunkt = Tidspunkt(sendtInn = nowWithMillis().minusDays(1)), mottakerKommunenummer = "0301", digisosId = UUID.randomUUID()))
         metadataRepository.save(SoknadMetadata(UUID.randomUUID(), userId, status = SoknadStatus.SENDT, tidspunkt = Tidspunkt(sendtInn = eldsteInnsendte), mottakerKommunenummer = "3435", digisosId = UUID.randomUUID()))
