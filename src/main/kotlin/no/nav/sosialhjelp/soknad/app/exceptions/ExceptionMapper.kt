@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtException
 import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.ForMangeMottakereException
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.ForMangeMottakereInfo
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
@@ -124,15 +125,18 @@ class ExceptionMapper(
                 log.error(e.message, e)
                 buildError(HttpStatus.TOO_MANY_REQUESTS, SoknadApiError(SoknadApiErrorType.AntallSoknaderSendt, e))
             }
-            is ForMangeMottakereException -> {
-                log.error(e.message, e)
-                buildError(HttpStatus.NOT_ACCEPTABLE, SoknadApiError(SoknadApiErrorType.ForMangeMottakere))
-            }
             else -> {
                 log.error("REST-kall feilet", e)
                 buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError, e))
             }
         }
+
+    @ExceptionHandler(value = [ForMangeMottakereException::class])
+    @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+    fun handleForMangeMottakereException(e: ForMangeMottakereException): ResponseEntity<ForMangeMottakereInfo> {
+        log.error("For mange mottakere", e)
+        return buildError(HttpStatus.NOT_ACCEPTABLE, e.info)
+    }
 
     @ExceptionHandler(value = [DokumentUploadError::class])
     @ResponseStatus(value = HttpStatus.CONTENT_TOO_LARGE)

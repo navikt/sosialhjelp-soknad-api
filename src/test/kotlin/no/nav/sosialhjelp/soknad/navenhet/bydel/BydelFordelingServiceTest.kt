@@ -56,6 +56,7 @@ internal class BydelFordelingServiceTest {
             gatenavn = gatenavn,
             husnummer = husnummer,
             bydelsnummer = BYDEL_MARKA_OSLO,
+            kommunenummer = "0301",
         )
     }
 

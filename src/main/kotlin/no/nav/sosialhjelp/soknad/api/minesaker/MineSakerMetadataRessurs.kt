@@ -23,13 +23,15 @@ class MineSakerMetadataRessurs(
     @ProtectionTokenXSubstantial
     @GetMapping("/innsendte")
     fun hentInnsendteSoknaderForBruker(): List<InnsendtSoknadDto> {
-        return mineSakerService.hentInnsendteSoknader().map {
-            InnsendtSoknadDto(
-                navn = TEMA_NAVN,
-                kode = TEMA_KODE_KOM,
-                sistEndret = it.tidspunkt.sendtInn?.toString() ?: "",
-            )
-        }
+        val map =
+            mineSakerService.hentInnsendteSoknader().map {
+                InnsendtSoknadDto(
+                    navn = TEMA_NAVN,
+                    kode = TEMA_KODE_KOM,
+                    sistEndret = it.tidspunkt.sendtInn?.toString() ?: "",
+                )
+            }
+        return map
     }
 
     @Unprotected

@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.SoknadLifecycleMetricsService
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.ForMangeMottakereException
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CancelSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler
@@ -91,7 +92,7 @@ class SoknadLifecycleHandlerImpl(
     ): SoknadSendtInfo {
         return when (e) {
             is SoknadAlleredeSendtException -> e.sendtInfo
-            is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException, is AntallSoknaderSendtException,
+            is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException, is AntallSoknaderSendtException, is ForMangeMottakereException,
             -> throw e
             else -> {
                 lifecycleMetricsService.reportSendSoknadFeilet()

@@ -25,6 +25,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
+import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.web.reactive.function.BodyInserters
 import java.util.UUID
 
@@ -208,6 +209,19 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
             .exchange()
     }
 
+    protected fun doPutFullResponse(
+        uri: String,
+        requestBody: Any,
+        contentType: MediaType = MediaType.APPLICATION_JSON,
+    ): ResponseSpec {
+        return webTestClient.put()
+            .uri(uri)
+            .header("Authorization", "Bearer ${token.serialize()}")
+            .contentType(contentType)
+            .body(BodyInserters.fromValue(requestBody))
+            .exchange()
+    }
+
     protected fun doPutExpectError(
         uri: String,
         requestBody: Any,
@@ -220,7 +234,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
             .body(BodyInserters.fromValue(requestBody))
             .exchange()
             .expectStatus().isEqualTo(httpStatus)
-            .expectBody(SoknadApiError::class.java)
+            .expectBody<SoknadApiError>()
             .returnResult()
             .responseBody!!
     }

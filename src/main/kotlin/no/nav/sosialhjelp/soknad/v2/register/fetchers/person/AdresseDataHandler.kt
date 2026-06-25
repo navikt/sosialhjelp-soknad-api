@@ -49,7 +49,7 @@ fun Oppholdsadresse.toV2Adresse(): Adresse? {
 private fun Vegadresse.toV2VegAdresse(): VegAdresse {
     return VegAdresse(
         landkode = "NOR",
-        kommunenummer = kommunenummer,
+        kommunenummer = kommunenummer ?: error("Fant ikke kommunenummer for Vegadresse"),
         bolignummer = bruksenhetsnummer,
         postnummer = postnummer,
         poststed = poststed,

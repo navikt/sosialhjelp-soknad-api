@@ -498,7 +498,7 @@ private fun KontaktRepository.createAdresser(id: UUID) {
         adresser =
             Adresser(
                 adressevalg = AdresseValg.FOLKEREGISTRERT,
-                folkeregistrert = VegAdresse(),
+                folkeregistrert = VegAdresse(kommunenummer = "0301"),
             ),
         mottaker =
             NavEnhet(

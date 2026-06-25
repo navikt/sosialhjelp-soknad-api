@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.v2.BegrenseAntallMottakereValidator
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.v2.navenhet.getGtFromAdresse
@@ -17,6 +18,7 @@ class AdresseUseCaseHandler(
     private val kommuneInfoService: KommuneInfoService,
     private val kodeverkService: KodeverkService,
     private val kortSoknadUseCaseHandler: KortSoknadUseCaseHandler,
+    private val mottakereValidator: BegrenseAntallMottakereValidator,
 ) {
     fun getAdresseAndMottakerInfo(soknadId: UUID): AdresserDto {
         val adresser = adresseService.findAdresser(soknadId)
@@ -46,16 +48,18 @@ class AdresseUseCaseHandler(
                 AdresseValg.SOKNAD -> brukerAdresse
             }
 
-        valgtAdresse?.also { adresseService.validateMottaker(it) }
-
         val mottaker =
-            runCatching { valgtAdresse?.let { navEnhetService.findNavEnhetByAdresse(it) } }
-                .getOrElse {
-                    if (it is SosialhjelpSoknadApiException) {
-                        logger.error("Kunne ikke finne Nav-Enhet. AdresseValg: $adresseValg, GT: ${valgtAdresse?.getGtFromAdresse()}", it)
-                    }
-                    throw it
+            valgtAdresse
+                ?.let {
+                    runCatching { navEnhetService.findNavEnhetByAdresse(it) }
+                        .onFailure { e ->
+                            if (e is SosialhjelpSoknadApiException) {
+                                logger.error("Kunne ikke finne Nav-Enhet. AdresseValg: $adresseValg, GT: ${valgtAdresse.getGtFromAdresse()}", e)
+                            }
+                        }
+                        .getOrThrow()
                 }
+                ?.also { mottaker -> mottakereValidator.validateMottaker(mottaker.kommunenummer) }
 
         runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker) }
             .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad(soknadId, currentAdresser, currentMottaker, mottaker) }

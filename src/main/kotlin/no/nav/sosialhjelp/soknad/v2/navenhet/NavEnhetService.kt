@@ -21,9 +21,11 @@ class NavEnhetService(
     fun findNavEnhetByAdresse(
         adresse: Adresse,
     ): NavEnhet {
+        val kommunenummer = adresse.getKommunenummer()
+
         return adresse.checkBydelFordelingMarka()
             .let { gt -> norgService.getEnhetForGt(gt) }
-            ?.toNavEnhet(adresse.getKommunenummer())
+            ?.toNavEnhet(kommunenummer, getKommunenavn(kommunenummer))
             ?.also { log.info("Fant Nav-enhet ${it.enhetsnavn} (${it.enhetsnummer}) for gt: ${adresse.getGtFromAdresse()}") }
             ?: error("Fant ingen Nav-enhet for gt: ${adresse.getGtFromAdresse()}")
     }
@@ -37,16 +39,6 @@ class NavEnhetService(
             true -> bydelFordelingService.getBydelTilForMarka(this)
             false -> getGtFromAdresse() ?: error("AdresseForslag mangler geografisk tilknytning")
         } ?: error("Adresse mangler geografisk tilknytning")
-    }
-
-    fun NavEnhetDto.toNavEnhet(kommunenummer: String): NavEnhet {
-        return NavEnhet(
-            enhetsnummer = enhetNr,
-            enhetsnavn = navn,
-            kommunenummer = kommunenummer,
-            kommunenavn = getKommunenavn(kommunenummer) ?: "ikke funnet",
-            orgnummer = null,
-        )
     }
 
     companion object {
@@ -69,3 +61,16 @@ fun Adresse.getGtFromAdresse(): String? =
         is MatrikkelAdresse -> bydelsnummer ?: kommunenummer
         else -> null
     }
+
+fun NavEnhetDto.toNavEnhet(
+    kommunenummer: String,
+    kommunenavn: String?,
+): NavEnhet {
+    return NavEnhet(
+        enhetsnummer = enhetNr,
+        enhetsnavn = navn,
+        kommunenummer = kommunenummer,
+        kommunenavn = kommunenavn ?: "ikke funnet",
+        orgnummer = null,
+    )
+}

@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.navenhet.NorgCacheConfig
 import no.nav.sosialhjelp.soknad.navenhet.NorgClient
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
-import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.navenhet.toNavEnhet
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,7 +37,7 @@ class NorgServiceCacheTest : AbstractIntegrationTest() {
 
         cacheManager.getCache(NorgCacheConfig.CACHE_NAME)
             .let { cache -> cache!!.get("0301") }
-            .let { wrapper -> wrapper!!.get() as NavEnhet }
+            .let { wrapper -> wrapper!!.get() as NavEnhetDto }.toNavEnhet("0301", "Oslo")
             .also { navEnhet ->
                 assertThat(navEnhet.enhetsnavn).isEqualTo(enhetForGt!!.navn)
                 assertThat(navEnhet.enhetsnummer).isEqualTo(enhetForGt.enhetNr)

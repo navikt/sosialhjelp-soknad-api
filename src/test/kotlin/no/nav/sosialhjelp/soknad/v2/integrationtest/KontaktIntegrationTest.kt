@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.adressesok.AdressesokClient
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
-import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
@@ -27,10 +26,12 @@ import no.nav.sosialhjelp.soknad.navenhet.NavEnhetDto
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.v2.BegrenseAntallMottakereValidator
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
@@ -39,6 +40,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.ForMangeMottakereInfo
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
@@ -58,9 +60,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
+import org.springframework.test.web.reactive.server.expectBody
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 class KontaktIntegrationTest : AbstractIntegrationTest() {
@@ -221,7 +223,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", KOMMUNENUMMER, "123", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
-        val navEnhetDto = NavEnhetDto("Bærum Nav-senter", "123")
+        val navEnhetDto = NavEnhetDto("Bærum Nav-senter", "1212")
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhetDto
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
@@ -241,7 +243,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
             assertThat(it.mottaker)
                 .isEqualTo(
-                    NavEnhet("Bærum Nav-senter", "1212", KOMMUNENUMMER, "123", "Bærum"),
+                    NavEnhet("Bærum Nav-senter", "1212", KOMMUNENUMMER, "Bærum", null),
                 )
         }
     }
@@ -286,7 +288,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 1,
                 1,
             )
-        val navEnhetDto = NavEnhetDto("Sandvika Nav-senter", "123")
+        val navEnhetDto = NavEnhetDto("Sandvika Nav-senter", "1212")
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhetDto
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns
             MellomlagringDto(
@@ -336,7 +338,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
-            assertThat(it.mottaker).isEqualTo(NavEnhet("Sandvika Nav-senter", "1212", KOMMUNENUMMER, "123", KOMMUNENAVN))
+            assertThat(it.mottaker).isEqualTo(NavEnhet("Sandvika Nav-senter", "1212", KOMMUNENUMMER, KOMMUNENAVN, null))
         }
 
         metadataRepository.findByIdOrNull(lagretSoknad.id)!!
@@ -400,9 +402,9 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             ),
         )
 
-        val vegadresse = VegadresseDto("3883", 1, null, "Testveien", KOMMUNENAVN, KOMMUNENUMMER, "123", "Navstad", null)
+        val vegadresse = VegadresseDto("3883", 1, null, "Testveien", KOMMUNENAVN, KOMMUNENUMMER, "2730", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
-        val navEnhetDto = NavEnhetDto("Sandvika Nav-senter", "123")
+        val navEnhetDto = NavEnhetDto("Sandvika Nav-senter", "1212")
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhetDto
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
@@ -457,7 +459,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
-            assertThat(it.mottaker).isEqualTo(NavEnhet("Sandvika Nav-senter", "1212", KOMMUNENUMMER, "123", KOMMUNENAVN))
+            assertThat(it.mottaker).isEqualTo(NavEnhet("Sandvika Nav-senter", "1212", KOMMUNENUMMER, KOMMUNENAVN, null))
         }
 
         metadataRepository.findByIdOrNull(lagretSoknad.id)!!
@@ -475,14 +477,17 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal ikke kunne velge en 3 kommune hvis soknader er sendt til 2 forskjellige kommuner innenfor x antall dager`() {
+        every { norgService.getEnhetForGt(any()) } returns NavEnhetDto("NavEnhet for 9999", "1824")
+
         val lagretSoknad =
             opprettSoknadMetadata()
                 .let { metadataRepository.save(it) }
                 .let { opprettSoknad(id = it.soknadId) }
                 .let { soknadRepository.save(it) }
 
-        metadataRepository.save(opprettSoknadMetadata(status = SENDT, kommunenummer = "3201", innsendtDato = LocalDateTime.now()))
-        metadataRepository.save(opprettSoknadMetadata(kommunenummer = "1234", status = SENDT, innsendtDato = LocalDateTime.now()))
+        val eldsteInnsendt = nowWithMillis().minusDays(2)
+        metadataRepository.save(opprettSoknadMetadata(status = SENDT, kommunenummer = "3201", innsendtDato = eldsteInnsendt))
+        metadataRepository.save(opprettSoknadMetadata(kommunenummer = "1234", status = SENDT, innsendtDato = nowWithMillis()))
 
         val adresseInput =
             AdresserInput(
@@ -493,12 +498,18 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                     ),
             )
 
-        doPutExpectError(
+        doPutFullResponse(
             uri = "/soknad/${lagretSoknad.id}/adresser",
             requestBody = adresseInput,
-            httpStatus = HttpStatus.NOT_ACCEPTABLE,
         )
-            .also { assertThat(it.error).isEqualTo(SoknadApiErrorType.ForMangeMottakere) }
+            .expectStatus().isEqualTo(406)
+            .expectBody<ForMangeMottakereInfo>()
+            .returnResult().responseBody!!
+            .also {
+                assertThat(it.antallMottakere).isEqualTo(BegrenseAntallMottakereValidator.MAX_ANTALL_KOMMUNER)
+                assertThat(it.maksAntallMottakere).isEqualTo(BegrenseAntallMottakereValidator.MAX_ANTALL_KOMMUNER)
+                assertThat(it.innsendingGyldigFra).isEqualTo(eldsteInnsendt.plusDays(1).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES))
+            }
     }
 
     companion object {

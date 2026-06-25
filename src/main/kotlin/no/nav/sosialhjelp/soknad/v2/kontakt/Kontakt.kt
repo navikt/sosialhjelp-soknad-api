@@ -67,5 +67,6 @@ data class NavEnhet(
     val enhetsnummer: String,
     val kommunenummer: String,
     val kommunenavn: String,
+    // settes aldri - mappes ikke videre
     val orgnummer: String? = null,
 ) : Serializable

@@ -216,7 +216,7 @@ fun opprettNavEnhet(
     kommunenummer: String = "5555",
     orgnummer: String? = null,
     kommunenavn: String = "Nav-kommunen",
-): NavEnhet = NavEnhet(navn, enhetNr, kommunenummer, kommunenavn, orgnummer,)
+): NavEnhet = NavEnhet(navn, enhetNr, kommunenummer, kommunenavn, orgnummer)
 
 fun opprettEier(
     soknadId: UUID,
@@ -295,7 +295,7 @@ fun opprettMatrikkelAdresse(
 
 fun opprettFolkeregistrertAdresse(
     landkode: String = "NO",
-    kommunenummer: String? = "2944",
+    kommunenummer: String = "2944",
     adresselinjer: List<String> = listOf("Underetasjen", "Bak huset"),
     bolignummer: String? = "7",
     postnummer: String? = "2933",
@@ -318,7 +318,7 @@ fun opprettFolkeregistrertAdresse(
 
 fun opprettFolkeregistrertAdresseInput(
     landkode: String = "NO",
-    kommunenummer: String? = "2944",
+    kommunenummer: String = "2944",
     adresselinjer: List<String> = listOf("Underetasjen", "Bak huset"),
     bolignummer: String? = "7",
     postnummer: String? = "2933",

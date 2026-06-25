@@ -11,12 +11,18 @@ import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
+import no.nav.sosialhjelp.soknad.v2.BegrenseAntallMottakereValidator.Companion.MAX_ANTALL_KOMMUNER
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
+import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.ForMangeMottakereInfo
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
@@ -26,9 +32,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
+import org.springframework.test.web.reactive.server.expectBody
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
@@ -109,7 +117,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doPostFullResponse(uri = createUri)
             .expectStatus().is5xxServerError
-            .expectBody(SoknadApiError::class.java)
+            .expectBody<SoknadApiError>()
 
         soknadRepository.findAll().let { assertThat(it).isEmpty() }
         metadataRepository.findAll().let { assertThat(it).isEmpty() }
@@ -164,7 +172,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val innsendingFeiletError =
             doPostFullResponse(uri = sendUri(soknadId))
                 .expectStatus().is5xxServerError
-                .expectBody(InnsendingFeiletError::class.java)
+                .expectBody<InnsendingFeiletError>()
                 .returnResult().responseBody
 
         val deletionDate =
@@ -198,7 +206,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doPostFullResponse(uri = sendUri(soknadId))
             .expectStatus().isOk
-            .expectBody(SoknadSendtDto::class.java)
+            .expectBody<SoknadSendtDto>()
             .returnResult().responseBody
             .also { dto ->
                 assertThat { dto?.digisosId }.isNotNull()
@@ -263,9 +271,30 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doPostFullResponse(uri = createUri)
             .expectStatus().isForbidden
-            .expectBody(SoknadApiError::class.java)
+            .expectBody<SoknadApiError>()
             .returnResult().responseBody
             .also { response -> assertThat(response!!.error).isEqualTo(SoknadApiErrorType.SokerUnder18) }
+    }
+
+    @Test
+    fun `For mange mottakere ved innsending skal kaste exception`() {
+        val eldsteInnsendte = nowWithMillis().minusDays(2)
+        metadataRepository.save(SoknadMetadata(UUID.randomUUID(), userId, status = SoknadStatus.SENDT, tidspunkt = Tidspunkt(sendtInn = nowWithMillis().minusDays(1)), mottakerKommunenummer = "0301", digisosId = UUID.randomUUID()))
+        metadataRepository.save(SoknadMetadata(UUID.randomUUID(), userId, status = SoknadStatus.SENDT, tidspunkt = Tidspunkt(sendtInn = eldsteInnsendte), mottakerKommunenummer = "3435", digisosId = UUID.randomUUID()))
+
+        val nySoknad = createNewSoknad()
+        kontaktRepository.save(Kontakt(nySoknad, mottaker = createNavEnhet().copy(kommunenummer = "4542")))
+
+        doPostFullResponse(uri = sendUri(nySoknad))
+            .expectStatus().isEqualTo(HttpStatus.NOT_ACCEPTABLE)
+            .expectBody<ForMangeMottakereInfo>()
+            .returnResult().responseBody
+            .also { info ->
+                requireNotNull(info)
+                assertThat(info.antallMottakere).isEqualTo(MAX_ANTALL_KOMMUNER)
+                assertThat(info.maksAntallMottakere).isEqualTo(MAX_ANTALL_KOMMUNER)
+                assertThat(info.innsendingGyldigFra).isEqualTo(eldsteInnsendte.plusDays(1).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES))
+            }
     }
 
     private fun createNewSoknad(): UUID {
