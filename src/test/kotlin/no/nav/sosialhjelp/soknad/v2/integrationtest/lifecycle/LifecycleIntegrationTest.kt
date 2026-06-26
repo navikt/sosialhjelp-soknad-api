@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
+import no.nav.sosialhjelp.soknad.v2.BegrenseAntallMottakereValidator.Companion.ANTALL_DAGER_BEGRENSET
 import no.nav.sosialhjelp.soknad.v2.BegrenseAntallMottakereValidator.Companion.MAX_ANTALL_KOMMUNER
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
@@ -300,6 +301,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
                 assertThat(info.antallMottakere).isEqualTo(MAX_ANTALL_KOMMUNER)
                 assertThat(info.maksAntallMottakere).isEqualTo(MAX_ANTALL_KOMMUNER)
                 assertThat(info.innsendingGyldigFra).isEqualTo(eldsteInnsendte.plusDays(1).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES))
+                assertThat(info.begrensetPeriode).isEqualTo(ANTALL_DAGER_BEGRENSET)
             }
     }
 

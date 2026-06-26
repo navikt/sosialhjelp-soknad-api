@@ -112,4 +112,5 @@ data class ForMangeMottakereInfo(
     val innsendingGyldigFra: LocalDateTime,
     val antallMottakere: Int,
     val maksAntallMottakere: Int,
+    val begrensetPeriode: Int,
 )

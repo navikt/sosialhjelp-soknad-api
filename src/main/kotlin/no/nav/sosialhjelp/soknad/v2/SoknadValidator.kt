@@ -135,6 +135,19 @@ class BegrenseAntallMottakereValidator(
     }
 
     fun validateMottaker(kommunenummer: String) {
+        // TODO Midlertidig
+        if (kommunenummer == "0301") {
+            throw ForMangeMottakereException(
+                message = "For mange søknader",
+                info =
+                    ForMangeMottakereInfo(
+                        innsendingGyldigFra = nowWithMillis().minusDays(ANTALL_DAGER_BEGRENSET).truncatedTo(ChronoUnit.MINUTES),
+                        antallMottakere = 2,
+                        maksAntallMottakere = MAX_ANTALL_KOMMUNER,
+                        begrensetPeriode = ANTALL_DAGER_BEGRENSET.toInt(),
+                    ),
+            )
+        }
         findRelevantMetadata().also { metadatas -> doValidate(metadatas, kommunenummer) }
     }
 
@@ -163,6 +176,7 @@ class BegrenseAntallMottakereValidator(
                             innsendingGyldigFra = metadatas.getInnsendingGyldigIfra(),
                             antallMottakere = listOfMottakere.size,
                             maksAntallMottakere = MAX_ANTALL_KOMMUNER,
+                            begrensetPeriode = ANTALL_DAGER_BEGRENSET.toInt(),
                         ),
                 )
             }
