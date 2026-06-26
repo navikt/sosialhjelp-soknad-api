@@ -19,7 +19,9 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.JacksonJsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 import java.util.UUID
 
 @Component
@@ -47,7 +49,15 @@ class UploadClient(
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $tokenXToken")
                 .retrieve()
                 .bodyToMono<VedleggSpesifikasjon>()
-                .block() ?: throw IllegalStateException("Fikk null-respons fra sosialhjelp-upload for soknadId $soknadId")
+                .onErrorResume(WebClientResponseException::class.java) { ex ->
+                    // Behandle 404 som ingen treff -> tom liste
+                    if (ex.statusCode.value() == 404) {
+                        Mono.just(VedleggSpesifikasjon(emptyList()))
+                    } else {
+                        Mono.error(ex)
+                    }
+                }
+                .block() ?: error("Fikk tom body fra upload")
         return JsonVedleggSpesifikasjon().withVedlegg(
             spec.vedlegg.mapNotNull { vedlegg ->
                 if (vedlegg.kategori == null) return@mapNotNull null
