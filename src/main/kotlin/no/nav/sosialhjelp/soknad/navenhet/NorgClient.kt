@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.io.Serializable
 
 @Component
 class NorgClient(
@@ -63,4 +64,4 @@ class TjenesteUtilgjengeligException(message: String, throwable: Throwable?) :
 data class NavEnhetDto(
     val navn: String,
     val enhetNr: String,
-)
+): Serializable

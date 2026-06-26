@@ -37,7 +37,7 @@ value class GeografiskTilknytning(val value: String) {
 @Configuration
 class NorgCacheConfig : SoknadApiCacheConfig(CACHE_NAME, ETT_DOGN) {
     companion object {
-        const val CACHE_NAME = "norg"
+        const val CACHE_NAME = "norg2"
         private val ETT_DOGN = Duration.ofDays(1)
     }
 }
