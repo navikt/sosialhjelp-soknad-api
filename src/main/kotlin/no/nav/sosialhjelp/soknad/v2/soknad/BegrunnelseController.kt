@@ -22,17 +22,16 @@ class BegrunnelseController(
 ) {
     @GetMapping
     fun getBegrunnelse(
-        @PathVariable("soknadId") soknadId: UUID,
+        @PathVariable soknadId: UUID,
     ): BegrunnelseDto {
         return service.findBegrunnelse(soknadId).toBegrunnelseDto()
     }
 
     @PutMapping
     fun updateBegrunnelse(
-        @PathVariable("soknadId") soknadId: UUID,
+        @PathVariable soknadId: UUID,
         @RequestBody(required = true) input: BegrunnelseInput,
     ): BegrunnelseDto {
-        // TODO Trengs forskjellig håndtering av disse?
         return when (input) {
             is HarHvaSokesOmInput -> service.updateHvaSokesOm(soknadId, input.hvorforSoke, input.hvaSokesOm)
             is HarKategorierInput -> service.updateKategorier(soknadId, input.kategorier, input.annet)
