@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.familie.service
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
@@ -46,9 +45,6 @@ class FamilieServiceImpl(
         barnebidrag: Barnebidrag?,
         updated: Map<UUID, Barn>,
     ): Forsorger {
-        // TODO Ekstra logging
-        logger.info("Oppdaterer forsørger @ Service med Barnebidrag: $barnebidrag")
-
         val forsorger =
             findOrCreate(soknadId)
                 .run {
@@ -82,9 +78,6 @@ class FamilieServiceImpl(
         inntektPresent: Boolean,
         utgiftPresent: Boolean,
     ) {
-        // TODO Ekstra logging
-        logger.info("Oppdaterer barnebidrag: mottar=$inntektPresent, betaler=$utgiftPresent")
-
         InntektType.BARNEBIDRAG_MOTTAR.let {
             if (inntektPresent) {
                 okonomiService.addElementToOkonomi(soknadId, it)
@@ -106,7 +99,6 @@ class FamilieServiceImpl(
         existing: Map<UUID, Barn>,
         updated: Map<UUID, Barn>,
     ): Map<UUID, Barn> {
-        // TODO: Fjern personId-lookupen her når denne ikke blir kalt fra gammel ForsorgerpliktRessurs
         return existing
             .map { (uuid, existing) ->
                 updated.entries
@@ -141,10 +133,6 @@ class FamilieServiceImpl(
     private fun findOrCreate(soknadId: UUID): Familie {
         return familieRepository.findByIdOrNull(soknadId)
             ?: familieRepository.save(Familie(soknadId))
-    }
-
-    companion object {
-        private val logger by logger()
     }
 }
 

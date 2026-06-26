@@ -37,7 +37,6 @@ private fun Eier.toPersonaliaDto(personId: String): PersonaliaDto =
 
 data class PersonaliaDto(
     val navn: NavnDto,
-    // TODO Nødvendig / riktig å sende med fødselsnummer i denne Dto'en ?
     val fodselsnummer: String? = null,
     val statsborgerskap: String? = null,
     val nordiskBorger: Boolean? = null,

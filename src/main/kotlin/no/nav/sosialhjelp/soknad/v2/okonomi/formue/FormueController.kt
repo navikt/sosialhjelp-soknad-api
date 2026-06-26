@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
@@ -30,9 +29,6 @@ class FormueController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: FormueInput,
     ): FormueDto {
-        // TODO Ekstra logging i forbindelse med feilen "Feil ved oppdatering av okonomi-element"
-        logger.info("Oppdaterer formue: ${input.copy(beskrivelseSparing = "")}")
-
         if (input.isAllFalse()) {
             formueService.removeFormuer(soknadId)
         } else {
@@ -44,10 +40,6 @@ class FormueController(
         }
 
         return getFormue(soknadId)
-    }
-
-    companion object {
-        private val logger by logger()
     }
 }
 

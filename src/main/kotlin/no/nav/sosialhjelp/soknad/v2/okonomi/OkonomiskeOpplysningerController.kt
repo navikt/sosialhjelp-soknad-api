@@ -24,17 +24,16 @@ class OkonomiskeOpplysningerController(
 ) {
     @GetMapping
     fun getOkonomiskeOpplysninger(
-        @PathVariable("soknadId") soknadId: UUID,
+        @PathVariable soknadId: UUID,
     ): OkonomiskeOpplysningerDto {
         return okonomiskeOpplysningerService.getOkonomiskeOpplysninger(soknadId)
             .map { it.toOkonomiskOpplysningDto() }
             .let { OkonomiskeOpplysningerDto(it) }
     }
 
-    // TODO Fjern required false når frontend er oppdatert
     @PutMapping
     fun updateOkonomiskOpplysning(
-        @PathVariable("soknadId") soknadId: UUID,
+        @PathVariable soknadId: UUID,
         @RequestParam("type") type: DokumentasjonType,
         @RequestBody input: AbstractOkonomiInput,
     ): OkonomiskeOpplysningerDto {

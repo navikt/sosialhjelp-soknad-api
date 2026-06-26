@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
@@ -38,9 +37,6 @@ class FormueServiceImpl(
         existingTypes: Set<FormueType>,
         beskrivelse: String?,
     ) {
-        // TODO Ekstra logging "Feil ved oppdatering av okonomielement"
-        logger.info("Oppdaterer Formuer: $existingTypes")
-
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_SPARING, verdi = true)
 
         formueTyper.forEach { type ->
@@ -57,17 +53,11 @@ class FormueServiceImpl(
     }
 
     override fun removeFormuer(soknadId: UUID) {
-        // TODO Ekstra logging "Feil ved oppdatering av okonomielement"
-        logger.info("Fjerner alle Formuer")
-
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_SPARING, verdi = false)
-
         formueTyper.forEach { type -> okonomiService.removeElementFromOkonomi(soknadId, type) }
     }
 
     companion object {
-        private val logger by logger()
-
         private val formueTyper: List<FormueType> =
             listOf(
                 FormueType.FORMUE_BRUKSKONTO,

@@ -25,7 +25,6 @@ class SendSoknadHandler(
     fun doSendAndReturnInfo(
         soknadId: UUID,
     ): SoknadSendtInfo {
-        // TODO Er rekkefølge på valideringer viktig?
         validators.forEach { it.validate(soknadId) }
 
         val innsendingstidspunkt = metadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
