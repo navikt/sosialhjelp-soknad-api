@@ -64,4 +64,4 @@ class TjenesteUtilgjengeligException(message: String, throwable: Throwable?) :
 data class NavEnhetDto(
     val navn: String,
     val enhetNr: String,
-): Serializable
+) : Serializable
