@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.api.minesaker
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionTokenXSubstantial
+import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtValidator.Companion.BEGRENSET_PERIODE_TIMER
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtValidator.Companion.MAX_ANTALL_SOKNADER
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -44,7 +45,7 @@ class MineSakerMetadataRessurs(
     @ProtectionSelvbetjeningHigh
     @GetMapping("/antallSisteDogn")
     fun hentAntallInnsendteSoknader(): AntallInnsendteSoknaderDto {
-        return mineSakerService.hentInnsendteSoknaderSisteDogn()
+        return mineSakerService.hentInnsendteSoknaderFraTidspunkt(BEGRENSET_PERIODE_TIMER)
             .let { (antall, innsendingTillattFra) ->
                 AntallInnsendteSoknaderDto(
                     antall = antall,

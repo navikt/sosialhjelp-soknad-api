@@ -17,9 +17,9 @@ class MineSakerService(private val metadataService: SoknadMetadataService) {
         metadataService.getAllMetadataForPerson(getUserIdFromToken())
             .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
 
-    fun hentInnsendteSoknaderSisteDogn(): Pair<Int, LocalDateTime?> =
-        metadataService.findMetadataForPersonSendtInnAfter(getUserIdFromToken(), nowWithMillis().minusDays(1))
-            .also { if (it.size >= MAX_ANTALL_SOKNADER) logger.warn("Bruker har sendt inn ${it.size} søknader siste 24 timer") }
+    fun hentInnsendteSoknaderFraTidspunkt(timer: Long): Pair<Int, LocalDateTime?> =
+        metadataService.findMetadataForPersonSendtInnAfter(getUserIdFromToken(), nowWithMillis().minusHours(timer))
+            .also { if (it.size >= MAX_ANTALL_SOKNADER) logger.warn("Bruker har sendt inn ${it.size} søknader siste $timer timer") }
             .let { metadatas -> Pair(metadatas.size, metadatas.findInnsendingTillattFra()) }
 
     private fun List<SoknadMetadata>.findInnsendingTillattFra(): LocalDateTime? =

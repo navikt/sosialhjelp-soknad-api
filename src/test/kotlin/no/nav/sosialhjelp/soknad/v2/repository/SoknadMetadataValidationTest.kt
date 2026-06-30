@@ -40,15 +40,14 @@ class SoknadMetadataValidationTest {
         }
     }
 
-    // FIXME: Se SoknadMetadata.validate
     @Test
-    fun `Status FERDIGSTILT uten innsendt-dato skal feile`() {
+    fun `Status SENDT uten innsendt-dato skal feile`() {
         assertThatThrownBy { soknadMetadata.copy(status = SoknadStatus.SENDT) }
             .isInstanceOf(IllegalStateException::class.java)
     }
 
     @Test
-    fun `Status FERDIGSTILT uten mottaker skal feile`() {
+    fun `Status SENDT uten mottaker skal feile`() {
         assertThatThrownBy {
             soknadMetadata.copy(
                 status = SoknadStatus.SENDT,
@@ -58,7 +57,7 @@ class SoknadMetadataValidationTest {
     }
 
     @Test
-    fun `Status FERDIGSTILT uten DigisosId skal feile`() {
+    fun `Status SENDT uten DigisosId skal feile`() {
         assertThatThrownBy {
             soknadMetadata.copy(
                 status = SoknadStatus.SENDT,

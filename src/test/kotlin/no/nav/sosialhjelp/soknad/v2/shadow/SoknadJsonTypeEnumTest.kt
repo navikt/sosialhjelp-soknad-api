@@ -23,7 +23,7 @@ class SoknadJsonTypeEnumTest {
                     is InntektType -> createInntekt(it)
                     is FormueType -> createFormue(it)
                     is UtgiftType -> createUtgift(it)
-                    else -> return
+                    else -> Unit
                 }
             }
         }

@@ -8,6 +8,8 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligEx
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.v2.BegrenseAntallMottakereValidator.Companion.BEGRENSET_PERIODE
+import no.nav.sosialhjelp.soknad.v2.BegrenseAntallMottakereValidator.Companion.MAX_ANTALL_KOMMUNER
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.removeDokumentFromDokumentasjon
@@ -107,10 +109,10 @@ class DocumentValidator(
 @Component
 class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerService) : SoknadValidator {
     override fun validate(soknadId: UUID) {
-        mineSakerService.hentInnsendteSoknaderSisteDogn()
+        mineSakerService.hentInnsendteSoknaderFraTidspunkt(BEGRENSET_PERIODE_TIMER)
             .also { (antall, innsendingTillattFra) ->
                 if (antall >= MAX_ANTALL_SOKNADER) {
-                    if (innsendingTillattFra == null) error("Soker har $MAX_ANTALL_SOKNADER eller flere soknader sendt siste 24 timer, men innsendingTillattFra er null")
+                    if (innsendingTillattFra == null) error("Soker har $MAX_ANTALL_SOKNADER eller flere soknader sendt siste $BEGRENSET_PERIODE_TIMER timer, men innsendingTillattFra er null")
                     throw AntallSoknaderSendtException(antall, soknadId, innsendingTillattFra)
                 }
             }
@@ -118,6 +120,7 @@ class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerServic
 
     companion object {
         const val MAX_ANTALL_SOKNADER = 2
+        const val BEGRENSET_PERIODE_TIMER = 24L
     }
 }
 
@@ -131,71 +134,65 @@ class BegrenseAntallMottakereValidator(
             adresseService.findMottaker(soknadId)?.kommunenummer
                 ?: error("Mangler mottaker ved validering: ${BegrenseAntallMottakereValidator::class.simpleName}")
 
-        findRelevantMetadata().also { metadatas -> doValidate(metadatas, kommunenummer) }
+        validateMottaker(kommunenummer)
     }
 
     fun validateMottaker(kommunenummer: String) {
-        // TODO Midlertidig
-        if (kommunenummer == "0301") {
-            throw ForMangeMottakereException(
-                message = "For mange søknader",
-                info =
-                    ForMangeMottakereInfo(
-                        innsendingGyldigFra = nowWithMillis().minusDays(ANTALL_DAGER_BEGRENSET).truncatedTo(ChronoUnit.MINUTES),
-                        antallMottakere = 2,
-                        maksAntallMottakere = MAX_ANTALL_KOMMUNER,
-                        begrensetPeriode = ANTALL_DAGER_BEGRENSET.toInt(),
-                    ),
-            )
-        }
-        findRelevantMetadata().also { metadatas -> doValidate(metadatas, kommunenummer) }
-    }
-
-    private fun findRelevantMetadata(): List<SoknadMetadata> =
         metadataService.findMetadataForPersonSendtInnAfter(
             personId = getUserIdFromToken(),
-            date = nowWithMillis().minusDays(ANTALL_DAGER_BEGRENSET),
+            date = nowWithMillis().minusDays(BEGRENSET_PERIODE),
         )
-
-    private fun doValidate(
-        metadatas: List<SoknadMetadata>,
-        kommunenummer: String,
-    ) {
-        val listOfMottakere = metadatas.getMottakere()
-
-        if (listOfMottakere.size < MAX_ANTALL_KOMMUNER) {
-            return
-        } else {
-            if (listOfMottakere.none { it == kommunenummer }) {
-                throw ForMangeMottakereException(
-                    message =
-                        "Du har sendt soknad til ${listOfMottakere.size} forskjellige kommuner de siste $ANTALL_DAGER_BEGRENSET dagene. " +
-                            "Maks antall kommuner innenfor $ANTALL_DAGER_BEGRENSET dager er $MAX_ANTALL_KOMMUNER.",
-                    info =
-                        ForMangeMottakereInfo(
-                            innsendingGyldigFra = metadatas.getInnsendingGyldigIfra(),
-                            antallMottakere = listOfMottakere.size,
-                            maksAntallMottakere = MAX_ANTALL_KOMMUNER,
-                            begrensetPeriode = ANTALL_DAGER_BEGRENSET.toInt(),
-                        ),
-                )
-            }
-        }
+            .also { metadatas -> doValidate(metadatas, kommunenummer) }
     }
 
     companion object {
         // bruker skal kun få lov til å søke i x kommuner innenfor n dager
-        const val ANTALL_DAGER_BEGRENSET = 7L
+        const val BEGRENSET_PERIODE = 7L
         const val MAX_ANTALL_KOMMUNER = 2
 
-        private fun List<SoknadMetadata>.getMottakere(): List<String> = mapNotNull { it.mottakerKommunenummer }.distinct()
+        fun doValidate(
+            metadatas: List<SoknadMetadata>,
+            kommunenummer: String,
+        ) {
+            val listOfMottakere = metadatas.getMottakere()
 
-        private fun List<SoknadMetadata>.getInnsendingGyldigIfra(): LocalDateTime =
-            mapNotNull { it.tidspunkt.sendtInn }.sortedByDescending { it }[MAX_ANTALL_KOMMUNER - 1]
-                .plusDays(1)
-                .plusMinutes(1)
-                .truncatedTo(ChronoUnit.MINUTES)
+            when {
+                listOfMottakere.size < MAX_ANTALL_KOMMUNER -> return
+                listOfMottakere.size == MAX_ANTALL_KOMMUNER && listOfMottakere.any { it == kommunenummer } -> return
+                else -> {
+                    throw ForMangeMottakereException(
+                        message =
+                            "Bruker har sendt søknad til ${listOfMottakere.size} forskjellige kommuner de siste $BEGRENSET_PERIODE dagene. " +
+                                "Maks antall kommuner innenfor $BEGRENSET_PERIODE dager er $MAX_ANTALL_KOMMUNER.",
+                        info =
+                            ForMangeMottakereInfo(
+                                innsendingGyldigFra = metadatas.getInnsendingGyldigIfra(),
+                                antallMottakere = listOfMottakere.size,
+                                maksAntallMottakere = MAX_ANTALL_KOMMUNER,
+                                begrensetPeriode = BEGRENSET_PERIODE.toInt(),
+                            ),
+                    )
+                }
+            }
+        }
     }
+}
+
+private fun List<SoknadMetadata>.getMottakere(): List<String> = mapNotNull { it.mottakerKommunenummer }.distinct()
+
+// Finner siste søknad pr. kommune og finner så når innsending er gyldig igjen
+private fun List<SoknadMetadata>.getInnsendingGyldigIfra(): LocalDateTime {
+    if (any { it.tidspunkt.sendtInn == null }) error("Fant metadata uten sendtInn tidspunkt ved validering: ${BegrenseAntallMottakereValidator::class.simpleName}")
+    if (any { it.mottakerKommunenummer == null }) error("Fant metadata uten mottakerKommunenummer ved validering: ${BegrenseAntallMottakereValidator::class.simpleName}")
+
+    return map { metadata -> metadata.mottakerKommunenummer!! to metadata.tidspunkt.sendtInn!! }
+        .groupBy({ it.first }, { it.second })
+        .mapValues { (_, timestamps) -> timestamps.maxOrNull() }.values
+        .sortedByDescending { it }[MAX_ANTALL_KOMMUNER - 1]
+        ?.plusDays(BEGRENSET_PERIODE)
+        ?.plusMinutes(1)
+        ?.truncatedTo(ChronoUnit.MINUTES)
+        ?: error("Feil ved validering av innsendingGyldigFra: ${BegrenseAntallMottakereValidator::class.simpleName}")
 }
 
 data class AntallSoknaderSendtException(
