@@ -508,7 +508,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             .also {
                 assertThat(it.antallMottakere).isEqualTo(BegrenseAntallMottakereValidator.MAX_ANTALL_KOMMUNER)
                 assertThat(it.maksAntallMottakere).isEqualTo(BegrenseAntallMottakereValidator.MAX_ANTALL_KOMMUNER)
-                assertThat(it.innsendingGyldigFra).isEqualTo(eldsteInnsendt.plusDays(1).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES))
+                assertThat(it.innsendingGyldigFra).isEqualTo(eldsteInnsendt.plusDays(BegrenseAntallMottakereValidator.BEGRENSET_PERIODE).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES))
             }
     }
 

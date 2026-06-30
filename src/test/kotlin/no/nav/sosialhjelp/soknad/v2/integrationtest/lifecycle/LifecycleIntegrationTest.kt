@@ -300,7 +300,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
                 requireNotNull(info)
                 assertThat(info.antallMottakere).isEqualTo(MAX_ANTALL_KOMMUNER)
                 assertThat(info.maksAntallMottakere).isEqualTo(MAX_ANTALL_KOMMUNER)
-                assertThat(info.innsendingGyldigFra).isEqualTo(eldsteInnsendte.plusDays(1).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES))
+                assertThat(info.innsendingGyldigFra).isEqualTo(eldsteInnsendte.plusDays(BEGRENSET_PERIODE).plusMinutes(1).truncatedTo(ChronoUnit.MINUTES))
                 assertThat(info.begrensetPeriode).isEqualTo(BEGRENSET_PERIODE)
             }
     }
