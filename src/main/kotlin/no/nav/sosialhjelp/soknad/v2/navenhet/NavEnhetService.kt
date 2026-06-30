@@ -65,12 +65,11 @@ fun Adresse.getGtFromAdresse(): String? =
 fun NavEnhetDto.toNavEnhet(
     kommunenummer: String,
     kommunenavn: String?,
-): NavEnhet {
-    return NavEnhet(
+) =
+    NavEnhet(
         enhetsnummer = enhetNr,
         enhetsnavn = navn,
         kommunenummer = kommunenummer,
         kommunenavn = kommunenavn ?: "ikke funnet",
         orgnummer = null,
     )
-}

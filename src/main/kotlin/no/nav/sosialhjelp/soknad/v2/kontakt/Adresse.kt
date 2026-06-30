@@ -28,12 +28,12 @@ import tools.jackson.module.kotlin.readValue
     subTypes = [VegAdresse::class, MatrikkelAdresse::class, PostboksAdresse::class, UstrukturertAdresse::class],
 )
 sealed interface Adresse {
-    val kommunenummer: String
+    val kommunenummer: String?
 }
 
 data class VegAdresse(
     val landkode: String = "NOR",
-    override val kommunenummer: String,
+    override val kommunenummer: String? = null,
     val adresselinjer: List<String> = emptyList(),
     val bolignummer: String? = null,
     val postnummer: String? = null,
@@ -45,7 +45,7 @@ data class VegAdresse(
 ) : Adresse, AdresseInput
 
 data class MatrikkelAdresse(
-    override val kommunenummer: String,
+    override val kommunenummer: String? = null,
     val gaardsnummer: String,
     val bruksnummer: String,
     val festenummer: String? = null,
@@ -58,12 +58,12 @@ data class PostboksAdresse(
     val postboks: String,
     val postnummer: String,
     val poststed: String,
-    override val kommunenummer: String = "ukjent",
+    override val kommunenummer: String? = null,
 ) : Adresse
 
 data class UstrukturertAdresse(
     val adresse: List<String>,
-    override val kommunenummer: String = "ukjent",
+    override val kommunenummer: String? = null,
 ) : Adresse
 
 private val mapper = jacksonObjectMapper()
