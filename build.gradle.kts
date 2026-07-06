@@ -85,7 +85,8 @@ dependencies {
     // springdoc
     implementation(libs.springdoc.openapi.starter.common)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
-    runtimeOnly(libs.jackson.module.kotlin.compat) // satisfies springdoc's @ConditionalOnClass(KotlinModule) check for Kotlin nullability → required fields
+    runtimeOnly(libs.fasterxml.jackson.module.kotlin.compat) // satisfies springdoc's @ConditionalOnClass(KotlinModule) check for Kotlin nullability → required fields
+    implementation(enforcedPlatform(libs.fasterxml.bom))
 
     // flyway / db
     implementation(libs.flyway.core)

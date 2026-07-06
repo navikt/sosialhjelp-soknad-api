@@ -15,6 +15,7 @@ prometheus = "0.16.0"
 micrometer_registry_prometheus = "1.17.0"
 micrometer_context_propagation = "1.2.1"
 jackson = "3.2.0"
+fasterxml_jackson = "2.22.0"
 logback = "1.5.37"
 logstash = "9.0"
 pdfbox = "3.0.7"
@@ -75,7 +76,8 @@ micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-p
 micrometer-context-propagation = { module = "io.micrometer:context-propagation", version.ref = "micrometer_context_propagation" }
 
 jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
-jackson-module-kotlin-compat = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.22.0" }
+fasterxml_jackson-module-kotlin-compat = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "fasterxml_jackson" }
+fasterxml_bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "fasterxml_jackson" }
 
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash" }
