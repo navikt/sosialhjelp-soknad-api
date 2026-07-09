@@ -69,7 +69,8 @@ class DokumentasjonToJsonMapper(
 
             val extraFromUpload = uploadByKey.keys - localKeys
             if (extraFromUpload.isNotEmpty()) {
-                // TODO: Avklar hva som skal skje med vedlegg fra upload som ikke finnes lokalt
+                // TODO: Avklar hva som skal skje med vedlegg fra upload som ikke finnes lokalt. Må slettes i mellomlager?
+                // Hva skjer hvis det er filer i mellomlager som ikke er nevnt i vedlegg.json?
                 log.warn(
                     "Vedlegg fra sosialhjelp-upload finnes ikke i lokal DokumentasjonList: {}",
                     extraFromUpload.joinToString { "(type=${it.type}, tilleggsinfo=${it.tilleggsinfo})" },
