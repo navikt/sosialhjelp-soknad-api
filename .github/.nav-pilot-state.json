@@ -1,8 +1,8 @@
 {
   "collection": "kotlin-backend",
-  "version": "2026.07.05-165716-b264d34",
+  "version": "2026.07.21-103109-46f8f8e",
   "scope": "repo",
-  "source_sha": "279f1c3",
+  "source_sha": "46f8f8e",
   "installed_at": "2026-06-04T12:42:23Z",
   "files": [
     {
@@ -63,7 +63,7 @@
     },
     {
       "path": ".github/skills/observability-debugging/",
-      "hash": "b01ef3cd48eca1aa"
+      "hash": "107a99f70451c01b"
     },
     {
       "path": ".github/skills/postgresql-review/",
