@@ -50,7 +50,7 @@ spec:
     sqlInstances:
       - type: POSTGRES_16
         name: sosialhjelp-soknad-api-db-dev
-        tier: db-custom-1-3840
+        tier: db-f1-micro
         diskSize: 10
         databases:
           - name: sosialhjelp-soknad-db-dev
