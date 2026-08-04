@@ -32,6 +32,7 @@ opentelemetry-logback = "2.30.0-alpha"
 testcontainers = "1.21.4"
 ninja-springmockk = "5.0.1"
 jsonassert = "1.5.3"
+netty = "4.2.16.Final"
 
 [libraries]
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
@@ -49,6 +50,8 @@ spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-star
 spring-boot-starter-data-jdbc-test = { module = "org.springframework.boot:spring-boot-starter-data-jdbc-test", version.ref = "spring-boot" }
 spring-boot-starter-webflux-test = { module = "org.springframework.boot:spring-boot-starter-webflux-test", version.ref = "spring-boot" }
 spring-boot-starter-data-redis-test = { module = "org.springframework.boot:spring-boot-starter-data-redis-test", version.ref = "spring-boot" }
+
+netty-bom = { module = "io.netty:netty-bom", version.ref = "netty" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "coroutines" }

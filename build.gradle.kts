@@ -67,6 +67,8 @@ configurations {
 dependencies {
     // Spring
     implementation(libs.bundles.spring.boot)
+    // eksplisitt pga. sårbarheter - sjekk opp ved oppdatering av spring, reactor, etc.
+    implementation(platform(libs.netty.bom))
 
     implementation(libs.jsonassert)
 
