@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.removeDokumentFromDokumentasjon
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.UUID
@@ -101,12 +102,13 @@ class DocumentValidator(
 }
 
 @Component
+@Profile("prodgcp|test")
 class AntallSoknaderSendtValidator(private val mineSakerService: MineSakerService) : SoknadValidator {
     override fun validate(soknadId: UUID) {
         mineSakerService.hentInnsendteSoknaderSisteDogn()
             .also { (antall, innsendingTillattFra) ->
                 if (antall >= MAX_ANTALL_SOKNADER) {
-                    if (innsendingTillattFra == null) error("Soker har ${MAX_ANTALL_SOKNADER} eller flere soknader sendt siste 24 timer, men innsendingTillattFra er null")
+                    if (innsendingTillattFra == null) error("Soker har $MAX_ANTALL_SOKNADER eller flere soknader sendt siste 24 timer, men innsendingTillattFra er null")
                     throw AntallSoknaderSendtException(antall, soknadId, innsendingTillattFra)
                 }
             }
