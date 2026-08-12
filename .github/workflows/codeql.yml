@@ -38,6 +38,9 @@ jobs:
       # only required for workflows in private repositories
       actions: read
       contents: read
+    env:
+      ORG_GRADLE_PROJECT_githubUser: x-access-token
+      ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
 
     strategy:
       fail-fast: false
