@@ -96,7 +96,10 @@ jobs:
     - name: Build Kotlin
       if: matrix.build-mode == 'manual'
       shell: bash
-      run: ./gradlew build -x test
+      env:
+        GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m"
+        KOTLIN_DAEMON_JVM_OPTIONS: "-Xmx2g"
+      run: ./gradlew classes
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
