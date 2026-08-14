@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingleOrNull
-import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.JacksonJsonDecoder
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 
@@ -34,15 +31,13 @@ class AaregClient(
     private suspend fun doFinnArbeidsforhold(
         request: ArbeidsforholdSokRequest,
     ): List<ArbeidsforholdDto>? =
-        withContext(Dispatchers.IO) {
-            webClient.post()
-                .uri("/v2/arbeidstaker/arbeidsforhold")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${getTokenX(currentUserContext().userToken)}")
-                .body(BodyInserters.fromValue(request))
-                .retrieve()
-                .bodyToMono<List<ArbeidsforholdDto>>()
-                .awaitSingleOrNull()
-        }
+        webClient.post()
+            .uri("/v2/arbeidstaker/arbeidsforhold")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${getTokenX(currentUserContext().userToken)}")
+            .bodyValue(request)
+            .retrieve()
+            .bodyToMono<List<ArbeidsforholdDto>>()
+            .awaitSingleOrNull()
 
     private suspend fun getTokenX(userToken: String) = texasService.exchangeToken(userToken, TOKENX, target = aaregAudience)
 

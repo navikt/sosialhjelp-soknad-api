@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingleOrNull
-import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
@@ -16,10 +14,11 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 import java.time.LocalDate
 
 interface UtbetalingerFraNavClient {
@@ -49,16 +48,19 @@ class NavUtbetalingerClientImpl(
     }
 
     private suspend fun doRequest(request: NavUtbetalingerRequest): List<Utbetaling>? =
-        withContext(Dispatchers.IO) {
-            webClient.post()
-                .uri("$utbetalDataUrl/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
-                .header(HttpHeaders.AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
-                .body(BodyInserters.fromValue(request))
-                .retrieve()
-                .bodyToMono<List<Utbetaling>>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .awaitSingleOrNull()
-        }
+        webClient.post()
+            .uri("$utbetalDataUrl/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
+            .header(HttpHeaders.AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
+            .bodyValue(request)
+            .exchangeToMono { response ->
+                when {
+                    response.statusCode() == HttpStatus.NOT_FOUND -> Mono.empty()
+                    response.statusCode().is2xxSuccessful -> response.bodyToMono<List<Utbetaling>>()
+                    else -> response.createException().flatMap { Mono.error(it) }
+                }
+            }
+            .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+            .awaitSingleOrNull()
 
     private suspend fun getTokenX(userToken: String) =
         texasService.exchangeToken(userToken, TOKENX, target = utbetalDataAudience)
