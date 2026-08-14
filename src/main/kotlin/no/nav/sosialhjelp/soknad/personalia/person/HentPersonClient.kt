@@ -3,9 +3,7 @@ package no.nav.sosialhjelp.soknad.personalia.person
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.StatusCode
 import io.opentelemetry.instrumentation.annotations.WithSpan
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingleOrNull
-import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_ADRESSEBESKYTTELSE
@@ -49,19 +47,16 @@ class HentPersonClientImpl(
     private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
-    @WithSpan("hentPerson PDL-client")
+    @WithSpan("Hent person - HentPersonClient")
     override suspend fun hentPerson(personId: String): PersonDto? =
         doPdlRequest(PdlRequest(HENT_PERSON, variables(personId)), "hentPerson", currentUserContext().exchangeToken())
 
-    @WithSpan("hentAdressebeskyttelse PDL-client")
     override suspend fun hentAdressebeskyttelse(): PersonAdressebeskyttelseDto? =
         doPdlRequest(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(currentUserContext().userId)), "adressebeskyttelse", currentUserContext().exchangeToken())
 
-    @WithSpan("hentEktefelle PDL-client")
     override suspend fun hentEktefelle(ektefelleIdent: String): EktefelleDto? =
         doPdlRequest(PdlRequest(HENT_EKTEFELLE, variables(ektefelleIdent)), "hentEktefelle", azureAdToken())
 
-    @WithSpan("hentBarn PDL-client")
     override suspend fun hentBarn(barnIdent: String): BarnDto? =
         doPdlRequest(PdlRequest(HENT_BARN, variables(barnIdent)), "hentBarn", azureAdToken())
 
@@ -92,16 +87,14 @@ class HentPersonClientImpl(
         pdlRequest: PdlRequest,
         token: String,
     ): String? =
-        withContext(Dispatchers.IO) {
-            hentPersonRequest
-                .header(AUTHORIZATION, "Bearer $token")
-                .bodyValue(pdlRequest)
-                .retrieve()
-                .bodyToMono<String>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .timeout(Duration.ofSeconds(10))
-                .awaitSingleOrNull()
-        }
+        hentPersonRequest
+            .header(AUTHORIZATION, "Bearer $token")
+            .bodyValue(pdlRequest)
+            .retrieve()
+            .bodyToMono<String>()
+            .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+            .timeout(Duration.ofSeconds(10))
+            .awaitSingleOrNull()
 
     private suspend fun UserContextElement.exchangeToken() =
         texasService.exchangeToken(
