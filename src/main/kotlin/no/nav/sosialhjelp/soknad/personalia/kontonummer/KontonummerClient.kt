@@ -12,11 +12,13 @@ import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
 import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 
 interface KontonummerClient {
     suspend fun getKontonummer(): KontoDto?
@@ -37,8 +39,13 @@ class KontonummerClientImpl(
             webClient.get()
                 .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
                 .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
-                .retrieve()
-                .bodyToMono<KontoDto>()
+                .exchangeToMono { response ->
+                    when {
+                        response.statusCode() == HttpStatus.NOT_FOUND -> Mono.empty()
+                        response.statusCode().is2xxSuccessful -> response.bodyToMono<KontoDto>()
+                        else -> response.createException().flatMap { Mono.error(it) }
+                    }
+                }
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .awaitSingleOrNull()
         }
