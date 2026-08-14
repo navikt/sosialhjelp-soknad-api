@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
@@ -44,15 +45,19 @@ class HentPersonClientImpl(
     private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
+    @WithSpan("hentPerson")
     override suspend fun hentPerson(personId: String): PersonDto? =
         doPdlRequest(PdlRequest(HENT_PERSON, variables(personId)), "hentPerson", currentUserContext().exchangeToken())
 
+    @WithSpan("hentAdressebeskyttelse")
     override suspend fun hentAdressebeskyttelse(): PersonAdressebeskyttelseDto? =
         doPdlRequest(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(currentUserContext().userId)), "adressebeskyttelse", currentUserContext().exchangeToken())
 
+    @WithSpan("hentEktefelle")
     override suspend fun hentEktefelle(ektefelleIdent: String): EktefelleDto? =
         doPdlRequest(PdlRequest(HENT_EKTEFELLE, variables(ektefelleIdent)), "hentEktefelle", azureAdToken())
 
+    @WithSpan("hentBarn")
     override suspend fun hentBarn(barnIdent: String): BarnDto? =
         doPdlRequest(PdlRequest(HENT_BARN, variables(barnIdent)), "hentBarn", azureAdToken())
 

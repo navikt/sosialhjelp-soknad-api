@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
@@ -28,6 +29,7 @@ class PersonService(
     private val hentPersonClient: HentPersonClient,
     private val mapper: PdlDtoMapper,
 ) {
+    @WithSpan("hentPerson, hentEktefelle, hentBarn")
     suspend fun hentPerson(): Person? {
         val personDto = hentPersonClient.hentPerson(currentUserContext().userId) ?: return null
         val person =
