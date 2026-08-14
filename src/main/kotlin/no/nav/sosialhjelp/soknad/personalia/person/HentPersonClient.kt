@@ -49,19 +49,19 @@ class HentPersonClientImpl(
     private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
-    @WithSpan("hentPerson PDL")
+    @WithSpan("hentPerson PDL-client")
     override suspend fun hentPerson(personId: String): PersonDto? =
         doPdlRequest(PdlRequest(HENT_PERSON, variables(personId)), "hentPerson", currentUserContext().exchangeToken())
 
-    @WithSpan("hentAdressebeskyttelse PDL")
+    @WithSpan("hentAdressebeskyttelse PDL-client")
     override suspend fun hentAdressebeskyttelse(): PersonAdressebeskyttelseDto? =
         doPdlRequest(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(currentUserContext().userId)), "adressebeskyttelse", currentUserContext().exchangeToken())
 
-    @WithSpan("hentEktefelle PDL")
+    @WithSpan("hentEktefelle PDL-client")
     override suspend fun hentEktefelle(ektefelleIdent: String): EktefelleDto? =
         doPdlRequest(PdlRequest(HENT_EKTEFELLE, variables(ektefelleIdent)), "hentEktefelle", azureAdToken())
 
-    @WithSpan("hentBarn PDL")
+    @WithSpan("hentBarn PDL-client")
     override suspend fun hentBarn(barnIdent: String): BarnDto? =
         doPdlRequest(PdlRequest(HENT_BARN, variables(barnIdent)), "hentBarn", azureAdToken())
 

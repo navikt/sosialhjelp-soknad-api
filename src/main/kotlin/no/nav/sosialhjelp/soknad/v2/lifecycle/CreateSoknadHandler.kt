@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
@@ -35,6 +36,7 @@ class CreateSoknadHandler(
             .also { createObligatoriskDokumentasjon(soknadId, isKort) }
     }
 
+    @WithSpan("runRegisterDataFetchers CreateSoknadHandler")
     @Transactional(propagation = Propagation.NEVER)
     fun runRegisterDataFetchers(soknadId: UUID) {
         runCatching { fetchRegisterDataManager.runAllRegisterDataFetchers(soknadId = soknadId) }

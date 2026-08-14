@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import jakarta.annotation.PreDestroy
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +54,7 @@ class FetchRegisterDataManager(
         backgroundScope.cancel("Cancelling async fetcher background scope")
     }
 
+    @WithSpan("Run all Registerdata-fetchers")
     @Transactional(propagation = Propagation.NEVER)
     fun runAllRegisterDataFetchers(soknadId: UUID) {
         logger.info("Henter Register-data")
