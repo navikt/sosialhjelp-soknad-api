@@ -29,6 +29,7 @@ versions = "0.58.0"
 spotless = "8.9.0"
 opentelemetry = "1.64.0"
 opentelemetry-logback = "2.30.0-alpha"
+opentelemetry-instrumentation = "2.30.0"
 testcontainers = "1.21.4"
 ninja-springmockk = "5.0.1"
 jsonassert = "1.5.3"
@@ -96,6 +97,7 @@ pdfbox-io = { module = "org.apache.pdfbox:pdfbox-io", version.ref = "pdfbox" }
 opentelemetry-bom = { module = "io.opentelemetry:opentelemetry-bom", version.ref = "opentelemetry" }
 opentelemetry-api = { module = "io.opentelemetry:opentelemetry-api" }
 opentelemetry-instrumentation-logback = { module = "io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0", version.ref = "opentelemetry-logback" }
+opentelemetry-annotations = { module = "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations", version.ref = "opentelemetry-instrumentation" }
 
 token-validation-spring-test = { module = "no.nav.security:token-validation-spring-test", version.ref = "token_validation" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }

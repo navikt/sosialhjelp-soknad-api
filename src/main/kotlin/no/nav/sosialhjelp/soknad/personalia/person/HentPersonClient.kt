@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
@@ -46,15 +49,19 @@ class HentPersonClientImpl(
     private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
+    @WithSpan("hentPerson PDL")
     override suspend fun hentPerson(personId: String): PersonDto? =
         doPdlRequest(PdlRequest(HENT_PERSON, variables(personId)), "hentPerson", currentUserContext().exchangeToken())
 
+    @WithSpan("hentAdressebeskyttelse PDL")
     override suspend fun hentAdressebeskyttelse(): PersonAdressebeskyttelseDto? =
         doPdlRequest(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(currentUserContext().userId)), "adressebeskyttelse", currentUserContext().exchangeToken())
 
+    @WithSpan("hentEktefelle PDL")
     override suspend fun hentEktefelle(ektefelleIdent: String): EktefelleDto? =
         doPdlRequest(PdlRequest(HENT_EKTEFELLE, variables(ektefelleIdent)), "hentEktefelle", azureAdToken())
 
+    @WithSpan("hentBarn PDL")
     override suspend fun hentBarn(barnIdent: String): BarnDto? =
         doPdlRequest(PdlRequest(HENT_BARN, variables(barnIdent)), "hentBarn", azureAdToken())
 
@@ -67,6 +74,8 @@ class HentPersonClientImpl(
             doRequest(pdlRequest, token) ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
         }
             .getOrElse {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR, "Feil ved kall mot PDL")
                 when (it) {
                     is PdlApiException -> throw it
                     else -> throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", it)
