@@ -113,6 +113,7 @@ dependencies {
     implementation(libs.opentelemetry.api)
     implementation(libs.opentelemetry.instrumentation.logback)
     implementation(libs.opentelemetry.annotations)
+    implementation("io.opentelemetry:opentelemetry-extension-kotlin")
 
     // jackson
     implementation(libs.jackson.module.kotlin)

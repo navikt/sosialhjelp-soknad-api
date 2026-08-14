@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
+import io.opentelemetry.context.Context
+import io.opentelemetry.extension.kotlin.asContextElement
 import jakarta.annotation.PreDestroy
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -100,8 +102,9 @@ class FetchRegisterDataManager(
         fetchers: List<AsynchronousFetcher>,
     ) {
         val mdcSnapshot = MDC.getCopyOfContextMap()
+        val otelContext = Context.current()
         fetchers.forEach { fetcher ->
-            backgroundScope.launch(MDCContext(mdcSnapshot) + userContext) {
+            backgroundScope.launch(MDCContext(mdcSnapshot) + userContext + otelContext.asContextElement()) {
                 runFetcher(soknadId, fetcher)
             }
         }

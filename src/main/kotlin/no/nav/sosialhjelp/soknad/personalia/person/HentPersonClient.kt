@@ -1,8 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
-import io.opentelemetry.api.trace.Span
-import io.opentelemetry.api.trace.StatusCode
-import io.opentelemetry.instrumentation.annotations.WithSpan
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
@@ -47,7 +44,6 @@ class HentPersonClientImpl(
     private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
-    @WithSpan("Hent person - HentPersonClient")
     override suspend fun hentPerson(personId: String): PersonDto? =
         doPdlRequest(PdlRequest(HENT_PERSON, variables(personId)), "hentPerson", currentUserContext().exchangeToken())
 
@@ -69,8 +65,6 @@ class HentPersonClientImpl(
             doRequest(pdlRequest, token) ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
         }
             .getOrElse {
-                Span.current().recordException(it)
-                Span.current().setStatus(StatusCode.ERROR, "Feil ved kall mot PDL")
                 when (it) {
                     is PdlApiException -> throw it
                     else -> throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", it)

@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
-import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
@@ -28,7 +27,6 @@ class PersonDataFetcher(
 ) : PrimaryFetcher {
     private val logger by logger()
 
-    @WithSpan("Hent person - PersonDataFetcher")
     override suspend fun fetchAndSave(
         soknadId: UUID,
     ) {
