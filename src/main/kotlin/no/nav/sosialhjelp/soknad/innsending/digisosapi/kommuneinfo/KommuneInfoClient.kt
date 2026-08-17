@@ -15,6 +15,7 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 
 @Component
 class KommuneInfoClient(
@@ -35,6 +36,10 @@ class KommuneInfoClient(
             .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .retrieve()
             .bodyToMono<List<KommuneInfo>>()
+            .onErrorResume { ex ->
+                logger.error("Feil ved henting av KommuneInfo fra FIKS", ex)
+                Mono.just(emptyList())
+            }
             .block()
             ?: emptyList()
     }
