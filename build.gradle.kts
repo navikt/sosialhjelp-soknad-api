@@ -16,6 +16,12 @@ plugins {
     alias(libs.plugins.spotless)
 }
 
+buildscript {
+    dependencies {
+        classpath("org.apache.httpcomponents.client5:httpclient5:5.6.4")
+    }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
