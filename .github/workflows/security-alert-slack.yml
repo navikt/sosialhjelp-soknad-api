@@ -1,0 +1,85 @@
+name: Security Alert Notification
+
+on:
+  schedule:
+    - cron: '0 * * * *' # every hour
+  workflow_dispatch:
+
+jobs:
+  check-alerts:
+    name: Check critical security alerts and notify Slack
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: read
+    steps:
+      - name: Check critical CodeQL alerts
+        id: codeql
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/${{ github.repository }}/code-scanning/alerts?state=open&per_page=100" \
+            --jq '[.[] | select(.rule.security_severity_level == "critical")]' \
+            > codeql_alerts.json
+          echo "count=$(jq 'length' codeql_alerts.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Check critical Dependabot alerts
+        id: dependabot
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/${{ github.repository }}/dependabot/alerts?state=open&severity=critical&per_page=100" \
+            > dependabot_alerts.json
+          echo "count=$(jq 'length' dependabot_alerts.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and send Slack message
+        if: steps.codeql.outputs.count > 0 || steps.dependabot.outputs.count > 0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SECURITY_WEBHOOK_URL }}
+          REPO: ${{ github.repository }}
+          CODEQL_COUNT: ${{ steps.codeql.outputs.count }}
+          DEPENDABOT_COUNT: ${{ steps.dependabot.outputs.count }}
+        run: |
+          repo_url="https://github.com/${REPO}"
+          blocks='[]'
+
+          if [ "$CODEQL_COUNT" -gt 0 ]; then
+            codeql_url="${repo_url}/security/code-scanning?query=is%3Aopen+severity%3Acritical"
+            codeql_text=$(jq -r --arg repo_url "$repo_url" --arg count "$CODEQL_COUNT" '
+              "*:red_circle: \($count) critical CodeQL alert(s) in <\($repo_url)>*\n"
+              + ([ .[:5][] | "• <\(.html_url)|\(.rule.description // .rule.id)>" ] | join("\n"))
+            ' codeql_alerts.json)
+            blocks=$(jq -n \
+              --argjson blocks "$blocks" \
+              --arg text "$codeql_text" \
+              --arg url "$codeql_url" \
+              '$blocks + [
+                {"type":"section","text":{"type":"mrkdwn","text":$text}},
+                {"type":"actions","elements":[{"type":"button","text":{"type":"plain_text","text":"View CodeQL alerts"},"url":$url}]}
+              ]')
+          fi
+
+          if [ "$DEPENDABOT_COUNT" -gt 0 ]; then
+            dependabot_url="${repo_url}/security/dependabot?q=is%3Aopen+severity%3Acritical"
+            dependabot_text=$(jq -r --arg repo_url "$repo_url" --arg count "$DEPENDABOT_COUNT" '
+              "*:red_circle: \($count) critical Dependabot alert(s) in <\($repo_url)>*\n"
+              + ([ .[:5][] | "• <\(.html_url)|\(.security_advisory.summary)>" ] | join("\n"))
+            ' dependabot_alerts.json)
+            blocks=$(jq -n \
+              --argjson blocks "$blocks" \
+              --arg text "$dependabot_text" \
+              --arg url "$dependabot_url" \
+              '$blocks + [
+                {"type":"section","text":{"type":"mrkdwn","text":$text}},
+                {"type":"actions","elements":[{"type":"button","text":{"type":"plain_text","text":"View Dependabot alerts"},"url":$url}]}
+              ]')
+          fi
+
+          blocks=$(jq -n --argjson blocks "$blocks" '$blocks + [{"type":"divider"}]')
+          payload=$(jq -n --argjson blocks "$blocks" '{"blocks":$blocks}')
+
+          curl --fail --silent --show-error -X POST \
+            -H "Content-Type: application/json" \
+            -d "$payload" \
+            "$SLACK_WEBHOOK_URL"
