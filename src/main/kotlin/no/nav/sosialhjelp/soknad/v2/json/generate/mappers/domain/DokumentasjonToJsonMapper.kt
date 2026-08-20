@@ -64,7 +64,11 @@ class DokumentasjonToJsonMapper(
                             tilleggsinfo = dokumentasjon.mapToTilleggsinfo(),
                         )
                     localKeys += key
-                    uploadByKey[key] ?: dokumentasjon.toJsonVedleggWithoutFiler()
+                    val tusEntry = uploadByKey[key]
+                    val mergedFiler =
+                        (tusEntry?.filer.orEmpty() + dokumentasjon.dokumenter.map { it.toJsonFiler() })
+                            .distinctBy { it.filnavn }
+                    (tusEntry ?: dokumentasjon.toJsonVedleggWithoutFiler()).withFiler(mergedFiler)
                 }
 
             val extraFromUpload = uploadByKey.keys - localKeys
