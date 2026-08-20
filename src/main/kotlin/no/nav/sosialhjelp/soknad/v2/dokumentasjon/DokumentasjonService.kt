@@ -63,6 +63,7 @@ interface DokumentRefService {
 @Service
 class DokumentasjonServiceImpl(
     private val dokumentasjonRepository: DokumentasjonRepository,
+    private val uploadClient: UploadClient,
 ) : DokumentasjonService, DokumentRefService {
     @Transactional(readOnly = true)
     override fun getRef(
@@ -90,7 +91,10 @@ class DokumentasjonServiceImpl(
         dokumentasjonRepository
             .findAllBySoknadId(soknadId)
             .find { it.type == opplysningType }
-            ?.also { dokumentasjonRepository.deleteById(it.id) }
+            ?.also {
+                dokumentasjonRepository.deleteById(it.id)
+                uploadClient.delete(opplysningType.name, soknadId)
+            }
     }
 
     @Transactional
