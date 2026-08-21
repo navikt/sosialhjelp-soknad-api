@@ -66,15 +66,13 @@ class FiksDokumentService(
             getDokumentMetadata(soknadId, dokumentId)
                 ?: throw IkkeFunnetException("Fant ikke metadata for dokument $dokumentId")
 
-        return metadata.run {
-            copy(
-                data =
-                    mellomlagringClient.hentDokument(
-                        soknadId.toString(),
-                        dokumentId.toString(),
-                    ),
-            )
-        }
+        return metadata.copy(
+            data =
+                mellomlagringClient.hentDokument(
+                    soknadId.toString(),
+                    dokumentId.toString(),
+                ),
+        )
     }
 
     override fun uploadDokument(

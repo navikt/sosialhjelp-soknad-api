@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.INNSENDING_FEILET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
@@ -68,7 +68,7 @@ interface BegrunnelseService {
 @Service
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
-    private val metadataService: SoknadMetadataService,
+    private val metadataService: SoknadMetadataServiceImpl,
 ) : SoknadService, BegrunnelseService, SoknadJobService, PersonIdService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =

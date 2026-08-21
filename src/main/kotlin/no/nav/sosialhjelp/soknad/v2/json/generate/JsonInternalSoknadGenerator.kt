@@ -7,7 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -34,7 +34,7 @@ interface DomainToJsonMapper {
 @Component
 class JsonInternalSoknadGenerator(
     private val mappers: List<DomainToJsonMapper>,
-    private val metadataService: SoknadMetadataService,
+    private val metadataService: SoknadMetadataServiceImpl,
 ) {
     fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
         return JsonInternalSoknad()
@@ -61,7 +61,7 @@ class JsonInternalSoknadGenerator(
     }
 }
 
-private fun SoknadMetadataService.isKort(soknadId: UUID) = getSoknadType(soknadId) == SoknadType.KORT
+private fun SoknadMetadataServiceImpl.isKort(soknadId: UUID) = getSoknadType(soknadId) == SoknadType.KORT
 
 object TimestampUtil {
     private const val ZONE_STRING = "Europe/Oslo"

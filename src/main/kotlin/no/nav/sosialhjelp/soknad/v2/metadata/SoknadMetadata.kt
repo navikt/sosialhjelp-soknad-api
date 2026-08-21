@@ -19,8 +19,8 @@ interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudR
 
     fun findByPersonId(personId: String): List<SoknadMetadata>
 
-    @Query("select * from soknad_metadata where status = :status")
-    fun findMetadataByStatus(status: SoknadStatus): List<SoknadMetadata>
+    @Query("select * from soknad_metadata where status in (:status)")
+    fun findMetadataByStatus(status: List<SoknadStatus>): List<SoknadMetadata>
 
     @Query("select * from soknad_metadata where digisos_id = :digisosId")
     fun findMetadataByDigisosId(digisosId: String): SoknadMetadata?
@@ -58,7 +58,7 @@ enum class SoknadType {
 data class Tidspunkt(
     val opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
     var sistEndret: LocalDateTime = opprettet,
-    var sendtInn: LocalDateTime? = null,
+    val sendtInn: LocalDateTime? = null,
 )
 
 enum class SoknadStatus {
@@ -66,10 +66,11 @@ enum class SoknadStatus {
     INNSENDING_FEILET,
     SENDT,
     MOTTATT_FSL,
+    MANUELT_KVITTERT_UT,
 }
 
 private fun SoknadMetadata.validate() {
-    if (status == SoknadStatus.SENDT || status == SoknadStatus.MOTTATT_FSL) {
+    if (status in listOf(SoknadStatus.SENDT, SoknadStatus.MOTTATT_FSL, SoknadStatus.MANUELT_KVITTERT_UT)) {
         if (tidspunkt.sendtInn == null) error("Mangler innsendt dato for ferdig søknad.")
         if (mottakerKommunenummer == null) error("Mangler mottaker for ferdig søknad.")
         if (digisosId == null) error("Mangler digisosId for ferdig søknad.")
