@@ -28,10 +28,8 @@ class GotenbergClient(
 ) : FileConverter {
     companion object GotenbergConsts {
         private const val LIBRE_OFFICE_ROUTE = "/forms/libreoffice/convert"
-        private const val GOTENBERG_TRACE_HEADER = "gotenberg-trace"
     }
 
-    private var trace = "[NA]"
     private val webClient = buildWebClient()
 
     override fun toPdf(
@@ -56,19 +54,16 @@ class GotenbergClient(
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"$filename\"")
             .body(BodyInserters.fromMultipartData(multipartBody))
             .exchangeToMono { evaluateClientResponse(it) }
-            .block() ?: throw IllegalStateException("[$trace] Innhold i konvertert fil \"$filename\" er null.")
+            .block() ?: throw IllegalStateException("Innhold i konvertert fil \"$filename\" er null.")
 
     private fun evaluateClientResponse(response: ClientResponse): Mono<ByteArray> {
-        response.headers().header(GOTENBERG_TRACE_HEADER).firstOrNull()?.let {
-            trace = it
-        }
-        log.info("[$trace] Konverterer fil")
+        log.info("Konverterer fil")
 
         return if (response.statusCode().is2xxSuccessful) {
             response.bodyToMono<ByteArray>()
         } else {
             response.bodyToMono<String>()
-                .flatMap { body -> Mono.error(FileConversionException(response.statusCode(), body, trace)) }
+                .flatMap { body -> Mono.error(FileConversionException(response.statusCode(), body)) }
         }
     }
 

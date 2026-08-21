@@ -72,7 +72,7 @@ class ExceptionMapperTest {
     fun `Skal gi 400 Bad Request hvis konvertering fil feiler`() {
         val responseEntity =
             exceptionMapper.handleSoknadApiException(
-                FileConversionException(HttpStatus.BAD_REQUEST, "Feil ved konvertering", ""),
+                FileConversionException(HttpStatus.BAD_REQUEST, "Feil ved konvertering"),
             )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
     }

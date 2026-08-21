@@ -23,7 +23,7 @@ class FileConverterService(
         }
             .onSuccess { pdfBytes ->
                 if (pdfBytes.isEmpty()) {
-                    throw FileConversionException(HttpStatus.BAD_REQUEST, "Konvertert fil [$file] er tom.", "")
+                    throw FileConversionException(HttpStatus.BAD_REQUEST, "Konvertert fil [$file] er tom.")
                 }
                 pdfConversionSuccess
                     .tag(TAG_TIKA_MIME_TYPE, file.mimeType)

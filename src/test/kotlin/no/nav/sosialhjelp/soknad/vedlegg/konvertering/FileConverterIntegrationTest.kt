@@ -22,7 +22,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.BodyInserter
 import org.springframework.web.reactive.function.BodyInserters
-import java.util.UUID
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class FileConverterIntegrationTest : AbstractIntegrationTest() {
@@ -60,7 +59,6 @@ class FileConverterIntegrationTest : AbstractIntegrationTest() {
             FileConversionException(
                 httpStatus = HttpStatus.BAD_REQUEST,
                 msg = "Unknown format",
-                trace = UUID.randomUUID().toString(),
             )
 
         doPost(producer = BodyInserters.fromValue(createMultipartBody()))

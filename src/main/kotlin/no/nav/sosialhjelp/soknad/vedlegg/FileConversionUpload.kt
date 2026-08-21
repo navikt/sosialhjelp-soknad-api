@@ -21,14 +21,14 @@ data class FileConversionUpload(val file: MultipartFile) {
 
     private fun validatedFilename(filename: String?): String {
         if (filename.isNullOrBlank()) {
-            throw FileConversionException(HttpStatus.BAD_REQUEST, "Filnavn er tomt", "")
+            throw FileConversionException(HttpStatus.BAD_REQUEST, "Filnavn er tomt")
         }
         return filename
     }
 
     init {
         if (this.file.isEmpty) {
-            throw FileConversionException(HttpStatus.BAD_REQUEST, "Fil for konvertering er tom.", "")
+            throw FileConversionException(HttpStatus.BAD_REQUEST, "Fil for konvertering er tom.")
         }
         if (this.file.contentType != this.mimeType) {
             log.warn("Ulik MIME mellom klientdata og Tika: ${this.file.contentType} != ${this.mimeType}")
@@ -38,7 +38,7 @@ data class FileConversionUpload(val file: MultipartFile) {
     private fun splitFilename(filename: String): Pair<String, String> {
         return File(filename).let {
             if (it.extension.isBlank()) {
-                throw FileConversionException(HttpStatus.BAD_REQUEST, "Finner ikke filtype", "")
+                throw FileConversionException(HttpStatus.BAD_REQUEST, "Finner ikke filtype")
             }
             Pair(it.nameWithoutExtension, it.extension)
         }
