@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -27,10 +28,8 @@ class GotenbergClient(
 ) : FileConverter {
     companion object GotenbergConsts {
         private const val LIBRE_OFFICE_ROUTE = "/forms/libreoffice/convert"
-        private const val GOTENBERG_TRACE_HEADER = "gotenberg-trace"
     }
 
-    private var trace = "[NA]"
     private val webClient = buildWebClient()
 
     override fun toPdf(
@@ -49,24 +48,22 @@ class GotenbergClient(
     private fun convertFileRequest(
         filename: String,
         multipartBody: MultiValueMap<String, HttpEntity<*>>,
-    ): ByteArray {
-        return webClient.post()
+    ): ByteArray =
+        webClient.post()
             .uri(baseUrl + LIBRE_OFFICE_ROUTE)
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"$filename\"")
             .body(BodyInserters.fromMultipartData(multipartBody))
             .exchangeToMono { evaluateClientResponse(it) }
-            .block() ?: throw IllegalStateException("[$trace] Innhold i konvertert fil \"$filename\" er null.")
-    }
+            .block() ?: throw IllegalStateException("Innhold i konvertert fil \"$filename\" er null.")
 
     private fun evaluateClientResponse(response: ClientResponse): Mono<ByteArray> {
-        trace = response.headers().header(GOTENBERG_TRACE_HEADER).first()
-        log.info("[$trace] Konverterer fil")
+        log.info("Konverterer fil")
 
         return if (response.statusCode().is2xxSuccessful) {
-            response.bodyToMono(ByteArray::class.java)
+            response.bodyToMono<ByteArray>()
         } else {
-            response.bodyToMono(String::class.java)
-                .flatMap { body -> Mono.error(FileConversionException(response.statusCode(), body, trace)) }
+            response.bodyToMono<String>()
+                .flatMap { body -> Mono.error(FileConversionException(response.statusCode(), body)) }
         }
     }
 

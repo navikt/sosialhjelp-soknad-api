@@ -82,6 +82,30 @@ class UploadClient(
             },
         )
     }
+
+    fun delete(
+        vedleggType: OpplysningType,
+        soknadId: UUID,
+    ) {
+        val userToken = SubjectHandlerUtils.getToken()
+        val tokenXToken = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, uploadAudience)
+
+        webClient
+            .delete()
+            .uri("/sosialhjelp/upload/vedlegg/{soknadId}/{vedleggType}", soknadId, vedleggType.name)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer $tokenXToken")
+            .retrieve()
+            .toBodilessEntity()
+            .onErrorResume(WebClientResponseException::class.java) { ex ->
+                // Behandle 404 som ingen treff -> tom liste
+                if (ex.statusCode.value() == 404) {
+                    Mono.empty()
+                } else {
+                    Mono.error(ex)
+                }
+            }
+            .block()
+    }
 }
 
 data class VedleggSpesifikasjon(

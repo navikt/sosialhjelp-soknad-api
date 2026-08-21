@@ -19,6 +19,7 @@ sosialhjelp_upload_url: http://localhost:3007
 sosialhjelp_upload_audience: local:teamdigisos:sosialhjelp-upload
 token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT:http://localhost:8081/api/v1/token/exchange}
 token_endpoint: ${NAIS_TOKEN_ENDPOINT:http://localhost:8081/api/v1/token}
+fil-konvertering_url: ${GOTENBERG_URL:http://localhost:3010}
 
 springdoc:
   api-docs:

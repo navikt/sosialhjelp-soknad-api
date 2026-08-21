@@ -25,7 +25,7 @@ class DokumentasjonToJsonMapperTest {
     fun `Dokumentasjon uten match i upload-respons mappes med status og tom filliste`() {
         val dokList =
             listOf(
-                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = UtgiftType.UTGIFTER_STROM, status = DokumentasjonStatus.FORVENTET),
+                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = UtgiftType.UTGIFTER_STROM, status = DokumentasjonStatus.FORVENTET, dokumenter = emptySet()),
             )
         val uploadVedlegg = JsonVedleggSpesifikasjon().withVedlegg(emptyList())
 
@@ -53,7 +53,7 @@ class DokumentasjonToJsonMapperTest {
 
         val dokList =
             listOf(
-                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = type, status = DokumentasjonStatus.LASTET_OPP),
+                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = type, status = DokumentasjonStatus.LASTET_OPP, dokumenter = emptySet()),
             )
         val uploadVedlegg = JsonVedleggSpesifikasjon().withVedlegg(listOf(uploadVedleggItem))
 
@@ -61,7 +61,9 @@ class DokumentasjonToJsonMapperTest {
 
         val vedlegg = json.vedlegg.vedlegg
         assertThat(vedlegg).hasSize(1)
-        assertThat(vedlegg[0]).isSameAs(uploadVedleggItem)
+        assertThat(vedlegg[0].type).isEqualTo(uploadVedleggItem.type)
+        assertThat(vedlegg[0].status).isEqualTo(uploadVedleggItem.status)
+        assertThat(vedlegg[0].filer.map { it.filnavn }).containsExactly("kvittering.pdf")
     }
 
     @Test
@@ -78,8 +80,8 @@ class DokumentasjonToJsonMapperTest {
 
         val dokList =
             listOf(
-                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = matchType, status = DokumentasjonStatus.LASTET_OPP),
-                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = noMatchType, status = DokumentasjonStatus.FORVENTET),
+                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = matchType, status = DokumentasjonStatus.LASTET_OPP, dokumenter = emptySet()),
+                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = noMatchType, status = DokumentasjonStatus.FORVENTET, dokumenter = emptySet()),
             )
         val uploadVedlegg = JsonVedleggSpesifikasjon().withVedlegg(listOf(uploadVedleggItem))
 
@@ -89,11 +91,47 @@ class DokumentasjonToJsonMapperTest {
         assertThat(vedlegg).hasSize(2)
 
         val matched = vedlegg.find { it.type == matchType.getVedleggTypeString() }!!
-        assertThat(matched).isSameAs(uploadVedleggItem)
+        assertThat(matched.status).isEqualTo(DokumentasjonStatus.LASTET_OPP.toVedleggStatusString())
+        assertThat(matched.filer.map { it.filnavn }).contains("fil.pdf")
 
         val unmatched = vedlegg.find { it.type == noMatchType.getVedleggTypeString() }!!
         assertThat(unmatched.filer).isEmpty()
         assertThat(unmatched.status).isEqualTo(DokumentasjonStatus.FORVENTET.toVedleggStatusString())
+    }
+
+    @Test
+    fun `Kategori med filer fra både gammelt og nytt opplastingssystem viser begge filer`() {
+        val type = UtgiftType.UTGIFTER_STROM
+        val gammelFil = "gammel-kvittering.pdf"
+        val nyFil = "ny-kvittering.pdf"
+
+        // Fil lastet opp på gammelt vis — finnes i lokal DB
+        val dokList =
+            listOf(
+                opprettDokumentasjon(
+                    soknadId = UUID.randomUUID(),
+                    type = type,
+                    status = DokumentasjonStatus.LASTET_OPP,
+                    dokumenter = setOf(DokumentRef(dokumentId = UUID.randomUUID(), filnavn = gammelFil)),
+                ),
+            )
+
+        // Fil lastet opp via TUS etter at feature-flagget ble skrudd på
+        val tusVedleggItem =
+            JsonVedlegg()
+                .withType(type.getVedleggTypeString())
+                .withTilleggsinfo(type.getVedleggTillegginfoString())
+                .withStatus(DokumentasjonStatus.LASTET_OPP.toVedleggStatusString())
+                .withFiler(listOf(JsonFiler().withFilnavn(nyFil)))
+                .withHendelseType(JsonVedlegg.HendelseType.SOKNAD)
+        val uploadVedlegg = JsonVedleggSpesifikasjon().withVedlegg(listOf(tusVedleggItem))
+
+        DokumentasjonToJsonMapper.doMapping(dokList, uploadVedlegg, json)
+
+        val vedlegg = json.vedlegg.vedlegg
+        assertThat(vedlegg).hasSize(1)
+        val filerNavn = vedlegg[0].filer.map { it.filnavn }
+        assertThat(filerNavn).containsExactly(nyFil, gammelFil)
     }
 
     @Test

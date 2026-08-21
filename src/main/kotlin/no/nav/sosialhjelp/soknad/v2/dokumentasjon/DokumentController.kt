@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
+import io.getunleash.Unleash
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -29,6 +30,7 @@ import java.util.UUID
 class DokumentController(
     private val mellomlagerService: MellomlagerService,
     private val dokumentRefService: DokumentRefService,
+    private val unleash: Unleash,
 ) {
     @GetMapping("/{soknadId}/{dokumentId}")
     @Operation(summary = "Henter et gitt dokument")
@@ -48,27 +50,25 @@ class DokumentController(
         @PathVariable("dokumentId") dokumentId: UUID,
         response: HttpServletResponse,
     ): ResponseEntity<ByteArray> {
-        return when (dokumentRefService.getRef(soknadId, dokumentId)) {
-            null -> {
-                mellomlagerService.deleteDokument(soknadId, dokumentId)
-                throw IkkeFunnetException("Fant ikke dokumentreferanse $dokumentId")
-            }
-            else -> {
-                runCatching { mellomlagerService.getDokument(soknadId, dokumentId) }
-                    .onFailure { if (it is IkkeFunnetException) dokumentRefService.removeRef(soknadId, dokumentId) }
-                    .getOrThrow()
-                    .let { mellomlagretDokument ->
-                        require(mellomlagretDokument.data != null) { "Fant ikke data for dokument $dokumentId" }
+        // Det vil ikke være en dokumentref for dokumenter som er lastet opp via tus og upload
+        return if (!unleash.isEnabled("sosialhjelp.soknad.tusUpload") && dokumentRefService.getRef(soknadId, dokumentId) == null) {
+            mellomlagerService.deleteDokument(soknadId, dokumentId)
+            throw IkkeFunnetException("Fant ikke dokumentreferanse $dokumentId")
+        } else {
+            runCatching { mellomlagerService.getDokument(soknadId, dokumentId) }
+                .onFailure { if (it is IkkeFunnetException) dokumentRefService.removeRef(soknadId, dokumentId) }
+                .getOrThrow()
+                .let { mellomlagretDokument ->
+                    require(mellomlagretDokument.data != null) { "Fant ikke data for dokument $dokumentId" }
 
-                        response.setHeader(
-                            HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"${mellomlagretDokument.filnavn}\"",
-                        )
-                        ResponseEntity.ok()
-                            .contentType(mellomlagretDokument.data.toMediaType())
-                            .body(mellomlagretDokument.data)
-                    }
-            }
+                    response.setHeader(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"${mellomlagretDokument.filnavn}\"",
+                    )
+                    ResponseEntity.ok()
+                        .contentType(mellomlagretDokument.data.toMediaType())
+                        .body(mellomlagretDokument.data)
+                }
         }
     }
 
