@@ -93,7 +93,7 @@ class DokumentasjonServiceImpl(
             .find { it.type == opplysningType }
             ?.also {
                 dokumentasjonRepository.deleteById(it.id)
-                uploadClient.delete(opplysningType.name, soknadId)
+                uploadClient.delete(opplysningType, soknadId)
             }
     }
 

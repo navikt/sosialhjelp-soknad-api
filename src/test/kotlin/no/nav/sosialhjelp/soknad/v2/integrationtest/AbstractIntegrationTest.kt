@@ -5,6 +5,8 @@ import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
@@ -79,6 +81,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
         setupPdlAnswers()
 
         every { uploadClient.getVedleggSpesifikasjon(any()) } returns JsonVedleggSpesifikasjon()
+        every { uploadClient.delete(any(), any()) } just runs
 
         token =
             when (useTokenX) {

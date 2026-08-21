@@ -1,7 +1,12 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
@@ -15,6 +20,9 @@ import org.springframework.test.context.ActiveProfiles
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test", "test-container")
 abstract class AbstractRegisterDataTest {
+    @MockkBean
+    protected lateinit var uploadClient: UploadClient
+
     @Autowired
     protected lateinit var soknadRepository: SoknadRepository
 
@@ -25,6 +33,8 @@ abstract class AbstractRegisterDataTest {
 
     @BeforeEach
     fun setup() {
+        every { uploadClient.delete(any(), any()) } just runs
+
         val soknadId = soknadMetadataRepository.save(opprettSoknadMetadata()).soknadId
         soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 

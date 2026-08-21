@@ -84,7 +84,7 @@ class UploadClient(
     }
 
     fun delete(
-        vedleggType: String,
+        vedleggType: OpplysningType,
         soknadId: UUID,
     ) {
         val userToken = SubjectHandlerUtils.getToken()
@@ -92,10 +92,10 @@ class UploadClient(
 
         webClient
             .delete()
-            .uri("/sosialhjelp/upload/vedlegg/{soknadId}/{vedleggType}", soknadId, vedleggType)
+            .uri("/sosialhjelp/upload/vedlegg/{soknadId}/{vedleggType}", soknadId, vedleggType.name)
             .header(HttpHeaders.AUTHORIZATION, "Bearer $tokenXToken")
             .retrieve()
-            .bodyToMono<Void>()
+            .toBodilessEntity()
             .onErrorResume(WebClientResponseException::class.java) { ex ->
                 // Behandle 404 som ingen treff -> tom liste
                 if (ex.statusCode.value() == 404) {

@@ -65,6 +65,7 @@ class DokumentasjonToJsonMapper(
                         )
                     localKeys += key
                     val tusEntry = uploadByKey[key]
+                    // TODO: Kan slettes når alle vedlegg er lastet opp via tus/upload. 14 dager etter release
                     val mergedFiler =
                         (tusEntry?.filer.orEmpty() + dokumentasjon.dokumenter.map { it.toJsonFiler() })
                             .distinctBy { it.filnavn }
