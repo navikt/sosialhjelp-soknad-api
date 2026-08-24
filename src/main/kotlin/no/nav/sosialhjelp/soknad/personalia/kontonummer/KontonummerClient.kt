@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
@@ -41,7 +43,10 @@ class KontonummerClientImpl(
                 .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
                 .exchangeToMono { response ->
                     when {
-                        response.statusCode() == HttpStatus.NOT_FOUND -> Mono.empty()
+                        response.statusCode().value() == HttpStatus.NOT_FOUND.value() -> {
+                            Span.current().setStatus(StatusCode.UNSET)
+                            Mono.empty()
+                        }
                         response.statusCode().is2xxSuccessful -> response.bodyToMono<KontoDto>()
                         else -> response.createException().flatMap { Mono.error(it) }
                     }
@@ -52,7 +57,10 @@ class KontonummerClientImpl(
             .getOrElse {
                 when (it) {
                     is Unauthorized -> log.warn("Kontoregister konto - 401 Unauthorized - ${it.message}")
-                    is NotFound -> log.info("Fant ingen konto i kontoregister - ${it.message}")
+                    is NotFound -> {
+                        Span.current().setStatus(StatusCode.UNSET)
+                        log.info("Fant ingen konto i kontoregister - ${it.message}")
+                    }
                     else -> log.error("Kontoregister konto  - Noe uventet feilet", it)
                 }
                 null
