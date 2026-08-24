@@ -38,12 +38,14 @@ class KontonummerClientImpl(
 
     override suspend fun getKontonummer(): KontoDto? =
         runCatching {
+            log.info("Span context: " + Span.current().spanContext)
             webClient.get()
                 .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
                 .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
                 .exchangeToMono { response ->
                     when {
                         response.statusCode().value() == HttpStatus.NOT_FOUND.value() -> {
+                            log.info("Span context: " + Span.current().spanContext)
                             Span.current().setStatus(StatusCode.UNSET)
                             Mono.empty()
                         }
