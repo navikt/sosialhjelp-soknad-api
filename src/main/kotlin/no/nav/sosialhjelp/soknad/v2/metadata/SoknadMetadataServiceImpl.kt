@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.metadata
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadFinnesIkkeException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
@@ -66,7 +67,7 @@ class SoknadMetadataServiceImpl(
     ): LocalDateTime {
         logger.info("Setter innsendingstidspunkt: $sendtInn")
         return findMetadataOrError(soknadId)
-            .run { copy(tidspunkt = tidspunkt.copy(sendtInn = sendtInn)) }
+            .run { copy(tidspunkt = tidspunkt.copy(sendtInn = sendtInn, sistEndret = sendtInn)) }
             .also { metadataRepository.save(it) }
             .tidspunkt.sendtInn ?: error("SoknadMetadata skal ha tidspunkt for sendt inn")
     }
@@ -83,7 +84,7 @@ class SoknadMetadataServiceImpl(
                     status = SoknadStatus.SENDT,
                     mottakerKommunenummer = kommunenummer,
                     digisosId = digisosId,
-                    tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt),
+                    tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt, sistEndret = innsendingsTidspunkt),
                 )
             }
             .also { metadataRepository.save(it) }
@@ -91,7 +92,7 @@ class SoknadMetadataServiceImpl(
 
     fun updateSendingFeilet(soknadId: UUID) {
         findMetadataOrError(soknadId)
-            .run { copy(status = SoknadStatus.INNSENDING_FEILET, tidspunkt = tidspunkt.copy(sendtInn = null)) }
+            .run { copy(status = SoknadStatus.INNSENDING_FEILET, tidspunkt = tidspunkt.copy(sendtInn = null, sistEndret = nowWithMillis())) }
             .also { metadataRepository.save(it) }
     }
 
@@ -107,11 +108,11 @@ class SoknadMetadataServiceImpl(
         metadataRepository.findByPersonId(personId)
             .filter {
                 it.status in
-                    listOf(
-                        SoknadStatus.SENDT,
-                        SoknadStatus.MOTTATT_FSL,
-                        SoknadStatus.MANUELT_KVITTERT_UT,
-                    )
+                        listOf(
+                            SoknadStatus.SENDT,
+                            SoknadStatus.MOTTATT_FSL,
+                            SoknadStatus.MANUELT_KVITTERT_UT,
+                        )
             }
             .count { metadata ->
                 metadata.tidspunkt.sendtInn?.isAfter(minusDays)
@@ -121,13 +122,13 @@ class SoknadMetadataServiceImpl(
     @Transactional(readOnly = true)
     fun getSoknadType(soknadId: UUID): SoknadType = findMetadataOrError(soknadId).soknadType
 
-    @Transactional(readOnly = true)
+    @Transactional
     fun updateSoknadType(
         soknadId: UUID,
         soknadType: SoknadType,
     ) {
         findMetadataOrError(soknadId)
-            .run { copy(soknadType = soknadType) }
+            .run { copy(soknadType = soknadType, tidspunkt = tidspunkt.copy(sistEndret = nowWithMillis())) }
             .also { metadataRepository.save(it) }
     }
 
@@ -136,7 +137,7 @@ class SoknadMetadataServiceImpl(
         soknadStatus: SoknadStatus,
     ) {
         findMetadataOrError(soknadId)
-            .run { copy(status = soknadStatus, tidspunkt = tidspunkt.copy(sistEndret = LocalDateTime.now())) }
+            .run { copy(status = soknadStatus, tidspunkt = tidspunkt.copy(sistEndret = nowWithMillis())) }
             .also { metadataRepository.save(it) }
     }
 
