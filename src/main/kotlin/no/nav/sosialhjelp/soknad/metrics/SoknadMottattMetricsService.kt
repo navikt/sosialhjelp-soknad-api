@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.metrics
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SjekkStatusSendtJob.Companion.DAYS
+import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.findOldSoknaderStatusSendt
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
@@ -21,8 +19,7 @@ class SoknadMottattMetricsService(
     @EventListener(ApplicationReadyEvent::class)
     fun doInitialize() {
         metadataJobService
-            .findMetadataForStatus(SoknadStatus.SENDT)
-            .filter { metadata -> metadata.sentIsOlderThan(DAYS) }
+            .findOldSoknaderStatusSendt()
             .also { metadatas ->
                 logger.info("Initialiserer gauge for ${metadatas.size} antall søknader eldre enn $DAYS dager med status SENDT")
                 antallGamleSoknaderStatusSendtGauge.set(metadatas.size)
@@ -41,7 +38,3 @@ class SoknadMottattMetricsService(
             "Hvis det finnes søknader med status sendt eldre en $DAYS dager bør de sjekkes opp"
     }
 }
-
-private fun SoknadMetadata.sentIsOlderThan(days: Int): Boolean =
-    tidspunkt.sendtInn?.isBefore(nowWithMillis().minusDays(days.toLong()))
-        ?: error("Metadata Mangler 'sendt_inn'")

@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
+import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.findOldSoknaderStatusSendt
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -21,20 +22,7 @@ class AdminController(
     private val soknadMetadataService: SoknadMetadataService,
 ) {
     @GetMapping("/unresolved")
-    fun hentIkkeMottattSoknader(): List<IkkeMottattSoknadDto> {
-        return soknadMetadataService.findMetadataForStatus(listOf(SoknadStatus.SENDT, SoknadStatus.MANUELT_KVITTERT_UT)).filter { metadata ->
-            metadata.tidspunkt.let { tidspunkt ->
-                tidspunkt.sistEndret > LocalDateTime.now().minusDays(1) &&
-                    tidspunkt.sendtInn?.let {
-                        it < LocalDateTime.now().minusDays(7)
-                    } ?: false
-            } &&
-                metadata.digisosId != null &&
-                metadata.mottakerKommunenummer != null
-        }.map {
-            it.toDto()
-        }
-    }
+    fun hentIkkeMottattSoknader(): List<IkkeMottattSoknadDto> = soknadMetadataService.findOldSoknaderStatusSendt().map { it.toDto() }
 
     @PostMapping("/soknad/{soknadId}/resolve")
     fun resolveApplication(
