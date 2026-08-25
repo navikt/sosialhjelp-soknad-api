@@ -41,7 +41,6 @@ private fun SoknadMetadataService.hentManueltKvittertUtSisteDag(): List<SoknadMe
     findMetadataForStatus(SoknadStatus.MANUELT_KVITTERT_UT)
         .filter { it.tidspunkt.sistEndret.isAfter(nowWithMillis().minusDays(1)) }
 
-
 private fun SoknadMetadata.toDto(): IkkeMottattSoknadDto {
     requireNotNull(this.tidspunkt.sendtInn)
     requireNotNull(this.digisosId)

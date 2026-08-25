@@ -108,11 +108,11 @@ class SoknadMetadataServiceImpl(
         metadataRepository.findByPersonId(personId)
             .filter {
                 it.status in
-                        listOf(
-                            SoknadStatus.SENDT,
-                            SoknadStatus.MOTTATT_FSL,
-                            SoknadStatus.MANUELT_KVITTERT_UT,
-                        )
+                    listOf(
+                        SoknadStatus.SENDT,
+                        SoknadStatus.MOTTATT_FSL,
+                        SoknadStatus.MANUELT_KVITTERT_UT,
+                    )
             }
             .count { metadata ->
                 metadata.tidspunkt.sendtInn?.isAfter(minusDays)
