@@ -30,6 +30,10 @@ spec:
   azure:
     application:
       enabled: true
+      allowAllUsers: false
+      claims:
+        groups:
+          - id: "beca52a8-5551-4db0-9860-78355b796f14"
   observability:
     autoInstrumentation:
       enabled: true
