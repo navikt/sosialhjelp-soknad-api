@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
@@ -35,10 +38,14 @@ class CreateSoknadHandler(
             .also { createObligatoriskDokumentasjon(soknadId, isKort) }
     }
 
+    @WithSpan("Run RegisterDataFetchers")
     @Transactional(propagation = Propagation.NEVER)
     fun runRegisterDataFetchers(soknadId: UUID) {
         runCatching { fetchRegisterDataManager.runAllRegisterDataFetchers(soknadId = soknadId) }
             .getOrElse {
+                Span.current().recordException(it)
+                Span.current().setStatus(StatusCode.ERROR, it.message ?: "Ukjent feil")
+
                 metadataService.deleteMetadata(soknadId)
                 when (it) {
                     is AuthorizationException -> throw it

@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
@@ -27,6 +30,7 @@ class PersonDataFetcher(
 ) : PrimaryFetcher {
     private val logger by logger()
 
+    @WithSpan("Persondata-fetcher")
     override suspend fun fetchAndSave(
         soknadId: UUID,
     ) {
@@ -41,7 +45,11 @@ class PersonDataFetcher(
                         runCatching { personDataHandler.saveData(soknadId, person) }
                             .onFailure {
                                 logger.warn("Feil i PersonData-fetcher: $personDataHandler", it)
-                                if (!personDataHandler.continueOnError()) throw it
+                                if (!personDataHandler.continueOnError()) {
+                                    Span.current().recordException(it)
+                                    Span.current().setStatus(StatusCode.ERROR, it.message ?: "Ukjent feil")
+                                    throw it
+                                }
                             }
                     }
             }

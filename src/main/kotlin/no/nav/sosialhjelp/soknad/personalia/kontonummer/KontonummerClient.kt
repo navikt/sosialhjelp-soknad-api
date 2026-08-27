@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
-import kotlinx.coroutines.Dispatchers
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
 import kotlinx.coroutines.reactor.awaitSingleOrNull
-import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
@@ -14,11 +14,13 @@ import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
 import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 
 interface KontonummerClient {
     suspend fun getKontonummer(): KontoDto?
@@ -35,25 +37,36 @@ class KontonummerClientImpl(
         webClientBuilder.configureWebClientBuilder(createDefaultHttpClient()).build()
 
     override suspend fun getKontonummer(): KontoDto? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                webClient.get()
-                    .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
-                    .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
-                    .retrieve()
-                    .bodyToMono<KontoDto>()
-                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                    .awaitSingleOrNull()
-            }
-                .getOrElse {
-                    when (it) {
-                        is Unauthorized -> log.warn("Kontoregister konto - 401 Unauthorized - ${it.message}")
-                        is NotFound -> log.info("Fant ingen konto i kontoregister - ${it.message}")
-                        else -> log.error("Kontoregister konto  - Noe uventet feilet", it)
+        runCatching {
+            log.info("Span context: " + Span.current().spanContext)
+            webClient.get()
+                .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
+                .header(AUTHORIZATION, BEARER + getTokenX(currentUserContext().userToken))
+                .exchangeToMono { response ->
+                    when {
+                        response.statusCode().value() == HttpStatus.NOT_FOUND.value() -> {
+                            log.info("Span context: " + Span.current().spanContext)
+                            Span.current().setStatus(StatusCode.UNSET)
+                            Mono.empty()
+                        }
+                        response.statusCode().is2xxSuccessful -> response.bodyToMono<KontoDto>()
+                        else -> response.createException().flatMap { Mono.error(it) }
                     }
-                    null
                 }
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .awaitSingleOrNull()
         }
+            .getOrElse {
+                when (it) {
+                    is Unauthorized -> log.warn("Kontoregister konto - 401 Unauthorized - ${it.message}")
+                    is NotFound -> {
+                        Span.current().setStatus(StatusCode.UNSET)
+                        log.info("Fant ingen konto i kontoregister - ${it.message}")
+                    }
+                    else -> log.error("Kontoregister konto  - Noe uventet feilet", it)
+                }
+                null
+            }
 
     private suspend fun getTokenX(personId: String) =
         texasService.exchangeToken(personId, IdentityProvider.TOKENX, kontoregisterAudience)
