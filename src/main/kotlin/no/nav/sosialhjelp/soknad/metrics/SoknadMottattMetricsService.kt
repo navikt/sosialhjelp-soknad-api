@@ -1,9 +1,8 @@
 package no.nav.sosialhjelp.soknad.metrics
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.v2.metadata.GAMMEL_SOKNAD_ARBEIDSDAGER
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SjekkStatusSendtJob.Companion.DAYS
-import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.findOldSoknaderStatusSendt
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
@@ -21,7 +20,7 @@ class SoknadMottattMetricsService(
         metadataJobService
             .findOldSoknaderStatusSendt()
             .also { metadatas ->
-                logger.info("Initialiserer gauge for ${metadatas.size} antall søknader eldre enn $DAYS dager med status SENDT")
+                logger.info("Initialiserer gauge for ${metadatas.size} antall søknader eldre enn $GAMMEL_SOKNAD_ARBEIDSDAGER arbeidsdager med status SENDT")
                 antallGamleSoknaderStatusSendtGauge.set(metadatas.size)
             }
     }
@@ -34,7 +33,7 @@ class SoknadMottattMetricsService(
     companion object {
         private val logger by logger()
         private const val METRIC_NAME = "soknad.old.status.sendt"
-        private const val METRIC_DESCRIPTION =
-            "Hvis det finnes søknader med status sendt eldre en $DAYS dager bør de sjekkes opp"
+        private val METRIC_DESCRIPTION =
+            "Hvis det finnes søknader med status sendt eldre en $GAMMEL_SOKNAD_ARBEIDSDAGER arbeidsdager bør de sjekkes opp"
     }
 }

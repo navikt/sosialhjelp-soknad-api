@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
-import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.findOldSoknaderStatusSendt
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

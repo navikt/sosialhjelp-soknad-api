@@ -8,8 +8,11 @@ import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.util.UUID
+
+const val GAMMEL_SOKNAD_ARBEIDSDAGER = 2
 
 interface SoknadMetadataService {
     fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata>
@@ -31,6 +34,8 @@ interface SoknadMetadataService {
         personId: String,
         date: LocalDateTime,
     ): List<SoknadMetadata>
+
+    fun findOldSoknaderStatusSendt(): List<SoknadMetadata>
 }
 
 @Component
@@ -177,6 +182,10 @@ class SoknadMetadataServiceImpl(
         date: LocalDateTime,
     ): List<SoknadMetadata> = metadataRepository.findInnsendteSoknaderForPersonAfter(personId, date)
 
+    @Transactional(readOnly = true)
+    override fun findOldSoknaderStatusSendt(): List<SoknadMetadata> =
+        findMetadataForStatus(SoknadStatus.SENDT).filter { it.sendtInnIsOlderThanWorkingDays(GAMMEL_SOKNAD_ARBEIDSDAGER) }
+
     private fun findMetadataOrError(soknadId: UUID): SoknadMetadata {
         return metadataRepository.findByIdOrNull(soknadId) ?: throw SoknadFinnesIkkeException(soknadId)
     }
@@ -185,3 +194,14 @@ class SoknadMetadataServiceImpl(
         private val logger by logger()
     }
 }
+
+private fun SoknadMetadata.sendtInnIsOlderThanWorkingDays(days: Int): Boolean =
+    tidspunkt.sendtInn?.isBefore(nowWithMillis().subtractWorkingDays(days)) ?: error("Metadata mangler 'sendt_inn'")
+
+private fun LocalDateTime.subtractWorkingDays(days: Int): LocalDateTime =
+    generateSequence(minusDays(1)) { it.minusDays(1) }
+        .filter { it.dayOfWeek !in weekend }
+        .take(days)
+        .last()
+
+private val weekend = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
