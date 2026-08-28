@@ -3,12 +3,16 @@ package no.nav.sosialhjelp.soknad.v2.metadata
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadFinnesIkkeException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.util.UUID
+
+const val GAMMEL_SOKNAD_ARBEIDSDAGER = 2
 
 interface SoknadMetadataService {
     fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata>
@@ -30,6 +34,8 @@ interface SoknadMetadataService {
         personId: String,
         date: LocalDateTime,
     ): List<SoknadMetadata>
+
+    fun findOldSoknaderStatusSendt(): List<SoknadMetadata>
 }
 
 @Component
@@ -66,7 +72,7 @@ class SoknadMetadataServiceImpl(
     ): LocalDateTime {
         logger.info("Setter innsendingstidspunkt: $sendtInn")
         return findMetadataOrError(soknadId)
-            .run { copy(tidspunkt = tidspunkt.copy(sendtInn = sendtInn)) }
+            .run { copy(tidspunkt = tidspunkt.copy(sendtInn = sendtInn, sistEndret = sendtInn)) }
             .also { metadataRepository.save(it) }
             .tidspunkt.sendtInn ?: error("SoknadMetadata skal ha tidspunkt for sendt inn")
     }
@@ -83,7 +89,7 @@ class SoknadMetadataServiceImpl(
                     status = SoknadStatus.SENDT,
                     mottakerKommunenummer = kommunenummer,
                     digisosId = digisosId,
-                    tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt),
+                    tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt, sistEndret = innsendingsTidspunkt),
                 )
             }
             .also { metadataRepository.save(it) }
@@ -91,7 +97,7 @@ class SoknadMetadataServiceImpl(
 
     fun updateSendingFeilet(soknadId: UUID) {
         findMetadataOrError(soknadId)
-            .run { copy(status = SoknadStatus.INNSENDING_FEILET, tidspunkt = tidspunkt.copy(sendtInn = null)) }
+            .run { copy(status = SoknadStatus.INNSENDING_FEILET, tidspunkt = tidspunkt.copy(sendtInn = null, sistEndret = nowWithMillis())) }
             .also { metadataRepository.save(it) }
     }
 
@@ -121,13 +127,13 @@ class SoknadMetadataServiceImpl(
     @Transactional(readOnly = true)
     fun getSoknadType(soknadId: UUID): SoknadType = findMetadataOrError(soknadId).soknadType
 
-    @Transactional(readOnly = true)
+    @Transactional
     fun updateSoknadType(
         soknadId: UUID,
         soknadType: SoknadType,
     ) {
         findMetadataOrError(soknadId)
-            .run { copy(soknadType = soknadType) }
+            .run { copy(soknadType = soknadType, tidspunkt = tidspunkt.copy(sistEndret = nowWithMillis())) }
             .also { metadataRepository.save(it) }
     }
 
@@ -136,7 +142,7 @@ class SoknadMetadataServiceImpl(
         soknadStatus: SoknadStatus,
     ) {
         findMetadataOrError(soknadId)
-            .run { copy(status = soknadStatus, tidspunkt = tidspunkt.copy(sistEndret = LocalDateTime.now())) }
+            .run { copy(status = soknadStatus, tidspunkt = tidspunkt.copy(sistEndret = nowWithMillis())) }
             .also { metadataRepository.save(it) }
     }
 
@@ -176,6 +182,10 @@ class SoknadMetadataServiceImpl(
         date: LocalDateTime,
     ): List<SoknadMetadata> = metadataRepository.findInnsendteSoknaderForPersonAfter(personId, date)
 
+    @Transactional(readOnly = true)
+    override fun findOldSoknaderStatusSendt(): List<SoknadMetadata> =
+        findMetadataForStatus(SoknadStatus.SENDT).filter { it.sendtInnIsOlderThanWorkingDays(GAMMEL_SOKNAD_ARBEIDSDAGER) }
+
     private fun findMetadataOrError(soknadId: UUID): SoknadMetadata {
         return metadataRepository.findByIdOrNull(soknadId) ?: throw SoknadFinnesIkkeException(soknadId)
     }
@@ -184,3 +194,14 @@ class SoknadMetadataServiceImpl(
         private val logger by logger()
     }
 }
+
+private fun SoknadMetadata.sendtInnIsOlderThanWorkingDays(days: Int): Boolean =
+    tidspunkt.sendtInn?.isBefore(nowWithMillis().subtractWorkingDays(days)) ?: error("Metadata mangler 'sendt_inn'")
+
+private fun LocalDateTime.subtractWorkingDays(days: Int): LocalDateTime =
+    generateSequence(minusDays(1)) { it.minusDays(1) }
+        .filter { it.dayOfWeek !in weekend }
+        .take(days)
+        .last()
+
+private val weekend = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
