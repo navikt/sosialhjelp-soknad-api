@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
@@ -17,7 +16,7 @@ class InntektSkatteetatenFetcher(
 ) {
     fun fetchInntekt(): List<V2Utbetaling> {
         return skattbarInntektService
-            .hentUtbetalinger(getUserIdFromToken())
+            .hentInntekt()
             ?.map { it.toUtbetalingDomain() }
             ?: throw SkatteetatenException("Fetch av inntekt fra Skatteetaten var null")
     }
