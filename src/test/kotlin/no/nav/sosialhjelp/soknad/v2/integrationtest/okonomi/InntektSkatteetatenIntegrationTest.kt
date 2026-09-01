@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektResponse
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
@@ -33,7 +34,7 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @BeforeEach
     fun mockAnswer() {
-        every { skatteetatenClient.hentSkattbarinntekt(any()) } returns readResponseFromPath()
+        every { skatteetatenClient.hentSkattbarinntekt() } returns readResponseFromPath()
     }
 
     @Test
@@ -123,7 +124,7 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
             assertThat(it.inntektSkatteetaten).hasSize(2)
         }
 
-        verify(exactly = 1) { skatteetatenClient.hentSkattbarinntekt(any()) }
+        verify(exactly = 1) { skatteetatenClient.hentSkattbarinntekt() }
 
         okonomiService.getBekreftelser(soknad.id).let { bekreftelser ->
             assertThat(bekreftelser.toList())
@@ -173,7 +174,7 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
             assertThat(it.samtykke?.verdi).isTrue()
         }
 
-        verify(exactly = 0) { skatteetatenClient.hentSkattbarinntekt(any()) }
+        verify(exactly = 0) { skatteetatenClient.hentSkattbarinntekt() }
     }
 
     private fun opprettDataForInntektSkatt(utbetalinger: List<Utbetaling> = utbetalingerForskjelligePeriode()): Inntekt {
@@ -252,12 +253,13 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
         private fun updateUrl(soknadId: UUID) = "/soknad/$soknadId/inntekt/skattbarinntekt/samtykke"
     }
 
-    private fun readResponseFromPath(path: String = "/skatt/InntektOgSkattToMaanederToArbeidsgivere.json"): SkattbarInntekt {
+    private fun readResponseFromPath(path: String = "/skatt/InntektOgSkattToMaanederToArbeidsgivere.json"): SkattbarInntektResponse {
         val resourceAsStream = this.javaClass.getResourceAsStream(path) ?: error("Resource not found: $path")
         val json = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
         return jacksonMapperBuilder()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .build()
             .readValue(json, SkattbarInntekt::class.java)
+            .let { SkattbarInntektResponse.Success(it) }
     }
 }

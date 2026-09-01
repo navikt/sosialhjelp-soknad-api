@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.register
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.every
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektResponse
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
@@ -39,7 +40,7 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Tom liste lagrer ingen Inntekt`() {
-        every { skattbarInntektService.hentUtbetalinger(any()) } returns emptyList()
+        every { skattbarInntektService.hentInntekt() } returns emptyList()
 
         inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
 
@@ -49,7 +50,7 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Service returnerer null setter integrasjonstatus feilet til true, og oppretter InntektType JOBB`() {
-        every { skatteetatenClient.hentSkattbarinntekt(any()) } throws SkatteetatenException("Feil ved henting")
+        every { skatteetatenClient.hentSkattbarinntekt() } returns SkattbarInntektResponse.Error("Feil", SkatteetatenException("error"))
 
         inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
 
@@ -79,7 +80,7 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
     }
 
     private fun createAnswerForSkatteetatenClient() {
-        every { skattbarInntektService.hentUtbetalinger(any()) } returns defaultResponseForSkattbarInntektService()
+        every { skattbarInntektService.hentInntekt() } returns defaultResponseForSkattbarInntektService()
         every { organisasjonService.hentOrgNavn(any()) } returns "Navn på arbeidsgiver"
     }
 

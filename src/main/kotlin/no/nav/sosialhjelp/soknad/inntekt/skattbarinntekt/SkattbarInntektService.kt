@@ -3,9 +3,11 @@ package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.getForskuddstrekk
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.grupperOgSummerEtterUtbetalingsStartDato
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.mapToUtbetalinger
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.SkatteetatenException
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 
@@ -13,9 +15,19 @@ import java.time.LocalDate
 class SkattbarInntektService(
     private val skatteetatenClient: SkatteetatenClient,
 ) {
-    fun hentUtbetalinger(fnummer: String): List<Utbetaling>? {
+    fun hentInntekt(): List<Utbetaling> {
         logger.info("Henter skattbar inntekt fra Skatteetaten")
-        val skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer)
+
+        val skattbarInntekt =
+            when (val response = skatteetatenClient.hentSkattbarinntekt()) {
+                is SkattbarInntektResponse.Success -> response.inntekt
+                is SkattbarInntektResponse.Error -> throw SkatteetatenException(response.error, response.cause)
+                is SkattbarInntektResponse.NotFound -> {
+                    logger.info("Fant ingen skattbar inntekt")
+                    SkattbarInntekt()
+                }
+            }
+
         val utbetalinger = skattbarInntekt.mapToUtbetalinger()
         val forskuddstrekk = skattbarInntekt.getForskuddstrekk()
         val summerteUtbetalinger =
@@ -56,11 +68,11 @@ class SkattbarInntektService(
         return bruttoOrgPerMaaned
     }
 
-    private fun filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(utbetalinger: List<Utbetaling>?): List<Utbetaling>? {
+    private fun filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(utbetalinger: List<Utbetaling>): List<Utbetaling> {
         return utbetalinger
-            ?.groupBy { it.orgnummer }
-            ?.values
-            ?.map {
+            .groupBy { it.orgnummer }
+            .values
+            .map {
                 val nyesteDato: LocalDate = it.maxOf { utbetaling -> utbetaling.periodeFom }
                 grupperOgSummerEtterUtbetalingsStartDato(
                     it,
