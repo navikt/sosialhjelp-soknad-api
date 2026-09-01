@@ -29,7 +29,7 @@ class ExceptionMapperTest {
     @Test
     fun `skal gi 413 Payload Too Large ved OpplastingException`() {
         val responseEntity = exceptionMapper.handleDokumentUploadError(DokumentUploadError("foo"))
-        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.PAYLOAD_TOO_LARGE)
+        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.CONTENT_TOO_LARGE)
     }
 
     @Test

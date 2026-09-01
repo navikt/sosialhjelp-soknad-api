@@ -52,7 +52,7 @@ class InntektSkatteetatenUseCaseHandler(
         runCatching { inntektSkatteetatenFetcher.fetchInntekt() }
             .onSuccess { utbetalinger -> inntektSkatteetatenService.saveUtbetalinger(soknadId, utbetalinger) }
             .onFailure { ex ->
-                logger.error("Fetching fra Skatteetaten feilet", ex)
+                logger.error("Fetching fra Skatteetaten feilet: ${ex.message}", ex)
                 inntektSkatteetatenService.createJobbElement(soknadId)
                 throw ex
             }
