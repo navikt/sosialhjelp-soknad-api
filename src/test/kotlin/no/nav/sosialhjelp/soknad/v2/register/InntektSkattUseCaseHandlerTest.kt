@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.register
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.every
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektResponse
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
@@ -49,7 +50,7 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Service returnerer null setter integrasjonstatus feilet til true, og oppretter InntektType JOBB`() {
-        every { skatteetatenClient.hentSkattbarinntekt() } throws SkatteetatenException("Feil ved henting")
+        every { skatteetatenClient.hentSkattbarinntekt() } returns SkattbarInntektResponse.Error("Feil", SkatteetatenException("error"))
 
         inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
 

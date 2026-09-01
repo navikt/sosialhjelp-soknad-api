@@ -15,7 +15,7 @@ import java.time.LocalDate
 class SkattbarInntektService(
     private val skatteetatenClient: SkatteetatenClient,
 ) {
-    fun hentInntekt(): List<Utbetaling>? {
+    fun hentInntekt(): List<Utbetaling> {
         logger.info("Henter skattbar inntekt fra Skatteetaten")
 
         val skattbarInntekt =
@@ -68,11 +68,11 @@ class SkattbarInntektService(
         return bruttoOrgPerMaaned
     }
 
-    private fun filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(utbetalinger: List<Utbetaling>?): List<Utbetaling>? {
+    private fun filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(utbetalinger: List<Utbetaling>): List<Utbetaling> {
         return utbetalinger
-            ?.groupBy { it.orgnummer }
-            ?.values
-            ?.map {
+            .groupBy { it.orgnummer }
+            .values
+            .map {
                 val nyesteDato: LocalDate = it.maxOf { utbetaling -> utbetaling.periodeFom }
                 grupperOgSummerEtterUtbetalingsStartDato(
                     it,
