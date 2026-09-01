@@ -39,7 +39,7 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Tom liste lagrer ingen Inntekt`() {
-        every { skattbarInntektService.hentUtbetalinger(any()) } returns emptyList()
+        every { skattbarInntektService.hentInntekt() } returns emptyList()
 
         inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
 
@@ -49,7 +49,7 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Service returnerer null setter integrasjonstatus feilet til true, og oppretter InntektType JOBB`() {
-        every { skatteetatenClient.hentSkattbarinntekt(any()) } throws SkatteetatenException("Feil ved henting")
+        every { skatteetatenClient.hentSkattbarinntekt() } throws SkatteetatenException("Feil ved henting")
 
         inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
 
@@ -79,7 +79,7 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
     }
 
     private fun createAnswerForSkatteetatenClient() {
-        every { skattbarInntektService.hentUtbetalinger(any()) } returns defaultResponseForSkattbarInntektService()
+        every { skattbarInntektService.hentInntekt() } returns defaultResponseForSkattbarInntektService()
         every { organisasjonService.hentOrgNavn(any()) } returns "Navn på arbeidsgiver"
     }
 

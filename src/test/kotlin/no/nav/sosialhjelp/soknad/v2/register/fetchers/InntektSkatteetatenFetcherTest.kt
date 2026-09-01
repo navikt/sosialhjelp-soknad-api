@@ -26,7 +26,7 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Clienten returnerer null skal kaste exception`() {
-        every { skatteetatenClient.hentSkattbarinntekt(any()) } throws SkatteetatenException("Feil i kall")
+        every { skatteetatenClient.hentSkattbarinntekt() } throws SkatteetatenException("Feil i kall")
         assertThatThrownBy { inntektSkatteetatenFetcher.fetchInntekt() }.isInstanceOf(SkatteetatenException::class.java)
     }
 
@@ -40,7 +40,7 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
     private lateinit var skatteetatenClient: SkatteetatenClient
 
     private fun createAnswerForSkatteetatenClient() {
-        every { skattbarInntektService.hentUtbetalinger(any()) } returns defaultResponseForSkattbarInntektService()
+        every { skattbarInntektService.hentInntekt() } returns defaultResponseForSkattbarInntektService()
         every { organisasjonService.hentOrgNavn(any()) } returns "Navn på arbeidsgiver"
     }
 }
