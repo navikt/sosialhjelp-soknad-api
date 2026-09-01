@@ -19,7 +19,7 @@ class SkattbarInntektService(
         logger.info("Henter skattbar inntekt fra Skatteetaten")
 
         val skattbarInntekt =
-            when(val response = skatteetatenClient.hentSkattbarinntekt()) {
+            when (val response = skatteetatenClient.hentSkattbarinntekt()) {
                 is SkattbarInntektResponse.Success -> response.inntekt
                 is SkattbarInntektResponse.Error -> throw SkatteetatenException(response.error, response.cause)
                 is SkattbarInntektResponse.NotFound -> {

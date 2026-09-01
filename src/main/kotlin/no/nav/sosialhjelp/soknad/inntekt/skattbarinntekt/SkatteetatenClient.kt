@@ -52,7 +52,7 @@ class SkatteetatenClient(
     }
 
     private fun handleError(e: Throwable): SkattbarInntektResponse =
-        when(e) {
+        when (e) {
             is WebClientResponseException.NotFound -> SkattbarInntektResponse.NotFound
             is WebClientResponseException -> {
                 val msg = "Klarer ikke hente skatteopplysninger ${maskerFnr(e.responseBodyAsString)} status ${e.statusCode}"
@@ -84,6 +84,8 @@ class SkatteetatenClient(
 
 sealed interface SkattbarInntektResponse {
     class Success(val inntekt: SkattbarInntekt) : SkattbarInntektResponse
+
     class Error(val error: String, val cause: Throwable) : SkattbarInntektResponse
+
     object NotFound : SkattbarInntektResponse
 }
