@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
@@ -121,8 +122,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any()) } throws
-            RuntimeException("Noe feilet")
+        every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -149,8 +149,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any()) } throws
-            RuntimeException("Something failed")
+        every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -184,8 +183,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createInnsendtSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), soknadId) } throws
-            AlleredeMottattException(UUID.randomUUID(), "Soknad allerede sendt inn")
+        every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) } throws AlleredeMottattException(UUID.randomUUID(), "Soknad allerede sendt inn")
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -202,7 +200,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .returnResult().responseBody
             .also { dto ->
                 assertThat { dto?.digisosId }.isNotNull()
-                verify(exactly = 1) { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+                verify(exactly = 1) { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
             }
     }
 
@@ -321,7 +319,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     private fun CapturedValues.assertDokumenterIsPdf() {
         dokumenterSlot.captured.forEach {
-            assertThat(FileDetectionUtils.detectMimeType(it.data.readAllBytes())).isEqualTo(MimeTypes.APPLICATION_PDF)
+            assertThat(FileDetectionUtils.detectMimeType(it.data.readAllBytes())).isEqualTo(MimeTypes.APPLICATION_OCTET_STREAM)
         }
     }
 
@@ -349,7 +347,7 @@ private fun createMellomlagringDto(soknadId: UUID): MellomlagringDto {
                     filId = UUID.randomUUID().toString(),
                     filnavn = "filnavn.pdf",
                     storrelse = 1234L,
-                    mimetype = MimeTypes.APPLICATION_PDF,
+                    mimetype = MimeTypes.APPLICATION_OCTET_STREAM,
                 ),
             ),
     )

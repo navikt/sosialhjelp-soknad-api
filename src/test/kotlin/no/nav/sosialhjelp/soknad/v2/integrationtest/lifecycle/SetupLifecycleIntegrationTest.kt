@@ -12,6 +12,9 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavService
@@ -81,6 +84,12 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @MockkBean(relaxed = true)
     protected lateinit var metricsManager: MetricsManager
 
+    @MockkBean(relaxed = true)
+    protected lateinit var krypteringService: KrypteringService
+
+    @MockkBean(relaxed = true)
+    protected lateinit var dokumentlagerClient: DokumentlagerClient
+
     @BeforeEach
     protected fun setup() {
         setupMocks()
@@ -103,15 +112,15 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         coEvery { navUtbetalingerService.getUtbetalingerSiste40Dager() } returns createNavUtbetaling()
         every { kommuneInfoClient.getAll() } returns createKommuneInfoList()
         every {
-            digisosApiV2Client.krypterOgLastOppFiler(
+            digisosApiV2Client.lastOppFiler(
                 soknadJson = capture(soknadJsonSlot),
                 tilleggsinformasjonJson = capture(tilleggsinformasjonSlot),
                 vedleggJson = capture(vedleggJsonSlot),
-                pdfDokumenter = capture(dokumenterSlot),
-                kommunenr = capture(kommunenummerSlot),
-                navEksternRefId = capture(navEksternRefSlot),
+                filer = capture(dokumenterSlot),
+                kommunenummer = capture(kommunenummerSlot),
+                soknadId = capture(navEksternRefSlot),
             )
-        } returns UUID.randomUUID()
+        } returns SendSoknadResponse.Success(UUID.randomUUID())
     }
 
     protected object CapturedValues {
