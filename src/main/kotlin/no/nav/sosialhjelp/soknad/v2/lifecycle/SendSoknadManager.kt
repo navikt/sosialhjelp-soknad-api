@@ -31,7 +31,7 @@ class SendSoknadManager(
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val adresseService: AdresseService,
     private val krypteringService: KrypteringService,
-    private val dokumentlagerClient: DokumentlagerClient
+    private val dokumentlagerClient: DokumentlagerClient,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -75,33 +75,38 @@ class SendSoknadManager(
         val startTime = System.currentTimeMillis()
         try {
             // TODO soknadJson og vedleggJson bør også krypteres
-            response = digisosApiV2Client.lastOppFiler(
-                soknadJson,
-                tilleggsinformasjonJson,
-                vedleggJson,
-                pdfDokumenter.map { dokument: FilOpplasting ->
-                    FilOpplasting(
-                        metadata = dokument.metadata,
-                        data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate),
-                    )
-                },
-                kommunenr,
-                navEksternRefId,
-            )
+            response =
+                digisosApiV2Client.lastOppFiler(
+                    soknadJson,
+                    tilleggsinformasjonJson,
+                    vedleggJson,
+                    pdfDokumenter.map { dokument: FilOpplasting ->
+                        FilOpplasting(
+                            metadata = dokument.metadata,
+                            data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate),
+                        )
+                    },
+                    kommunenr,
+                    navEksternRefId,
+                )
             waitForFutures(krypteringFutureList)
         } finally {
             krypteringFutureList
                 .filter { !it.isDone && !it.isCancelled }
                 .forEach { it.cancel(true) }
         }
-        return when(response) {
+        return when (response) {
             is SendSoknadResponse.Success -> response.digisosId
             is SendSoknadResponse.Error -> throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet", response.e)
             is SendSoknadResponse.ResponseError -> handleResponseError(navEksternRefId, startTime, response.e)
         }
     }
 
-    private fun handleResponseError(soknadId: UUID, startTime: Long, e: WebClientResponseException): UUID {
+    private fun handleResponseError(
+        soknadId: UUID,
+        startTime: Long,
+        e: WebClientResponseException,
+    ): UUID {
         val errorResponse = e.responseBodyAsString
         val digisosId = Utils.getDigisosIdFromResponse(errorResponse, soknadId)
 
@@ -109,7 +114,7 @@ class SendSoknadManager(
             digisosId != null && e is WebClientResponseException.BadRequest -> handleAlleredeMottatt(digisosId, soknadId, errorResponse)
             else -> throw IllegalStateException(
                 "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
-                        "ms med status ${e.statusCode} og response: $errorResponse",
+                    "ms med status ${e.statusCode} og response: $errorResponse",
             )
         }
     }
@@ -121,8 +126,8 @@ class SendSoknadManager(
     ): Nothing {
         logger.warn(
             "Søknad $soknadId er allerede sendt med id $digisosId. " +
-                    "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
-                    "ErrorResponse var: $errorResponse",
+                "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
+                "ErrorResponse var: $errorResponse",
         )
         throw AlleredeMottattException(
             digisosId = digisosId,

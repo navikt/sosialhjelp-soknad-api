@@ -98,7 +98,6 @@ class DigisosApiV2Client(
             }
     }
 
-
     private fun doLastOppFiler(
         soknadId: UUID,
         kommunenummer: String,
@@ -106,7 +105,7 @@ class DigisosApiV2Client(
     ): UUID {
         return fiksWebClient
             .post()
-            .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}",kommunenummer, soknadId,)
+            .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, soknadId)
             .header(AUTHORIZATION, "Bearer $userToken")
             .contentType(MediaType.MULTIPART_FORM_DATA)
             .body(BodyInserters.fromMultipartData(body))
@@ -124,7 +123,6 @@ class DigisosApiV2Client(
         vedleggJson: String,
         filer: List<FilOpplasting>,
     ): LinkedMultiValueMap<String, Any> {
-
         val body = LinkedMultiValueMap<String, Any>()
         body.add(
             "tilleggsinformasjonJson",
@@ -227,8 +225,8 @@ class DigisosApiV2Client(
             val errorResponse = e.responseBodyAsString
             throw IllegalStateException(
                 "Henting av status for søknader hos Fiks feilet etter " +
-                        "${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} " +
-                        "og response: $errorResponse. SporingsId: $sporingsId",
+                    "${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} " +
+                    "og response: $errorResponse. SporingsId: $sporingsId",
             )
         } catch (e: IOException) {
             throw IllegalStateException("Henting av status for søknader hos Fiks feilet. SporingsId: $sporingsId", e)
@@ -252,9 +250,11 @@ class DigisosApiV2Client(
 }
 
 sealed interface SendSoknadResponse {
-    class Success(val digisosId: UUID): SendSoknadResponse
-    class ResponseError(val e: WebClientResponseException): SendSoknadResponse
-    class Error(val e: Throwable): SendSoknadResponse
+    class Success(val digisosId: UUID) : SendSoknadResponse
+
+    class ResponseError(val e: WebClientResponseException) : SendSoknadResponse
+
+    class Error(val e: Throwable) : SendSoknadResponse
 }
 
 data class FiksSoknaderStatusRequest(
