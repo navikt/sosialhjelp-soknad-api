@@ -37,6 +37,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.netty.http.client.HttpClient
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.io.IOException
 import java.time.Duration
 import java.util.UUID
@@ -91,9 +92,9 @@ class DigisosApiV2Client(
                 .let { SendSoknadResponse.Success(it) }
         }
             .getOrElse { e ->
-                when (e) {
-                    is WebClientResponseException -> SendSoknadResponse.ResponseError(e)
-                    else -> SendSoknadResponse.Error(e)
+                when (val errorMessage = e.toFiksErrorMessageOrNull()) {
+                    null -> SendSoknadResponse.Error(e)
+                    else -> SendSoknadResponse.FiksError(errorMessage, e)
                 }
             }
     }
@@ -249,10 +250,18 @@ class DigisosApiV2Client(
     }
 }
 
+private fun Throwable.toFiksErrorMessageOrNull(): ErrorMessage? =
+    runCatching {
+        when (this) {
+            is WebClientResponseException -> jacksonObjectMapper().readValue(responseBodyAsString, ErrorMessage::class.java)
+            else -> null
+        }
+    }.getOrNull()
+
 sealed interface SendSoknadResponse {
     class Success(val digisosId: UUID) : SendSoknadResponse
 
-    class ResponseError(val e: WebClientResponseException) : SendSoknadResponse
+    class FiksError(val errorMessage: ErrorMessage, val e: Throwable) : SendSoknadResponse
 
     class Error(val e: Throwable) : SendSoknadResponse
 }

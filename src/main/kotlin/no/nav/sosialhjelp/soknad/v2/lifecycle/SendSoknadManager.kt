@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
@@ -64,6 +65,7 @@ class SendSoknadManager(
 
     private fun krypterOgLastOppFiler(
         tilleggsinformasjonJson: String,
+        soknadJson: String,
         vedleggJson: String,
         pdfDokumenter: List<FilOpplasting>,
         kommunenr: String,
@@ -96,26 +98,28 @@ class SendSoknadManager(
         }
         return when (response) {
             is SendSoknadResponse.Success -> response.digisosId
-            is SendSoknadResponse.Error -> throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet", response.e)
-            is SendSoknadResponse.ResponseError -> handleResponseError(navEksternRefId, startTime, response.e)
+            is SendSoknadResponse.Error -> throw FiksException("Opplasting av $navEksternRefId til fiks-digisos-api feilet", response.e)
+            is SendSoknadResponse.FiksError -> handleFiksError(navEksternRefId, startTime, response)
         }
     }
 
-    private fun handleResponseError(
+    private fun handleFiksError(
         soknadId: UUID,
         startTime: Long,
-        e: WebClientResponseException,
-    ): UUID {
-        val errorResponse = e.responseBodyAsString
-        val digisosId = Utils.getDigisosIdFromResponse(errorResponse, soknadId)
+        response: SendSoknadResponse.FiksError,
+    ): Nothing {
+        response.errorMessage.message
+            ?.also { msg ->
+                val digisosId = Utils.getDigisosIdFromResponse(msg, soknadId)
+                if (digisosId != null && response.e is WebClientResponseException.BadRequest) handleAlleredeMottatt(digisosId, soknadId, msg)
+            }
 
-        when {
-            digisosId != null && e is WebClientResponseException.BadRequest -> handleAlleredeMottatt(digisosId, soknadId, errorResponse)
-            else -> throw IllegalStateException(
+        throw FiksException(
+            message =
                 "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
-                    "ms med status ${e.statusCode} og response: $errorResponse",
-            )
-        }
+                    "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}",
+            cause = response.e,
+        )
     }
 
     private fun handleAlleredeMottatt(

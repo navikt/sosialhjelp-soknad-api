@@ -7,10 +7,10 @@ import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
+import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
@@ -27,7 +27,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.test.web.reactive.server.expectBody
+import org.springframework.web.reactive.function.client.WebClientResponseException
+import tools.jackson.module.kotlin.jacksonObjectMapper
+import java.nio.charset.Charset
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -149,7 +154,9 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
+        every {
+            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any())
+        } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -163,7 +170,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val innsendingFeiletError =
             doPostFullResponse(uri = sendUri(soknadId))
                 .expectStatus().is5xxServerError
-                .expectBody(InnsendingFeiletError::class.java)
+                .expectBody<InnsendingFeiletError>()
                 .returnResult().responseBody
 
         val deletionDate =
@@ -183,7 +190,9 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createInnsendtSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) } throws AlleredeMottattException(UUID.randomUUID(), "Soknad allerede sendt inn")
+        every {
+            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+        } returns createSendSoknadResponseFiksError(soknadId)
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -352,3 +361,43 @@ private fun createMellomlagringDto(soknadId: UUID): MellomlagringDto {
             ),
     )
 }
+
+private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
+    return SendSoknadResponse.FiksError(
+        errorMessage = createFiksErrorBody(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
+        e = createWebClientResponseException(soknadId),
+    )
+}
+
+private fun createWebClientResponseException(soknadId: UUID): WebClientResponseException {
+    return WebClientResponseException.create(
+        HttpStatus.BAD_REQUEST.value(),
+        HttpStatus.BAD_REQUEST.reasonPhrase,
+        HttpHeaders.EMPTY,
+        createFiksErrorBody(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase).toJsonByteArray(),
+        Charset.forName("UTF-8"),
+    )
+}
+
+private fun createFiksErrorBody(
+    soknadId: UUID,
+    status: Int,
+    error: String,
+): ErrorMessage {
+    val message = "Soknad med tilhørende navEksternRefId $soknadId finnes allerede i Fiks-Digisos med DigisosId ${UUID.randomUUID()}"
+
+    return ErrorMessage(
+        timestamp = LocalDateTime.now().toEpochSecond(java.time.ZoneOffset.UTC),
+        status = status,
+        error = error,
+        errorId = UUID.randomUUID().toString(),
+        path = "/digisos/api/v2/soknader/1234/$soknadId",
+        message = message,
+        errorCode = null,
+        errorJson = null,
+        originalPath = null,
+    )
+}
+
+private fun ErrorMessage.toJsonByteArray(): ByteArray =
+    jacksonObjectMapper().writeValueAsString(this).toByteArray(Charset.forName("UTF-8"))
