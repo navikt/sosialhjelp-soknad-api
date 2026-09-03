@@ -8,7 +8,6 @@ import org.springframework.util.LinkedMultiValueMap
 import tools.jackson.databind.json.JsonMapper
 import tools.jackson.module.kotlin.kotlinModule
 import java.util.UUID
-import java.util.regex.Pattern
 
 object Utils {
     val sosialhjelpJsonMapper: JsonMapper =
@@ -18,17 +17,17 @@ object Utils {
             .build()
 
     fun getDigisosIdFromResponse(
-        errorResponse: String,
+        errorMessage: String,
         soknadId: UUID,
     ): UUID? {
-        if (errorResponse.contains(soknadId.toString()) && errorResponse.contains("finnes allerede")) {
-            val p = Pattern.compile("^.*?message.*([0-9a-fA-F]{8}[-]?(?:[0-9a-fA-F]{4}[-]?){3}[0-9a-fA-F]{12}).*?$")
-            val m = p.matcher(errorResponse)
-            if (m.matches()) {
-                return m.group(1).let { UUID.fromString(it) }
-            }
-        }
-        return null
+        listOf("finnes allerede", soknadId.toString(), "navEksternRefId", "DigisosId").forEach { if (!errorMessage.contains(it)) return null }
+
+        return errorMessage
+            .indexOf("DigisosId")
+            .let { index -> errorMessage.substring(index) }
+            .split(" ")
+            .find { it.matches(Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) }
+            ?.let { UUID.fromString(it) }
     }
 
     fun stripVekkFnutter(tekstMedFnutt: String): String {

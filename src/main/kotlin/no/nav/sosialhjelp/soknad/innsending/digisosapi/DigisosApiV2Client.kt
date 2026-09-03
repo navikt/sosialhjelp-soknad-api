@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.fiksServiceConnectionProvider
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
@@ -17,7 +16,6 @@ import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.sosialhjelpJsonMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
@@ -39,19 +37,16 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.netty.http.client.HttpClient
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.io.IOException
 import java.time.Duration
-import java.util.Collections
 import java.util.UUID
-import java.util.concurrent.Future
 
 @Component
 class DigisosApiV2Client(
     @param:Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @param:Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
-    private val dokumentlagerClient: DokumentlagerClient,
-    private val krypteringService: KrypteringService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
@@ -78,38 +73,78 @@ class DigisosApiV2Client(
             .filter(MdcExchangeFilter)
             .build()
 
-    fun krypterOgLastOppFiler(
+    fun lastOppFiler(
         soknadJson: String,
         tilleggsinformasjonJson: String,
         vedleggJson: String,
-        pdfDokumenter: List<FilOpplasting>,
-        kommunenr: String,
-        navEksternRefId: UUID,
-    ): UUID {
-        val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(pdfDokumenter.size))
-        val digisosId: UUID
-        try {
-            digisosId =
-                lastOppFiler(
-                    soknadJson,
-                    tilleggsinformasjonJson,
-                    vedleggJson,
-                    pdfDokumenter.map { dokument: FilOpplasting ->
-                        FilOpplasting(
-                            metadata = dokument.metadata,
-                            data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate),
-                        )
-                    },
-                    kommunenr,
-                    navEksternRefId,
-                )
-            waitForFutures(krypteringFutureList)
-        } finally {
-            krypteringFutureList
-                .filter { !it.isDone && !it.isCancelled }
-                .forEach { it.cancel(true) }
+        filer: List<FilOpplasting>,
+        kommunenummer: String,
+        soknadId: UUID,
+    ): SendSoknadResponse {
+        val body = createBody(soknadJson, tilleggsinformasjonJson, vedleggJson, filer)
+
+        return runCatching {
+            doLastOppFiler(
+                soknadId = soknadId,
+                kommunenummer = kommunenummer,
+                body = body,
+            )
+                .let { SendSoknadResponse.Success(it) }
         }
-        return digisosId
+            .getOrElse { e ->
+                when (val errorMessage = e.toFiksErrorMessageOrNull()) {
+                    null -> SendSoknadResponse.Error(e)
+                    else -> SendSoknadResponse.FiksError(errorMessage, e)
+                }
+            }
+    }
+
+    private fun doLastOppFiler(
+        soknadId: UUID,
+        kommunenummer: String,
+        body: LinkedMultiValueMap<String, Any>,
+    ): UUID {
+        return fiksWebClient
+            .post()
+            .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, soknadId)
+            .header(AUTHORIZATION, "Bearer $userToken")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(BodyInserters.fromMultipartData(body))
+            .retrieve()
+            .bodyToMono<String>()
+            .block()
+            // digisosId
+            ?.let { UUID.fromString(Utils.stripVekkFnutter(it)) }
+            ?: error("Fiks - noe uventet feilet ved innsending av søknad. Response er null?")
+    }
+
+    private fun createBody(
+        soknadJson: String,
+        tilleggsinformasjonJson: String,
+        vedleggJson: String,
+        filer: List<FilOpplasting>,
+    ): LinkedMultiValueMap<String, Any> {
+        val body = LinkedMultiValueMap<String, Any>()
+        body.add(
+            "tilleggsinformasjonJson",
+            createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE),
+        )
+        body.add("soknadJson", createHttpEntity(soknadJson, "soknadJson", null, APPLICATION_JSON_VALUE))
+        body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
+
+        filer.forEachIndexed { index, fil ->
+            body.add("metadata$index", createHttpEntity(getJson(fil), "metadata$index", null, TEXT_PLAIN_VALUE))
+            body.add(
+                fil.metadata.filnavn,
+                createHttpEntity(
+                    ByteArrayResource(IOUtils.toByteArray(fil.data)),
+                    fil.metadata.filnavn,
+                    fil.metadata.filnavn,
+                    APPLICATION_OCTET_STREAM_VALUE,
+                ),
+            )
+        }
+        return body
     }
 
     fun getSoknader(): List<DigisosSak> {
@@ -199,76 +234,6 @@ class DigisosApiV2Client(
         }
     }
 
-    private fun lastOppFiler(
-        soknadJson: String,
-        tilleggsinformasjonJson: String,
-        vedleggJson: String,
-        filer: List<FilOpplasting>,
-        kommunenummer: String,
-        soknadId: UUID,
-    ): UUID {
-        val body = LinkedMultiValueMap<String, Any>()
-        body.add(
-            "tilleggsinformasjonJson",
-            createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE),
-        )
-        body.add("soknadJson", createHttpEntity(soknadJson, "soknadJson", null, APPLICATION_JSON_VALUE))
-        body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
-
-        filer.forEachIndexed { index, fil ->
-            body.add("metadata$index", createHttpEntity(getJson(fil), "metadata$index", null, TEXT_PLAIN_VALUE))
-            body.add(
-                fil.metadata.filnavn,
-                createHttpEntity(
-                    ByteArrayResource(IOUtils.toByteArray(fil.data)),
-                    fil.metadata.filnavn,
-                    fil.metadata.filnavn,
-                    APPLICATION_OCTET_STREAM_VALUE,
-                ),
-            )
-        }
-
-        val startTime = System.currentTimeMillis()
-        try {
-            val response =
-                fiksWebClient
-                    .post()
-                    .uri(
-                        "$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}",
-                        kommunenummer,
-                        soknadId,
-                    )
-                    .header(AUTHORIZATION, "Bearer $userToken")
-                    .contentType(MediaType.MULTIPART_FORM_DATA)
-                    .body(BodyInserters.fromMultipartData(body))
-                    .retrieve()
-                    .bodyToMono<String>()
-                    .block()
-                    ?: throw FiksException(
-                        message = "Fiks - noe uventet feilet ved innsending av søknad. Response er null?",
-                        cause = null,
-                    )
-
-            val digisosId = Utils.stripVekkFnutter(response).let { UUID.fromString(it) }
-            log.info("Sendte inn søknad til kommune $kommunenummer og fikk digisosid: $digisosId")
-
-            return digisosId
-        } catch (e: WebClientResponseException) {
-            val errorResponse = e.responseBodyAsString
-            val digisosId = Utils.getDigisosIdFromResponse(errorResponse, soknadId)
-
-            when {
-                digisosId != null -> handleAlleredeMottatt(digisosId, soknadId, errorResponse)
-                else -> throw IllegalStateException(
-                    "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
-                        "ms med status ${e.statusCode} og response: $errorResponse",
-                )
-            }
-        } catch (e: IOException) {
-            throw IllegalStateException("Opplasting av $soknadId til fiks-digisos-api feilet", e)
-        }
-    }
-
     private fun getJson(objectFilForOpplasting: FilOpplasting): String =
         try {
             sosialhjelpJsonMapper.writeValueAsString(objectFilForOpplasting.metadata)
@@ -276,31 +241,29 @@ class DigisosApiV2Client(
             throw IllegalStateException(e)
         }
 
-    private fun handleAlleredeMottatt(
-        digisosId: UUID,
-        soknadId: UUID,
-        errorResponse: String,
-    ): Nothing {
-        log.warn(
-            "Søknad $soknadId er allerede sendt med id $digisosId. " +
-                "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
-                "ErrorResponse var: $errorResponse",
-        )
-        throw AlleredeMottattException(
-            digisosId = digisosId,
-            message = "Søknad $soknadId er allerede sendt med id $digisosId. ErrorResponse var: $errorResponse",
-        )
-    }
-
-    private val fiksX509Certificate get() = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
     private val maskinportenToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
     private val userToken get() = SubjectHandlerUtils.getTokenOrNull() ?: error("Mangler userToken")
 
     companion object {
-        private val log by logger()
         private val ONE_MINUTE = Duration.ofMinutes(1)
         private val TWO_MINUTES = Duration.ofMinutes(2)
     }
+}
+
+private fun Throwable.toFiksErrorMessageOrNull(): ErrorMessage? =
+    runCatching {
+        when (this) {
+            is WebClientResponseException -> jacksonObjectMapper().readValue(responseBodyAsString, ErrorMessage::class.java)
+            else -> null
+        }
+    }.getOrNull()
+
+sealed interface SendSoknadResponse {
+    class Success(val digisosId: UUID) : SendSoknadResponse
+
+    class FiksError(val errorMessage: ErrorMessage, val e: Throwable) : SendSoknadResponse
+
+    class Error(val e: Throwable) : SendSoknadResponse
 }
 
 data class FiksSoknaderStatusRequest(
