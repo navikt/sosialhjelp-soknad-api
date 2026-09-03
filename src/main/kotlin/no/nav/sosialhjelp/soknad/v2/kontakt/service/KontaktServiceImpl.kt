@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt.service
 
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
@@ -52,7 +53,7 @@ class KontaktServiceImpl(
         telefonnummerBruker: String?,
     ): Telefonnummer =
         findOrCreate(soknadId)
-            .run { copy(telefonnummer = telefonnummer.copy(fraBruker = telefonnummerBruker)) }
+            .run { copy(telefonnummer = telefonnummer.copy(fraBruker = validateTelefonnummer(telefonnummerBruker))) }
             .let { kontaktRepository.save(it) }
             .telefonnummer
 
@@ -96,7 +97,21 @@ class KontaktServiceImpl(
             ?: error("Kunne ikke oppdatere mottakers kommunenavn")
     }
 
+    private fun validateTelefonnummer(telefonnummerBruker: String?): String? {
+        if (telefonnummerBruker.isNullOrBlank()) return null
+        if (telefonnummerBruker.matches(REGEX_11DIGITS) && telefonnummerBruker.startsWith("+47")) return telefonnummerBruker
+        if (telefonnummerBruker.matches(REGEX_8DIGITS)) return "+47$telefonnummerBruker"
+        throw UgyldigTelefonnummerException()
+    }
+
     private fun findOrCreate(soknadId: UUID) =
         kontaktRepository.findByIdOrNull(soknadId)
             ?: kontaktRepository.save(Kontakt(soknadId))
+
+    companion object {
+        private val REGEX_11DIGITS = Regex("^\\+\\d{10}$")
+        private val REGEX_8DIGITS = Regex("^\\d{8}$")
+    }
 }
+
+class UgyldigTelefonnummerException : SosialhjelpSoknadApiException("Ugyldig telefonnummer")
