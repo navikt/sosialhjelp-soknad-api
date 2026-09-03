@@ -47,6 +47,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
+import java.io.ByteArrayInputStream
 import java.time.LocalDate
 import java.util.UUID
 
@@ -111,6 +112,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         coEvery { krrService.getMobilnummer() } returns "44553366"
         coEvery { navUtbetalingerService.getUtbetalingerSiste40Dager() } returns createNavUtbetaling()
         every { kommuneInfoClient.getAll() } returns createKommuneInfoList()
+        every { krypteringService.krypter(any(), any(), any()) } answers { ByteArrayInputStream(byteArrayOf(0, 1, 2)) }
         every {
             digisosApiV2Client.lastOppFiler(
                 soknadJson = capture(soknadJsonSlot),
