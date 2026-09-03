@@ -21,7 +21,7 @@ logstash = "9.0"
 pdfbox = "3.0.8"
 jakarta_servlet = "6.1.0"
 unleash_client = "12.3.0"
-tika = "3.3.2"
+tika = "4.0.0"
 commons_text = "1.15.0"
 ktlint = "1.2.1"
 mockk = "1.14.11"
@@ -86,12 +86,12 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash" }
 jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api", version.ref = "jakarta_servlet" }
 unleash-client-java = { module = "io.getunleash:unleash-client-java", version.ref = "unleash_client" }
-tika-core = { module = "org.apache.tika:tika-core", version.ref = "tika" }
 tika-parsers-standard = { module = "org.apache.tika:tika-parsers-standard-package", version.ref = "tika" }
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons_text" }
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfbox" }
 preflight = { module = "org.apache.pdfbox:preflight", version.ref = "pdfbox" }
 pdfbox-io = { module = "org.apache.pdfbox:pdfbox-io", version.ref = "pdfbox" }
+xmpbox = { module = "org.apache.pdfbox:xmpbox", version.ref = "pdfbox" }
 opentelemetry-bom = { module = "io.opentelemetry:opentelemetry-bom", version.ref = "opentelemetry" }
 opentelemetry-api = { module = "io.opentelemetry:opentelemetry-api" }
 opentelemetry-instrumentation-logback = { module = "io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0", version.ref = "opentelemetry-logback" }

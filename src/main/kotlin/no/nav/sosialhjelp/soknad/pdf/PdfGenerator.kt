@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.pdf
 
-import org.apache.jempbox.xmp.XMPMetadata
-import org.apache.jempbox.xmp.pdfa.XMPSchemaPDFAId
 import org.apache.pdfbox.pdfwriter.compress.CompressParameters
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
@@ -12,6 +10,8 @@ import org.apache.pdfbox.pdmodel.font.PDFont
 import org.apache.pdfbox.pdmodel.font.PDType0Font
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
+import org.apache.xmpbox.XMPMetadata
+import org.apache.xmpbox.xml.XmpSerializer
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
@@ -37,8 +37,8 @@ class PdfGenerator {
             PDType0Font.load(document, it)
         } // PDType0Font.load(document, ClassPathResource(BOLD).inputStream)
 
-    private val xmp = XMPMetadata()
-    private val pdfaid = XMPSchemaPDFAId(xmp)
+    private val xmp = XMPMetadata.createXMPMetadata()
+    private val pdfaid = xmp.createAndAddPDFAIdentificationSchema()
 
     private val oi = ClassPathResource("sRGB.icc").inputStream.use { PDOutputIntent(document, it) }
 
@@ -55,9 +55,14 @@ class PdfGenerator {
         xmp.addSchema(pdfaid)
         pdfaid.conformance = "B"
         pdfaid.part = 1
-        pdfaid.about = ""
+        pdfaid.setAboutAsSimple("")
         try {
-            metadata.importXMPMetadata(xmp.asByteArray())
+            val xmpBytes =
+                ByteArrayOutputStream().use { output ->
+                    XmpSerializer().serialize(xmp, output, true)
+                    output.toByteArray()
+                }
+            metadata.importXMPMetadata(xmpBytes)
         } catch (e: Exception) {
             logger.error("Feil ved generering av PDF metadata", e)
         }

@@ -133,7 +133,6 @@ dependencies {
     implementation(libs.unleash.client.java)
 
     // Tika
-    implementation(libs.tika.core)
     implementation(libs.tika.parsers.standard)
 
     // commons
@@ -141,6 +140,7 @@ dependencies {
 
     // pdf
     implementation(libs.bundles.pdfbox)
+    implementation(libs.xmpbox)
 
     // testcontainers
     testImplementation(libs.testcontainers.postgres)
