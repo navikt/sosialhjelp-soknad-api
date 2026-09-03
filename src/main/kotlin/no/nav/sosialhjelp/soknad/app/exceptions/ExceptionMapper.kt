@@ -126,7 +126,7 @@ class ExceptionMapper(
             }
             is UgyldigTelefonnummerException -> {
                 log.error(e.message, e)
-                buildError(HttpStatus.NOT_ACCEPTABLE, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
+                buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
             }
             else -> {
                 log.error("REST-kall feilet", e)

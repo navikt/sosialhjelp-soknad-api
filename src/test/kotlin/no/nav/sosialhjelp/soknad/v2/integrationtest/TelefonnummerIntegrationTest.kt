@@ -72,7 +72,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
         doPutExpectError(
             "/soknad/${soknad.id}/personalia/telefonnummer",
             telefonnummerInput,
-            HttpStatus.NOT_ACCEPTABLE,
+            HttpStatus.BAD_REQUEST,
         ).also {
             assertThat(it.error).isEqualTo(SoknadApiErrorType.UgyldigInput)
         }
@@ -87,7 +87,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
         doPutExpectError(
             "/soknad/${soknad.id}/personalia/telefonnummer",
             telefonnummerInput,
-            HttpStatus.NOT_ACCEPTABLE,
+            HttpStatus.BAD_REQUEST,
         ).also {
             assertThat(it.error).isEqualTo(SoknadApiErrorType.UgyldigInput)
         }
@@ -102,7 +102,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
         doPutExpectError(
             "/soknad/${soknad.id}/personalia/telefonnummer",
             telefonnummerInput,
-            HttpStatus.NOT_ACCEPTABLE,
+            HttpStatus.BAD_REQUEST,
         ).also {
             assertThat(it.error).isEqualTo(SoknadApiErrorType.UgyldigInput)
         }
@@ -135,7 +135,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
         doPutExpectError(
             "/soknad/${soknad.id}/personalia/telefonnummer",
             TelefonnummerInput("asb23231"),
-            HttpStatus.NOT_ACCEPTABLE,
+            HttpStatus.BAD_REQUEST,
         ).also {
             assertThat(it.error).isEqualTo(SoknadApiErrorType.UgyldigInput)
         }
