@@ -127,8 +127,8 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
         }
     }
 
-    @Test
     // TODO Skal det være server side validering av telefonnummer?
+    @Test
     fun `Oppdatere telefonnummer med annet enn siffer gir 400 BadRequest`() {
         val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 

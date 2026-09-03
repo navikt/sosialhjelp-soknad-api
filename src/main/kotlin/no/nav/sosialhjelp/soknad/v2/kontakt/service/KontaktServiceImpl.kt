@@ -53,7 +53,7 @@ class KontaktServiceImpl(
         telefonnummerBruker: String?,
     ): Telefonnummer =
         findOrCreate(soknadId)
-            .run {copy(telefonnummer = telefonnummer.copy(fraBruker = validateTelefonnummer(telefonnummerBruker)))}
+            .run { copy(telefonnummer = telefonnummer.copy(fraBruker = validateTelefonnummer(telefonnummerBruker))) }
             .let { kontaktRepository.save(it) }
             .telefonnummer
 
