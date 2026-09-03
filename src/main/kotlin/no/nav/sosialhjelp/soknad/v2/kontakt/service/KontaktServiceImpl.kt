@@ -57,13 +57,6 @@ class KontaktServiceImpl(
             .let { kontaktRepository.save(it) }
             .telefonnummer
 
-    private fun validateTelefonnummer(telefonnummerBruker: String?): String? {
-        if (telefonnummerBruker.isNullOrBlank()) return null
-        if (telefonnummerBruker.matches(REGEX_11DIGITS) && telefonnummerBruker.contains("+47")) return telefonnummerBruker
-        if (telefonnummerBruker.matches(REGEX_8DIGITS)) return "+47$telefonnummerBruker"
-        throw UgyldigTelefonnummerException()
-    }
-
     @Transactional
     override fun findAdresser(soknadId: UUID) = findOrCreate(soknadId).adresser
 
@@ -102,6 +95,13 @@ class KontaktServiceImpl(
             ?.let { kontaktRepository.save(it) }
             ?.mottaker?.kommunenavn
             ?: error("Kunne ikke oppdatere mottakers kommunenavn")
+    }
+
+    private fun validateTelefonnummer(telefonnummerBruker: String?): String? {
+        if (telefonnummerBruker.isNullOrBlank()) return null
+        if (telefonnummerBruker.matches(REGEX_11DIGITS) && telefonnummerBruker.startsWith("+47")) return telefonnummerBruker
+        if (telefonnummerBruker.matches(REGEX_8DIGITS)) return "+47$telefonnummerBruker"
+        throw UgyldigTelefonnummerException()
     }
 
     private fun findOrCreate(soknadId: UUID) =
