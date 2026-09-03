@@ -62,8 +62,7 @@ class SendSoknadManager(
         )
     }
 
-    fun krypterOgLastOppFiler(
-        soknadJson: String,
+    private fun krypterOgLastOppFiler(
         tilleggsinformasjonJson: String,
         vedleggJson: String,
         pdfDokumenter: List<FilOpplasting>,
