@@ -15,18 +15,27 @@ import java.util.UUID
 
 @Component
 class SoknadMottattHandler(private val metadataService: SoknadMetadataServiceImpl) {
-
-    fun resolveSoknadMottatt(soknadId: UUID, navEnhet: NavEnhetForSending, digisosId: UUID): Nothing {
+    fun resolveSoknadMottatt(
+        soknadId: UUID,
+        navEnhet: NavEnhetForSending,
+        digisosId: UUID,
+    ): Nothing {
         val metadata = metadataService.getMetadataForSoknad(soknadId)
         if (metadata.digisosId == null) updateSoknadMetadata(metadata, navEnhet, digisosId)
 
         createSoknadAlleredeSendtException(soknadId, navEnhet.enhetsnavn)
     }
 
-    private fun updateSoknadMetadata(metadata: SoknadMetadata, navEnhet: NavEnhetForSending, digisosId: UUID) {
-        logger.info("Soknad ${metadata.soknadId} feilet ved innsending, men ble mottatt av Fiks. " +
+    private fun updateSoknadMetadata(
+        metadata: SoknadMetadata,
+        navEnhet: NavEnhetForSending,
+        digisosId: UUID,
+    ) {
+        logger.info(
+            "Soknad ${metadata.soknadId} feilet ved innsending, men ble mottatt av Fiks. " +
                 "Oppdaterer metadata med digisosId: $digisosId, kommunenummer: ${navEnhet.kommunenummer}, enhetsnavn: ${navEnhet.enhetsnavn}. " +
-                "Bruker ${metadata.tidspunkt.sistEndret} som innsendingsTidspunkt.")
+                "Bruker ${metadata.tidspunkt.sistEndret} som innsendingsTidspunkt.",
+        )
 
         metadataService.updateSoknadSendt(
             soknadId = metadata.soknadId,

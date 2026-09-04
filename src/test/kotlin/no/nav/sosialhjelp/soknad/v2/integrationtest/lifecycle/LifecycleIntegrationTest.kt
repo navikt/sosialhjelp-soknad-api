@@ -77,7 +77,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-                MellomlagringDto(soknadId.toString(), emptyList())
+            MellomlagringDto(soknadId.toString(), emptyList())
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -130,7 +130,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-                MellomlagringDto(soknadId.toString(), emptyList())
+            MellomlagringDto(soknadId.toString(), emptyList())
         every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -255,14 +255,15 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any())
         } returns createSendSoknadResponseFiksError(soknadId)
 
-        val responseBody = doPostFullResponse(uri = sendUri(soknadId))
-            .expectStatus().isOk
-            .expectBody<SoknadSendtDto>()
-            .returnResult().responseBody
-            .also { dto ->
-                assertThat { dto?.digisosId }.isNotNull()
-                verify(exactly = 2) { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
-            }
+        val responseBody =
+            doPostFullResponse(uri = sendUri(soknadId))
+                .expectStatus().isOk
+                .expectBody<SoknadSendtDto>()
+                .returnResult().responseBody
+                .also { dto ->
+                    assertThat { dto?.digisosId }.isNotNull()
+                    verify(exactly = 2) { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+                }
 
         metadataRepository.findByIdOrNull(soknadId)!!
             .also {
@@ -278,12 +279,12 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-                MellomlagringDto(soknadId.toString(), emptyList())
+            MellomlagringDto(soknadId.toString(), emptyList())
 
         every { kommuneInfoClient.getAll() } returns
-                listOf(
-                    createKommuneInfoList()[0].copy(kanMottaSoknader = false, harMidlertidigDeaktivertMottak = true),
-                )
+            listOf(
+                createKommuneInfoList()[0].copy(kanMottaSoknader = false, harMidlertidigDeaktivertMottak = true),
+            )
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -303,12 +304,12 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-                MellomlagringDto(soknadId.toString(), emptyList())
+            MellomlagringDto(soknadId.toString(), emptyList())
 
         every { kommuneInfoClient.getAll() } returns
-                listOf(
-                    createKommuneInfoList()[0].copy(harMidlertidigDeaktivertMottak = true),
-                )
+            listOf(
+                createKommuneInfoList()[0].copy(harMidlertidigDeaktivertMottak = true),
+            )
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -326,7 +327,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     @Test
     fun `Hvis soker er under 18 skal det returneres error`() {
         coEvery { personService.hentPerson() } returns
-                createPersonAnswer().copy(fodselsdato = LocalDate.now().minusYears(17))
+            createPersonAnswer().copy(fodselsdato = LocalDate.now().minusYears(17))
 
         doPostFullResponse(uri = createUri)
             .expectStatus().isForbidden
@@ -428,8 +429,8 @@ private fun createReadtimeoutException(soknadId: UUID): SendSoknadResponse.Error
             ReadTimeoutException.INSTANCE,
             HttpMethod.POST,
             URI("https://api.fiks.ks.no/digisos/api/v2/soknader/4203/$soknadId"),
-            HttpHeaders.EMPTY
-        )
+            HttpHeaders.EMPTY,
+        ),
     )
 
 private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
