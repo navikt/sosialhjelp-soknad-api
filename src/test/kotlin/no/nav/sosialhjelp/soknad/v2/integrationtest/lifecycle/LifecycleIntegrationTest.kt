@@ -240,7 +240,10 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .expectStatus().is5xxServerError
             .expectBody<String>()
             .returnResult().responseBody
-            .also { it!!.contains("InnsendingFeiletError") }
+            .also {
+                assertThat(it).isNotNull
+                assertThat(it!!).contains("InnsendingFeiletError")
+            }
 
         metadataRepository.findByIdOrNull(soknadId)!!
             .also {
