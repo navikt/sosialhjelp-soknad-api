@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
@@ -20,6 +21,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoCl
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.metrics.MetricsManager
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerService
@@ -91,12 +93,18 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @MockkBean(relaxed = true)
     protected lateinit var dokumentlagerClient: DokumentlagerClient
 
+    @MockkBean(relaxed = true)
+    protected lateinit var texasService: TexasService
+
+    @MockkBean(relaxed = true)
+    protected lateinit var kodeverkService: KodeverkService
+
     @BeforeEach
     protected fun setup() {
         setupMocks()
         setupPdlAnswers()
         // @Transactional fungerer ikke helt som ønsket når man manipulerer data og gjør http-kall i samme test
-        soknadRepository.deleteAll()
+        metadataRepository.deleteAll()
     }
 
     protected fun setupMocks() {

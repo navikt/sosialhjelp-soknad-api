@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.lifecycle
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.v2.SoknadValidator
@@ -21,6 +20,7 @@ class SendSoknadHandler(
     private val validators: List<SoknadValidator>,
     private val sendSoknadManager: SendSoknadManager,
     private val metadataService: SoknadMetadataServiceImpl,
+    private val soknadMottattHandler: SoknadMottattHandler,
 ) {
     fun doSendAndReturnInfo(
         soknadId: UUID,
@@ -42,7 +42,7 @@ class SendSoknadHandler(
                         innsendingsTidspunkt = innsendingstidspunkt,
                     )
                 }
-                .onFailure { e -> handleError(soknadId, navEnhet.enhetsnavn, e) }
+                .onFailure { e -> handleError(soknadId, navEnhet, e) }
                 .getOrThrow()
 
         json.checkDuplicateUtbetalinger()
@@ -66,29 +66,16 @@ class SendSoknadHandler(
 
     private fun handleError(
         soknadId: UUID,
-        navEnhetNavn: String?,
+        navEnhet: NavEnhetForSending,
         e: Throwable,
     ): Nothing {
         when (e) {
-            is AlleredeMottattException -> createSoknadAlleredeSendtException(soknadId, navEnhetNavn)
+            is AlleredeMottattException -> soknadMottattHandler.resolveSoknadMottatt(soknadId, navEnhet, e.digisosId)
             else -> {
                 metadataService.updateSendingFeilet(soknadId)
                 throw e
             }
         }
-    }
-
-    private fun createSoknadAlleredeSendtException(
-        soknadId: UUID,
-        navEnhetNavn: String?,
-    ): Nothing {
-        metadataService.getSoknadSendtInfo(soknadId)
-            .also { info ->
-                throw SoknadAlleredeSendtException(
-                    sendtInfo = info.copy(navEnhetNavn = navEnhetNavn),
-                    message = "Søknad med ID $soknadId er allerede sendt.",
-                )
-            }
     }
 
     companion object {

@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
+import io.netty.handler.timeout.ReadTimeoutException
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
@@ -28,10 +29,13 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.reactive.server.expectBody
+import org.springframework.web.reactive.function.client.WebClientRequestException
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import tools.jackson.module.kotlin.jacksonObjectMapper
+import java.net.URI
 import java.nio.charset.Charset
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -214,6 +218,66 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     }
 
     @Test
+    fun `Soknad feiler ved forste innsending, men blir mottatt - ved andre innsending skal den oppdateres med riktig status`() {
+        val soknadId = createNewSoknad()
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        // første innsending - timer ut
+        every {
+            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+        } returns createReadtimeoutException(soknadId)
+
+        doPostFullResponse(uri = sendUri(soknadId))
+            .expectStatus().is5xxServerError
+            .expectBody<String>()
+            .returnResult().responseBody
+            .also {
+                assertThat(it).isNotNull
+                assertThat(it!!).contains("InnsendingFeiletError")
+            }
+
+        metadataRepository.findByIdOrNull(soknadId)!!
+            .also {
+                assertThat(it.status).isEqualTo(SoknadStatus.INNSENDING_FEILET)
+                assertThat(it.digisosId).isNull()
+                assertThat(it.tidspunkt.sendtInn).isNull()
+                assertThat(it.mottakerKommunenummer).isNull()
+            }
+
+        // andre innsending - 400 fra FIks og melding om at søknaden allerede er sendt inn
+        every {
+            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any())
+        } returns createSendSoknadResponseFiksError(soknadId)
+
+        val responseBody =
+            doPostFullResponse(uri = sendUri(soknadId))
+                .expectStatus().isOk
+                .expectBody<SoknadSendtDto>()
+                .returnResult().responseBody
+                .also { dto ->
+                    assertThat { dto?.digisosId }.isNotNull()
+                    verify(exactly = 2) { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+                }
+
+        metadataRepository.findByIdOrNull(soknadId)!!
+            .also {
+                assertThat(it.status).isEqualTo(SoknadStatus.SENDT)
+                assertThat(it.digisosId).isEqualTo(responseBody?.digisosId)
+                assertThat(it.tidspunkt.sendtInn).isEqualTo(responseBody?.tidspunkt)
+                assertThat(it.mottakerKommunenummer).isNotNull()
+            }
+    }
+
+    @Test
     fun `Kommune har deaktivert mottak av soknader skal gi 503`() {
         val soknadId = createNewSoknad()
 
@@ -361,6 +425,16 @@ private fun createMellomlagringDto(soknadId: UUID): MellomlagringDto {
             ),
     )
 }
+
+private fun createReadtimeoutException(soknadId: UUID): SendSoknadResponse.Error =
+    SendSoknadResponse.Error(
+        WebClientRequestException(
+            ReadTimeoutException.INSTANCE,
+            HttpMethod.POST,
+            URI("https://api.fiks.ks.no/digisos/api/v2/soknader/4203/$soknadId"),
+            HttpHeaders.EMPTY,
+        ),
+    )
 
 private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
     return SendSoknadResponse.FiksError(
