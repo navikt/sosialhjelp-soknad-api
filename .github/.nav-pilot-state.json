@@ -1,13 +1,17 @@
 {
   "collection": "kotlin-backend",
-  "version": "2026.08.31-214438-39bc268",
+  "version": "2026.09.05-041217-e212593",
   "scope": "repo",
-  "source_sha": "2dcf51e",
+  "source_sha": "3118e45a237f6b239036c39f1c54da4814736f42",
   "installed_at": "2026-06-04T12:42:23Z",
   "files": [
     {
       "path": ".github/agents/code-review.agent.md",
       "hash": "3406168d68a9470a"
+    },
+    {
+      "path": ".github/agents/nav-pilot.agent.md",
+      "hash": "f381cdcba7fcb644"
     },
     {
       "path": ".github/agents/research.agent.md",
@@ -18,8 +22,60 @@
       "hash": "a209e3ce5d93746d"
     },
     {
-      "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "f381cdcba7fcb644"
+      "path": ".github/instructions/code-review.instructions.md",
+      "hash": "76088d9c7d0e3909"
+    },
+    {
+      "path": ".github/instructions/database.instructions.md",
+      "hash": "9fc5267c1dc9dd01"
+    },
+    {
+      "path": ".github/instructions/deliberate-ai-use.instructions.md",
+      "hash": "68b3ca596e278482"
+    },
+    {
+      "path": ".github/instructions/docker.instructions.md",
+      "hash": "32db7a2f8aaab2ac"
+    },
+    {
+      "path": ".github/instructions/github-actions.instructions.md",
+      "hash": "bbef6f3e56b8b3b3"
+    },
+    {
+      "path": ".github/instructions/kotlin-ktor.instructions.md",
+      "hash": "e6a054a0dc9bf870"
+    },
+    {
+      "path": ".github/instructions/kotlin-spring.instructions.md",
+      "hash": "db9355ee1afaeaef"
+    },
+    {
+      "path": ".github/instructions/security-owasp.instructions.md",
+      "hash": "3388700634dd315d"
+    },
+    {
+      "path": ".github/instructions/testing-kotlin.instructions.md",
+      "hash": "183e7a28acecdbb5"
+    },
+    {
+      "path": ".github/instructions/testing.instructions.md",
+      "hash": "ca2a23744bef3a2c"
+    },
+    {
+      "path": ".github/prompts/kafka-topic.prompt.md",
+      "hash": "d485c12c7b6d44d6"
+    },
+    {
+      "path": ".github/prompts/ktor-endpoint.prompt.md",
+      "hash": "78a11bb6d225b664"
+    },
+    {
+      "path": ".github/prompts/nais-manifest.prompt.md",
+      "hash": "8576571223ffef8a"
+    },
+    {
+      "path": ".github/prompts/spring-boot-endpoint.prompt.md",
+      "hash": "82404ec13b5fd880"
     },
     {
       "path": ".github/skills/api-design/",
@@ -54,16 +110,32 @@
       "hash": "b0b94d480fbdb4c6"
     },
     {
+      "path": ".github/skills/nav-architecture-review/",
+      "hash": "4618dec566442509"
+    },
+    {
       "path": ".github/skills/nav-auth/",
       "hash": "581809ed36d9a6d6"
     },
     {
-      "path": ".github/skills/observability-setup/",
-      "hash": "b16ee0c748b966bf"
+      "path": ".github/skills/nav-deep-interview/",
+      "hash": "eeb3399ecd4e352c"
+    },
+    {
+      "path": ".github/skills/nav-plan/",
+      "hash": "db7618d269cd2f07"
+    },
+    {
+      "path": ".github/skills/nav-troubleshoot/",
+      "hash": "e9900d58d91ee0ee"
     },
     {
       "path": ".github/skills/observability-debugging/",
       "hash": "107a99f70451c01b"
+    },
+    {
+      "path": ".github/skills/observability-setup/",
+      "hash": "b16ee0c748b966bf"
     },
     {
       "path": ".github/skills/postgresql-review/",
@@ -71,19 +143,23 @@
     },
     {
       "path": ".github/skills/readme-review/",
-      "hash": "8051f0041095f50c"
-    },
-    {
-      "path": ".github/skills/security-review/",
-      "hash": "3c05f1012664e5c8"
+      "hash": "27b83a8872b33f4c"
     },
     {
       "path": ".github/skills/security-owasp/",
       "hash": "b909907ae0e18174"
     },
     {
+      "path": ".github/skills/security-review/",
+      "hash": "3c05f1012664e5c8"
+    },
+    {
       "path": ".github/skills/spring-boot-scaffold/",
       "hash": "c789e103015478c7"
+    },
+    {
+      "path": ".github/skills/terse-mode/",
+      "hash": "d28a057d860494bb"
     },
     {
       "path": ".github/skills/threat-model/",
@@ -96,82 +172,6 @@
     {
       "path": ".github/skills/workstation-security/",
       "hash": "6823a5d43e435bb7"
-    },
-    {
-      "path": ".github/skills/nav-plan/",
-      "hash": "db7618d269cd2f07"
-    },
-    {
-      "path": ".github/skills/nav-deep-interview/",
-      "hash": "eeb3399ecd4e352c"
-    },
-    {
-      "path": ".github/skills/nav-architecture-review/",
-      "hash": "4618dec566442509"
-    },
-    {
-      "path": ".github/skills/nav-troubleshoot/",
-      "hash": "e9900d58d91ee0ee"
-    },
-    {
-      "path": ".github/skills/terse-mode/",
-      "hash": "d28a057d860494bb"
-    },
-    {
-      "path": ".github/instructions/code-review.instructions.md",
-      "hash": "76088d9c7d0e3909"
-    },
-    {
-      "path": ".github/instructions/deliberate-ai-use.instructions.md",
-      "hash": "68b3ca596e278482"
-    },
-    {
-      "path": ".github/instructions/kotlin-ktor.instructions.md",
-      "hash": "e6a054a0dc9bf870"
-    },
-    {
-      "path": ".github/instructions/kotlin-spring.instructions.md",
-      "hash": "db9355ee1afaeaef"
-    },
-    {
-      "path": ".github/instructions/testing.instructions.md",
-      "hash": "ca2a23744bef3a2c"
-    },
-    {
-      "path": ".github/instructions/testing-kotlin.instructions.md",
-      "hash": "183e7a28acecdbb5"
-    },
-    {
-      "path": ".github/instructions/github-actions.instructions.md",
-      "hash": "bbef6f3e56b8b3b3"
-    },
-    {
-      "path": ".github/instructions/docker.instructions.md",
-      "hash": "32db7a2f8aaab2ac"
-    },
-    {
-      "path": ".github/instructions/database.instructions.md",
-      "hash": "9fc5267c1dc9dd01"
-    },
-    {
-      "path": ".github/instructions/security-owasp.instructions.md",
-      "hash": "3388700634dd315d"
-    },
-    {
-      "path": ".github/prompts/ktor-endpoint.prompt.md",
-      "hash": "78a11bb6d225b664"
-    },
-    {
-      "path": ".github/prompts/spring-boot-endpoint.prompt.md",
-      "hash": "82404ec13b5fd880"
-    },
-    {
-      "path": ".github/prompts/kafka-topic.prompt.md",
-      "hash": "d485c12c7b6d44d6"
-    },
-    {
-      "path": ".github/prompts/nais-manifest.prompt.md",
-      "hash": "8576571223ffef8a"
     }
   ]
 }
