@@ -11,6 +11,7 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
 import org.apache.xmpbox.XMPMetadata
+import org.apache.xmpbox.schema.PDFAIdentificationSchema
 import org.apache.xmpbox.xml.XmpSerializer
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.ClassPathResource
@@ -38,7 +39,7 @@ class PdfGenerator {
         } // PDType0Font.load(document, ClassPathResource(BOLD).inputStream)
 
     private val xmp = XMPMetadata.createXMPMetadata()
-    private val pdfaid = xmp.createAndAddPDFAIdentificationSchema()
+    private val pdfaid = PDFAIdentificationSchema(xmp)
 
     private val oi = ClassPathResource("sRGB.icc").inputStream.use { PDOutputIntent(document, it) }
 
