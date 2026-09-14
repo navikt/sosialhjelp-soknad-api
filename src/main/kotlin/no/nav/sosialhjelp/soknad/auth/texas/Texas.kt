@@ -25,8 +25,7 @@ class TexasServiceImpl(
     ): String =
         when (val tokenResponse = texasClient.getToken(idProvider.value, target)) {
             is TokenResponse.Success -> tokenResponse.token
-            is TokenResponse.Error ->
-                throw IllegalStateException("Failed to fetch token from Texas: $tokenResponse")
+            is TokenResponse.Error -> throw IllegalStateException("Failed to fetch token from Texas: $tokenResponse")
         }
 
     override fun exchangeToken(

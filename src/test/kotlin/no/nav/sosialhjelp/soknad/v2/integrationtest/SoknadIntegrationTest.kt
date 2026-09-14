@@ -7,6 +7,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -34,7 +35,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 //        clearAllMocks()
         soknadRepository.deleteAll()
         every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any()) } returns UUID.randomUUID()
+        every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Success(UUID.randomUUID())
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(UUID.randomUUID().toString(), mellomlagringMetadataList = emptyList())

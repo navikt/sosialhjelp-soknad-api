@@ -5,12 +5,14 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
+import io.netty.handler.timeout.ReadTimeoutException
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
+import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
@@ -26,7 +28,15 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.test.web.reactive.server.expectBody
+import org.springframework.web.reactive.function.client.WebClientRequestException
+import org.springframework.web.reactive.function.client.WebClientResponseException
+import tools.jackson.module.kotlin.jacksonObjectMapper
+import java.net.URI
+import java.nio.charset.Charset
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -121,8 +131,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any()) } throws
-            RuntimeException("Noe feilet")
+        every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -149,8 +158,9 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any()) } throws
-            RuntimeException("Something failed")
+        every {
+            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any())
+        } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -164,7 +174,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val innsendingFeiletError =
             doPostFullResponse(uri = sendUri(soknadId))
                 .expectStatus().is5xxServerError
-                .expectBody(InnsendingFeiletError::class.java)
+                .expectBody<InnsendingFeiletError>()
                 .returnResult().responseBody
 
         val deletionDate =
@@ -184,8 +194,9 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createInnsendtSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), soknadId) } throws
-            AlleredeMottattException(UUID.randomUUID(), "Soknad allerede sendt inn")
+        every {
+            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+        } returns createSendSoknadResponseFiksError(soknadId)
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -202,7 +213,67 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .returnResult().responseBody
             .also { dto ->
                 assertThat { dto?.digisosId }.isNotNull()
-                verify(exactly = 1) { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+                verify(exactly = 1) { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+            }
+    }
+
+    @Test
+    fun `Soknad feiler ved forste innsending, men blir mottatt - ved andre innsending skal den oppdateres med riktig status`() {
+        val soknadId = createNewSoknad()
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        // første innsending - timer ut
+        every {
+            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+        } returns createReadtimeoutException(soknadId)
+
+        doPostFullResponse(uri = sendUri(soknadId))
+            .expectStatus().is5xxServerError
+            .expectBody<String>()
+            .returnResult().responseBody
+            .also {
+                assertThat(it).isNotNull
+                assertThat(it!!).contains("InnsendingFeiletError")
+            }
+
+        metadataRepository.findByIdOrNull(soknadId)!!
+            .also {
+                assertThat(it.status).isEqualTo(SoknadStatus.INNSENDING_FEILET)
+                assertThat(it.digisosId).isNull()
+                assertThat(it.tidspunkt.sendtInn).isNull()
+                assertThat(it.mottakerKommunenummer).isNull()
+            }
+
+        // andre innsending - 400 fra FIks og melding om at søknaden allerede er sendt inn
+        every {
+            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any())
+        } returns createSendSoknadResponseFiksError(soknadId)
+
+        val responseBody =
+            doPostFullResponse(uri = sendUri(soknadId))
+                .expectStatus().isOk
+                .expectBody<SoknadSendtDto>()
+                .returnResult().responseBody
+                .also { dto ->
+                    assertThat { dto?.digisosId }.isNotNull()
+                    verify(exactly = 2) { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+                }
+
+        metadataRepository.findByIdOrNull(soknadId)!!
+            .also {
+                assertThat(it.status).isEqualTo(SoknadStatus.SENDT)
+                assertThat(it.digisosId).isEqualTo(responseBody?.digisosId)
+                assertThat(it.tidspunkt.sendtInn).isEqualTo(responseBody?.tidspunkt)
+                assertThat(it.mottakerKommunenummer).isNotNull()
             }
     }
 
@@ -321,7 +392,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     private fun CapturedValues.assertDokumenterIsPdf() {
         dokumenterSlot.captured.forEach {
-            assertThat(FileDetectionUtils.detectMimeType(it.data.readAllBytes())).isEqualTo(MimeTypes.APPLICATION_PDF)
+            assertThat(FileDetectionUtils.detectMimeType(it.data.readAllBytes())).isEqualTo(MimeTypes.APPLICATION_OCTET_STREAM)
         }
     }
 
@@ -349,8 +420,58 @@ private fun createMellomlagringDto(soknadId: UUID): MellomlagringDto {
                     filId = UUID.randomUUID().toString(),
                     filnavn = "filnavn.pdf",
                     storrelse = 1234L,
-                    mimetype = MimeTypes.APPLICATION_PDF,
+                    mimetype = MimeTypes.APPLICATION_OCTET_STREAM,
                 ),
             ),
     )
 }
+
+private fun createReadtimeoutException(soknadId: UUID): SendSoknadResponse.Error =
+    SendSoknadResponse.Error(
+        WebClientRequestException(
+            ReadTimeoutException.INSTANCE,
+            HttpMethod.POST,
+            URI("https://api.fiks.ks.no/digisos/api/v2/soknader/4203/$soknadId"),
+            HttpHeaders.EMPTY,
+        ),
+    )
+
+private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
+    return SendSoknadResponse.FiksError(
+        errorMessage = createFiksErrorBody(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
+        e = createWebClientResponseException(soknadId),
+    )
+}
+
+private fun createWebClientResponseException(soknadId: UUID): WebClientResponseException {
+    return WebClientResponseException.create(
+        HttpStatus.BAD_REQUEST.value(),
+        HttpStatus.BAD_REQUEST.reasonPhrase,
+        HttpHeaders.EMPTY,
+        createFiksErrorBody(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase).toJsonByteArray(),
+        Charset.forName("UTF-8"),
+    )
+}
+
+private fun createFiksErrorBody(
+    soknadId: UUID,
+    status: Int,
+    error: String,
+): ErrorMessage {
+    val message = "Soknad med tilhørende navEksternRefId $soknadId finnes allerede i Fiks-Digisos med DigisosId ${UUID.randomUUID()}"
+
+    return ErrorMessage(
+        timestamp = LocalDateTime.now().toEpochSecond(java.time.ZoneOffset.UTC),
+        status = status,
+        error = error,
+        errorId = UUID.randomUUID().toString(),
+        path = "/digisos/api/v2/soknader/1234/$soknadId",
+        message = message,
+        errorCode = null,
+        errorJson = null,
+        originalPath = null,
+    )
+}
+
+private fun ErrorMessage.toJsonByteArray(): ByteArray =
+    jacksonObjectMapper().writeValueAsString(this).toByteArray(Charset.forName("UTF-8"))

@@ -71,6 +71,16 @@ configurations {
 }
 
 dependencies {
+
+    // Kritisk sårbarhet CVE-2026-65905
+    constraints {
+        implementation("org.apache.tomcat.embed:tomcat-embed-core") {
+            version {
+                strictly("11.0.25")
+            }
+        }
+    }
+
     // Spring
     implementation(libs.bundles.spring.boot)
     // eksplisitt pga. sårbarheter - sjekk opp ved oppdatering av spring, reactor, etc.
