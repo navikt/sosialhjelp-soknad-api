@@ -1,14 +1,34 @@
 {
-  "collection": "kotlin-backend",
-  "version": "2026.09.13-193146-acaa287",
+  "collection": "nav-pilot",
+  "version": "2026.09.14-175008-086fab0",
   "scope": "repo",
-  "source_sha": "d8d27ba87c061e39d71ea51143ad3bea98224886",
+  "source_sha": "086fab093b8380b50b4e4cf402ab2763f85dc0dc",
   "installed_at": "2026-06-04T12:42:23Z",
   "files": [
+    {
+      "path": ".github/agents/accessibility.agent.md",
+      "hash": "db12f2f3d0734ca4"
+    },
+    {
+      "path": ".github/agents/aksel.agent.md",
+      "hash": "0740ec796a3f3273"
+    },
     {
       "path": ".github/agents/code-review.agent.md",
       "hash": "afed6f66d303027c",
       "revision": "d8d27ba87c061e39d71ea51143ad3bea98224886"
+    },
+    {
+      "path": ".github/agents/forfatter.agent.md",
+      "hash": "7df851588f045edd"
+    },
+    {
+      "path": ".github/agents/kafka.agent.md",
+      "hash": "436ea7bf0df08cf0"
+    },
+    {
+      "path": ".github/agents/nav-pilot-opus.agent.md",
+      "hash": "3334b6c7d490e130"
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
@@ -21,9 +41,29 @@
       "revision": "d8d27ba87c061e39d71ea51143ad3bea98224886"
     },
     {
+      "path": ".github/agents/rust.agent.md",
+      "hash": "b63840cb13e9b83f"
+    },
+    {
       "path": ".github/agents/security-champion.agent.md",
       "hash": "910ead105ad5bed3",
       "revision": "d8d27ba87c061e39d71ea51143ad3bea98224886"
+    },
+    {
+      "path": ".github/hooks/ask-first-aria.py",
+      "hash": "95dccc70382812d5"
+    },
+    {
+      "path": ".github/hooks/gh-poll-gate.py",
+      "hash": "7b144af18aef7c2f"
+    },
+    {
+      "path": ".github/hooks/klarsprak-gate.py",
+      "hash": "d72e6fc1bb74f3f2"
+    },
+    {
+      "path": ".github/instructions/accessibility.instructions.md",
+      "hash": "986ef7aa27d8a1d9"
     },
     {
       "path": ".github/instructions/code-review.instructions.md",
@@ -46,6 +86,10 @@
       "hash": "bbef6f3e56b8b3b3"
     },
     {
+      "path": ".github/instructions/golang.instructions.md",
+      "hash": "b7bdff62f6964099"
+    },
+    {
       "path": ".github/instructions/kotlin-ktor.instructions.md",
       "hash": "e6a054a0dc9bf870"
     },
@@ -54,12 +98,32 @@
       "hash": "db9355ee1afaeaef"
     },
     {
+      "path": ".github/instructions/nextjs-aksel.instructions.md",
+      "hash": "75e0932dfe465508"
+    },
+    {
+      "path": ".github/instructions/norwegian-text.instructions.md",
+      "hash": "8dc36629d466e9b9"
+    },
+    {
+      "path": ".github/instructions/output-style.instructions.md",
+      "hash": "6e5f644425c345a3"
+    },
+    {
+      "path": ".github/instructions/performance.instructions.md",
+      "hash": "74be7b9e34c1681e"
+    },
+    {
       "path": ".github/instructions/security-owasp.instructions.md",
       "hash": "3388700634dd315d"
     },
     {
       "path": ".github/instructions/testing-kotlin.instructions.md",
       "hash": "183e7a28acecdbb5"
+    },
+    {
+      "path": ".github/instructions/testing-typescript.instructions.md",
+      "hash": "6c6055340a9d075c"
     },
     {
       "path": ".github/instructions/testing.instructions.md",
@@ -83,6 +147,18 @@
       "hash": "82404ec13b5fd880"
     },
     {
+      "path": ".github/skills/ai-news-research/",
+      "hash": "16f2d476983b8ba0"
+    },
+    {
+      "path": ".github/skills/aksel-builder/",
+      "hash": "3075f3a92c2eb6fc"
+    },
+    {
+      "path": ".github/skills/aksel-spacing/",
+      "hash": "177594fc5ae8d7e3"
+    },
+    {
       "path": ".github/skills/api-design/",
       "hash": "a353aded69a4bd4c"
     },
@@ -95,12 +171,20 @@
       "hash": "ebb952121b180fac"
     },
     {
+      "path": ".github/skills/jackson-3-migration/",
+      "hash": "9b4932b7b9d4a076"
+    },
+    {
       "path": ".github/skills/java-to-kotlin/",
       "hash": "c312e45ae07d1e85"
     },
     {
       "path": ".github/skills/kafka/",
       "hash": "312ab4de91a246fa"
+    },
+    {
+      "path": ".github/skills/klarsprak/",
+      "hash": "2b0ed9567526e433"
     },
     {
       "path": ".github/skills/kotlin-app-config/",
@@ -127,6 +211,10 @@
       "hash": "eeb3399ecd4e352c"
     },
     {
+      "path": ".github/skills/nav-dekoratoren/",
+      "hash": "fd8cf68c2c9bfbc5"
+    },
+    {
       "path": ".github/skills/nav-plan/",
       "hash": "db7618d269cd2f07"
     },
@@ -143,6 +231,10 @@
       "hash": "b16ee0c748b966bf"
     },
     {
+      "path": ".github/skills/playwright-testing/",
+      "hash": "5c618cd99c79df64"
+    },
+    {
       "path": ".github/skills/postgresql-review/",
       "hash": "c0037201dbd465c0"
     },
@@ -150,6 +242,10 @@
       "path": ".github/skills/readme-review/",
       "hash": "27b83a8872b33f4c",
       "revision": "d8d27ba87c061e39d71ea51143ad3bea98224886"
+    },
+    {
+      "path": ".github/skills/rust-development/",
+      "hash": "e809030f7e8253ea"
     },
     {
       "path": ".github/skills/security-owasp/",
@@ -174,6 +270,10 @@
     {
       "path": ".github/skills/tokenx-auth/",
       "hash": "7afa1c42b4e8e859"
+    },
+    {
+      "path": ".github/skills/web-design-reviewer/",
+      "hash": "07b2096b77bf5ae3"
     },
     {
       "path": ".github/skills/workstation-security/",
