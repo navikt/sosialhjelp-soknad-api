@@ -14,7 +14,7 @@ internal class StudielanTest {
 
     @Test
     fun harIkkeUtfyltSporsmal() {
-        val opplysninger = JsonOkonomiopplysninger().withBekreftelse(emptyList())
+        val opplysninger = JsonOkonomiopplysninger(utbetaling = emptyList(), bekreftelse = emptyList())
 
         val avsnitt = studielan.getAvsnitt(opplysninger)
         assertThat(avsnitt.sporsmal).hasSize(1)
@@ -28,14 +28,10 @@ internal class StudielanTest {
     @Test
     fun harSvartJa() {
         val opplysninger =
-            JsonOkonomiopplysninger()
-                .withBekreftelse(
-                    listOf(
-                        JsonOkonomibekreftelse()
-                            .withType(SoknadJsonTyper.STUDIELAN)
-                            .withVerdi(true),
-                    ),
-                )
+            JsonOkonomiopplysninger(
+                utbetaling = emptyList(),
+                bekreftelse = listOf(JsonOkonomibekreftelse(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, SoknadJsonTyper.STUDIELAN, "", true)),
+            )
 
         val avsnitt = studielan.getAvsnitt(opplysninger)
         assertThat(avsnitt.sporsmal).hasSize(1)

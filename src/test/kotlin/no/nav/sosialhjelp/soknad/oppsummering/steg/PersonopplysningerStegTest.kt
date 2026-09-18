@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
@@ -14,6 +16,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
@@ -23,19 +26,12 @@ import org.junit.jupiter.api.Test
 internal class PersonopplysningerStegTest {
     private val steg = PersonopplysningerSteg
 
-    private val navnUtenMellomnavn = JsonSokernavn().withFornavn("fornavn").withEtternavn("etternavn")
-    private val navnMedMellomnavn = JsonSokernavn().withFornavn("fornavn").withMellomnavn("mellomnavn").withEtternavn("etternavn")
-    private val kontonummerSystemdata = JsonKontonummer().withVerdi("12345678901").withKilde(JsonKilde.SYSTEM)
-    private val telefonnummerSystemdata = JsonTelefonnummer().withVerdi("+4712345678").withKilde(JsonKilde.SYSTEM)
+    private val navnUtenMellomnavn = JsonSokernavn(JsonSokernavn.Kilde.SYSTEM, "fornavn", "", "etternavn")
+    private val navnMedMellomnavn = JsonSokernavn(JsonSokernavn.Kilde.SYSTEM, "fornavn", "mellomnavn", "etternavn")
+    private val kontonummerSystemdata = JsonKontonummer(JsonKilde.SYSTEM, verdi = "12345678901")
+    private val telefonnummerSystemdata = JsonTelefonnummer(JsonKilde.SYSTEM, "+4712345678")
     private val folkeregGateadresse =
-        JsonGateAdresse()
-            .withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
-            .withType(JsonAdresse.Type.GATEADRESSE)
-            .withGatenavn("gate")
-            .withHusnummer("1")
-            .withHusbokstav("B")
-            .withPostnummer("0123")
-            .withPoststed("poststed")
+        JsonGateAdresse(JsonKilde.SYSTEM, null, null, emptyList(), null, "0123", "poststed", "gate", "1", "B", JsonAdresseValg.FOLKEREGISTRERT)
 
     @Test
     fun personalia_navnUtenMellomnavn() {
@@ -54,9 +50,7 @@ internal class PersonopplysningerStegTest {
 
     @Test
     fun personalia_navnMedMellomnavn_utenStatsborgerskap() {
-        val soknad = createSoknad(navnMedMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, folkeregGateadresse)
-        soknad.soknad.data.personalia.statsborgerskap = null
-        soknad.soknad.data.personalia.nordiskBorger = null
+        val soknad = createSoknad(navnMedMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, folkeregGateadresse, null)
 
         val res = steg.get(soknad)
 
@@ -90,11 +84,7 @@ internal class PersonopplysningerStegTest {
     @Test
     fun folkeregistrertMatrikkeladresse() {
         val folkeregMatrikkeladresse =
-            JsonMatrikkelAdresse()
-                .withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
-                .withType(JsonAdresse.Type.MATRIKKELADRESSE)
-                .withBruksnummer("bruksnummer")
-                .withKommunenummer("kommunenr")
+            JsonMatrikkelAdresse(JsonKilde.SYSTEM, "kommunenr", null, "bruksnummer", null, null, null, JsonAdresseValg.FOLKEREGISTRERT)
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, folkeregMatrikkeladresse)
 
         val res = steg.get(soknad)
@@ -114,13 +104,7 @@ internal class PersonopplysningerStegTest {
     @Test
     fun midlertidigGateadresse() {
         val midlertidigGateadresse =
-            JsonGateAdresse()
-                .withAdresseValg(JsonAdresseValg.MIDLERTIDIG)
-                .withType(JsonAdresse.Type.GATEADRESSE)
-                .withGatenavn("gate")
-                .withHusnummer("1")
-                .withPostnummer("0123")
-                .withPoststed("poststed")
+            JsonGateAdresse(JsonKilde.SYSTEM, null, null, emptyList(), null, "0123", "poststed", "gate", "1", null, JsonAdresseValg.MIDLERTIDIG)
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, midlertidigGateadresse)
 
         val res = steg.get(soknad)
@@ -140,13 +124,7 @@ internal class PersonopplysningerStegTest {
     @Test
     fun adressesokGateadresse() {
         val adressesokGateadresse =
-            JsonGateAdresse()
-                .withAdresseValg(JsonAdresseValg.SOKNAD)
-                .withType(JsonAdresse.Type.GATEADRESSE)
-                .withGatenavn("gate")
-                .withHusnummer("1")
-                .withPostnummer("0123")
-                .withPoststed("poststed")
+            JsonGateAdresse(JsonKilde.BRUKER, null, null, emptyList(), null, "0123", "poststed", "gate", "1", null, JsonAdresseValg.SOKNAD)
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, adressesokGateadresse)
 
         val res = steg.get(soknad)
@@ -182,9 +160,7 @@ internal class PersonopplysningerStegTest {
     @Test
     fun telefonnummerBrukerUtfylt() {
         val telefonnummerBruker =
-            JsonTelefonnummer()
-                .withVerdi("+4712345678")
-                .withKilde(JsonKilde.BRUKER)
+            JsonTelefonnummer(JsonKilde.BRUKER, "+4712345678")
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerBruker, folkeregGateadresse)
 
         val res = steg.get(soknad)
@@ -201,7 +177,7 @@ internal class PersonopplysningerStegTest {
 
     @Test
     fun telefonnummerIkkeUtfylt() {
-        val ikkeUtfyltTelefonnummer = JsonTelefonnummer()
+        val ikkeUtfyltTelefonnummer = JsonTelefonnummer(JsonKilde.BRUKER, "")
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, ikkeUtfyltTelefonnummer, folkeregGateadresse)
 
         val res = steg.get(soknad)
@@ -233,9 +209,7 @@ internal class PersonopplysningerStegTest {
     @Test
     fun kontonummerBrukerUtfylt() {
         val kontonummerBruker =
-            JsonKontonummer()
-                .withVerdi("22222222222")
-                .withKilde(JsonKilde.BRUKER)
+            JsonKontonummer(JsonKilde.BRUKER, verdi = "22222222222")
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerBruker, telefonnummerSystemdata, folkeregGateadresse)
 
         val res = steg.get(soknad)
@@ -252,7 +226,7 @@ internal class PersonopplysningerStegTest {
 
     @Test
     fun harIkkeKontonummer() {
-        val harIkkeKonto = JsonKontonummer().withHarIkkeKonto(true)
+        val harIkkeKonto = JsonKontonummer(JsonKilde.BRUKER, harIkkeKonto = true)
         val soknad = createSoknad(navnUtenMellomnavn, harIkkeKonto, telefonnummerSystemdata, folkeregGateadresse)
 
         val res = steg.get(soknad)
@@ -269,7 +243,7 @@ internal class PersonopplysningerStegTest {
 
     @Test
     fun kontonummerIkkeUtfylt() {
-        val ikkeUtfylt = JsonKontonummer()
+        val ikkeUtfylt = JsonKontonummer(JsonKilde.BRUKER)
         val soknad = createSoknad(navnUtenMellomnavn, ikkeUtfylt, telefonnummerSystemdata, folkeregGateadresse)
 
         val res = steg.get(soknad)
@@ -284,22 +258,13 @@ internal class PersonopplysningerStegTest {
         kontonummer: JsonKontonummer,
         telefonnummer: JsonTelefonnummer,
         oppholdsadresse: JsonAdresse,
+        statsborgerskap: JsonStatsborgerskap? = JsonStatsborgerskap(JsonKilde.SYSTEM, "NOR"),
     ): JsonInternalSoknad {
-        return JsonInternalSoknad()
-            .withSoknad(
-                JsonSoknad()
-                    .withData(
-                        JsonData()
-                            .withPersonalia(
-                                JsonPersonalia()
-                                    .withNavn(navn)
-                                    .withPersonIdentifikator(JsonPersonIdentifikator().withVerdi("11111111111"))
-                                    .withStatsborgerskap(JsonStatsborgerskap().withVerdi("NOR"))
-                                    .withKontonummer(kontonummer)
-                                    .withTelefonnummer(telefonnummer)
-                                    .withOppholdsadresse(oppholdsadresse),
-                            ),
-                    ),
-            )
+        return JsonInternalSoknad(
+            soknad = JsonSoknad("", JsonData(personalia = JsonPersonalia(JsonPersonIdentifikator(JsonPersonIdentifikator.Kilde.SYSTEM, "11111111111"), navn, kontonummer, statsborgerskap, oppholdsadresse = oppholdsadresse, telefonnummer = telefonnummer), begrunnelse = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad().soknad!!.data.begrunnelse, okonomi = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad().soknad!!.data.okonomi), JsonSoknadsmottaker(), JsonDriftsinformasjon(false), emptyList()),
+            vedlegg = JsonVedleggSpesifikasjon(emptyList()),
+            mottaker = null,
+            midlertidigAdresse = null,
+        )
     }
 }

@@ -21,11 +21,12 @@ class EierMapperTest {
 
     @Test
     fun `Eier skal mappes til Json`() {
-        val eier = opprettEier(UUID.randomUUID()).also { EierToJsonMapper.doMapping(it, json) }
+        val eier = opprettEier(UUID.randomUUID())
+        json = EierToJsonMapper.doMapping(eier, json)
 
-        with(json.soknad.data.personalia) {
-            assertThat(this.statsborgerskap.verdi).isEqualTo(eier.statsborgerskap)
-            assertThat(this.nordiskBorger.verdi).isEqualTo(eier.nordiskBorger)
+        with(requireNotNull(json.soknad).data.personalia) {
+            assertThat(requireNotNull(this.statsborgerskap).verdi).isEqualTo(eier.statsborgerskap)
+            assertThat(requireNotNull(this.nordiskBorger).verdi).isEqualTo(eier.nordiskBorger)
 
             with(navn) {
                 assertThat(this.fornavn).isEqualTo(eier.navn.fornavn)
@@ -46,9 +47,9 @@ class EierMapperTest {
                         fraBruker = "blabla",
                     ),
             )
-        EierToJsonMapper.doMapping(eier, json)
+        json = EierToJsonMapper.doMapping(eier, json)
 
-        with(json.soknad.data.personalia) {
+        with(requireNotNull(json.soknad).data.personalia) {
             assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
             assertThat(this.kontonummer.harIkkeKonto).isTrue()
             assertThat(this.kontonummer.verdi).isNull()
@@ -66,9 +67,9 @@ class EierMapperTest {
                         fraRegister = "tjatja",
                     ),
             )
-        EierToJsonMapper.doMapping(eier, json)
+        json = EierToJsonMapper.doMapping(eier, json)
 
-        with(json.soknad.data.personalia) {
+        with(requireNotNull(json.soknad).data.personalia) {
             assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
             assertThat(this.kontonummer.harIkkeKonto).isFalse()
             assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.fraBruker)
@@ -85,9 +86,9 @@ class EierMapperTest {
                         fraRegister = "blabla",
                     ),
             )
-        EierToJsonMapper.doMapping(eier, json)
+        json = EierToJsonMapper.doMapping(eier, json)
 
-        with(json.soknad.data.personalia) {
+        with(requireNotNull(json.soknad).data.personalia) {
             assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.SYSTEM)
             assertThat(this.kontonummer.harIkkeKonto == null).isTrue()
             assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.fraRegister)
@@ -101,8 +102,8 @@ class EierMapperTest {
                 soknadId = UUID.randomUUID(),
                 kontonummer = Kontonummer(),
             )
-        EierToJsonMapper.doMapping(eier, json)
-        with(json.soknad.data.personalia.kontonummer) {
+        json = EierToJsonMapper.doMapping(eier, json)
+        with(requireNotNull(json.soknad).data.personalia.kontonummer) {
             assertThat(kilde).isEqualTo(JsonKilde.SYSTEM)
             assertThat(harIkkeKonto == null).isTrue()
             assertThat(verdi).isNull()

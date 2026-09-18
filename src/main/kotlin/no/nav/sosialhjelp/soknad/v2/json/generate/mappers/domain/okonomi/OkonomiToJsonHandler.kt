@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 interface OkonomiElementsToJsonMapper {
-    fun doMapping()
+    fun doMapping(jsonOkonomi: JsonOkonomi): JsonOkonomi
 }
 
 @Component
@@ -24,85 +24,74 @@ class OkonomiToJsonHandler(
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) {
+    ): JsonInternalSoknad {
         val jsonOkonomi = jsonInternalSoknad.initializeObjects()
         // denne er satt til null pga kort soknad
-        jsonInternalSoknad.soknad.data.okonomi.opplysninger.withUtgift(emptyList())
+        val jsonWithEmptyUtgifter = jsonOkonomi.copy(opplysninger = jsonOkonomi.opplysninger.copy(utgift = emptyList()))
 
-        okonomiRepository.findByIdOrNull(soknadId)?.let { okonomi ->
-            doMapping(okonomi, jsonOkonomi)
-        }
+        return okonomiRepository.findByIdOrNull(soknadId)
+            ?.let { okonomi -> jsonInternalSoknad.withOkonomi(doMapping(okonomi, jsonWithEmptyUtgifter)) }
+            ?: jsonInternalSoknad.withOkonomi(jsonWithEmptyUtgifter)
     }
 
     override fun mapToKortJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) {
+    ): JsonInternalSoknad {
         val jsonOkonomi = jsonInternalSoknad.initializeObjects()
 
-        okonomiRepository.findByIdOrNull(soknadId)?.let { okonomi ->
-            doKortMapping(okonomi, jsonOkonomi)
-        }
+        return okonomiRepository.findByIdOrNull(soknadId)
+            ?.let { okonomi -> jsonInternalSoknad.withOkonomi(doKortMapping(okonomi, jsonOkonomi)) }
+            ?: jsonInternalSoknad.withOkonomi(jsonOkonomi)
     }
 
     companion object Mapper {
         fun doKortMapping(
             okonomi: Okonomi,
             json: JsonOkonomi,
-        ) {
-            okonomi.setupKortMappers(json).forEach { mapper -> mapper.doMapping() }
-        }
+        ): JsonOkonomi = okonomi.setupKortMappers().fold(json) { accumulated, mapper -> mapper.doMapping(accumulated) }
 
         fun doMapping(
             okonomi: Okonomi,
             json: JsonOkonomi,
-        ) {
-            okonomi.setupMappers(json).forEach { mapper -> mapper.doMapping() }
-        }
+        ): JsonOkonomi = okonomi.setupMappers().fold(json) { accumulated, mapper -> mapper.doMapping(accumulated) }
     }
 }
 
-private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiElementsToJsonMapper> =
+private fun Okonomi.setupMappers(): List<OkonomiElementsToJsonMapper> =
     listOf(
-        FormueToJsonMapper(formuer, json),
-        InntektToJsonMapper(inntekter, json, bekreftelser),
-        UtgiftToJsonMapper(utgifter, json),
-        BostotteSakToJsonMapper(bostotteSaker, json),
+        FormueToJsonMapper(formuer),
+        InntektToJsonMapper(inntekter, bekreftelser),
+        UtgiftToJsonMapper(utgifter),
+        BostotteSakToJsonMapper(bostotteSaker),
     ).let { list ->
         when {
             bekreftelser.isEmpty() -> list
-            else -> list.plus(BekreftelseToJsonMapper(bekreftelser, json))
+            else -> list.plus(BekreftelseToJsonMapper(bekreftelser))
         }
     }
 
-private fun Okonomi.setupKortMappers(json: JsonOkonomi): List<OkonomiElementsToJsonMapper> =
+private fun Okonomi.setupKortMappers(): List<OkonomiElementsToJsonMapper> =
     listOf(
-        InntektToJsonMapper(inntekter, json, bekreftelser),
-        BostotteSakToJsonMapper(bostotteSaker, json),
-        FormueToJsonMapper(formuer, json),
+        InntektToJsonMapper(inntekter, bekreftelser),
+        BostotteSakToJsonMapper(bostotteSaker),
+        FormueToJsonMapper(formuer),
     ).let { list ->
         when {
             bekreftelser.isEmpty() -> list
-            else -> list.plus(BekreftelseToJsonMapper(bekreftelser, json))
+            else -> list.plus(BekreftelseToJsonMapper(bekreftelser))
         }
     }
 
 // JsonOpplysninger og JsonOversikt er required i JsonOkonomi selv uten data
-private fun JsonInternalSoknad.initializeObjects(): JsonOkonomi {
-    val jsonOkonomi = soknad.data.okonomi ?: soknad.data.withOkonomi(JsonOkonomi()).okonomi
-    jsonOkonomi.oversikt ?: jsonOkonomi.withOversikt(JsonOkonomioversikt())
-    jsonOkonomi.opplysninger ?: jsonOkonomi.withOpplysninger(JsonOkonomiopplysninger())
-    jsonOkonomi.opplysninger.beskrivelseAvAnnet ?: jsonOkonomi.opplysninger.withBeskrivelseAvAnnet(initBeskrivelser())
+private fun JsonInternalSoknad.initializeObjects(): JsonOkonomi =
+    soknad!!.data.okonomi ?: JsonOkonomi(
+        opplysninger = JsonOkonomiopplysninger(emptyList(), emptyList(), initBeskrivelser(), emptyList(), null),
+        oversikt = JsonOkonomioversikt(emptyList(), emptyList(), emptyList()),
+    )
 
-    return jsonOkonomi
-}
+private fun JsonInternalSoknad.withOkonomi(okonomi: JsonOkonomi): JsonInternalSoknad =
+    soknad!!.let { soknad -> copy(soknad = soknad.copy(data = soknad.data.copy(okonomi = okonomi))) }
 
-fun initBeskrivelser(): JsonOkonomibeskrivelserAvAnnet {
-    return JsonOkonomibeskrivelserAvAnnet()
-        .withKilde(JsonKildeBruker.BRUKER)
-        .withVerdi("")
-        .withSparing("")
-        .withBoutgifter("")
-        .withBarneutgifter("")
-        .withUtbetaling("")
-}
+fun initBeskrivelser(): JsonOkonomibeskrivelserAvAnnet =
+    JsonOkonomibeskrivelserAvAnnet(JsonKildeBruker.BRUKER, "", "", "", "", "")

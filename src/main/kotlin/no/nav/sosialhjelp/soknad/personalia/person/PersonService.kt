@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
+import no.nav.sosialhjelp.soknad.app.config.cacheValueType
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
@@ -131,7 +132,7 @@ class PersonService(
 private fun Gradering?.isGradert() = this?.let { Gradering.isGradert(it) } ?: false
 
 @Configuration
-class AdressebeskyttelseCacheConfig : SoknadApiCacheConfig(CACHE_NAME, EN_HALVTIME) {
+class AdressebeskyttelseCacheConfig : SoknadApiCacheConfig(CACHE_NAME, cacheValueType<Boolean>(), EN_HALVTIME) {
     companion object {
         const val CACHE_NAME = "adressebeskyttelse"
         private val EN_HALVTIME = Duration.ofMinutes(30)

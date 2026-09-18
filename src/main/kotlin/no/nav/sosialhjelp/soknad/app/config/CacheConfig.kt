@@ -13,7 +13,16 @@ import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
+import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer
+import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer
+import org.springframework.data.redis.serializer.RedisSerializationContext.fromSerializer
+import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.data.redis.serializer.SerializationException
+import org.springframework.data.redis.serializer.StringRedisSerializer
+import tools.jackson.core.type.TypeReference
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.JavaType
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator
 import java.time.Duration
 
 @Configuration(proxyBeanMethods = false)
@@ -27,7 +36,7 @@ class CacheConfig : CachingConfigurer {
     ): CacheManager =
         RedisCacheManager
             .builder(redisConnectionFactory)
-            .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
+            .cacheDefaults(CacheDefaults.configuration)
             .withInitialCacheConfigurations(cacheConfigs.associate { it.cacheName to it.getConfig() })
             .enableStatistics()
             .build()
@@ -93,11 +102,52 @@ object CustomCacheErrorHandler : CacheErrorHandler {
 
 abstract class SoknadApiCacheConfig(
     val cacheName: String,
+    valueType: JavaType? = null,
     private val timeToLive: Duration = Duration.ofHours(1),
 ) {
+    private val valueSerializationPair =
+        fromSerializer(valueType?.let(::cacheValueSerializer) ?: genericCacheValueSerializer).valueSerializationPair
+
     open fun getConfig(): RedisCacheConfiguration =
         RedisCacheConfiguration
             .defaultCacheConfig()
             .disableCachingNullValues()
             .entryTtl(timeToLive)
+            .serializeKeysWith(CacheDefaults.keySerializationPair)
+            .serializeValuesWith(valueSerializationPair)
+}
+
+private val cacheTypeValidator =
+    BasicPolymorphicTypeValidator
+        .builder()
+        .allowIfSubType("no.nav.")
+        .allowIfSubType("java.util.")
+        .allowIfSubType("java.time.")
+        .build()
+
+internal val cacheMapper =
+    sosialhjelpJsonMapperBuilder()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .build()
+
+internal inline fun <reified T> cacheValueType(): JavaType =
+    cacheMapper.typeFactory.constructType(object : TypeReference<T>() {}.type)
+
+internal fun <T : Any> cacheValueSerializer(valueType: JavaType): RedisSerializer<T> =
+    JacksonJsonRedisSerializer(cacheMapper, valueType)
+
+internal val genericCacheValueSerializer =
+    GenericJacksonJsonRedisSerializer
+        .builder(::sosialhjelpJsonMapperBuilder)
+        .enableDefaultTyping(cacheTypeValidator)
+        .enableSpringCacheNullValueSupport()
+        .build()
+
+private object CacheDefaults {
+    val keySerializationPair = fromSerializer(StringRedisSerializer()).keySerializationPair
+    val configuration =
+        RedisCacheConfiguration
+            .defaultCacheConfig()
+            .serializeKeysWith(keySerializationPair)
+            .serializeValuesWith(fromSerializer(genericCacheValueSerializer).valueSerializationPair)
 }

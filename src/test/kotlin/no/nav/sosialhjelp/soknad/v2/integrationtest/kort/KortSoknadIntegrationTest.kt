@@ -9,6 +9,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonAvsender
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
@@ -395,10 +396,7 @@ private fun createDigisosSak(
         null,
     )
 
-private fun createJsonDigisosSoker(hendelser: List<JsonHendelse> = emptyList()): JsonDigisosSoker = JsonDigisosSoker().withHendelser(hendelser)
+private fun createJsonDigisosSoker(hendelser: List<JsonHendelse> = emptyList()): JsonDigisosSoker = JsonDigisosSoker(version = "1", avsender = JsonAvsender("test", "1"), hendelser = hendelser)
 
 private fun createMottattHendelse(tidspunkt: String): JsonHendelse =
-    JsonSoknadsStatus()
-        .withType(JsonHendelse.Type.SOKNADS_STATUS)
-        .withHendelsestidspunkt(tidspunkt)
-        .withStatus(JsonSoknadsStatus.Status.MOTTATT)
+    JsonSoknadsStatus(JsonSoknadsStatus.Status.MOTTATT, tidspunkt)

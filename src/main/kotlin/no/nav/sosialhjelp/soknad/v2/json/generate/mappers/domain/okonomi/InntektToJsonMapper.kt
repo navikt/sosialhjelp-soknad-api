@@ -22,38 +22,40 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 
 class InntektToJsonMapper(
     private val inntekter: Set<Inntekt>,
-    jsonOkonomi: JsonOkonomi,
     private val bekreftelser: Set<Bekreftelse> = emptySet(),
 ) : OkonomiElementsToJsonMapper {
-    private val oversikt = jsonOkonomi.oversikt
-    private val opplysninger = jsonOkonomi.opplysninger
-
-    override fun doMapping() {
-        inntekter.forEach { it.mapToJsonObject() }
-        handleHusbankenSpecialCase()
-
-        inntekter.find { it.type == InntektType.UTBETALING_ANNET }
-            ?.let {
-                val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet
-                jsonBeskrivelser.utbetaling = it.beskrivelse ?: ""
+    override fun doMapping(jsonOkonomi: JsonOkonomi): JsonOkonomi =
+        inntekter.fold(jsonOkonomi) { accumulated, inntekt -> inntekt.mapToJsonObject(accumulated) }
+            .handleHusbankenSpecialCase()
+            .let { accumulated ->
+                inntekter.find { it.type == InntektType.UTBETALING_ANNET }
+                    ?.let { accumulated.copy(opplysninger = accumulated.opplysninger.copy(beskrivelseAvAnnet = accumulated.opplysninger.beskrivelseAvAnnet!!.copy(utbetaling = it.beskrivelse ?: ""))) }
+                    ?: accumulated
             }
-    }
 
     // Hvis bostotte == true && bostotte_samtykke == null || false skal kilde være bruker
-    private fun handleHusbankenSpecialCase() {
+    private fun JsonOkonomi.handleHusbankenSpecialCase(): JsonOkonomi {
         if (bekreftelser.find { it.type == BekreftelseType.BOSTOTTE }?.verdi == true) {
             if (bekreftelser.find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi != true) {
-                opplysninger.utbetaling.find { it.type == InntektType.UTBETALING_HUSBANKEN.toSoknadJsonTypeString() }
-                    ?.apply { kilde = JsonKilde.BRUKER }
+                return copy(
+                    opplysninger =
+                        opplysninger.copy(
+                            utbetaling =
+                                opplysninger.utbetaling.map { utbetaling ->
+                                    if (utbetaling.type == InntektType.UTBETALING_HUSBANKEN.toSoknadJsonTypeString()) utbetaling.copy(kilde = JsonKilde.BRUKER) else utbetaling
+                                },
+                        ),
+                )
             }
         }
+        return this
     }
 
-    private fun Inntekt.mapToJsonObject() {
+    private fun Inntekt.mapToJsonObject(jsonOkonomi: JsonOkonomi): JsonOkonomi {
         when (type) {
             InntektType.BARNEBIDRAG_MOTTAR, InntektType.JOBB, InntektType.STUDIELAN_INNTEKT,
-            -> oversikt.inntekt.addAll(toJsonOversiktInntekter())
-            else -> opplysninger.utbetaling.addAll(toJsonOpplysningUtbetalinger())
+            -> return jsonOkonomi.oversikt!!.let { oversikt -> jsonOkonomi.copy(oversikt = oversikt.copy(inntekt = oversikt.inntekt + toJsonOversiktInntekter())) }
+            else -> return jsonOkonomi.copy(opplysninger = jsonOkonomi.opplysninger.copy(utbetaling = jsonOkonomi.opplysninger.utbetaling + toJsonOpplysningUtbetalinger()))
         }
     }
 }
@@ -69,19 +71,15 @@ private fun Inntekt.toJsonOversiktInntekter(): List<JsonOkonomioversiktInntekt> 
 }
 
 private fun Inntekt.toJsonOversiktInntekt(detalj: OkonomiDetalj? = null) =
-    JsonOkonomioversiktInntekt()
-        .withKilde(JsonKilde.BRUKER)
-        .withType(type.toSoknadJsonTypeString())
-        .withTittel(toTittel())
-        .withOverstyrtAvBruker(false)
+    JsonOkonomioversiktInntekt(JsonKilde.BRUKER, type.toSoknadJsonTypeString(), toTittel(), false)
         .let { oversikt -> detalj?.addDetaljToOversiktForInntekt(oversikt) ?: oversikt }
 
 private fun OkonomiDetalj.addDetaljToOversiktForInntekt(
     jsonInntekt: JsonOkonomioversiktInntekt,
 ): JsonOkonomioversiktInntekt {
     return when (this) {
-        is Belop -> jsonInntekt.withBrutto(belop?.toInt()).withNetto(belop?.toInt())
-        is BruttoNetto -> jsonInntekt.withBrutto(brutto?.toInt()).withNetto(netto?.toInt())
+        is Belop -> jsonInntekt.copy(brutto = belop?.toInt(), netto = belop?.toInt())
+        is BruttoNetto -> jsonInntekt.copy(brutto = brutto?.toInt(), netto = netto?.toInt())
         else -> error("Ugyldig OkonomiDetalj-type for Oversikt Inntekt")
     }
 }
@@ -96,11 +94,7 @@ private fun Inntekt.toJsonOpplysningUtbetalinger(): List<JsonOkonomiOpplysningUt
 }
 
 private fun Inntekt.toJsonOpplysingUtbetaling(detalj: OkonomiDetalj? = null): JsonOkonomiOpplysningUtbetaling {
-    return JsonOkonomiOpplysningUtbetaling()
-        .withKilde(InntektTypeToKildeMapper.getKilde(type))
-        .withType(type.toSoknadJsonTypeString())
-        .withTittel(toTittel())
-        .withOverstyrtAvBruker(false)
+    return JsonOkonomiOpplysningUtbetaling(InntektTypeToKildeMapper.getKilde(type), type.toSoknadJsonTypeString(), toTittel(), false)
         .let { opplysning -> detalj?.addDetaljToOpplysningForInntekt(opplysning) ?: opplysning }
 }
 
@@ -112,40 +106,26 @@ private fun InntektType.toSoknadJsonTypeString(): String {
 private fun OkonomiDetalj.addDetaljToOpplysningForInntekt(
     jsonUtbetaling: JsonOkonomiOpplysningUtbetaling,
 ): JsonOkonomiOpplysningUtbetaling {
-    when (this) {
-        is Belop -> jsonUtbetaling.withBelop(this.belop?.toInt())
+    return when (this) {
+        is Belop -> jsonUtbetaling.copy(belop = belop?.toInt())
         is UtbetalingMedKomponent -> addUtbetalingMedKomponent(jsonUtbetaling)
         is Utbetaling -> addUtbetaling(jsonUtbetaling)
         else -> error("Type: ${jsonUtbetaling.type} - Ugyldig detalj-type for Inntekt: ${this::class.simpleName}")
     }
-    return jsonUtbetaling
 }
 
-private fun UtbetalingMedKomponent.addUtbetalingMedKomponent(jsonUtbetaling: JsonOkonomiOpplysningUtbetaling) {
-    utbetaling.addUtbetaling(jsonUtbetaling)
+private fun UtbetalingMedKomponent.addUtbetalingMedKomponent(jsonUtbetaling: JsonOkonomiOpplysningUtbetaling): JsonOkonomiOpplysningUtbetaling {
     //  Utbetaling med Komponent gjelder kun utbetaling fra NAV - der skal Belop være samme som netto
-    jsonUtbetaling.withBelop(utbetaling.netto?.toInt()).withTittel(tittel)
-    komponenter.map { it.toJsonKomponent() }.let { jsonUtbetaling.withKomponenter(it) }
+    return utbetaling.addUtbetaling(jsonUtbetaling).copy(belop = utbetaling.netto?.toInt(), tittel = tittel, komponenter = komponenter.map { it.toJsonKomponent() })
 }
 
-private fun Utbetaling.addUtbetaling(jsonUtbetaling: JsonOkonomiOpplysningUtbetaling) {
-    jsonUtbetaling
-        .withBrutto(brutto)
-        .withNetto(netto)
-        .withBelop(belop?.toInt())
-        .withSkattetrekk(skattetrekk)
-        .withAndreTrekk(andreTrekk)
-        .withUtbetalingsdato(utbetalingsdato?.toString())
-        .withPeriodeFom(periodeFom?.toString())
-        .withPeriodeTom(periodeTom?.toString())
-        .withMottaker(mottaker?.toJsonMottaker())
-        .withOrganisasjon(organisasjon?.toJsonOrganisasjon())
-}
+private fun Utbetaling.addUtbetaling(jsonUtbetaling: JsonOkonomiOpplysningUtbetaling): JsonOkonomiOpplysningUtbetaling =
+    jsonUtbetaling.copy(brutto = brutto, netto = netto, belop = belop?.toInt(), skattetrekk = skattetrekk, andreTrekk = andreTrekk, utbetalingsdato = utbetalingsdato?.toString(), periodeFom = periodeFom?.toString(), periodeTom = periodeTom?.toString(), mottaker = mottaker?.toJsonMottaker(), organisasjon = organisasjon?.toJsonOrganisasjon())
 
 private fun Organisasjon.toJsonOrganisasjon(): JsonOrganisasjon? {
     orgnummer?.let {
         if (it.matches(Regex("\\d{9}"))) {
-            return JsonOrganisasjon().withNavn(navn).withOrganisasjonsnummer(orgnummer)
+            return JsonOrganisasjon(navn ?: "", orgnummer)
         }
     }
     return null
@@ -156,12 +136,7 @@ private fun Mottaker.toJsonMottaker(): JsonOkonomiOpplysningUtbetaling.Mottaker?
 }
 
 private fun Komponent.toJsonKomponent() =
-    JsonOkonomiOpplysningUtbetalingKomponent()
-        .withType(type)
-        .withBelop(belop)
-        .withSatsType(satsType)
-        .withSatsBelop(satsBelop)
-        .withSatsAntall(satsAntall)
+    JsonOkonomiOpplysningUtbetalingKomponent(type, belop, satsType, satsAntall, satsBelop)
 
 private fun Inntekt.toTittel(): String {
     return when (type) {

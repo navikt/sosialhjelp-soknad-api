@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.situasjonendring.JsonSituasjonendring
@@ -18,37 +17,21 @@ class SituasjonsendringToJsonMapper(
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) {
-        // No-op
-    }
+    ): JsonInternalSoknad = jsonInternalSoknad
 
     override fun mapToKortJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) {
-        situasjonsendringRepository.findByIdOrNull(soknadId)?.let {
-            doMapping(it, jsonInternalSoknad)
-        }
-    }
+    ): JsonInternalSoknad = situasjonsendringRepository.findByIdOrNull(soknadId)?.let { doMapping(it, jsonInternalSoknad) } ?: jsonInternalSoknad
 
     internal companion object Mapper {
         fun doMapping(
             situasjonsendring: Situasjonsendring,
             json: JsonInternalSoknad,
-        ) {
-            json.initializeObjects()
-            json.soknad.data.situasjonendring =
-                JsonSituasjonendring()
-                    // TODO: Har blitt enig med FSLene om at denne kan være false, selv om den egentlig ikke er i bruk. Fjern fra filformatet på sikt?
-                    .withHarNoeEndretSeg(situasjonsendring.endring ?: false)
-                    .withHvaHarEndretSeg(situasjonsendring.hvaErEndret)
-                    .withKilde(JsonKildeBruker.BRUKER)
+        ): JsonInternalSoknad {
+            val soknad = requireNotNull(json.soknad)
+            val data = requireNotNull(soknad.data)
+            return json.copy(soknad = soknad.copy(data = data.copy(situasjonendring = JsonSituasjonendring(JsonKildeBruker.BRUKER, situasjonsendring.endring ?: false, situasjonsendring.hvaErEndret))))
         }
-    }
-}
-
-private fun JsonInternalSoknad.initializeObjects() {
-    if (soknad.data == null) {
-        soknad.withData(JsonData())
     }
 }

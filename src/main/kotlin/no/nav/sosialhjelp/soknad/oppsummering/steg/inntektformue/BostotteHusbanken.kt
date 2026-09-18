@@ -77,7 +77,7 @@ class BostotteHusbanken {
         }
         if (harSvartJaBostotte && !fikkFeilMotHusbanken && harBostotteSamtykke) {
             val harUtbetalinger = harHusbankenUtbetalinger(opplysninger)
-            val harSaker = opplysninger.bostotte.saker.isNotEmpty()
+            val harSaker = opplysninger.bostotte?.saker?.isNotEmpty() == true
             getBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE)
                 ?.let { bekreftelseTidspunktSporsmal(it) }
                 ?.let { sporsmal.add(it) }
@@ -119,7 +119,7 @@ class BostotteHusbanken {
 
     private fun utbetalingerSporsmal(opplysninger: JsonOkonomiopplysninger): Sporsmal {
         val harUtbetalinger = harHusbankenUtbetalinger(opplysninger)
-        val harSaker = opplysninger.bostotte.saker.isNotEmpty()
+        val harSaker = opplysninger.bostotte?.saker?.isNotEmpty() == true
         val felter: List<Felt>
         if (!harUtbetalinger && harSaker) {
             felter =
@@ -140,7 +140,7 @@ class BostotteHusbanken {
                         }
                         map["inntekt.bostotte.utbetaling.mottaker"] =
                             createSvar(
-                                if (it.mottaker == null) "" else it.mottaker.value(),
+                                it.mottaker?.value ?: "",
                                 SvarType.TEKST,
                             )
                         map["inntekt.bostotte.utbetaling.utbetalingsdato"] = createSvar(it.utbetalingsdato, SvarType.DATO)
@@ -160,7 +160,7 @@ class BostotteHusbanken {
 
     private fun sakerSporsmal(opplysninger: JsonOkonomiopplysninger): Sporsmal {
         val harUtbetalinger = harHusbankenUtbetalinger(opplysninger)
-        val harSaker = opplysninger.bostotte.saker.isNotEmpty()
+        val harSaker = opplysninger.bostotte?.saker?.isNotEmpty() == true
         val felter: List<Felt>
         if (harUtbetalinger && !harSaker) {
             felter =
@@ -172,7 +172,7 @@ class BostotteHusbanken {
                 )
         } else {
             felter =
-                opplysninger.bostotte.saker
+                opplysninger.bostotte?.saker.orEmpty()
                     .map {
                         val map = LinkedHashMap<String, Svar>()
                         map["inntekt.bostotte.sak.dato"] = createSvar(it.dato, SvarType.DATO)
@@ -193,9 +193,10 @@ class BostotteHusbanken {
     private fun harHusbankenUtbetalinger(opplysninger: JsonOkonomiopplysninger): Boolean = opplysninger.utbetaling.any { UTBETALING_HUSBANKEN == it.type }
 
     private fun bostotteSakStatus(sak: JsonBostotteSak): String {
-        var status = if (sak.vedtaksstatus != null) sak.vedtaksstatus.value() else sak.status
-        if (sak.beskrivelse != null && sak.beskrivelse.isNotBlank()) {
-            status += ": ${sak.beskrivelse}"
+        var status = sak.vedtaksstatus?.value ?: sak.status
+        val beskrivelse = sak.beskrivelse
+        if (!beskrivelse.isNullOrBlank()) {
+            status += ": $beskrivelse"
         }
         return status
     }

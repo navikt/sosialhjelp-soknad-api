@@ -30,12 +30,12 @@ class KontaktMapperTest {
         val json = createJsonInternalSoknadWithInitializedSuperObjects()
         val kontakt = opprettKontakt(UUID.randomUUID())
 
-        mapper.doMapping(kontakt, json)
+        val mappedJson = mapper.doMapping(kontakt, json)
 
-        json.assertMidlertidigAdresse(kontakt.adresser.midlertidig)
-        json.assertNavEnhet(kontakt.mottaker!!)
+        mappedJson.assertMidlertidigAdresse(kontakt.adresser.midlertidig)
+        mappedJson.assertNavEnhet(kontakt.mottaker!!)
 
-        with(json.soknad.data.personalia) {
+        with(requireNotNull(mappedJson.soknad).data.personalia) {
             assertTelefonnummerBruker(kontakt.telefonnummer)
             assertFolkeregistrertAdresse(kontakt.adresser.folkeregistrert)
             assertOppholdsadresse(kontakt.adresser)
@@ -44,29 +44,29 @@ class KontaktMapperTest {
 }
 
 private fun JsonPersonalia.assertTelefonnummerBruker(telefonnummer: Telefonnummer) {
-    assertThat(this.telefonnummer.kilde).isEqualTo(JsonKilde.BRUKER)
-    assertThat(this.telefonnummer.verdi).isEqualTo(telefonnummer.fraBruker)
+    assertThat(requireNotNull(this.telefonnummer).kilde).isEqualTo(JsonKilde.BRUKER)
+    assertThat(requireNotNull(this.telefonnummer).verdi).isEqualTo(telefonnummer.fraBruker)
 }
 
 private fun JsonPersonalia.assertOppholdsadresse(adresser: Adresser) {
     when (adresser.adressevalg) {
-        AdresseValg.FOLKEREGISTRERT -> oppholdsadresse.assertAdresse(adresser.folkeregistrert)
-        AdresseValg.MIDLERTIDIG -> oppholdsadresse.assertAdresse(adresser.midlertidig)
-        AdresseValg.SOKNAD -> oppholdsadresse.assertAdresse(adresser.fraBruker)
+        AdresseValg.FOLKEREGISTRERT -> requireNotNull(oppholdsadresse).assertAdresse(adresser.folkeregistrert)
+        AdresseValg.MIDLERTIDIG -> requireNotNull(oppholdsadresse).assertAdresse(adresser.midlertidig)
+        AdresseValg.SOKNAD -> requireNotNull(oppholdsadresse).assertAdresse(adresser.fraBruker)
         else -> throw IllegalStateException("AdresseValg ikke satt")
     }
 }
 
 private fun JsonInternalSoknad.assertMidlertidigAdresse(midlertidigAdresseSoknad: Adresse?) {
     midlertidigAdresseSoknad?.let {
-        midlertidigAdresse.assertAdresse(midlertidigAdresseSoknad)
+        requireNotNull(midlertidigAdresse).assertAdresse(midlertidigAdresseSoknad)
     }
         ?: assertThat(midlertidigAdresse).isNull()
 }
 
 private fun JsonPersonalia.assertFolkeregistrertAdresse(folkeregistrertAdresseSoknad: Adresse?) {
     folkeregistrertAdresseSoknad?.let {
-        folkeregistrertAdresse.assertAdresse(it)
+        requireNotNull(folkeregistrertAdresse).assertAdresse(it)
     }
         ?: assertThat(folkeregistrertAdresse).isNull()
 }
@@ -107,9 +107,9 @@ private fun JsonUstrukturertAdresse.assertAdresse(ustrukturertAdresse: Ustruktur
 }
 
 private fun JsonInternalSoknad.assertNavEnhet(navEnhet: NavEnhet?) {
-    assertThat(mottaker.navEnhetsnavn).isEqualTo("${navEnhet?.enhetsnavn}, ${navEnhet?.kommunenavn}")
+    assertThat(requireNotNull(mottaker).navEnhetsnavn).isEqualTo("${navEnhet?.enhetsnavn}, ${navEnhet?.kommunenavn}")
 
-    assertThat(soknad.mottaker.navEnhetsnavn).isEqualTo("${navEnhet?.enhetsnavn}, ${navEnhet?.kommunenavn}")
-    assertThat(soknad.mottaker.enhetsnummer).isEqualTo(navEnhet?.enhetsnummer)
-    assertThat(soknad.mottaker.kommunenummer).isEqualTo(navEnhet?.kommunenummer)
+    assertThat(requireNotNull(soknad).mottaker.navEnhetsnavn).isEqualTo("${navEnhet?.enhetsnavn}, ${navEnhet?.kommunenavn}")
+    assertThat(requireNotNull(soknad).mottaker.enhetsnummer).isEqualTo(navEnhet?.enhetsnummer)
+    assertThat(requireNotNull(soknad).mottaker.kommunenummer).isEqualTo(navEnhet?.kommunenummer)
 }

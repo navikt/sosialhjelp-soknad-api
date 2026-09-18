@@ -13,11 +13,9 @@ import java.util.UUID
 internal class JsonDokumentasjonUtilsTest {
     @Test
     fun addHendelseTypeAndHendelseReferanse_forSoknad() {
-        val jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon()
+        val jsonVedleggSpesifikasjon = addHendelseTypeAndHendelseReferanse(createJsonVedleggSpesifikasjon())
         assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseType).isNull()
         assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseReferanse).isNull()
-
-        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon)
 
         assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseType).isEqualTo(HendelseType.SOKNAD)
         assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseReferanse).isNotNull
@@ -30,47 +28,24 @@ internal class JsonDokumentasjonUtilsTest {
 
     @Test
     fun addHendelseTypeAndHendelseReferanse_shouldAddUniqueReferanse() {
-        val jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon()
-        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon)
+        val jsonVedleggSpesifikasjon = addHendelseTypeAndHendelseReferanse(createJsonVedleggSpesifikasjon())
 
         assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseReferanse)
             .isNotEqualTo(jsonVedleggSpesifikasjon.vedlegg[1].hendelseReferanse)
     }
 
     private fun createJsonVedleggSpesifikasjon(): JsonVedleggSpesifikasjon {
-        val jsonVedlegg: MutableList<JsonVedlegg> = ArrayList()
-        jsonVedlegg.add(
-            JsonVedlegg()
-                .withStatus(Vedleggstatus.VedleggKreves.name)
-                .withType("annet")
-                .withTilleggsinfo("tilleggsinfo1"),
+        return JsonVedleggSpesifikasjon(
+            listOf(
+                JsonVedlegg(type = "annet", tilleggsinfo = "tilleggsinfo1", status = Vedleggstatus.VedleggKreves.name),
+                JsonVedlegg(type = "type1", tilleggsinfo = "annet", status = Vedleggstatus.LastetOpp.name, filer = lagJsonFiler()),
+                JsonVedlegg(type = VedleggskravStatistikkUtil.ANNET, tilleggsinfo = VedleggskravStatistikkUtil.ANNET, status = Vedleggstatus.LastetOpp.name, filer = lagJsonFiler()),
+            ),
         )
-        jsonVedlegg.add(
-            JsonVedlegg()
-                .withStatus(Vedleggstatus.LastetOpp.name)
-                .withType("type1")
-                .withTilleggsinfo("annet")
-                .withFiler(lagJsonFiler()),
-        )
-        jsonVedlegg.add(
-            JsonVedlegg()
-                .withStatus(Vedleggstatus.LastetOpp.name)
-                .withType(VedleggskravStatistikkUtil.ANNET)
-                .withTilleggsinfo(VedleggskravStatistikkUtil.ANNET)
-                .withFiler(lagJsonFiler()),
-        )
-        return JsonVedleggSpesifikasjon()
-            .withVedlegg(jsonVedlegg)
     }
 
     private fun lagJsonFiler(): List<JsonFiler> {
-        val filer: MutableList<JsonFiler> = ArrayList()
-        filer.add(
-            JsonFiler()
-                .withFilnavn("filnavn")
-                .withSha512("sha1"),
-        )
-        return filer
+        return listOf(JsonFiler(filnavn = "filnavn", sha512 = "sha1"))
     }
 }
 
@@ -78,15 +53,14 @@ private fun isVedleggskravAnnet(vedlegg: JsonVedlegg) =
     VedleggskravStatistikkUtil.ANNET == vedlegg.type &&
         VedleggskravStatistikkUtil.ANNET == vedlegg.tilleggsinfo
 
-private fun addHendelseTypeAndHendelseReferanse(
-    jsonVedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-) {
-    jsonVedleggSpesifikasjon.vedlegg.forEach {
-        if (isVedleggskravAnnet(it)) {
-            it.hendelseType = HendelseType.BRUKER
-        } else {
-            it.hendelseType = HendelseType.SOKNAD
-            it.hendelseReferanse = UUID.randomUUID().toString()
-        }
-    }
-}
+private fun addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon: JsonVedleggSpesifikasjon): JsonVedleggSpesifikasjon =
+    jsonVedleggSpesifikasjon.copy(
+        vedlegg =
+            jsonVedleggSpesifikasjon.vedlegg.map {
+                if (isVedleggskravAnnet(it)) {
+                    it.copy(hendelseType = HendelseType.BRUKER)
+                } else {
+                    it.copy(hendelseType = HendelseType.SOKNAD, hendelseReferanse = UUID.randomUUID().toString())
+                }
+            },
+    )

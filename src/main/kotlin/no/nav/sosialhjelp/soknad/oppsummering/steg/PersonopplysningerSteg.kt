@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory
 
 object PersonopplysningerSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
-        val personalia = jsonInternalSoknad.soknad.data.personalia
+        val personalia = requireNotNull(requireNotNull(jsonInternalSoknad.soknad).data.personalia)
         val telefonnummer: JsonTelefonnummer? = personalia.telefonnummer
         val kontonummer: JsonKontonummer? = personalia.kontonummer
         return Steg(
@@ -69,7 +69,7 @@ object PersonopplysningerSteg {
     }
 
     private fun adresseOgNavKontorAvsnitt(personalia: JsonPersonalia): Avsnitt {
-        val oppholdsadresse = personalia.oppholdsadresse
+        val oppholdsadresse = requireNotNull(personalia.oppholdsadresse)
         return Avsnitt(
             tittel = "soknadsmottaker.sporsmal",
             sporsmal =
@@ -81,7 +81,7 @@ object PersonopplysningerSteg {
                             listOf(
                                 Felt(
                                     type = if (JsonAdresseValg.SOKNAD == oppholdsadresse.adresseValg) Type.TEKST else Type.SYSTEMDATA,
-                                    label = adresseLabel(oppholdsadresse.adresseValg),
+                                    label = adresseLabel(requireNotNull(oppholdsadresse.adresseValg)),
                                     svar = createSvar(adresseSvar(oppholdsadresse), SvarType.TEKST),
                                 ),
                             ),
@@ -127,8 +127,7 @@ object PersonopplysningerSteg {
     }
 
     private fun telefonnummerAvsnitt(telefonnummer: JsonTelefonnummer?): Avsnitt {
-        val harUtfyltTelefonnummer =
-            telefonnummer != null && telefonnummer.verdi != null && telefonnummer.verdi.isNotEmpty()
+        val harUtfyltTelefonnummer = !telefonnummer?.verdi.isNullOrEmpty()
         return Avsnitt(
             tittel = "kontakt.system.telefoninfo.sporsmal",
             sporsmal =
@@ -155,8 +154,7 @@ object PersonopplysningerSteg {
 
     private fun kontonummerAvsnitt(kontonummer: JsonKontonummer?): Avsnitt {
         val harValgtHarIkkeKonto = kontonummer != null && java.lang.Boolean.TRUE == kontonummer.harIkkeKonto
-        val harUtfyltKontonummer =
-            kontonummer != null && (kontonummer.verdi != null && kontonummer.verdi.isNotEmpty() || harValgtHarIkkeKonto)
+        val harUtfyltKontonummer = !kontonummer?.verdi.isNullOrEmpty() || harValgtHarIkkeKonto
         return Avsnitt(
             tittel = "kontakt.system.kontonummer.sporsmal",
             sporsmal =

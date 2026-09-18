@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonNordiskBorger
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
@@ -24,9 +22,9 @@ class EierToJsonMapper(
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) {
+    ): JsonInternalSoknad {
         eierRepository.findByIdOrNull(soknadId)?.let {
-            doMapping(it, jsonInternalSoknad)
+            return doMapping(it, jsonInternalSoknad)
         }
             ?: throw IllegalStateException("Fant ikke Eier")
     }
@@ -35,54 +33,37 @@ class EierToJsonMapper(
         fun doMapping(
             eier: Eier,
             json: JsonInternalSoknad,
-        ) {
-            json.initializeObjects()
-
-            with(json.soknad.data.personalia) {
-                this.navn = eier.navn.toJsonSokerNavn()
-                this.nordiskBorger = eier.toJsonNordiskBorger()
-                this.statsborgerskap = eier.toJsonStatsborgerskap()
-
-                this.kontonummer = eier.kontonummer.toJsonKontonummer()
-            }
-        }
-
-        private fun JsonInternalSoknad.initializeObjects() {
-            soknad.data ?: soknad.withData(JsonData())
-            soknad.data.personalia ?: soknad.data.withPersonalia(JsonPersonalia())
-            soknad.data.personalia.kontonummer ?: soknad.data.personalia.withKontonummer(JsonKontonummer())
+        ): JsonInternalSoknad {
+            val soknad = requireNotNull(json.soknad)
+            val data = requireNotNull(soknad.data)
+            val personalia = requireNotNull(data.personalia)
+            return json.copy(soknad = soknad.copy(data = data.copy(personalia = personalia.copy(navn = eier.navn.toJsonSokerNavn(), nordiskBorger = eier.toJsonNordiskBorger(), statsborgerskap = eier.toJsonStatsborgerskap(), kontonummer = requireNotNull(eier.kontonummer.toJsonKontonummer())))))
         }
 
         private fun Navn.toJsonSokerNavn(): JsonSokernavn =
-            JsonSokernavn()
-                .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                .withFornavn(fornavn)
-                .withMellomnavn(mellomnavn)
-                .withEtternavn(etternavn)
+            JsonSokernavn(JsonSokernavn.Kilde.SYSTEM, fornavn ?: "", mellomnavn ?: "", etternavn ?: "")
 
         private fun Eier.toJsonNordiskBorger(): JsonNordiskBorger? =
             nordiskBorger?.let {
-                JsonNordiskBorger()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(nordiskBorger)
+                JsonNordiskBorger(JsonKilde.SYSTEM, nordiskBorger)
             }
 
         private fun Eier.toJsonStatsborgerskap(): JsonStatsborgerskap? =
             statsborgerskap?.let {
-                JsonStatsborgerskap().withKilde(JsonKilde.SYSTEM).withVerdi(it)
+                JsonStatsborgerskap(JsonKilde.SYSTEM, it)
             }
 
         private fun Kontonummer.toJsonKontonummer(): JsonKontonummer? =
             when {
                 harIkkeKonto == true ->
-                    JsonKontonummer().withKilde(JsonKilde.BRUKER).withHarIkkeKonto(harIkkeKonto)
+                    JsonKontonummer(JsonKilde.BRUKER, harIkkeKonto)
                 fraBruker != null ->
-                    JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(fraBruker).withHarIkkeKonto(false)
+                    JsonKontonummer(JsonKilde.BRUKER, false, fraBruker)
                 // Merkelig nok skal HarIkkeKonto ikke være false når det er systemverdi
                 fraRegister != null ->
-                    JsonKontonummer().withKilde(JsonKilde.SYSTEM).withVerdi(fraRegister)
+                    JsonKontonummer(JsonKilde.SYSTEM, verdi = fraRegister)
                 // Kontonummer kreves i modellen og kilde kreves selv uten(!!) noe informasjon
-                else -> JsonKontonummer().withKilde(JsonKilde.SYSTEM)
+                else -> JsonKontonummer(JsonKilde.SYSTEM)
             }
     }
 }

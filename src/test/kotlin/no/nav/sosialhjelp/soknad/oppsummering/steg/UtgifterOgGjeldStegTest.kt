@@ -1,9 +1,7 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
@@ -43,9 +41,7 @@ internal class UtgifterOgGjeldStegTest {
     fun harIkkeBoutgifter() {
         val bekreftelser =
             listOf(
-                JsonOkonomibekreftelse()
-                    .withType(SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER)
-                    .withVerdi(false),
+                JsonOkonomibekreftelse(JsonKilde.BRUKER, SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER, "", false),
             )
         val soknad = createSoknad(bekreftelser, null, null)
 
@@ -61,21 +57,19 @@ internal class UtgifterOgGjeldStegTest {
     fun harBoutgifter() {
         val bekreftelser =
             listOf(
-                JsonOkonomibekreftelse()
-                    .withType(SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER)
-                    .withVerdi(true),
+                JsonOkonomibekreftelse(JsonKilde.BRUKER, SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER, "", true),
             )
         val opplysningUtgifter =
             listOf(
-                JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_STROM),
-                JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_KOMMUNAL_AVGIFT),
-                JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_OPPVARMING),
-                JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_ANNET_BO),
+                JsonOkonomiOpplysningUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_STROM, "", false),
+                JsonOkonomiOpplysningUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_KOMMUNAL_AVGIFT, "", false),
+                JsonOkonomiOpplysningUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_OPPVARMING, "", false),
+                JsonOkonomiOpplysningUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_ANNET_BO, "", false),
             )
         val oversiktUtgifter =
             listOf(
-                JsonOkonomioversiktUtgift().withType(SoknadJsonTyper.UTGIFTER_HUSLEIE),
-                JsonOkonomioversiktUtgift().withType(SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG),
+                JsonOkonomioversiktUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_HUSLEIE, "", false),
+                JsonOkonomioversiktUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG, "", false),
             )
         val soknad = createSoknad(bekreftelser, opplysningUtgifter, oversiktUtgifter)
 
@@ -101,9 +95,7 @@ internal class UtgifterOgGjeldStegTest {
     fun harIkkeBarneutgifter() {
         val bekreftelser =
             listOf(
-                JsonOkonomibekreftelse()
-                    .withType(SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER)
-                    .withVerdi(false),
+                JsonOkonomibekreftelse(JsonKilde.BRUKER, SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER, "", false),
             )
         val soknad = createSoknad(bekreftelser, null, null)
 
@@ -119,23 +111,20 @@ internal class UtgifterOgGjeldStegTest {
     fun harBarneutgifter() {
         val bekreftelser =
             listOf(
-                JsonOkonomibekreftelse()
-                    .withType(SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER)
-                    .withVerdi(true),
+                JsonOkonomibekreftelse(JsonKilde.BRUKER, SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER, "", true),
             )
         val opplysningUtgifter =
             listOf(
-                JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER),
-                JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING),
-                JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_ANNET_BARN),
+                JsonOkonomiOpplysningUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER, "", false),
+                JsonOkonomiOpplysningUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING, "", false),
+                JsonOkonomiOpplysningUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_ANNET_BARN, "", false),
             )
         val oversiktUtgifter =
             listOf(
-                JsonOkonomioversiktUtgift().withType(SoknadJsonTyper.UTGIFTER_BARNEHAGE),
-                JsonOkonomioversiktUtgift().withType(SoknadJsonTyper.UTGIFTER_SFO),
+                JsonOkonomioversiktUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_BARNEHAGE, "", false),
+                JsonOkonomioversiktUtgift(JsonKilde.BRUKER, SoknadJsonTyper.UTGIFTER_SFO, "", false),
             )
-        val soknad = createSoknad(bekreftelser, opplysningUtgifter, oversiktUtgifter)
-        setForsorgerplikt(soknad.soknad.data.familie)
+        val soknad = createSoknad(bekreftelser, opplysningUtgifter, oversiktUtgifter, true)
 
         val res = steg.get(soknad)
         assertThat(res.avsnitt).hasSize(1)
@@ -164,54 +153,13 @@ internal class UtgifterOgGjeldStegTest {
         bekreftelser: List<JsonOkonomibekreftelse>,
         opplysningUtgifter: List<JsonOkonomiOpplysningUtgift>?,
         oversiktUtgifter: List<JsonOkonomioversiktUtgift>?,
+        harForsorgerplikt: Boolean = false,
     ): JsonInternalSoknad {
-        return JsonInternalSoknad()
-            .withSoknad(
-                JsonSoknad()
-                    .withData(
-                        JsonData()
-                            .withOkonomi(
-                                JsonOkonomi()
-                                    .withOpplysninger(
-                                        JsonOkonomiopplysninger()
-                                            .withUtgift(opplysningUtgifter)
-                                            .withBekreftelse(bekreftelser),
-                                    )
-                                    .withOversikt(
-                                        JsonOkonomioversikt()
-                                            .withUtgift(oversiktUtgifter),
-                                    ),
-                            )
-                            .withFamilie(
-                                JsonFamilie()
-                                    .withForsorgerplikt(JsonForsorgerplikt()),
-                            ),
-                    ),
-            )
+        val forsorgerplikt = if (harForsorgerplikt) createForsorgerplikt() else JsonForsorgerplikt()
+        val base = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad()
+        val soknad = requireNotNull(base.soknad)
+        return base.copy(soknad = soknad.copy(data = soknad.data.copy(okonomi = JsonOkonomi(JsonOkonomiopplysninger(emptyList(), bekreftelser, null, opplysningUtgifter.orEmpty(), null), JsonOkonomioversikt(emptyList(), oversiktUtgifter.orEmpty(), emptyList())), familie = JsonFamilie(forsorgerplikt))))
     }
 
-    private fun setForsorgerplikt(familie: JsonFamilie) {
-        familie.forsorgerplikt =
-            JsonForsorgerplikt()
-                .withHarForsorgerplikt(
-                    JsonHarForsorgerplikt()
-                        .withKilde(JsonKilde.SYSTEM)
-                        .withVerdi(true),
-                )
-                .withAnsvar(
-                    listOf(
-                        JsonAnsvar()
-                            .withBarn(
-                                JsonBarn()
-                                    .withKilde(JsonKilde.SYSTEM)
-                                    .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
-                                    .withFodselsdato("2020-02-02")
-                                    .withPersonIdentifikator("11111111111"),
-                            )
-                            .withErFolkeregistrertSammen(JsonErFolkeregistrertSammen().withVerdi(true))
-                            .withHarDeltBosted(null),
-                    ),
-                )
-                .withBarnebidrag(null)
-    }
+    private fun createForsorgerplikt() = JsonForsorgerplikt(JsonHarForsorgerplikt(JsonKilde.SYSTEM, true), null, listOf(JsonAnsvar(JsonBarn(JsonKilde.SYSTEM, JsonNavn("Grønn", "", "Jakke"), "2020-02-02", "11111111111", false), null, JsonErFolkeregistrertSammen(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem.SYSTEM, true), null)))
 }

@@ -70,27 +70,26 @@ internal class DokumentasjonUtilsTest {
     @Test
     fun `FinnVedleggEllerKastException() finner vedlegg basert pa type og tilleggsinfo`() {
         val json =
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    listOf(
-                        JsonVedlegg()
-                            .withType("hei")
-                            .withTilleggsinfo("på deg")
-                            .withStatus("VedleggKreves"),
+            JsonInternalSoknad(
+                vedlegg =
+                    JsonVedleggSpesifikasjon(
+                        listOf(
+                            JsonVedlegg(type = "hei", tilleggsinfo = "på deg", status = "VedleggKreves"),
+                        ),
                     ),
-                ),
             )
         val vedlegg = finnVedleggEllerKastException("hei|på deg", json)
-        assertThat(vedlegg.type).isEqualTo(json.vedlegg.vedlegg[0].type)
+        assertThat(vedlegg.type).isEqualTo(json.vedlegg!!.vedlegg[0].type)
     }
 
     @Test
     fun `Kast exception hvis vedlegg ikke finnes`() {
         val soknadUnderArbeid =
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    emptyList(),
-                ),
+            JsonInternalSoknad(
+                vedlegg =
+                    JsonVedleggSpesifikasjon(
+                        emptyList(),
+                    ),
             )
         assertThatThrownBy { finnVedleggEllerKastException("hei|på deg", soknadUnderArbeid) }
             .isInstanceOf(IkkeFunnetException::class.java)
@@ -121,5 +120,4 @@ private fun finnVedleggEllerKastException(
         )
 }
 
-private fun getVedleggFromInternalSoknad(json: JsonInternalSoknad): MutableList<JsonVedlegg> =
-    json.vedlegg?.vedlegg ?: mutableListOf()
+private fun getVedleggFromInternalSoknad(json: JsonInternalSoknad): List<JsonVedlegg> = json.vedlegg?.vedlegg.orEmpty()

@@ -19,7 +19,7 @@ class BekreftelseToJsonMapperTest : AbstractOkonomiMapperTest() {
                 Bekreftelse(type = BekreftelseType.BEKREFTELSE_SPARING, verdi = true),
                 Bekreftelse(type = BekreftelseType.BOSTOTTE_SAMTYKKE, verdi = false),
             )
-        BekreftelseToJsonMapper(bekreftelser, jsonOkonomi).doMapping()
+        jsonOkonomi = BekreftelseToJsonMapper(bekreftelser).doMapping(jsonOkonomi)
 
         with(jsonOkonomi.opplysninger) {
             assertThat(bekreftelse).hasSize(2)

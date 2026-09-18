@@ -28,10 +28,11 @@ object Begrunnelse {
         // Bare ett av spørsmålene er med på kort søknad
         if (!isKortSoknad) {
             pdf.skrivTekstBold(pdfUtils.getTekst("begrunnelse.hvorfor.sporsmal"))
-            if (jsonBegrunnelse.hvorforSoke == null || jsonBegrunnelse.hvorforSoke.isEmpty()) {
+            val hvorforSoke = jsonBegrunnelse.hvorforSoke
+            if (hvorforSoke.isNullOrEmpty()) {
                 pdfUtils.skrivIkkeUtfylt(pdf)
             } else {
-                pdf.skrivTekst(jsonBegrunnelse.hvorforSoke)
+                pdf.skrivTekst(hvorforSoke)
             }
             pdf.addBlankLine()
         }

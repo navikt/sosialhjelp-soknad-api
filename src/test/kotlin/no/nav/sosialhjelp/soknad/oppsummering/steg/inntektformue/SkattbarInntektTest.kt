@@ -20,7 +20,7 @@ internal class SkattbarInntektTest {
     @Test
     fun manglerSamtykke() {
         val okonomi = createOkonomi(false)
-        val driftsinformasjon = JsonDriftsinformasjon()
+        val driftsinformasjon = JsonDriftsinformasjon(false)
 
         val avsnitt = skattbarInntekt.getAvsnitt(okonomi, driftsinformasjon)
         assertThat(avsnitt.sporsmal).hasSize(1)
@@ -30,7 +30,7 @@ internal class SkattbarInntektTest {
     @Test
     fun feilMotSkatteetaten() {
         val okonomi = createOkonomi(true)
-        val driftsinformasjon = JsonDriftsinformasjon().withInntektFraSkatteetatenFeilet(true)
+        val driftsinformasjon = JsonDriftsinformasjon(true)
 
         val avsnitt = skattbarInntekt.getAvsnitt(okonomi, driftsinformasjon)
         assertThat(avsnitt.sporsmal).hasSize(1)
@@ -40,7 +40,7 @@ internal class SkattbarInntektTest {
     @Test
     fun ingenSkattbareInntekter() {
         val okonomi = createOkonomi(true)
-        val driftsinformasjon = JsonDriftsinformasjon()
+        val driftsinformasjon = JsonDriftsinformasjon(false)
 
         val avsnitt = skattbarInntekt.getAvsnitt(okonomi, driftsinformasjon)
         assertThat(avsnitt.sporsmal).hasSize(2)
@@ -60,9 +60,8 @@ internal class SkattbarInntektTest {
 
     @Test
     fun harEnSkattbarInntekt() {
-        val okonomi = createOkonomi(true)
-        okonomi.opplysninger.utbetaling = listOf(createUtbetaling("2020-01-01", "2020-02-01", 1234.0, 123.0))
-        val driftsinformasjon = JsonDriftsinformasjon()
+        val okonomi = createOkonomi(true).copy(opplysninger = createOkonomi(true).opplysninger.copy(utbetaling = listOf(createUtbetaling("2020-01-01", "2020-02-01", 1234.0, 123.0))))
+        val driftsinformasjon = JsonDriftsinformasjon(false)
 
         val avsnitt = skattbarInntekt.getAvsnitt(okonomi, driftsinformasjon)
         assertThat(avsnitt.sporsmal).hasSize(2)
@@ -89,18 +88,7 @@ internal class SkattbarInntektTest {
     }
 
     private fun createOkonomi(harSamtykke: Boolean): JsonOkonomi {
-        return JsonOkonomi()
-            .withOpplysninger(
-                JsonOkonomiopplysninger()
-                    .withBekreftelse(
-                        listOf(
-                            JsonOkonomibekreftelse()
-                                .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
-                                .withVerdi(harSamtykke)
-                                .withBekreftelsesDato("2018-10-04T13:37:00.134Z"),
-                        ),
-                    ),
-            )
+        return JsonOkonomi(JsonOkonomiopplysninger(emptyList(), listOf(JsonOkonomibekreftelse(JsonKilde.BRUKER, SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE, "", harSamtykke, "2018-10-04T13:37:00.134Z")), null, emptyList(), null), null)
     }
 
     private fun createUtbetaling(
@@ -109,13 +97,6 @@ internal class SkattbarInntektTest {
         brutto: Double,
         skattetrekk: Double,
     ): JsonOkonomiOpplysningUtbetaling {
-        return JsonOkonomiOpplysningUtbetaling()
-            .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN)
-            .withKilde(JsonKilde.SYSTEM)
-            .withOrganisasjon(JsonOrganisasjon().withNavn("arbeidsgiver"))
-            .withPeriodeFom(fom)
-            .withPeriodeTom(tom)
-            .withBrutto(brutto)
-            .withSkattetrekk(skattetrekk)
+        return JsonOkonomiOpplysningUtbetaling(JsonKilde.SYSTEM, SoknadJsonTyper.UTBETALING_SKATTEETATEN, "", false, brutto = brutto, skattetrekk = skattetrekk, periodeFom = fom, periodeTom = tom, organisasjon = JsonOrganisasjon("arbeidsgiver", ""))
     }
 }

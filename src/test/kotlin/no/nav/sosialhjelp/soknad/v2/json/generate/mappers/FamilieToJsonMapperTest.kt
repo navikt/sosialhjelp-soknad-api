@@ -18,13 +18,18 @@ class FamilieToJsonMapperTest : AbstractMapperTest() {
     fun `Status Gift uten ektefelle skal kaste valideringsfeil`() {
         skipAfterEach = true
 
-        Familie(
-            soknadId = UUID.randomUUID(),
-            sivilstatus = Sivilstatus.GIFT,
-        )
-            .also { mapper.doMapping(it, json) }
+        json =
+            FamilieToJsonMapper.doMapping(
+                Familie(
+                    soknadId = UUID.randomUUID(),
+                    sivilstatus = Sivilstatus.GIFT,
+                ),
+                json,
+            )
 
-        json.soknad.data.familie.sivilstatus.withEktefelle(null)
+        val soknad = requireNotNull(json.soknad)
+        val familie = requireNotNull(soknad.data.familie)
+        json = json.copy(soknad = soknad.copy(data = soknad.data.copy(familie = familie.copy(sivilstatus = requireNotNull(familie.sivilstatus).copy(ektefelle = null)))))
 
         objectMapper.writeValueAsString(json.soknad)
             .also {
@@ -35,19 +40,22 @@ class FamilieToJsonMapperTest : AbstractMapperTest() {
 
     @Test
     fun `Status gift uten ektefelle skal gi Ektefelle med tomt navn`() {
-        Familie(
-            soknadId = UUID.randomUUID(),
-            sivilstatus = Sivilstatus.GIFT,
-        )
-            .also { mapper.doMapping(it, json) }
+        json =
+            FamilieToJsonMapper.doMapping(
+                Familie(
+                    soknadId = UUID.randomUUID(),
+                    sivilstatus = Sivilstatus.GIFT,
+                ),
+                json,
+            )
 
-        with(json.soknad.data.familie.sivilstatus) {
+        with(requireNotNull(requireNotNull(requireNotNull(json.soknad).data.familie).sivilstatus)) {
             assertThat(status).isEqualTo(JsonSivilstatus.Status.valueOf(Sivilstatus.GIFT.name))
             assertThat(ektefelle).isNotNull
-            assertThat(ektefelle.navn).isNotNull
-            assertThat(ektefelle.navn.fornavn).isBlank()
-            assertThat(ektefelle.navn.mellomnavn).isBlank()
-            assertThat(ektefelle.navn.etternavn).isBlank()
+            assertThat(requireNotNull(ektefelle).navn).isNotNull
+            assertThat(requireNotNull(requireNotNull(ektefelle).navn).fornavn).isBlank()
+            assertThat(requireNotNull(requireNotNull(ektefelle).navn).mellomnavn).isBlank()
+            assertThat(requireNotNull(requireNotNull(ektefelle).navn).etternavn).isBlank()
         }
     }
 }

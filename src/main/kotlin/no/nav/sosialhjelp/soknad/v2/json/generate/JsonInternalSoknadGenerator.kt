@@ -3,10 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.json.generate
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.stereotype.Component
@@ -23,12 +19,12 @@ interface DomainToJsonMapper {
     fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    )
+    ): JsonInternalSoknad
 
     fun mapToKortJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) = mapToJson(soknadId, jsonInternalSoknad)
+    ): JsonInternalSoknad = mapToJson(soknadId, jsonInternalSoknad)
 }
 
 @Component
@@ -37,21 +33,10 @@ class JsonInternalSoknadGenerator(
     private val metadataService: SoknadMetadataServiceImpl,
 ) {
     fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
-        return JsonInternalSoknad()
-            .withSoknad(JsonSoknad())
-            .withVedlegg(JsonVedleggSpesifikasjon())
-            .withMottaker(JsonSoknadsmottaker())
-            .withMidlertidigAdresse(JsonAdresse())
-            .apply {
-                mappers.forEach {
-                    if (metadataService.isKort(soknadId)) {
-                        it.mapToKortJson(soknadId, this)
-                    } else {
-                        it.mapToJson(soknadId, this)
-                    }
-                }
-            }
-            .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
+        return mappers
+            .fold(JsonInternalSoknad()) { json, mapper ->
+                if (metadataService.isKort(soknadId)) mapper.mapToKortJson(soknadId, json) else mapper.mapToJson(soknadId, json)
+            }.also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
     }
 
     private companion object {
