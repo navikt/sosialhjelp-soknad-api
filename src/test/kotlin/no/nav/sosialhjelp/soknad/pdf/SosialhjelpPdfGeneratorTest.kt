@@ -2,8 +2,10 @@ package no.nav.sosialhjelp.soknad.pdf
 
 import io.mockk.mockk
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
@@ -84,19 +86,20 @@ internal class SosialhjelpPdfGeneratorTest {
             text.append(" ")
         }
 
-        val internalSoknad = jsonInternalSoknadWithMandatoryFields
-        internalSoknad.soknad.data.begrunnelse
-            .withHvaSokesOm(text.toString())
-        internalSoknad.setInnsendingstidspunkt()
+        val internalSoknad =
+            jsonInternalSoknadWithMandatoryFields
+                .withHvaSokesOm(text.toString())
+                .withInnsendingstidspunkt()
 
         sosialhjelpPdfGenerator.generate(internalSoknad, true)
     }
 
     @Test
     fun generatePdfWithVeryLongWords() {
-        val internalSoknad = jsonInternalSoknadWithMandatoryFields
-        internalSoknad.soknad.data.begrunnelse.withHvaSokesOm("a".repeat(1000))
-        internalSoknad.setInnsendingstidspunkt()
+        val internalSoknad =
+            jsonInternalSoknadWithMandatoryFields
+                .withHvaSokesOm("a".repeat(1000))
+                .withInnsendingstidspunkt()
 
         sosialhjelpPdfGenerator.generate(internalSoknad, false)
     }
@@ -110,18 +113,19 @@ internal class SosialhjelpPdfGeneratorTest {
             text.append(" ")
         }
 
-        val internalSoknad = jsonInternalSoknadWithMandatoryFields
-        internalSoknad.setInnsendingstidspunkt()
-        internalSoknad.soknad.data.begrunnelse
-            .withHvaSokesOm(text.toString())
+        val internalSoknad =
+            jsonInternalSoknadWithMandatoryFields
+                .withHvaSokesOm(text.toString())
+                .withInnsendingstidspunkt()
 
         sosialhjelpPdfGenerator.generate(internalSoknad, true)
     }
 
     @Test
     fun lagPdfMedGyldigInnsendelsestidspunkt() {
-        val internalSoknad = jsonInternalSoknadWithMandatoryFields
-        internalSoknad.soknad.withInnsendingstidspunkt("2020-03-12T08:35:45.329Z")
+        val internalSoknad =
+            jsonInternalSoknadWithMandatoryFields
+                .withInnsendingstidspunkt("2020-03-12T08:35:45.329Z")
 
         sosialhjelpPdfGenerator.generate(internalSoknad, true)
     }
@@ -135,72 +139,52 @@ internal class SosialhjelpPdfGeneratorTest {
             .hasCauseInstanceOf(IllegalArgumentException::class.java)
     }
 
-    private fun JsonInternalSoknad.setInnsendingstidspunkt() {
-        this.soknad.innsendingstidspunkt = TimestampUtil.convertToOffsettDateTimeUTCString(nowWithMillis())
-    }
+    private fun JsonInternalSoknad.withInnsendingstidspunkt(timestamp: String = TimestampUtil.convertToOffsettDateTimeUTCString(nowWithMillis())) =
+        copy(soknad = requireNotNull(soknad).copy(innsendingstidspunkt = timestamp))
+
+    private fun JsonInternalSoknad.withHvaSokesOm(hvaSokesOm: String) =
+        copy(soknad = requireNotNull(soknad).let { soknad -> soknad.copy(data = soknad.data.copy(begrunnelse = soknad.data.begrunnelse.copy(hvaSokesOm = hvaSokesOm))) })
+
+    private fun JsonInternalSoknad.withFamilie(familie: JsonFamilie) =
+        copy(soknad = requireNotNull(soknad).let { soknad -> soknad.copy(data = soknad.data.copy(familie = familie)) })
 
     private val jsonInternalSoknadWithMandatoryFields: JsonInternalSoknad
         get() =
-            JsonInternalSoknad()
-                .withSoknad(
-                    JsonSoknad()
-                        .withVersion("1.0")
-                        .withData(
-                            JsonData()
-                                .withPersonalia(
-                                    JsonPersonalia()
-                                        .withPersonIdentifikator(
-                                            JsonPersonIdentifikator()
-                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                                .withVerdi("1234"),
-                                        ).withNavn(
-                                            JsonSokernavn()
-                                                .withFornavn("Navn")
-                                                .withMellomnavn("")
-                                                .withEtternavn("Navnesen")
-                                                .withKilde(JsonSokernavn.Kilde.SYSTEM),
-                                        ).withKontonummer(
-                                            JsonKontonummer()
-                                                .withKilde(JsonKilde.SYSTEM)
-                                                .withVerdi("0000"),
-                                        ),
-                                ).withArbeid(JsonArbeid())
-                                .withUtdanning(
-                                    JsonUtdanning()
-                                        .withKilde(JsonKilde.SYSTEM),
-                                ).withFamilie(
-                                    JsonFamilie()
-                                        .withForsorgerplikt(JsonForsorgerplikt()),
-                                ).withBegrunnelse(
-                                    JsonBegrunnelse()
-                                        .withKilde(JsonKildeBruker.BRUKER)
-                                        .withHvaSokesOm("")
-                                        .withHvorforSoke(""),
-                                ).withBosituasjon(
-                                    JsonBosituasjon()
-                                        .withKilde(JsonKildeBruker.BRUKER),
-                                ).withOkonomi(
-                                    JsonOkonomi()
-                                        .withOpplysninger(
-                                            JsonOkonomiopplysninger()
-                                                .withUtbetaling(emptyList())
-                                                .withUtgift(emptyList()),
-                                        ).withOversikt(
-                                            JsonOkonomioversikt()
-                                                .withInntekt(emptyList())
-                                                .withUtgift(emptyList())
-                                                .withFormue(emptyList()),
-                                        ),
-                                ),
-                        ),
-                )
+            JsonInternalSoknad(
+                soknad =
+                    JsonSoknad(
+                        version = "1.0",
+                        data =
+                            JsonData(
+                                personalia =
+                                    JsonPersonalia(
+                                        personIdentifikator = JsonPersonIdentifikator(JsonPersonIdentifikator.Kilde.SYSTEM, "1234"),
+                                        navn = JsonSokernavn(JsonSokernavn.Kilde.SYSTEM, "Navn", "", "Navnesen"),
+                                        kontonummer = JsonKontonummer(JsonKilde.SYSTEM, verdi = "0000"),
+                                    ),
+                                arbeid = JsonArbeid(),
+                                utdanning = JsonUtdanning(kilde = JsonKilde.SYSTEM),
+                                familie = JsonFamilie(forsorgerplikt = JsonForsorgerplikt()),
+                                begrunnelse = JsonBegrunnelse(JsonKildeBruker.BRUKER, "", ""),
+                                bosituasjon = JsonBosituasjon(kilde = JsonKildeBruker.BRUKER),
+                                okonomi =
+                                    JsonOkonomi(
+                                        opplysninger = JsonOkonomiopplysninger(utbetaling = emptyList(), utgift = emptyList()),
+                                        oversikt = JsonOkonomioversikt(inntekt = emptyList(), utgift = emptyList(), formue = emptyList()),
+                                    ),
+                            ),
+                        mottaker = JsonSoknadsmottaker(),
+                        driftsinformasjon = JsonDriftsinformasjon(false),
+                        kompatibilitet = emptyList(),
+                    ),
+            )
 
     @Test
     fun skalGenererePdfA() {
         val jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest", false)
-        jsonInternalSoknad.setInnsendingstidspunkt()
+        val jsonInternalSoknadWithTimestamp = jsonInternalSoknad.withInnsendingstidspunkt()
 
-        val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
+        val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknadWithTimestamp, true)
         val file = File("pdfaTest.pdf")
 
         FileUtils.writeByteArrayToFile(file, bytes)
@@ -218,10 +202,18 @@ internal class SosialhjelpPdfGeneratorTest {
     @Test
     fun `Skal legge ved ektefelle hvis det finnes i kort søknad`() {
         val jsonInternalSoknad =
-            createEmptyJsonInternalSoknad("pdfaTest", true).also {
-                it.soknad.data.familie = JsonFamilie().withSivilstatus(JsonSivilstatus().withStatus(JsonSivilstatus.Status.GIFT).withEktefelle(JsonEktefelle().withPersonIdentifikator("12345789").withNavn(JsonNavn().withFornavn("Johanna").withEtternavn("Johansen")).withFodselsdato(LocalDate.of(1991, 1, 1).toString())).withKilde(JsonKilde.SYSTEM))
-            }
-        jsonInternalSoknad.setInnsendingstidspunkt()
+            createEmptyJsonInternalSoknad("pdfaTest", true)
+                .withFamilie(
+                    JsonFamilie(
+                        forsorgerplikt = JsonForsorgerplikt(),
+                        sivilstatus =
+                            JsonSivilstatus(
+                                kilde = JsonKilde.SYSTEM,
+                                status = JsonSivilstatus.Status.GIFT,
+                                ektefelle = JsonEktefelle(JsonNavn("Johanna", "", "Johansen"), LocalDate.of(1991, 1, 1).toString(), "12345789"),
+                            ),
+                    ),
+                ).withInnsendingstidspunkt()
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val pdf = Loader.loadPDF(bytes)
         val text = PDFTextStripper().getText(pdf)
@@ -231,10 +223,9 @@ internal class SosialhjelpPdfGeneratorTest {
     @Test
     fun `Skal skrive ingen ektefelle hvis det ikke er en ektefelle der i kort søknad`() {
         val jsonInternalSoknad =
-            createEmptyJsonInternalSoknad("pdfaTest", true).also {
-                it.soknad.data.familie = JsonFamilie()
-            }
-        jsonInternalSoknad.setInnsendingstidspunkt()
+            createEmptyJsonInternalSoknad("pdfaTest", true)
+                .withFamilie(JsonFamilie(forsorgerplikt = JsonForsorgerplikt()))
+                .withInnsendingstidspunkt()
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val pdf = Loader.loadPDF(bytes)
         val text = PDFTextStripper().getText(pdf)
@@ -244,10 +235,22 @@ internal class SosialhjelpPdfGeneratorTest {
     @Test
     fun `Skal legge ved barn hvis det finnes i kort søknad`() {
         val jsonInternalSoknad =
-            createEmptyJsonInternalSoknad("pdfaTest", true).also {
-                it.soknad.data.familie = JsonFamilie().withForsorgerplikt(JsonForsorgerplikt().withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(true).withKilde(JsonKilde.SYSTEM)).withAnsvar(listOf(JsonAnsvar().withBarn(JsonBarn().withKilde(JsonKilde.SYSTEM).withFodselsdato(LocalDate.of(Year.now().minusYears(4).value, 1, 1).toString()).withNavn(JsonNavn().withFornavn("Johan").withEtternavn("Johansen"))))))
-            }
-        jsonInternalSoknad.setInnsendingstidspunkt()
+            createEmptyJsonInternalSoknad("pdfaTest", true)
+                .withFamilie(
+                    JsonFamilie(
+                        forsorgerplikt =
+                            JsonForsorgerplikt(
+                                harForsorgerplikt = JsonHarForsorgerplikt(JsonKilde.SYSTEM, true),
+                                ansvar =
+                                    listOf(
+                                        JsonAnsvar(
+                                            barn = JsonBarn(JsonKilde.SYSTEM, JsonNavn("Johan", "", "Johansen"), LocalDate.of(Year.now().minusYears(4).value, 1, 1).toString()),
+                                        ),
+                                    ),
+                            ),
+                        sivilstatus = null,
+                    ),
+                ).withInnsendingstidspunkt()
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val pdf = Loader.loadPDF(bytes)
         val text = PDFTextStripper().getText(pdf)
@@ -257,10 +260,16 @@ internal class SosialhjelpPdfGeneratorTest {
     @Test
     fun `Skal skrive ingen registrerte barn hvis det ikke finnes i kort søknad`() {
         val jsonInternalSoknad =
-            createEmptyJsonInternalSoknad("pdfaTest", true).also {
-                it.soknad.data.familie = JsonFamilie().withForsorgerplikt(JsonForsorgerplikt().withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(false).withKilde(JsonKilde.SYSTEM)))
-            }
-        jsonInternalSoknad.setInnsendingstidspunkt()
+            createEmptyJsonInternalSoknad("pdfaTest", true)
+                .withFamilie(
+                    JsonFamilie(
+                        forsorgerplikt =
+                            JsonForsorgerplikt(
+                                harForsorgerplikt = JsonHarForsorgerplikt(JsonKilde.SYSTEM, false),
+                            ),
+                        sivilstatus = null,
+                    ),
+                ).withInnsendingstidspunkt()
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val pdf = Loader.loadPDF(bytes)
         val text = PDFTextStripper().getText(pdf)

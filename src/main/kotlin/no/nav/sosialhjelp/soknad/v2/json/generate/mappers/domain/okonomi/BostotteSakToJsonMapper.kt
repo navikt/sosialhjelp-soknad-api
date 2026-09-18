@@ -11,26 +11,24 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 
 class BostotteSakToJsonMapper(
     private val saker: List<BostotteSak>,
-    jsonOkonomi: JsonOkonomi,
 ) : OkonomiElementsToJsonMapper {
-    private val opplysninger = jsonOkonomi.opplysninger
-
-    override fun doMapping() {
+    override fun doMapping(jsonOkonomi: JsonOkonomi): JsonOkonomi {
         // At denne settes til tross for ingen saker, indikerer at bruker har fått spørsmål om bostotte
-        val jsonBostotte = opplysninger.bostotte ?: opplysninger.withBostotte(JsonBostotte()).bostotte
-        jsonBostotte.saker.addAll(saker.map { it.toJsonBostotteSak() })
+        return jsonOkonomi.copy(
+            opplysninger = jsonOkonomi.opplysninger.copy(bostotte = JsonBostotte(saker.map { it.toJsonBostotteSak() })),
+        )
     }
 }
 
 private fun BostotteSak.toJsonBostotteSak() =
-    JsonBostotteSak()
-        .withKilde(JsonKildeSystem.SYSTEM)
-        // Alltid denne typen - legges ikke ved som en del av modellen
-        .withType(InntektType.UTBETALING_HUSBANKEN.toJsonInntektType())
-        .withDato(dato.toString())
-        .withStatus(status.name)
-        .withBeskrivelse(beskrivelse)
-        .withVedtaksstatus(vedtaksstatus?.toJsonVedtaksstatus())
+    JsonBostotteSak(
+        JsonKildeSystem.SYSTEM,
+        InntektType.UTBETALING_HUSBANKEN.toJsonInntektType(),
+        dato.toString(),
+        status.name,
+        beskrivelse,
+        vedtaksstatus?.toJsonVedtaksstatus(),
+    )
 
 internal fun Vedtaksstatus.toJsonVedtaksstatus(): JsonBostotteSak.Vedtaksstatus {
     return JsonBostotteSak.Vedtaksstatus.entries.find { it.name == this.name } ?: error("Finner ikke JsonVedtaksstatus")

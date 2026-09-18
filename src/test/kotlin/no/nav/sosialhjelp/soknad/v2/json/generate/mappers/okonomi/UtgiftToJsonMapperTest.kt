@@ -15,9 +15,9 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `Utgift med type SFO skal lage JsonOkonomioversiktUtgift`() {
         val utgifter = setOf(Utgift(UtgiftType.UTGIFTER_SFO))
 
-        UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
+        jsonOkonomi = UtgiftToJsonMapper(utgifter).doMapping(jsonOkonomi)
 
-        with(jsonOkonomi.oversikt) {
+        with(requireNotNull(jsonOkonomi.oversikt)) {
             assertThat(utgift).hasSize(1).allMatch { it.type == SoknadJsonTypeEnum.UTGIFTER_SFO.verdi }
         }
     }
@@ -26,7 +26,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `Utgift med type STROM skal lage JsonOkonomiopplysningUtgift`() {
         val utgifter = setOf(Utgift(UtgiftType.UTGIFTER_STROM))
 
-        UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
+        jsonOkonomi = UtgiftToJsonMapper(utgifter).doMapping(jsonOkonomi)
 
         with(jsonOkonomi.opplysninger) {
             assertThat(utgift).hasSize(1).allMatch { it.type == SoknadJsonTypeEnum.UTGIFTER_STROM.verdi }
@@ -43,9 +43,9 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
                     OkonomiDetaljer(listOf(Belop(444.0), Belop(1242.0))),
                 ),
             )
-        UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
+        jsonOkonomi = UtgiftToJsonMapper(utgifter).doMapping(jsonOkonomi)
 
-        with(jsonOkonomi.oversikt) {
+        with(requireNotNull(jsonOkonomi.oversikt)) {
             assertThat(utgift).hasSize(2).allMatch { it.type == SoknadJsonTypeEnum.BARNEBIDRAG.verdi }
         }
     }
@@ -54,7 +54,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `Beskrivelse for andre boutgifter skal gi flere innslag`() {
         val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANNET_BO)
 
-        UtgiftToJsonMapper(utgifterDomain, jsonOkonomi).doMapping()
+        jsonOkonomi = UtgiftToJsonMapper(utgifterDomain).doMapping(jsonOkonomi)
 
         jsonOkonomi.opplysninger.utgift.also { utgifter ->
             assertThat(utgifter).hasSize(2)
@@ -73,7 +73,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `Beskrivelse for andre utgifter barn skal gi flere innslag`() {
         val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANNET_BARN)
 
-        UtgiftToJsonMapper(utgifterDomain, jsonOkonomi).doMapping()
+        jsonOkonomi = UtgiftToJsonMapper(utgifterDomain).doMapping(jsonOkonomi)
 
         jsonOkonomi.opplysninger.utgift.also { utgifter ->
             assertThat(utgifter).hasSize(2)
@@ -92,7 +92,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `Beskrivelse for andre utgifter skal gi flere innslag`() {
         val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
 
-        UtgiftToJsonMapper(utgifterDomain, jsonOkonomi).doMapping()
+        jsonOkonomi = UtgiftToJsonMapper(utgifterDomain).doMapping(jsonOkonomi)
 
         jsonOkonomi.opplysninger.utgift.also { utgifter ->
             assertThat(utgifter).hasSize(2)
@@ -124,9 +124,9 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
                     ),
             )
 
-        UtgiftToJsonMapper(setOf(nyUtgift), jsonOkonomi).doMapping()
+        jsonOkonomi = UtgiftToJsonMapper(setOf(nyUtgift)).doMapping(jsonOkonomi)
 
-        with(jsonOkonomi.oversikt) {
+        with(requireNotNull(jsonOkonomi.oversikt)) {
             assertThat(utgift).hasSize(nyUtgift.utgiftDetaljer.detaljer.size * 2)
         }
     }
@@ -136,14 +136,14 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
         val nyUtgift = Utgift(type = UtgiftType.UTGIFTER_STROM)
         val annenUtgift = Utgift(type = UtgiftType.BARNEBIDRAG_BETALER)
 
-        UtgiftToJsonMapper(utgifter = setOf(nyUtgift, annenUtgift), jsonOkonomi).doMapping()
+        jsonOkonomi = UtgiftToJsonMapper(utgifter = setOf(nyUtgift, annenUtgift)).doMapping(jsonOkonomi)
 
         with(jsonOkonomi) {
             assertThat(opplysninger.utgift).hasSize(1)
-            assertThat(opplysninger.utgift.first().type).isEqualTo(SoknadJsonTypeEnum.UTGIFTER_STROM.verdi)
+            assertThat(requireNotNull(opplysninger.utgift).first().type).isEqualTo(SoknadJsonTypeEnum.UTGIFTER_STROM.verdi)
 
-            assertThat(oversikt.utgift).hasSize(1)
-            assertThat(oversikt.utgift.first().type).isEqualTo(SoknadJsonTypeEnum.BARNEBIDRAG.verdi)
+            assertThat(requireNotNull(oversikt).utgift).hasSize(1)
+            assertThat(requireNotNull(oversikt).utgift.first().type).isEqualTo(SoknadJsonTypeEnum.BARNEBIDRAG.verdi)
         }
     }
 
@@ -151,7 +151,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `ANDRE_UTGIFTER uten detaljer skal ikke generere opplysning`() {
         val utgifter = setOf(Utgift(UtgiftType.UTGIFTER_ANDRE_UTGIFTER))
 
-        UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
+        jsonOkonomi = UtgiftToJsonMapper(utgifter).doMapping(jsonOkonomi)
 
         assertThat(jsonOkonomi.opplysninger.utgift).isEmpty()
     }

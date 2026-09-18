@@ -14,20 +14,20 @@ class BostotteSakToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `Bostottesaker skal mappes til tilsvarende innslag i JsonBostotteSaker`() {
         val bostotteSaker = createBostotteSaker()
 
-        BostotteSakToJsonMapper(bostotteSaker, jsonOkonomi).doMapping()
+        jsonOkonomi = BostotteSakToJsonMapper(bostotteSaker).doMapping(jsonOkonomi)
 
         with(jsonOkonomi.opplysninger) {
             assertThat(bostotte).isNotNull
-            assertThat(bostotte.saker).hasSize(2)
+            assertThat(requireNotNull(bostotte).saker).hasSize(2)
                 .allMatch { it.type == InntektType.UTBETALING_HUSBANKEN.toJsonInntektType() }
 
-            bostotte.saker.find { it.status == BostotteStatus.VEDTATT.name }!!
+            requireNotNull(bostotte).saker.find { it.status == BostotteStatus.VEDTATT.name }!!
                 .let { jsonSak ->
                     bostotteSaker.map { it.dato.toString() }.let { datoer -> assertThat(datoer).contains(jsonSak.dato) }
                     assertThat(jsonSak.beskrivelse).isEqualTo("Annen beskrivelse av Bostotte")
                     assertThat(jsonSak.vedtaksstatus).isEqualTo(JsonBostotteSak.Vedtaksstatus.AVVIST)
                 }
-            bostotte.saker.find { it.status == BostotteStatus.UNDER_BEHANDLING.name }!!
+            requireNotNull(bostotte).saker.find { it.status == BostotteStatus.UNDER_BEHANDLING.name }!!
                 .let { jsonSak ->
                     bostotteSaker.map { it.dato.toString() }.let { datoer -> assertThat(datoer).contains(jsonSak.dato) }
                     assertThat(jsonSak.beskrivelse).isEqualTo("Beskrivelse av bostotte")

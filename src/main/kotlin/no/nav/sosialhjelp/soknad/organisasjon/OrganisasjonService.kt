@@ -37,9 +37,7 @@ class OrganisasjonService(
 
     fun mapToJsonOrganisasjon(orgnr: String): JsonOrganisasjon? {
         if (orgnr.matches(Regex("\\d{9}"))) {
-            return JsonOrganisasjon()
-                .withNavn(hentOrgNavn(orgnr))
-                .withOrganisasjonsnummer(orgnr)
+            return JsonOrganisasjon(hentOrgNavn(orgnr), orgnr)
         }
         if (orgnr.matches(Regex("\\d{11}"))) {
             log.info("Utbetalingens opplysningspliktigId er et personnummer. Dette blir ikke inkludert i soknad.json")

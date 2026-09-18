@@ -13,7 +13,14 @@ import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
+import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer
+import org.springframework.data.redis.serializer.RedisSerializationContext.fromSerializer
+import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.data.redis.serializer.SerializationException
+import org.springframework.data.redis.serializer.StringRedisSerializer
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.JavaType
+import tools.jackson.module.kotlin.jacksonTypeRef
 import java.time.Duration
 
 @Configuration(proxyBeanMethods = false)
@@ -27,7 +34,6 @@ class CacheConfig : CachingConfigurer {
     ): CacheManager =
         RedisCacheManager
             .builder(redisConnectionFactory)
-            .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
             .withInitialCacheConfigurations(cacheConfigs.associate { it.cacheName to it.getConfig() })
             .enableStatistics()
             .build()
@@ -62,7 +68,7 @@ object CustomCacheErrorHandler : CacheErrorHandler {
         key: Any,
     ) {
         if (exception is SerializationException) cache.evict(key)
-        log.warn("Couldn't get cache value for key $key in cache ${cache.name}", exception)
+        log.warn("Couldn't get cache value in cache ${cache.name}", exception)
     }
 
     override fun handleCachePutError(
@@ -72,7 +78,7 @@ object CustomCacheErrorHandler : CacheErrorHandler {
         value: Any?,
     ) {
         if (exception is SerializationException) cache.evict(key)
-        log.warn("Couldn't put cache value for key $key in cache ${cache.name}", exception)
+        log.warn("Couldn't put cache value in cache ${cache.name}", exception)
     }
 
     override fun handleCacheEvictError(
@@ -80,7 +86,7 @@ object CustomCacheErrorHandler : CacheErrorHandler {
         cache: Cache,
         key: Any,
     ) {
-        log.warn("Couldn't evict cache value for key $key in cache ${cache.name}", exception)
+        log.warn("Couldn't evict cache value in cache ${cache.name}", exception)
     }
 
     override fun handleCacheClearError(
@@ -93,11 +99,32 @@ object CustomCacheErrorHandler : CacheErrorHandler {
 
 abstract class SoknadApiCacheConfig(
     val cacheName: String,
+    valueType: JavaType,
     private val timeToLive: Duration = Duration.ofHours(1),
 ) {
+    private val valueSerializationPair =
+        fromSerializer<Any>(cacheValueSerializer(valueType)).valueSerializationPair
+
     open fun getConfig(): RedisCacheConfiguration =
         RedisCacheConfiguration
             .defaultCacheConfig()
             .disableCachingNullValues()
             .entryTtl(timeToLive)
+            .serializeKeysWith(CacheDefaults.keySerializationPair)
+            .serializeValuesWith(valueSerializationPair)
+}
+
+internal val cacheMapper =
+    sosialhjelpJsonMapperBuilder()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .build()
+
+internal inline fun <reified T> cacheValueType(): JavaType =
+    cacheMapper.typeFactory.constructType(jacksonTypeRef<T>().type)
+
+internal fun <T : Any> cacheValueSerializer(valueType: JavaType): RedisSerializer<T> =
+    JacksonJsonRedisSerializer(cacheMapper, valueType)
+
+private object CacheDefaults {
+    val keySerializationPair = fromSerializer(StringRedisSerializer()).keySerializationPair
 }

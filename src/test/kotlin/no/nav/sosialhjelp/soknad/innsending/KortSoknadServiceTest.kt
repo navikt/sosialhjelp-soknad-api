@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonAvsender
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
@@ -267,23 +268,16 @@ private fun createDigisosSak(
 
 private fun createJsonDigisosSoker(
     hendelser: List<JsonHendelse> = emptyList(),
-): JsonDigisosSoker = JsonDigisosSoker().withHendelser(hendelser)
+): JsonDigisosSoker = JsonDigisosSoker(version = "1", avsender = JsonAvsender("test", "1"), hendelser = hendelser)
 
 private fun createMottattHendelse(tidspunkt: LocalDateTime): JsonHendelse =
-    JsonSoknadsStatus()
-        .withType(JsonHendelse.Type.SOKNADS_STATUS)
-        .withHendelsestidspunkt(convertToOffsettDateTimeUTCString(tidspunkt))
-        .withStatus(JsonSoknadsStatus.Status.MOTTATT)
+    JsonSoknadsStatus(JsonSoknadsStatus.Status.MOTTATT, convertToOffsettDateTimeUTCString(tidspunkt))
 
 private fun createPastUtbetaling(
     tidspunkt: LocalDateTime,
     utbetalingstidspunkt: LocalDateTime,
 ): JsonHendelse =
-    JsonUtbetaling()
-        .withType(JsonHendelse.Type.UTBETALING)
-        .withHendelsestidspunkt(convertToOffsettDateTimeUTCString(tidspunkt))
-        .withUtbetalingsdato(convertToOffsettDateTimeUTCString(utbetalingstidspunkt))
-        .withStatus(JsonUtbetaling.Status.UTBETALT)
+    JsonUtbetaling(utbetalingsreferanse = "", hendelsestidspunkt = convertToOffsettDateTimeUTCString(tidspunkt), utbetalingsdato = convertToOffsettDateTimeUTCString(utbetalingstidspunkt), status = JsonUtbetaling.Status.UTBETALT)
 
 private fun createUpcomingUtbetaling(
     tidspunkt: LocalDateTime = nowWithMillis().minusDays(10),
@@ -291,9 +285,4 @@ private fun createUpcomingUtbetaling(
     utbetalingsdato: LocalDateTime = nowWithMillis(),
     status: JsonUtbetaling.Status = JsonUtbetaling.Status.PLANLAGT_UTBETALING,
 ): JsonHendelse =
-    JsonUtbetaling()
-        .withType(JsonHendelse.Type.UTBETALING)
-        .withHendelsestidspunkt(convertToOffsettDateTimeUTCString(tidspunkt))
-        .withForfallsdato(convertToOffsettDateTimeUTCString(forfallsdato))
-        .withStatus(status)
-        .withUtbetalingsdato(convertToOffsettDateTimeUTCString(utbetalingsdato))
+    JsonUtbetaling(utbetalingsreferanse = "", hendelsestidspunkt = convertToOffsettDateTimeUTCString(tidspunkt), forfallsdato = convertToOffsettDateTimeUTCString(forfallsdato), status = status, utbetalingsdato = convertToOffsettDateTimeUTCString(utbetalingsdato))

@@ -1,11 +1,21 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
@@ -32,12 +42,11 @@ class SoknadToJsonMapper(
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) {
+    ): JsonInternalSoknad {
         val metadata = soknadMetadataRepository.findByIdOrNull(soknadId) ?: error("Metadata $soknadId finnes ikke")
 
-        soknadRepository.findByIdOrNull(soknadId)
-            ?.let { soknad -> doMapping(soknad, metadata, jsonInternalSoknad) }
-            ?: throw IkkeFunnetException("Soknad finnes ikke")
+        val soknad = soknadRepository.findByIdOrNull(soknadId) ?: throw IkkeFunnetException("Soknad finnes ikke")
+        return doMapping(soknad, metadata, jsonInternalSoknad)
     }
 
     internal companion object Mapper {
@@ -45,35 +54,48 @@ class SoknadToJsonMapper(
             domainSoknad: Soknad,
             metadata: SoknadMetadata,
             json: JsonInternalSoknad,
-        ) {
-            with(json) {
-                initializeObjects()
-
-                soknad.data.personalia.personIdentifikator = domainSoknad.toJsonPersonIdentifikator()
-                soknad.innsendingstidspunkt =
-                    metadata.tidspunkt.sendtInn?.let {
-                        TimestampUtil.convertToOffsettDateTimeUTCString(it)
-                    }
-                soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
-                soknad.data.soknadstype = metadata.soknadType.toJsonSoknadType()
-            }
+        ): JsonInternalSoknad {
+            val personalia =
+                JsonPersonalia(
+                    personIdentifikator = domainSoknad.toJsonPersonIdentifikator(),
+                    navn = JsonSokernavn(kilde = JsonSokernavn.Kilde.SYSTEM, fornavn = "", mellomnavn = "", etternavn = ""),
+                    kontonummer = JsonKontonummer(kilde = JsonKilde.SYSTEM),
+                )
+            val data =
+                JsonData(
+                    personalia = personalia,
+                    begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse(),
+                    okonomi =
+                        JsonOkonomi(
+                            opplysninger =
+                                JsonOkonomiopplysninger(
+                                    utbetaling = emptyList(),
+                                    bekreftelse = emptyList(),
+                                    beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet(JsonKildeBruker.BRUKER, "", "", "", "", ""),
+                                    utgift = null,
+                                ),
+                            oversikt = JsonOkonomioversikt(inntekt = emptyList(), utgift = emptyList(), formue = emptyList()),
+                        ),
+                )
+            return json.copy(
+                soknad =
+                    JsonSoknad(
+                        version = FORMAT_VERSION,
+                        data = data.copy(soknadstype = metadata.soknadType.toJsonSoknadType()),
+                        mottaker = JsonSoknadsmottaker(),
+                        driftsinformasjon = JsonDriftsinformasjon(inntektFraSkatteetatenFeilet = false),
+                        kompatibilitet = emptyList(),
+                        innsendingstidspunkt = metadata.tidspunkt.sendtInn?.let(TimestampUtil::convertToOffsettDateTimeUTCString),
+                    ),
+            )
         }
 
-        private fun JsonInternalSoknad.initializeObjects() {
-            soknad.data ?: soknad.withData(JsonData())
-            soknad.data.personalia ?: soknad.data.withPersonalia(JsonPersonalia())
+        private fun Soknad.toJsonPersonIdentifikator() = JsonPersonIdentifikator(JsonPersonIdentifikator.Kilde.SYSTEM, eierPersonId)
 
-            // required i json-modellen (validering)
-            soknad.data.begrunnelse ?: soknad.data.withBegrunnelse(JsonBegrunnelse())
-        }
-
-        private fun Soknad.toJsonPersonIdentifikator(): JsonPersonIdentifikator = JsonPersonIdentifikator().withKilde(JsonPersonIdentifikator.Kilde.SYSTEM).withVerdi(eierPersonId)
+        private const val FORMAT_VERSION = "1.0.11"
 
         private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse =
-            JsonBegrunnelse()
-                .withHvaSokesOm(handleKategorier())
-                .withHvorforSoke(hvorforSoke)
-                .withKilde(JsonKildeBruker.BRUKER)
+            JsonBegrunnelse(JsonKildeBruker.BRUKER, handleKategorier(), hvorforSoke)
     }
 }
 

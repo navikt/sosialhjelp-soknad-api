@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
@@ -47,17 +45,8 @@ internal class BegrunnelseStegTest {
         hvaSokesOm: String?,
         hvorforSoke: String,
     ): JsonInternalSoknad {
-        return JsonInternalSoknad()
-            .withSoknad(
-                JsonSoknad()
-                    .withData(
-                        JsonData()
-                            .withBegrunnelse(
-                                JsonBegrunnelse()
-                                    .withHvaSokesOm(hvaSokesOm)
-                                    .withHvorforSoke(hvorforSoke),
-                            ),
-                    ),
-            )
+        val base = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad()
+        val soknad = requireNotNull(base.soknad)
+        return base.copy(soknad = soknad.copy(data = soknad.data.copy(begrunnelse = JsonBegrunnelse(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker.BRUKER, hvaSokesOm ?: "", hvorforSoke ?: ""))))
     }
 }

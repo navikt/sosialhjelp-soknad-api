@@ -20,9 +20,9 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrert
 
 object FamiliesituasjonSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
-        val familie = jsonInternalSoknad.soknad.data.familie
+        val familie = requireNotNull(jsonInternalSoknad.soknad?.data?.familie)
         val sivilstatus: JsonSivilstatus? = familie.sivilstatus
-        val forsorgerplikt: JsonForsorgerplikt = familie.forsorgerplikt
+        val forsorgerplikt: JsonForsorgerplikt = requireNotNull(familie.forsorgerplikt)
         return Steg(
             stegNr = 4,
             tittel = "familiebolk.tittel",
@@ -106,7 +106,7 @@ object FamiliesituasjonSteg {
     }
 
     private fun brukerRegistrertEktefelle(sivilstatus: JsonSivilstatus): Sporsmal {
-        val ektefelle = sivilstatus.ektefelle
+        val ektefelle = requireNotNull(sivilstatus.ektefelle)
         val erUtfylt =
             !ektefelle.navn.fornavn.isNullOrEmpty() &&
                 !ektefelle.navn.etternavn.isNullOrEmpty() &&
@@ -136,10 +136,11 @@ object FamiliesituasjonSteg {
     }
 
     private fun personnummerFraFnr(ektefelle: JsonEktefelle): String? {
-        return if (ektefelle.personIdentifikator != null && ektefelle.personIdentifikator.length == 11) {
-            ektefelle.personIdentifikator.substring(6, 11)
+        val personIdentifikator = ektefelle.personIdentifikator
+        return if (personIdentifikator != null && personIdentifikator.length == 11) {
+            personIdentifikator.substring(6, 11)
         } else {
-            ektefelle.personIdentifikator
+            personIdentifikator
         }
     }
 
@@ -166,7 +167,7 @@ object FamiliesituasjonSteg {
     }
 
     private fun systemEktefelleSporsmal(sivilstatus: JsonSivilstatus): Sporsmal {
-        val ektefelle = sivilstatus.ektefelle
+        val ektefelle = requireNotNull(sivilstatus.ektefelle)
         val labelSvarMap = LinkedHashMap<String, Svar>()
         if (ektefelle.navn != null) {
             labelSvarMap["system.familie.sivilstatus.gift.ektefelle.navn"] =
@@ -211,10 +212,10 @@ object FamiliesituasjonSteg {
         }
         if (harSystemBarn) {
             forsorgerplikt.ansvar
-                ?.filter { it.barn.kilde == JsonKilde.SYSTEM }
+                ?.filter { it.barn?.kilde == JsonKilde.SYSTEM }
                 ?.forEach { barn: JsonAnsvar ->
                     sporsmal.add(systemBarnSporsmal(barn))
-                    if (java.lang.Boolean.TRUE == barn.erFolkeregistrertSammen.verdi) {
+                    if (java.lang.Boolean.TRUE == barn.erFolkeregistrertSammen?.verdi) {
                         sporsmal.add(deltBostedSporsmal(barn))
                     }
                 }
@@ -240,16 +241,18 @@ object FamiliesituasjonSteg {
 
     private fun systemBarnSporsmal(barn: JsonAnsvar): Sporsmal {
         val labelSvarMap = LinkedHashMap<String, Svar>()
-        if (barn.barn.navn != null) {
-            labelSvarMap["familie.barn.true.barn.navn.label"] = createSvar(fulltnavn(barn.barn.navn), SvarType.TEKST)
+        val jsonBarn = barn.barn
+        if (jsonBarn?.navn != null) {
+            labelSvarMap["familie.barn.true.barn.navn.label"] = createSvar(fulltnavn(requireNotNull(jsonBarn.navn)), SvarType.TEKST)
         }
-        if (barn.barn.fodselsdato != null) {
-            labelSvarMap["familierelasjon.fodselsdato"] = createSvar(barn.barn.fodselsdato, SvarType.DATO)
+        if (jsonBarn?.fodselsdato != null) {
+            labelSvarMap["familierelasjon.fodselsdato"] = createSvar(jsonBarn.fodselsdato, SvarType.DATO)
         }
-        if (barn.erFolkeregistrertSammen != null) {
+        val erFolkeregistrertSammen = barn.erFolkeregistrertSammen
+        if (erFolkeregistrertSammen != null) {
             labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"] =
                 createSvar(
-                    if (java.lang.Boolean.TRUE == barn.erFolkeregistrertSammen.verdi) "system.familie.barn.true.barn.folkeregistrertsammen.true" else "system.familie.barn.true.barn.folkeregistrertsammen.false",
+                    if (java.lang.Boolean.TRUE == erFolkeregistrertSammen.verdi) "system.familie.barn.true.barn.folkeregistrertsammen.true" else "system.familie.barn.true.barn.folkeregistrertsammen.false",
                     SvarType.LOCALE_TEKST,
                 )
         }
@@ -267,8 +270,9 @@ object FamiliesituasjonSteg {
     }
 
     private fun deltBostedSporsmal(barn: JsonAnsvar): Sporsmal {
-        val harUtfyltDeltBostedSporsmal = barn.harDeltBosted != null && barn.harDeltBosted.verdi != null
-        val harSvartJaDeltBosted = harUtfyltDeltBostedSporsmal && java.lang.Boolean.TRUE == barn.harDeltBosted.verdi
+        val harDeltBosted = barn.harDeltBosted
+        val harUtfyltDeltBostedSporsmal = harDeltBosted?.verdi != null
+        val harSvartJaDeltBosted = java.lang.Boolean.TRUE == harDeltBosted?.verdi
         return Sporsmal(
             tittel = "system.familie.barn.true.barn.deltbosted.sporsmal",
             erUtfylt = harUtfyltDeltBostedSporsmal,
@@ -286,7 +290,8 @@ object FamiliesituasjonSteg {
     }
 
     private fun barneBidragSporsmal(forsorgerplikt: JsonForsorgerplikt): Sporsmal {
-        val erUtfylt = forsorgerplikt.barnebidrag != null && forsorgerplikt.barnebidrag.verdi != null
+        val barnebidrag = forsorgerplikt.barnebidrag
+        val erUtfylt = barnebidrag?.verdi != null
         return Sporsmal(
             tittel = "familie.barn.true.barnebidrag.sporsmal",
             erUtfylt = erUtfylt,
@@ -295,7 +300,7 @@ object FamiliesituasjonSteg {
                     listOf(
                         Felt(
                             type = Type.CHECKBOX,
-                            svar = createSvar(verdiToTekstKey(forsorgerplikt.barnebidrag.verdi), SvarType.LOCALE_TEKST),
+                            svar = createSvar(verdiToTekstKey(requireNotNull(barnebidrag.verdi)), SvarType.LOCALE_TEKST),
                         ),
                     )
                 } else {

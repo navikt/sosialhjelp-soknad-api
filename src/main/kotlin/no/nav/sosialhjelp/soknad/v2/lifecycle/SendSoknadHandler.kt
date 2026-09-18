@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
@@ -29,7 +30,7 @@ class SendSoknadHandler(
 
         val innsendingstidspunkt = metadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
 
-        val json = jsonGenerator.createJsonInternalSoknad(soknadId)
+        val json = jsonGenerator.createJsonInternalSoknad(soknadId).withoutVedleggUtenFilerForKort()
         val navEnhet = sendSoknadManager.getNavEnhetForSending(soknadId)
 
         val digisosId =
@@ -92,7 +93,20 @@ data class SoknadSendtInfo(
     val innsendingTidspunkt: LocalDateTime,
 )
 
+/* I en kort søknad må man ha et vedleggobjekt for å kunne vise fram opplastingsboksen på frontend,
+   men det er ikke riktig at de skal ha status VedleggKreves og dermed vises som vedleggskrav på innsyn.
+   Fjerner derfor alle vedlegg som ikke har filer før søknad, PDF-er og statistikk lages.
+ */
+internal fun JsonInternalSoknad.withoutVedleggUtenFilerForKort(): JsonInternalSoknad {
+    if (checkNotNull(soknad) { "Søknad mangler" }.data.soknadstype != JsonData.Soknadstype.KORT) return this
+
+    SendSoknadHandler.logger.info("Søknadstype er KORT, fjerner alle vedlegg som ikke har filer")
+    val vedlegg = checkNotNull(vedlegg) { "Vedlegg mangler" }
+    return copy(vedlegg = vedlegg.copy(vedlegg = vedlegg.vedlegg.filter { it.filer.isNotEmpty() }))
+}
+
 private fun JsonInternalSoknad.checkDuplicateUtbetalinger() {
+    val soknad = requireNotNull(soknad)
     val duplicates =
         soknad.data.okonomi.opplysninger.utbetaling
             .groupBy { listOf(it.tittel, it.utbetalingsdato, it.netto, it.brutto) }

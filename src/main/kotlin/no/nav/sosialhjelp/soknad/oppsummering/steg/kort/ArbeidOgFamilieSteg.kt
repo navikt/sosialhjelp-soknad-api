@@ -5,7 +5,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
@@ -21,10 +20,11 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrert
 
 object ArbeidOgFamilieSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
-        val familie = jsonInternalSoknad.soknad.data.familie ?: JsonFamilie()
-        val sivilstatus = familie.sivilstatus ?: JsonSivilstatus()
-        val barn = familie.forsorgerplikt ?: JsonForsorgerplikt()
-        val arbeid = jsonInternalSoknad.soknad.data.arbeid ?: JsonArbeid()
+        val data = requireNotNull(jsonInternalSoknad.soknad).data
+        val familie = data.familie
+        val sivilstatus = familie?.sivilstatus
+        val barn = familie?.forsorgerplikt ?: JsonForsorgerplikt()
+        val arbeid = data.arbeid ?: JsonArbeid()
 
         return Steg(
             stegNr = 3,
@@ -55,8 +55,8 @@ object ArbeidOgFamilieSteg {
         }
         if (harSystemBarn) {
             forsorgerplikt.ansvar
-                ?.filter { it.barn.kilde == JsonKilde.SYSTEM }
-                ?.forEach { barn: JsonAnsvar ->
+                .filter { it.barn?.kilde == JsonKilde.SYSTEM }
+                .forEach { barn: JsonAnsvar ->
                     sporsmal.add(systemBarnSporsmal(barn))
                 }
         }
@@ -78,16 +78,18 @@ object ArbeidOgFamilieSteg {
 
     private fun systemBarnSporsmal(barn: JsonAnsvar): Sporsmal {
         val labelSvarMap = LinkedHashMap<String, Svar>()
-        if (barn.barn.navn != null) {
-            labelSvarMap["familie.barn.true.barn.navn.label"] = createSvar(fulltnavn(barn.barn.navn), SvarType.TEKST)
+        val jsonBarn = barn.barn
+        jsonBarn?.let {
+            labelSvarMap["familie.barn.true.barn.navn.label"] = createSvar(fulltnavn(it.navn), SvarType.TEKST)
         }
-        if (barn.barn.fodselsdato != null) {
-            labelSvarMap["familierelasjon.fodselsdato"] = createSvar(barn.barn.fodselsdato, SvarType.DATO)
+        if (jsonBarn?.fodselsdato != null) {
+            labelSvarMap["familierelasjon.fodselsdato"] = createSvar(jsonBarn.fodselsdato, SvarType.DATO)
         }
-        if (barn.erFolkeregistrertSammen != null) {
+        val erFolkeregistrertSammen = barn.erFolkeregistrertSammen
+        if (erFolkeregistrertSammen != null) {
             labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"] =
                 createSvar(
-                    if (java.lang.Boolean.TRUE == barn.erFolkeregistrertSammen.verdi) "system.familie.barn.true.barn.folkeregistrertsammen.true" else "system.familie.barn.true.barn.folkeregistrertsammen.false",
+                    if (erFolkeregistrertSammen.verdi) "system.familie.barn.true.barn.folkeregistrertsammen.true" else "system.familie.barn.true.barn.folkeregistrertsammen.false",
                     SvarType.LOCALE_TEKST,
                 )
         }
@@ -114,7 +116,7 @@ object ArbeidOgFamilieSteg {
         val harSystemEktefelle =
             sivilstatus.kilde == JsonKilde.SYSTEM && sivilstatus.status == JsonSivilstatus.Status.GIFT
         val harSystemEktefelleMedAdressebeskyttelse =
-            harSystemEktefelle && java.lang.Boolean.TRUE == sivilstatus.ektefelleHarDiskresjonskode
+            harSystemEktefelle && sivilstatus.ektefelleHarDiskresjonskode == true
 
         when {
             harSystemEktefelleMedAdressebeskyttelse -> {
@@ -161,12 +163,10 @@ object ArbeidOgFamilieSteg {
         )
 
     private fun systemEktefelleSporsmal(sivilstatus: JsonSivilstatus): Sporsmal {
-        val ektefelle = sivilstatus.ektefelle
+        val ektefelle = requireNotNull(sivilstatus.ektefelle)
         val labelSvarMap = LinkedHashMap<String, Svar>()
-        if (ektefelle.navn != null) {
-            labelSvarMap["system.familie.sivilstatus.gift.ektefelle.navn"] =
-                createSvar(fulltnavn(ektefelle.navn), SvarType.TEKST)
-        }
+        labelSvarMap["system.familie.sivilstatus.gift.ektefelle.navn"] =
+            createSvar(fulltnavn(ektefelle.navn), SvarType.TEKST)
         if (ektefelle.fodselsdato != null) {
             labelSvarMap["system.familie.sivilstatus.gift.ektefelle.fodselsdato"] =
                 createSvar(ektefelle.fodselsdato, SvarType.DATO)
@@ -174,7 +174,7 @@ object ArbeidOgFamilieSteg {
         if (sivilstatus.folkeregistrertMedEktefelle != null) {
             labelSvarMap["system.familie.sivilstatus.gift.ektefelle.folkereg"] =
                 createSvar(
-                    if (java.lang.Boolean.TRUE == sivilstatus.folkeregistrertMedEktefelle) "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true" else "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.false",
+                    if (sivilstatus.folkeregistrertMedEktefelle == true) "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true" else "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.false",
                     SvarType.LOCALE_TEKST,
                 )
         }
@@ -192,7 +192,7 @@ object ArbeidOgFamilieSteg {
     }
 
     private fun arbeidsforholdSporsmal(arbeid: JsonArbeid): List<Sporsmal> {
-        val harArbeidsforhold = arbeid.forhold != null && arbeid.forhold.isNotEmpty()
+        val harArbeidsforhold = arbeid.forhold.isNotEmpty()
         val sporsmal = mutableListOf<Sporsmal>()
         sporsmal.add(
             Sporsmal(
@@ -209,10 +209,8 @@ object ArbeidOgFamilieSteg {
     private fun JsonArbeidsforhold.toFelt(): Felt {
         // arbeidsgiver, startet i jobben, (sluttet i jobben), stillingsprosent
         val labelSvarMap = LinkedHashMap<String, Svar>()
-        if (arbeidsgivernavn != null) {
-            labelSvarMap["arbeidsforhold.arbeidsgivernavn.label"] =
-                createSvar(arbeidsgivernavn, SvarType.TEKST)
-        }
+        labelSvarMap["arbeidsforhold.arbeidsgivernavn.label"] =
+            createSvar(arbeidsgivernavn, SvarType.TEKST)
         if (fom != null) {
             labelSvarMap["arbeidsforhold.fom.label"] = createSvar(fom, SvarType.DATO)
         }

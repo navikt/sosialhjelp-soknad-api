@@ -281,7 +281,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         val json = jsonInternalSoknadGenerator.createJsonInternalSoknad(soknad.id)
 
-        with(json.soknad.data.okonomi.opplysninger.utbetaling) {
+        with(json.soknad!!.data.okonomi.opplysninger.utbetaling) {
             assertThat(this).hasSize(1)
             this.first()
                 .let {
@@ -311,7 +311,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         val json = jsonInternalSoknadGenerator.createJsonInternalSoknad(soknad.id)
 
-        with(json.soknad.data.okonomi.opplysninger.utbetaling) {
+        with(json.soknad!!.data.okonomi.opplysninger.utbetaling) {
             assertThat(this).hasSize(1)
             this.first()
                 .let {

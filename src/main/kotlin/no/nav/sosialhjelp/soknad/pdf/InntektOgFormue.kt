@@ -62,7 +62,7 @@ object InntektOgFormue {
                 )
             }
             val skatteetatenUtbetalinger = hentUtbetalinger(okonomi, "skatteetaten")
-            if (soknad.driftsinformasjon != null && soknad.driftsinformasjon.inntektFraSkatteetatenFeilet) {
+            if (soknad.driftsinformasjon?.inntektFraSkatteetatenFeilet == true) {
                 pdf.skrivTekst("Kunne ikke hente utbetalinger fra Skatteetaten")
                 pdf.addBlankLine()
             } else {
@@ -74,8 +74,9 @@ object InntektOgFormue {
             if (skatteetatenUtbetalinger.isNotEmpty()) {
                 pdf.skrivTekstBold(pdfUtils.getTekst("utbetalinger.skatt"))
                 for (skatt in skatteetatenUtbetalinger) {
-                    if (skatt.organisasjon != null && skatt.organisasjon.navn != null) {
-                        pdfUtils.skrivTekstMedGuard(pdf, skatt.organisasjon.navn, "utbetalinger.utbetaling.arbeidsgivernavn.label")
+                    val organisasjonNavn = skatt.organisasjon?.navn
+                    if (organisasjonNavn != null) {
+                        pdfUtils.skrivTekstMedGuard(pdf, organisasjonNavn, "utbetalinger.utbetaling.arbeidsgivernavn.label")
                     }
                     if (skatt.periodeFom != null) {
                         pdfUtils.skrivTekstMedGuard(
@@ -114,7 +115,7 @@ object InntektOgFormue {
         if (utvidetSoknad) {
             pdfUtils.skrivInfotekst(pdf, "navytelser.infotekst.tekst")
         }
-        if (soknad.driftsinformasjon != null && soknad.driftsinformasjon.utbetalingerFraNavFeilet) {
+        if (soknad.driftsinformasjon?.utbetalingerFraNavFeilet == true) {
             pdf.skrivTekst("Kunne ikke hente utbetalinger fra NAV")
             pdf.addBlankLine()
         } else {
@@ -156,10 +157,10 @@ object InntektOgFormue {
             val bostotteBekreftelser = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE)
             if (bostotteBekreftelser.isNotEmpty()) {
                 val bostotteBekreftelse = bostotteBekreftelser[0]
-                mottarBostotte = bostotteBekreftelse.verdi
+                mottarBostotte = bostotteBekreftelse.verdi == true
                 pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.sporsmal." + bostotteBekreftelse.verdi))
 
-                if (utvidetSoknad && !bostotteBekreftelse.verdi) {
+                if (utvidetSoknad && bostotteBekreftelse.verdi == false) {
                     pdfUtils.skrivInfotekst(pdf, "informasjon.husbanken.bostotte.v2")
                     urisOnPage["støtte fra Husbanken"] = pdfUtils.getTekst("informasjon.husbanken.bostotte.url") ?: ""
                 }
@@ -182,9 +183,9 @@ object InntektOgFormue {
             }
         }
 
-        val hentingFraHusbankenHarFeilet = soknad.driftsinformasjon != null && soknad.driftsinformasjon.stotteFraHusbankenFeilet
+        val hentingFraHusbankenHarFeilet = soknad.driftsinformasjon?.stotteFraHusbankenFeilet == true
         val bostotteSamtykke = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
-        val harBostotteSamtykke = if (bostotteSamtykke.isEmpty()) false else bostotteSamtykke[0].verdi
+        val harBostotteSamtykke = bostotteSamtykke.firstOrNull()?.verdi == true
         if (harBostotteSamtykke) {
             if (utvidetSoknad) {
                 pdfUtils.skrivInfotekst(pdf, "inntekt.bostotte.gi_samtykke.overskrift")
@@ -223,8 +224,9 @@ object InntektOgFormue {
         val husbankenUtbetalinger = hentUtbetalinger(okonomi, SoknadJsonTyper.UTBETALING_HUSBANKEN)
         husbankenUtbetalinger.forEach { husbanken ->
             if (husbanken.kilde == JsonKilde.SYSTEM) {
-                if (husbanken.mottaker != null) {
-                    pdfUtils.skrivTekstMedGuard(pdf, husbanken.mottaker.value(), "inntekt.bostotte.utbetaling.mottaker")
+                val mottaker = husbanken.mottaker
+                if (mottaker != null) {
+                    pdfUtils.skrivTekstMedGuard(pdf, mottaker.value, "inntekt.bostotte.utbetaling.mottaker")
                 }
                 pdfUtils.skrivTekstMedGuard(
                     pdf,
@@ -240,7 +242,7 @@ object InntektOgFormue {
         }
 
         var harBostotteSaker = false
-        val bostotte = okonomi.opplysninger.bostotte
+        val bostotte = okonomi.opplysninger?.bostotte
         if (bostotte != null && bostotte.saker != null) {
             bostotte.saker.forEach { bostotteSak ->
                 pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.sak"))
@@ -282,8 +284,8 @@ object InntektOgFormue {
             val sparingBekreftelser = hentBekreftelser(okonomi, "sparing")
             if (sparingBekreftelser.isNotEmpty()) {
                 val sparingBekreftelse = sparingBekreftelser[0]
-                if (sparingBekreftelse.verdi) {
-                    okonomi.oversikt.formue.forEach { formue ->
+                if (sparingBekreftelse.verdi == true) {
+                    okonomi.oversikt?.formue.orEmpty().forEach { formue ->
                         if (formue.type == "brukskonto") {
                             if (formue.belop != null) {
                                 pdfUtils.skrivTekstMedGuardOgKrOgIkkeUtfylt(
@@ -315,7 +317,7 @@ object InntektOgFormue {
         }
 
         // Student
-        if (soknad.data != null && soknad.data.utdanning != null && soknad.data.utdanning.erStudent != null && soknad.data.utdanning.erStudent) {
+        if (soknad.data?.utdanning?.erStudent == true) {
             pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.studielan.sporsmal"))
 
             val studielanOgStipendBekreftelser = hentBekreftelser(okonomi, "studielanOgStipend")
@@ -323,7 +325,7 @@ object InntektOgFormue {
                 val studielanOgStipendBekreftelse = studielanOgStipendBekreftelser[0]
                 pdf.skrivTekst(pdfUtils.getTekst("inntekt.studielan." + studielanOgStipendBekreftelse.verdi))
 
-                if (utvidetSoknad && !studielanOgStipendBekreftelse.verdi) {
+                if (utvidetSoknad && studielanOgStipendBekreftelse.verdi != true) {
                     pdf.skrivTekstBold(pdfUtils.getTekst("infotekst.oppsummering.tittel"))
                     pdf.skrivTekst(pdfUtils.getTekst("informasjon.student.studielan.tittel"))
                     pdf.skrivTekst(pdfUtils.getTekst("informasjon.student.studielan.1.v2"))
@@ -358,17 +360,18 @@ object InntektOgFormue {
             verdierAlternativer.add("fritidseiendom")
             verdierAlternativer.add("annet")
 
-            if (verdiBekreftelse.verdi) {
+            if (verdiBekreftelse.verdi == true) {
                 pdf.addBlankLine()
                 pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.eierandeler.true.type.sporsmal"))
-                okonomi.oversikt.formue.forEach { formue ->
+                okonomi.oversikt?.formue.orEmpty().forEach { formue ->
                     if (verdierAlternativer.contains(formue.type)) {
                         pdf.skrivTekst(formue.tittel)
                         if (formue.type == "annet") {
                             pdf.addBlankLine()
                             pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.eierandeler.true.type.annet.true.beskrivelse.label"))
-                            if (okonomi.opplysninger.beskrivelseAvAnnet != null && okonomi.opplysninger.beskrivelseAvAnnet.verdi != null) {
-                                pdf.skrivTekst(okonomi.opplysninger.beskrivelseAvAnnet.verdi)
+                            val beskrivelseAvAnnet = okonomi.opplysninger?.beskrivelseAvAnnet?.verdi
+                            if (beskrivelseAvAnnet != null) {
+                                pdf.skrivTekst(beskrivelseAvAnnet)
                             } else {
                                 pdfUtils.skrivIkkeUtfylt(pdf)
                             }
@@ -412,15 +415,16 @@ object InntektOgFormue {
             sparingAlternativer.add("verdipapirer")
             sparingAlternativer.add("belop")
 
-            if (sparingBekreftelse.verdi) {
-                okonomi.oversikt.formue.forEach { formue ->
+            if (sparingBekreftelse.verdi == true) {
+                okonomi.oversikt?.formue.orEmpty().forEach { formue ->
                     if (sparingAlternativer.contains(formue.type)) {
                         pdf.skrivTekst(formue.tittel)
                         if (formue.type == "belop") {
                             pdf.addBlankLine()
                             pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label"))
-                            if (okonomi.opplysninger.beskrivelseAvAnnet != null && okonomi.opplysninger.beskrivelseAvAnnet.sparing != null) {
-                                pdf.skrivTekst(okonomi.opplysninger.beskrivelseAvAnnet.sparing)
+                            val sparing = okonomi.opplysninger?.beskrivelseAvAnnet?.sparing
+                            if (sparing != null) {
+                                pdf.skrivTekst(sparing)
                             } else {
                                 pdfUtils.skrivIkkeUtfylt(pdf)
                             }
@@ -460,17 +464,18 @@ object InntektOgFormue {
             utbetalingAlternativer.add("forsikring")
             utbetalingAlternativer.add("annen")
 
-            if (utbetalingBekreftelse.verdi) {
+            if (utbetalingBekreftelse.verdi == true) {
                 pdf.addBlankLine()
                 pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.inntekter.true.type.sporsmal"))
-                okonomi.opplysninger.utbetaling.forEach { utbetaling ->
+                okonomi.opplysninger?.utbetaling.orEmpty().forEach { utbetaling ->
                     if (utbetalingAlternativer.contains(utbetaling.type)) {
                         pdf.skrivTekst(utbetaling.tittel)
                         if (utbetaling.type == "annen") {
                             pdf.addBlankLine()
                             pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.inntekter.true.type.annen.true.beskrivelse.label"))
-                            if (okonomi.opplysninger.beskrivelseAvAnnet != null && okonomi.opplysninger.beskrivelseAvAnnet.utbetaling != null) {
-                                pdf.skrivTekst(okonomi.opplysninger.beskrivelseAvAnnet.utbetaling)
+                            val utbetalingBeskrivelse = okonomi.opplysninger?.beskrivelseAvAnnet?.utbetaling
+                            if (utbetalingBeskrivelse != null) {
+                                pdf.skrivTekst(utbetalingBeskrivelse)
                             } else {
                                 pdfUtils.skrivIkkeUtfylt(pdf)
                             }

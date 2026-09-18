@@ -57,10 +57,10 @@ object StegUtils {
     }
 
     fun harSystemRegistrerteBarn(forsorgerplikt: JsonForsorgerplikt): Boolean {
-        val harForsorgerplikt = forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.verdi == java.lang.Boolean.TRUE
-        return harForsorgerplikt && forsorgerplikt.harForsorgerplikt.kilde == JsonKilde.SYSTEM && forsorgerplikt.ansvar != null &&
+        val harForsorgerplikt = forsorgerplikt.harForsorgerplikt
+        return harForsorgerplikt?.verdi == java.lang.Boolean.TRUE && harForsorgerplikt.kilde == JsonKilde.SYSTEM && forsorgerplikt.ansvar != null &&
             forsorgerplikt.ansvar
-                .any { it.barn.kilde == JsonKilde.SYSTEM }
+                .any { it.barn?.kilde == JsonKilde.SYSTEM }
     }
 
     fun createSvar(

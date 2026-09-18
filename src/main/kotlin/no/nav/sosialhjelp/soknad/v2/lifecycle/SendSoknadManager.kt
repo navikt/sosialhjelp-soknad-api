@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.lifecycle
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
@@ -143,22 +142,14 @@ class SendSoknadManager(
             .also { JsonSosialhjelpValidator.ensureValidSoknad(it) }
 
     private fun JsonInternalSoknad.toVedleggJson(): String {
-        /* I en kort søknad må man ha et vedleggobjekt for å kunne vise fram opplastingsboksen på frontend,
-           men det er ikke riktig at de skal ha status VedleggKreves og dermed vises som vedleggskrav på innsyn.
-           Fjerner derfor alle vedlegg som ikke har filer her.
-         */
-        if (soknad.data.soknadstype == Soknadstype.KORT) {
-            logger.info("Søknadstype er KORT, fjerner alle vedlegg som ikke har filer")
-            vedlegg.vedlegg = vedlegg.vedlegg.filter { it.filer.isNotEmpty() }
-        }
-
+        val vedlegg = checkNotNull(vedlegg) { "Vedlegg mangler" }
         return objectMapper
             .writeValueAsString(vedlegg)
             .also { JsonSosialhjelpValidator.ensureValidVedlegg(it) }
     }
 
     private fun JsonInternalSoknad.createTilleggsinformasjonJson(): String {
-        return objectMapper.writeValueAsString(JsonTilleggsinformasjon(soknad.mottaker.enhetsnummer))
+        return objectMapper.writeValueAsString(JsonTilleggsinformasjon(requireNotNull(soknad).mottaker.enhetsnummer))
     }
 
     private fun JsonInternalSoknad.getFilOpplastingList(): List<FilOpplasting> {

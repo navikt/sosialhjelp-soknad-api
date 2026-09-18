@@ -58,7 +58,7 @@ class UploadClient(
                     }
                 }
                 .block() ?: error("Fikk tom body fra upload")
-        return JsonVedleggSpesifikasjon().withVedlegg(
+        return JsonVedleggSpesifikasjon(
             spec.vedlegg.mapNotNull { vedlegg ->
                 if (vedlegg.kategori == null) return@mapNotNull null
                 val opplysningType = StringToOpplysningTypeConverter.convert(vedlegg.kategori)
@@ -66,19 +66,15 @@ class UploadClient(
                     VedleggType[opplysningType].let {
                         it.getTypeString() to it.getTilleggsinfoString()
                     }
-                JsonVedlegg()
-                    .withType(type)
-                    .withTilleggsinfo(tilleggsinfo)
-                    .withStatus(Vedleggstatus.LastetOpp.toString())
-                    .withHendelseType(if (opplysningType.isUtgiftTypeAnnet()) JsonVedlegg.HendelseType.BRUKER else JsonVedlegg.HendelseType.SOKNAD)
-                    .withHendelseReferanse(if (opplysningType.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
-                    .withFiler(
-                        vedlegg.filer.map { fil ->
-                            JsonFiler()
-                                .withFilnavn(fil.filnavn)
-                                .withSha512(fil.sha512)
-                        },
-                    )
+                JsonVedlegg(
+                    type,
+                    tilleggsinfo,
+                    null,
+                    Vedleggstatus.LastetOpp.toString(),
+                    vedlegg.filer.map { fil -> JsonFiler(fil.filnavn, fil.sha512) },
+                    if (opplysningType.isUtgiftTypeAnnet()) JsonVedlegg.HendelseType.BRUKER else JsonVedlegg.HendelseType.SOKNAD,
+                    if (opplysningType.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString(),
+                )
             },
         )
     }

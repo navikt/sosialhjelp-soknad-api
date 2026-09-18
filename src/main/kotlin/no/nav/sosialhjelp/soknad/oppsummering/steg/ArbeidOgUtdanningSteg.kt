@@ -18,8 +18,9 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 
 object ArbeidOgUtdanningSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
-        val arbeid = jsonInternalSoknad.soknad.data.arbeid
-        val utdanning: JsonUtdanning = jsonInternalSoknad.soknad.data.utdanning
+        val data = requireNotNull(jsonInternalSoknad.soknad).data
+        val arbeid = requireNotNull(data.arbeid)
+        val utdanning: JsonUtdanning = requireNotNull(data.utdanning)
         return Steg(
             stegNr = 3,
             tittel = "arbeidbolk.tittel",
@@ -39,8 +40,8 @@ object ArbeidOgUtdanningSteg {
 
     private fun arbeidsforholdSporsmal(arbeid: JsonArbeid): List<Sporsmal> {
         val harArbeidsforhold = arbeid.forhold != null && arbeid.forhold.isNotEmpty()
-        val harKommentarTilArbeidsforhold =
-            arbeid.kommentarTilArbeidsforhold != null && arbeid.kommentarTilArbeidsforhold.verdi != null
+        val kommentarTilArbeidsforhold = arbeid.kommentarTilArbeidsforhold
+        val harKommentarTilArbeidsforhold = kommentarTilArbeidsforhold?.verdi != null
         val sporsmal = mutableListOf<Sporsmal>()
         sporsmal.add(
             Sporsmal(
@@ -54,7 +55,7 @@ object ArbeidOgUtdanningSteg {
                 Sporsmal(
                     tittel = "opplysninger.arbeidsituasjon.kommentarer.label",
                     erUtfylt = true,
-                    felt = kommentarFelter(arbeid.kommentarTilArbeidsforhold),
+                    felt = kommentarFelter(requireNotNull(kommentarTilArbeidsforhold)),
                 ),
             )
         }

@@ -9,17 +9,21 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 
 class FormueToJsonMapper(
     private val formuer: Set<Formue>,
-    jsonOkonomi: JsonOkonomi,
 ) : OkonomiElementsToJsonMapper {
-    private val oversikt = jsonOkonomi.oversikt
-    private val opplysninger = jsonOkonomi.opplysninger
-
-    override fun doMapping() {
-        oversikt.formue.addAll(
-            formuer.flatMap { it.toJsonFormuer() },
+    override fun doMapping(jsonOkonomi: JsonOkonomi): JsonOkonomi {
+        val beskrivelser = checkNotNull(jsonOkonomi.opplysninger.beskrivelseAvAnnet) { "Beskrivelse av annet mangler" }
+        val oversikt = checkNotNull(jsonOkonomi.oversikt) { "Økonomioversikt mangler" }
+        return jsonOkonomi.copy(
+            oversikt = oversikt.copy(formue = oversikt.formue + formuer.flatMap { it.toJsonFormuer() }),
+            opplysninger =
+                jsonOkonomi.opplysninger.copy(
+                    beskrivelseAvAnnet =
+                        beskrivelser.copy(
+                            sparing = formuer.find { it.type == FormueType.FORMUE_ANNET }?.beskrivelse ?: beskrivelser.sparing,
+                            verdi = formuer.find { it.type == FormueType.VERDI_ANNET }?.beskrivelse ?: beskrivelser.verdi,
+                        ),
+                ),
         )
-        formuer.find { it.type == FormueType.FORMUE_ANNET }?.let { addBeskrivelseSparing(it.beskrivelse) }
-        formuer.find { it.type == FormueType.VERDI_ANNET }?.let { addBeskrivelseVerdi(it.beskrivelse) }
     }
 
     private fun Formue.toJsonFormuer(): List<JsonOkonomioversiktFormue> {
@@ -31,25 +35,16 @@ class FormueToJsonMapper(
             }
         }
     }
-
-    private fun addBeskrivelseSparing(beskrivelse: String?) {
-        val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet
-        beskrivelse?.let { jsonBeskrivelser.sparing = it }
-    }
-
-    private fun addBeskrivelseVerdi(beskrivelse: String?) {
-        val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet
-        beskrivelse?.let { jsonBeskrivelser.verdi = it }
-    }
 }
 
 private fun Formue.toJsonFormue(belop: Int? = null) =
-    JsonOkonomioversiktFormue()
-        .withKilde(JsonKilde.BRUKER)
-        .withType(type.toSoknadJsonTypeString())
-        .withTittel(toTittel())
-        .withBelop(belop)
-        .withOverstyrtAvBruker(false)
+    JsonOkonomioversiktFormue(
+        kilde = JsonKilde.BRUKER,
+        type = type.toSoknadJsonTypeString(),
+        tittel = toTittel(),
+        overstyrtAvBruker = false,
+        belop = belop,
+    )
 
 private fun Formue.toTittel(): String {
     return when (type) {

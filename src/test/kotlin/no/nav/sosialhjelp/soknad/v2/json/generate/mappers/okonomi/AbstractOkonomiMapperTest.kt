@@ -13,19 +13,9 @@ abstract class AbstractOkonomiMapperTest {
     @BeforeEach
     fun setup() {
         jsonOkonomi =
-            JsonOkonomi()
-                .withOversikt(JsonOkonomioversikt())
-                .withOpplysninger(
-                    JsonOkonomiopplysninger()
-                        .withBeskrivelseAvAnnet(
-                            JsonOkonomibeskrivelserAvAnnet()
-                                .withKilde(JsonKildeBruker.BRUKER)
-                                .withSparing("")
-                                .withVerdi("")
-                                .withUtbetaling("")
-                                .withBoutgifter("")
-                                .withBarneutgifter(""),
-                        ),
-                )
+            JsonOkonomi(
+                JsonOkonomiopplysninger(emptyList(), emptyList(), JsonOkonomibeskrivelserAvAnnet(JsonKildeBruker.BRUKER, "", "", "", "", ""), emptyList(), null),
+                JsonOkonomioversikt(emptyList(), emptyList(), emptyList()),
+            )
     }
 }

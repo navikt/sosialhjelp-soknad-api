@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
@@ -9,6 +8,8 @@ import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuper
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.LivssituasjonToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.SituasjonsendringToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettUtdanning
@@ -23,19 +24,35 @@ class LivssituasjonMapperTest {
 
     @BeforeEach
     fun setup() {
-        json = createJsonInternalSoknadWithInitializedSuperObjects().apply { soknad.withData(JsonData()) }
+        json = createJsonInternalSoknadWithInitializedSuperObjects()
+    }
+
+    @Test
+    fun `Manglende bosituasjon skal gi bosituasjon med kun kilde bruker`() {
+        json = LivssituasjonToJsonMapper.doMapping(Livssituasjon(UUID.randomUUID()), json)
+
+        val bosituasjon = requireNotNull(json.soknad?.data?.bosituasjon)
+        assertThat(bosituasjon.kilde).isEqualTo(JsonKildeBruker.BRUKER)
+        assertThat(bosituasjon.botype).isNull()
+        assertThat(bosituasjon.antallPersoner).isNull()
+    }
+
+    @Test
+    fun `Bosituasjon uten verdier skal ikke mappes`() {
+        json = LivssituasjonToJsonMapper.doMapping(Livssituasjon(UUID.randomUUID(), bosituasjon = Bosituasjon()), json)
+
+        assertThat(json.soknad?.data?.bosituasjon).isNull()
     }
 
     @Test
     fun `Arbeid skal mappes til Json`() {
-        val arbeid =
-            opprettLivssituasjon(UUID.randomUUID())
-                .also { LivssituasjonToJsonMapper.doMapping(it, json) }
-                .arbeid
+        val livssituasjon = opprettLivssituasjon(UUID.randomUUID())
+        json = LivssituasjonToJsonMapper.doMapping(livssituasjon, json)
+        val arbeid = livssituasjon.arbeid
 
-        with(json.soknad.data) {
-            assertThat(this.arbeid.kommentarTilArbeidsforhold.verdi).isEqualTo(arbeid.kommentar)
-            this.arbeid.forhold.forEachIndexed { index, json ->
+        with(requireNotNull(json.soknad).data) {
+            assertThat(requireNotNull(this.arbeid?.kommentarTilArbeidsforhold).verdi).isEqualTo(arbeid.kommentar)
+            requireNotNull(this.arbeid).forhold.forEachIndexed { index, json ->
                 json.assertArbeidsforhold(arbeid.arbeidsforhold[index])
             }
         }
@@ -43,50 +60,46 @@ class LivssituasjonMapperTest {
 
     @Test
     fun `Utdanning skal mappes til Json`() {
-        val utdanning =
-            opprettLivssituasjon(UUID.randomUUID())
-                .also { LivssituasjonToJsonMapper.doMapping(it, json) }
-                .utdanning
+        val livssituasjon = opprettLivssituasjon(UUID.randomUUID())
+        json = LivssituasjonToJsonMapper.doMapping(livssituasjon, json)
+        val domainUtdanning = requireNotNull(livssituasjon.utdanning)
 
-        with(json.soknad.data) {
-            assertThat(this.utdanning.erStudent).isEqualTo(utdanning!!.erStudent)
-            assertThat(this.utdanning.studentgrad.name).isEqualTo(utdanning.studentgrad?.name)
+        with(requireNotNull(json.soknad).data) {
+            val jsonUtdanning = requireNotNull(this.utdanning)
+            assertThat(jsonUtdanning.erStudent).isEqualTo(domainUtdanning.erStudent)
+            assertThat(jsonUtdanning.studentgrad?.name).isEqualTo(domainUtdanning.studentgrad?.name)
         }
     }
 
     @Test
     fun `erStudent satt til false skal gi studentgrad = null`() {
-        val utdanning =
-            opprettLivssituasjon(
-                soknadId = UUID.randomUUID(),
-                utdanning = opprettUtdanning(erStudent = false),
-            ).also { LivssituasjonToJsonMapper.doMapping(it, json) }
-                .utdanning
+        val utdanning = opprettUtdanning(erStudent = false)
+        json = LivssituasjonToJsonMapper.doMapping(opprettLivssituasjon(UUID.randomUUID(), utdanning = utdanning), json)
 
-        with(json.soknad.data) {
-            assertThat(this.utdanning.erStudent).isEqualTo(utdanning!!.erStudent)
-            assertThat(this.utdanning.studentgrad).isNull()
+        with(requireNotNull(json.soknad).data) {
+            assertThat(requireNotNull(this.utdanning).erStudent).isEqualTo(utdanning.erStudent)
+            assertThat(requireNotNull(this.utdanning).studentgrad).isNull()
         }
     }
 
     @Test
     fun `Bosituasjon skal mappes til Json`() {
-        val bosituasjon =
-            opprettLivssituasjon(UUID.randomUUID())
-                .also { LivssituasjonToJsonMapper.doMapping(it, json) }
-                .bosituasjon
+        val livssituasjon = opprettLivssituasjon(UUID.randomUUID())
+        json = LivssituasjonToJsonMapper.doMapping(livssituasjon, json)
+        val domainBosituasjon = requireNotNull(livssituasjon.bosituasjon)
 
-        with(json.soknad.data) {
-            assertThat(this.bosituasjon.botype.name).isEqualTo(bosituasjon!!.botype?.name)
-            assertThat(this.bosituasjon.antallPersoner).isEqualTo(bosituasjon.antallHusstand)
+        with(requireNotNull(json.soknad).data) {
+            val jsonBosituasjon = requireNotNull(this.bosituasjon)
+            assertThat(jsonBosituasjon.botype?.name).isEqualTo(domainBosituasjon.botype?.name)
+            assertThat(jsonBosituasjon.antallPersoner).isEqualTo(domainBosituasjon.antallHusstand)
         }
     }
 
     @Test
     fun `Situasjonsendring skal mappes til Json`() {
         val situasjonsendring = Situasjonsendring(UUID.randomUUID(), "Noe er endret", true)
-        SituasjonsendringToJsonMapper.doMapping(situasjonsendring, json)
-        with(json.soknad.data.situasjonendring) {
+        json = SituasjonsendringToJsonMapper.doMapping(situasjonsendring, json)
+        with(requireNotNull(json.soknad?.data?.situasjonendring)) {
             assertThat(harNoeEndretSeg).isTrue()
             assertThat(hvaHarEndretSeg).isEqualTo("Noe er endret")
             assertThat(kilde).isEqualTo(JsonKildeBruker.BRUKER)

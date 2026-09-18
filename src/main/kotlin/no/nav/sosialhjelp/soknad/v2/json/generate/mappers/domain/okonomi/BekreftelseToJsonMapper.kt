@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
@@ -11,39 +10,41 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 
 class BekreftelseToJsonMapper(
     private val bekreftelser: Set<Bekreftelse>,
-    jsonOkonomi: JsonOkonomi,
 ) : OkonomiElementsToJsonMapper {
-    private val opplysninger = jsonOkonomi.opplysninger
-
-    override fun doMapping() {
-        opplysninger.bekreftelse.addAll(bekreftelser.map { it.toJsonBekreftelse() })
-        addBostotteSamtykkeFalseIfBostotteIsFalse(opplysninger)
-    }
+    override fun doMapping(jsonOkonomi: JsonOkonomi): JsonOkonomi =
+        jsonOkonomi.copy(
+            opplysninger =
+                jsonOkonomi.opplysninger.copy(
+                    bekreftelse = jsonOkonomi.opplysninger.bekreftelse + bekreftelser.map { it.toJsonBekreftelse() } + bostotteSamtykke(),
+                ),
+        )
 
     // "Gammel modell" legger til samtykke uavhengig av om eksisterende bostotte er true eller false
-    private fun addBostotteSamtykkeFalseIfBostotteIsFalse(opplysninger: JsonOkonomiopplysninger) {
+    private fun bostotteSamtykke(): List<JsonOkonomibekreftelse> =
         bekreftelser.find { it.type == BekreftelseType.BOSTOTTE }
             ?.takeIf { !it.verdi }
-            ?.also { bostotte ->
-                opplysninger.bekreftelse.add(
-                    JsonOkonomibekreftelse()
-                        .withKilde(JsonKilde.BRUKER)
-                        .withType(BekreftelseType.BOSTOTTE_SAMTYKKE.toSoknadJsonTypeString())
-                        .withTittel(BekreftelseType.BOSTOTTE_SAMTYKKE.toTittel())
-                        .withBekreftelsesDato(TimestampUtil.convertToOffsettDateTimeUTCString(bostotte.tidspunkt))
-                        .withVerdi(false),
+            ?.let { bostotte ->
+                listOf(
+                    JsonOkonomibekreftelse(
+                        kilde = JsonKilde.BRUKER,
+                        type = BekreftelseType.BOSTOTTE_SAMTYKKE.toSoknadJsonTypeString(),
+                        tittel = BekreftelseType.BOSTOTTE_SAMTYKKE.toTittel(),
+                        verdi = false,
+                        bekreftelsesDato = TimestampUtil.convertToOffsettDateTimeUTCString(bostotte.tidspunkt),
+                    ),
                 )
             }
-    }
+            .orEmpty()
 }
 
 private fun Bekreftelse.toJsonBekreftelse(): JsonOkonomibekreftelse {
-    return JsonOkonomibekreftelse()
-        .withKilde(JsonKilde.BRUKER)
-        .withType(type.toSoknadJsonTypeString())
-        .withVerdi(verdi)
-        .withTittel(type.toTittel())
-        .withBekreftelsesDato(TimestampUtil.convertToOffsettDateTimeUTCString(tidspunkt))
+    return JsonOkonomibekreftelse(
+        kilde = JsonKilde.BRUKER,
+        type = type.toSoknadJsonTypeString(),
+        tittel = type.toTittel(),
+        verdi = verdi,
+        bekreftelsesDato = TimestampUtil.convertToOffsettDateTimeUTCString(tidspunkt),
+    )
 }
 
 internal fun BekreftelseType.toTittel(): String {
