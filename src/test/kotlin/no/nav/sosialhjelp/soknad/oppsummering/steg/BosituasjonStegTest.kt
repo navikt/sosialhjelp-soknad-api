@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
@@ -86,17 +84,8 @@ internal class BosituasjonStegTest {
         botype: Botype?,
         antallPersoner: Int?,
     ): JsonInternalSoknad {
-        return JsonInternalSoknad()
-            .withSoknad(
-                JsonSoknad()
-                    .withData(
-                        JsonData()
-                            .withBosituasjon(
-                                JsonBosituasjon()
-                                    .withBotype(botype)
-                                    .withAntallPersoner(antallPersoner),
-                            ),
-                    ),
-            )
+        val base = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad()
+        val soknad = requireNotNull(base.soknad)
+        return base.copy(soknad = soknad.copy(data = soknad.data.copy(bosituasjon = JsonBosituasjon(botype = botype, antallPersoner = antallPersoner))))
     }
 }

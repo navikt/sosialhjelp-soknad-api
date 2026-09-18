@@ -115,7 +115,7 @@ class KortSoknadUseCaseHandler(
                 ?.asSequence()
                 ?.filterIsInstance<JsonUtbetaling>()
                 ?.filter { it.status == JsonUtbetaling.Status.UTBETALT && it.utbetalingsdato != null }
-                ?.map { it.utbetalingsdato.toLocalDateTime() }
+                ?.map { requireNotNull(it.utbetalingsdato).toLocalDateTime() }
                 ?.firstOrNull { it >= fourMonthsAgo }
 
         if (utbetaltSiste120Dager != null) {
@@ -128,7 +128,7 @@ class KortSoknadUseCaseHandler(
                 ?.asSequence()
                 ?.filterIsInstance<JsonUtbetaling>()
                 ?.filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
-                ?.map { it.forfallsdato.toLocalDateTime() }
+                ?.map { requireNotNull(it.forfallsdato).toLocalDateTime() }
                 ?.filter { it >= LocalDateTime.now() }
                 ?.firstOrNull { it < in14Days }
 

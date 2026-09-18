@@ -147,18 +147,23 @@ class SendSoknadManager(
            men det er ikke riktig at de skal ha status VedleggKreves og dermed vises som vedleggskrav på innsyn.
            Fjerner derfor alle vedlegg som ikke har filer her.
          */
-        if (soknad.data.soknadstype == Soknadstype.KORT) {
-            logger.info("Søknadstype er KORT, fjerner alle vedlegg som ikke har filer")
-            vedlegg.vedlegg = vedlegg.vedlegg.filter { it.filer.isNotEmpty() }
-        }
+        val soknad = requireNotNull(soknad)
+        val vedlegg = requireNotNull(vedlegg)
+        val vedleggForSending =
+            if (soknad.data.soknadstype == Soknadstype.KORT) {
+                logger.info("Søknadstype er KORT, fjerner alle vedlegg som ikke har filer")
+                vedlegg.vedlegg.filter { it.filer.isNotEmpty() }
+            } else {
+                vedlegg.vedlegg
+            }
 
         return objectMapper
-            .writeValueAsString(vedlegg)
+            .writeValueAsString(no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon(vedleggForSending))
             .also { JsonSosialhjelpValidator.ensureValidVedlegg(it) }
     }
 
     private fun JsonInternalSoknad.createTilleggsinformasjonJson(): String {
-        return objectMapper.writeValueAsString(JsonTilleggsinformasjon(soknad.mottaker.enhetsnummer))
+        return objectMapper.writeValueAsString(JsonTilleggsinformasjon(requireNotNull(soknad).mottaker.enhetsnummer))
     }
 
     private fun JsonInternalSoknad.getFilOpplastingList(): List<FilOpplasting> {

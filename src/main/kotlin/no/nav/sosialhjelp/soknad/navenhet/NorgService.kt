@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.navenhet
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
+import no.nav.sosialhjelp.soknad.app.config.cacheValueType
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
@@ -37,7 +38,7 @@ value class GeografiskTilknytning(val value: String) {
 }
 
 @Configuration
-class NorgCacheConfig : SoknadApiCacheConfig(CACHE_NAME, ETT_DOGN) {
+class NorgCacheConfig : SoknadApiCacheConfig(CACHE_NAME, cacheValueType<NavEnhet>(), ETT_DOGN) {
     companion object {
         const val CACHE_NAME = "norg"
         private val ETT_DOGN = Duration.ofDays(1)

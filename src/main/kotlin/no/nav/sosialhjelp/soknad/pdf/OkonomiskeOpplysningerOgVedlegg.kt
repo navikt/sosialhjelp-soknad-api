@@ -58,7 +58,7 @@ object OkonomiskeOpplysningerOgVedlegg {
         pdf.skrivTekstBold(pdfUtils.getTekst("inntektbolk.tittel"))
 
         // Kan ikke være null i filformatet
-        for (inntekt in okonomi.oversikt.inntekt) {
+        for (inntekt in okonomi.oversikt?.inntekt.orEmpty()) {
             pdf.skrivTekst(inntekt.tittel)
             if (inntekt.type == "studielanOgStipend") {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
@@ -106,7 +106,7 @@ object OkonomiskeOpplysningerOgVedlegg {
         sparingTyper.add("livsforsikringssparedel")
         sparingTyper.add("sparekonto")
         sparingTyper.add("belop")
-        for (formue in okonomi.oversikt.formue) {
+        for (formue in okonomi.oversikt?.formue.orEmpty()) {
             if (sparingTyper.contains(formue.type)) {
                 pdf.skrivTekst(formue.tittel)
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
@@ -119,7 +119,7 @@ object OkonomiskeOpplysningerOgVedlegg {
         }
 
         // Utbetaling
-        for (utbetaling in okonomi.opplysninger.utbetaling) {
+        for (utbetaling in okonomi.opplysninger?.utbetaling.orEmpty()) {
             if (utbetaling.type != "skatteetaten" && utbetaling.type != "navytelse" && utbetaling.type != "husbanken") {
                 pdf.skrivTekst(utbetaling.tittel)
                 if (utbetaling.type == "sluttoppgjoer") {
@@ -141,7 +141,7 @@ object OkonomiskeOpplysningerOgVedlegg {
 
         // Utgift
         pdf.skrivTekstBold(pdfUtils.getTekst("utgifterbolk.tittel"))
-        for (utgift in okonomi.opplysninger.utgift) {
+        for (utgift in okonomi.opplysninger?.utgift.orEmpty()) {
             pdf.skrivTekst(utgift.tittel)
             if (utgifterBarnAlternativer.contains(utgift.type)) {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
@@ -166,7 +166,7 @@ object OkonomiskeOpplysningerOgVedlegg {
             }
             pdf.addBlankLine()
         }
-        for (utgift in okonomi.oversikt.utgift) {
+        for (utgift in okonomi.oversikt?.utgift.orEmpty()) {
             pdf.skrivTekst(utgift.tittel)
             if (utgifterBarnAlternativer.contains(utgift.type)) {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(

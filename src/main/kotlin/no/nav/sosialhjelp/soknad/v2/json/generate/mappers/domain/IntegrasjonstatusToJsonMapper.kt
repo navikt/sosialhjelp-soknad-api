@@ -16,10 +16,10 @@ class IntegrasjonstatusToJsonMapper(
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) {
+    ): JsonInternalSoknad {
         val integrasjonstatus = integrasjonstatusRepository.findByIdOrNull(soknadId) ?: Integrasjonstatus(soknadId)
 
-        doMapping(
+        return doMapping(
             integrasjonstatus = integrasjonstatus,
             json = jsonInternalSoknad,
         )
@@ -29,14 +29,12 @@ class IntegrasjonstatusToJsonMapper(
         fun doMapping(
             integrasjonstatus: Integrasjonstatus,
             json: JsonInternalSoknad,
-        ) {
-            json.soknad.driftsinformasjon = integrasjonstatus.toJsonDriftsinformasjon()
+        ): JsonInternalSoknad {
+            val soknad = requireNotNull(json.soknad)
+            return json.copy(soknad = soknad.copy(driftsinformasjon = integrasjonstatus.toJsonDriftsinformasjon()))
         }
 
         private fun Integrasjonstatus.toJsonDriftsinformasjon(): JsonDriftsinformasjon =
-            JsonDriftsinformasjon()
-                .withUtbetalingerFraNavFeilet(feilUtbetalingerNav)
-                .withInntektFraSkatteetatenFeilet(feilInntektSkatteetaten)
-                .withStotteFraHusbankenFeilet(feilStotteHusbanken)
+            JsonDriftsinformasjon(feilInntektSkatteetaten, feilUtbetalingerNav, feilStotteHusbanken)
     }
 }

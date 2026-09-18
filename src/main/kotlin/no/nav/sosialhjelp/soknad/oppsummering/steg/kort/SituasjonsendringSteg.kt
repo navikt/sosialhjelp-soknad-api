@@ -14,15 +14,17 @@ object SituasjonsendringSteg {
     private val saldoBrukskonto = SaldoBrukskonto()
 
     fun get(json: JsonInternalSoknad): Steg {
+        val soknad = requireNotNull(json.soknad)
+        val okonomi = requireNotNull(soknad.data.okonomi)
         return Steg(
             stegNr = 4,
             tittel = "situasjon.kort.tittel",
             avsnitt =
                 listOf(
-                    skatt.getAvsnitt(json.soknad.data.okonomi, json.soknad.driftsinformasjon),
-                    bostotteHusbanken.getAvsnitt(json.soknad.data.okonomi.opplysninger, json.soknad.driftsinformasjon, autoConfirmation = true),
-                    navUtbetalinger.getAvsnitt(json.soknad.data.okonomi.opplysninger, json.soknad.driftsinformasjon),
-                    saldoBrukskonto.getAvsnitt(json.soknad.data.okonomi.oversikt),
+                    skatt.getAvsnitt(okonomi, soknad.driftsinformasjon),
+                    bostotteHusbanken.getAvsnitt(okonomi.opplysninger, soknad.driftsinformasjon, autoConfirmation = true),
+                    navUtbetalinger.getAvsnitt(okonomi.opplysninger, soknad.driftsinformasjon),
+                    saldoBrukskonto.getAvsnitt(requireNotNull(okonomi.oversikt)),
                 ),
         )
     }

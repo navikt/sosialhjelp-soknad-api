@@ -27,7 +27,7 @@ object UtgifterOgGjeld {
                 val boutgifterBekreftelse = boutgifterBekreftelser[0]
 
                 pdf.skrivTekst(pdfUtils.getTekst("utgifter.boutgift." + boutgifterBekreftelse.verdi))
-                if (boutgifterBekreftelse.verdi) {
+                if (boutgifterBekreftelse.verdi == true) {
                     pdf.addBlankLine()
                     pdf.skrivTekstBold(pdfUtils.getTekst("utgifter.boutgift.true.type.sporsmal"))
 
@@ -39,12 +39,12 @@ object UtgifterOgGjeld {
                     boutgiftAlternativer.add("boliglanAvdrag") // boliglanRenter er ikke tatt med her, da det kun er ett valg for disse i frontend
                     boutgiftAlternativer.add("annenBoutgift")
 
-                    for (opplysningUtgift in okonomi.opplysninger.utgift) {
+                    for (opplysningUtgift in okonomi.opplysninger?.utgift.orEmpty()) {
                         if (boutgiftAlternativer.contains(opplysningUtgift.type)) {
                             pdf.skrivTekst(pdfUtils.getTekst("utgifter.boutgift.true.type." + opplysningUtgift.type))
                         }
                     }
-                    for (oversiktUtgift in okonomi.oversikt.utgift) {
+                    for (oversiktUtgift in okonomi.oversikt?.utgift.orEmpty()) {
                         if (boutgiftAlternativer.contains(oversiktUtgift.type)) {
                             pdf.skrivTekst(pdfUtils.getTekst("utgifter.boutgift.true.type." + oversiktUtgift.type))
                         }
@@ -83,7 +83,7 @@ object UtgifterOgGjeld {
 
                     pdf.skrivTekst(pdfUtils.getTekst("utgifter.barn." + barneutgiftBekreftelse.verdi))
 
-                    if (barneutgiftBekreftelse.verdi) {
+                    if (barneutgiftBekreftelse.verdi == true) {
                         pdf.addBlankLine()
                         pdf.skrivTekstBold(pdfUtils.getTekst("utgifter.barn.true.utgifter.sporsmal"))
 
@@ -94,12 +94,12 @@ object UtgifterOgGjeld {
                         utgifterBarnAlternativer.add("barnTannregulering")
                         utgifterBarnAlternativer.add("annenBarneutgift")
 
-                        for (opplysningUtgift in okonomi.opplysninger.utgift) {
+                        for (opplysningUtgift in okonomi.opplysninger?.utgift.orEmpty()) {
                             if (utgifterBarnAlternativer.contains(opplysningUtgift.type)) {
                                 pdf.skrivTekst(pdfUtils.getTekst("utgifter.barn.true.utgifter." + opplysningUtgift.type))
                             }
                         }
-                        for (oversiktUtgift in okonomi.oversikt.utgift) {
+                        for (oversiktUtgift in okonomi.oversikt?.utgift.orEmpty()) {
                             if (utgifterBarnAlternativer.contains(oversiktUtgift.type)) {
                                 pdf.skrivTekst(pdfUtils.getTekst("utgifter.barn.true.utgifter." + oversiktUtgift.type))
                             }

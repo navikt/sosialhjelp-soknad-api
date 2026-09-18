@@ -2,10 +2,12 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
@@ -32,11 +34,11 @@ class SoknadToJsonMapper(
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) {
+    ): JsonInternalSoknad {
         val metadata = soknadMetadataRepository.findByIdOrNull(soknadId) ?: error("Metadata $soknadId finnes ikke")
 
         soknadRepository.findByIdOrNull(soknadId)
-            ?.let { soknad -> doMapping(soknad, metadata, jsonInternalSoknad) }
+            ?.let { soknad -> return doMapping(soknad, metadata, jsonInternalSoknad) }
             ?: throw IkkeFunnetException("Soknad finnes ikke")
     }
 
@@ -45,35 +47,40 @@ class SoknadToJsonMapper(
             domainSoknad: Soknad,
             metadata: SoknadMetadata,
             json: JsonInternalSoknad,
-        ) {
-            with(json) {
-                initializeObjects()
-
-                soknad.data.personalia.personIdentifikator = domainSoknad.toJsonPersonIdentifikator()
-                soknad.innsendingstidspunkt =
-                    metadata.tidspunkt.sendtInn?.let {
-                        TimestampUtil.convertToOffsettDateTimeUTCString(it)
-                    }
-                soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
-                soknad.data.soknadstype = metadata.soknadType.toJsonSoknadType()
-            }
+        ): JsonInternalSoknad {
+            val personalia =
+                JsonPersonalia(
+                    personIdentifikator = domainSoknad.toJsonPersonIdentifikator(),
+                    navn = no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn(JsonSokernavn.Kilde.SYSTEM, "", "", ""),
+                    kontonummer = no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM),
+                )
+            val data =
+                JsonData(
+                    personalia = personalia,
+                    begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse(),
+                    okonomi =
+                        no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi(
+                            no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger(emptyList(), emptyList(), no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet(JsonKildeBruker.BRUKER, "", "", "", "", ""), emptyList(), null),
+                            no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt(emptyList(), emptyList(), emptyList()),
+                        ),
+                )
+            return json.copy(
+                soknad =
+                    JsonSoknad(
+                        version = "1.20260917.61",
+                        data = data.copy(soknadstype = metadata.soknadType.toJsonSoknadType()),
+                        mottaker = no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker(),
+                        driftsinformasjon = no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon(false),
+                        kompatibilitet = emptyList(),
+                        innsendingstidspunkt = metadata.tidspunkt.sendtInn?.let(TimestampUtil::convertToOffsettDateTimeUTCString),
+                    ),
+            )
         }
 
-        private fun JsonInternalSoknad.initializeObjects() {
-            soknad.data ?: soknad.withData(JsonData())
-            soknad.data.personalia ?: soknad.data.withPersonalia(JsonPersonalia())
-
-            // required i json-modellen (validering)
-            soknad.data.begrunnelse ?: soknad.data.withBegrunnelse(JsonBegrunnelse())
-        }
-
-        private fun Soknad.toJsonPersonIdentifikator(): JsonPersonIdentifikator = JsonPersonIdentifikator().withKilde(JsonPersonIdentifikator.Kilde.SYSTEM).withVerdi(eierPersonId)
+        private fun Soknad.toJsonPersonIdentifikator() = JsonPersonIdentifikator(JsonPersonIdentifikator.Kilde.SYSTEM, eierPersonId)
 
         private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse =
-            JsonBegrunnelse()
-                .withHvaSokesOm(handleKategorier())
-                .withHvorforSoke(hvorforSoke)
-                .withKilde(JsonKildeBruker.BRUKER)
+            JsonBegrunnelse(JsonKildeBruker.BRUKER, handleKategorier(), hvorforSoke)
     }
 }
 

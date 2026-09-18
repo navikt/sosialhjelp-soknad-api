@@ -93,6 +93,7 @@ data class SoknadSendtInfo(
 )
 
 private fun JsonInternalSoknad.checkDuplicateUtbetalinger() {
+    val soknad = requireNotNull(soknad)
     val duplicates =
         soknad.data.okonomi.opplysninger.utbetaling
             .groupBy { listOf(it.tittel, it.utbetalingsdato, it.netto, it.brutto) }

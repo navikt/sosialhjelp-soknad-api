@@ -14,8 +14,8 @@ internal class NavUtbetalingerTest {
 
     @Test
     fun hentingFeilet() {
-        val opplysninger = JsonOkonomiopplysninger()
-        val driftsinformasjon = JsonDriftsinformasjon().withUtbetalingerFraNavFeilet(true)
+        val opplysninger = JsonOkonomiopplysninger(utbetaling = emptyList())
+        val driftsinformasjon = JsonDriftsinformasjon(inntektFraSkatteetatenFeilet = false, utbetalingerFraNavFeilet = true)
 
         val avsnitt = navUtbetalinger.getAvsnitt(opplysninger, driftsinformasjon)
         assertThat(avsnitt.sporsmal).hasSize(1)
@@ -27,9 +27,9 @@ internal class NavUtbetalingerTest {
 
     @Test
     fun ingenNavUtbetalinger() {
-        val opplysninger = JsonOkonomiopplysninger().withUtbetaling(emptyList())
+        val opplysninger = JsonOkonomiopplysninger(utbetaling = emptyList())
 
-        val avsnitt = navUtbetalinger.getAvsnitt(opplysninger, JsonDriftsinformasjon())
+        val avsnitt = navUtbetalinger.getAvsnitt(opplysninger, JsonDriftsinformasjon(inntektFraSkatteetatenFeilet = false))
         assertThat(avsnitt.sporsmal).hasSize(1)
 
         val sporsmal = avsnitt.sporsmal[0]
@@ -41,15 +41,15 @@ internal class NavUtbetalingerTest {
     @Test
     fun flereNavUtbetalinger() {
         val opplysninger =
-            JsonOkonomiopplysninger()
-                .withUtbetaling(
+            JsonOkonomiopplysninger(
+                utbetaling =
                     listOf(
                         createUtbetaling("Dagpenger", 1234.0, "2021-01-01"),
                         createUtbetaling("Uføre", 42.0, "2021-03-03"),
                     ),
-                )
+            )
 
-        val avsnitt = navUtbetalinger.getAvsnitt(opplysninger, JsonDriftsinformasjon())
+        val avsnitt = navUtbetalinger.getAvsnitt(opplysninger, JsonDriftsinformasjon(inntektFraSkatteetatenFeilet = false))
         assertThat(avsnitt.sporsmal).hasSize(2)
 
         val sporsmalUtbetaling1 = avsnitt.sporsmal[0]
@@ -84,12 +84,14 @@ internal class NavUtbetalingerTest {
         netto: Double,
         utbetalingsdato: String,
     ): JsonOkonomiOpplysningUtbetaling {
-        return JsonOkonomiOpplysningUtbetaling()
-            .withType(SoknadJsonTyper.UTBETALING_NAVYTELSE)
-            .withKilde(JsonKilde.SYSTEM)
-            .withTittel(tittel)
-            .withNetto(netto)
-            .withBrutto(netto + 1000)
-            .withUtbetalingsdato(utbetalingsdato)
+        return JsonOkonomiOpplysningUtbetaling(
+            kilde = JsonKilde.SYSTEM,
+            type = SoknadJsonTyper.UTBETALING_NAVYTELSE,
+            tittel = tittel,
+            overstyrtAvBruker = false,
+            netto = netto,
+            brutto = netto + 1000,
+            utbetalingsdato = utbetalingsdato,
+        )
     }
 }

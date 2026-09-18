@@ -18,8 +18,7 @@ internal class AndreInntekterTest {
     @Test
     fun harIkkeUtfyltSporsmal() {
         val opplysninger =
-            JsonOkonomiopplysninger()
-                .withBekreftelse(emptyList())
+            JsonOkonomiopplysninger(utbetaling = emptyList(), bekreftelse = emptyList())
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
         assertThat(avsnitt.sporsmal).hasSize(1)
@@ -46,8 +45,7 @@ internal class AndreInntekterTest {
 
     @Test
     fun harAndreInntekterMenIkkeUtfyltHvaEierDu() {
-        val opplysninger = createOpplysninger(true)
-        opplysninger.utbetaling = emptyList()
+        val opplysninger = createOpplysninger(true).copy(utbetaling = emptyList())
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
         assertThat(avsnitt.sporsmal).hasSize(2)
@@ -66,11 +64,13 @@ internal class AndreInntekterTest {
 
     @Test
     fun harAndreInntekterMedUtbetalinger() {
-        val opplysninger = createOpplysninger(true)
-        opplysninger.utbetaling =
-            listOf(
-                createUtbetaling(SoknadJsonTyper.UTBETALING_UTBYTTE),
-                createUtbetaling(SoknadJsonTyper.UTBETALING_SALG),
+        val opplysninger =
+            createOpplysninger(true).copy(
+                utbetaling =
+                    listOf(
+                        createUtbetaling(SoknadJsonTyper.UTBETALING_UTBYTTE),
+                        createUtbetaling(SoknadJsonTyper.UTBETALING_SALG),
+                    ),
             )
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
@@ -102,10 +102,12 @@ internal class AndreInntekterTest {
 
     @Test
     fun harAndreInntekterUtenBeskrivelseAvAnnet() {
-        val opplysninger = createOpplysninger(true)
-        opplysninger.utbetaling =
-            listOf(
-                createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET),
+        val opplysninger =
+            createOpplysninger(true).copy(
+                utbetaling =
+                    listOf(
+                        createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET),
+                    ),
             )
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
@@ -136,14 +138,14 @@ internal class AndreInntekterTest {
 
     @Test
     fun harAndreInntekterMedBeskrivelseAvAnnet() {
-        val opplysninger = createOpplysninger(true)
-        opplysninger.utbetaling =
-            listOf(
-                createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET),
+        val opplysninger =
+            createOpplysninger(true).copy(
+                utbetaling =
+                    listOf(
+                        createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET),
+                    ),
+                beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker.BRUKER, "", "ANNEN", "", "", ""),
             )
-        opplysninger.beskrivelseAvAnnet =
-            JsonOkonomibeskrivelserAvAnnet()
-                .withUtbetaling("ANNEN")
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
         assertThat(avsnitt.sporsmal).hasSize(3)
@@ -173,19 +175,13 @@ internal class AndreInntekterTest {
     }
 
     private fun createOpplysninger(harBekreftelse: Boolean): JsonOkonomiopplysninger {
-        return JsonOkonomiopplysninger()
-            .withBekreftelse(
-                listOf(
-                    JsonOkonomibekreftelse()
-                        .withType(SoknadJsonTyper.BEKREFTELSE_UTBETALING)
-                        .withVerdi(harBekreftelse),
-                ),
-            )
+        return JsonOkonomiopplysninger(
+            utbetaling = emptyList(),
+            bekreftelse = listOf(JsonOkonomibekreftelse(JsonKilde.BRUKER, SoknadJsonTyper.BEKREFTELSE_UTBETALING, "", harBekreftelse)),
+        )
     }
 
     private fun createUtbetaling(type: String): JsonOkonomiOpplysningUtbetaling {
-        return JsonOkonomiOpplysningUtbetaling()
-            .withType(type)
-            .withKilde(JsonKilde.BRUKER)
+        return JsonOkonomiOpplysningUtbetaling(kilde = JsonKilde.BRUKER, type = type, tittel = "", overstyrtAvBruker = false)
     }
 }

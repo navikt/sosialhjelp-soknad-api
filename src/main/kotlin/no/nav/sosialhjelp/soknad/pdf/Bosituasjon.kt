@@ -16,9 +16,9 @@ object Bosituasjon {
             pdf.skrivTekstBold(pdfUtils.getTekst("bosituasjon.sporsmal"))
             val botype = bosituasjon.botype
             if (botype != null) {
-                val tekst = pdfUtils.getTekst("bosituasjon." + botype.value())
+                val tekst = pdfUtils.getTekst("bosituasjon." + botype.value)
                 if (tekst.isNullOrEmpty()) {
-                    pdf.skrivTekst(pdfUtils.getTekst("bosituasjon.annet.botype." + botype.value()))
+                    pdf.skrivTekst(pdfUtils.getTekst("bosituasjon.annet.botype." + botype.value))
                 } else {
                     pdf.skrivTekst(tekst)
                 }

@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
@@ -17,19 +19,12 @@ internal class ArbeidOgUtdanningStegTest {
     private val steg = ArbeidOgUtdanningSteg
 
     private val arbeidsforholdMedSlutt =
-        JsonArbeidsforhold()
-            .withArbeidsgivernavn("arbeidsgiver")
-            .withFom("01.01.2021")
-            .withTom("10.10.2021")
-            .withStillingsprosent(100)
+        JsonArbeidsforhold(kilde = no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, arbeidsgivernavn = "arbeidsgiver", fom = "01.01.2021", tom = "10.10.2021", stillingsprosent = 100, overstyrtAvBruker = false)
     private val arbeidsforholdUtenSlutt =
-        JsonArbeidsforhold()
-            .withArbeidsgivernavn("arbeidsgiver2")
-            .withFom("01.01.2021")
-            .withStillingsprosent(100)
-    private val ikkeStudent = JsonUtdanning().withErStudent(false)
-    private val studentUtenStudentgrad = JsonUtdanning().withErStudent(true)
-    private val heltidstudent = JsonUtdanning().withErStudent(true).withStudentgrad(JsonUtdanning.Studentgrad.HELTID)
+        JsonArbeidsforhold(kilde = no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, arbeidsgivernavn = "arbeidsgiver2", fom = "01.01.2021", stillingsprosent = 100, overstyrtAvBruker = false)
+    private val ikkeStudent = JsonUtdanning(erStudent = false)
+    private val studentUtenStudentgrad = JsonUtdanning(erStudent = true)
+    private val heltidstudent = JsonUtdanning(erStudent = true, studentgrad = JsonUtdanning.Studentgrad.HELTID)
 
     @Test
     fun ingenArbeidsforhold() {
@@ -46,7 +41,7 @@ internal class ArbeidOgUtdanningStegTest {
 
     @Test
     fun arbeidsforholdMedSlutt() {
-        val soknad = createSoknad(JsonArbeid().withForhold(listOf(arbeidsforholdMedSlutt)), JsonUtdanning())
+        val soknad = createSoknad(JsonArbeid(forhold = listOf(arbeidsforholdMedSlutt)), JsonUtdanning())
         val res = steg.get(soknad)
         assertThat(res.avsnitt).hasSize(2)
         assertThat(res.avsnitt[0].sporsmal).hasSize(1)
@@ -73,7 +68,7 @@ internal class ArbeidOgUtdanningStegTest {
 
     @Test
     fun arbeidsforholdUtenSlutt() {
-        val soknad = createSoknad(JsonArbeid().withForhold(listOf(arbeidsforholdUtenSlutt)), JsonUtdanning())
+        val soknad = createSoknad(JsonArbeid(forhold = listOf(arbeidsforholdUtenSlutt)), JsonUtdanning())
         val res = steg.get(soknad)
         assertThat(res.avsnitt).hasSize(2)
         assertThat(res.avsnitt[0].sporsmal).hasSize(1)
@@ -101,9 +96,7 @@ internal class ArbeidOgUtdanningStegTest {
     fun arbeidsforholdMedKommentar() {
         val soknad =
             createSoknad(
-                JsonArbeid()
-                    .withForhold(listOf(arbeidsforholdUtenSlutt))
-                    .withKommentarTilArbeidsforhold(JsonKommentarTilArbeidsforhold().withVerdi("kommentar")),
+                JsonArbeid(forhold = listOf(arbeidsforholdUtenSlutt), kommentarTilArbeidsforhold = JsonKommentarTilArbeidsforhold(verdi = "kommentar")),
                 JsonUtdanning(),
             )
         val res = steg.get(soknad)
@@ -184,14 +177,6 @@ internal class ArbeidOgUtdanningStegTest {
         arbeid: JsonArbeid,
         utdanning: JsonUtdanning,
     ): JsonInternalSoknad {
-        return JsonInternalSoknad()
-            .withSoknad(
-                JsonSoknad()
-                    .withData(
-                        JsonData()
-                            .withArbeid(arbeid)
-                            .withUtdanning(utdanning),
-                    ),
-            )
+        return JsonInternalSoknad(soknad = JsonSoknad("", JsonData(personalia = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad().soknad!!.data.personalia, begrunnelse = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad().soknad!!.data.begrunnelse, okonomi = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad().soknad!!.data.okonomi, arbeid = arbeid, utdanning = utdanning), JsonSoknadsmottaker(), JsonDriftsinformasjon(false), emptyList()))
     }
 }

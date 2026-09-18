@@ -23,10 +23,10 @@ class SoknadToJsonMapperTest {
         val soknad = opprettSoknad()
         val metadata = SoknadMetadata(soknad.id, "1234561212345", tidspunkt = Tidspunkt(sendtInn = now))
 
-        SoknadToJsonMapper.doMapping(soknad, metadata, jsonInternalSoknad)
+        val mappedJson = SoknadToJsonMapper.doMapping(soknad, metadata, jsonInternalSoknad)
 
-        jsonInternalSoknad.assertInnsendingstidspunkt(now)
-        jsonInternalSoknad.assertBegrunnelse(soknad.begrunnelse)
+        mappedJson.assertInnsendingstidspunkt(now)
+        mappedJson.assertBegrunnelse(soknad.begrunnelse)
     }
 
     @Test
@@ -46,32 +46,32 @@ class SoknadToJsonMapperTest {
 
         val metadata = SoknadMetadata(soknad.id, "1234561212345", tidspunkt = Tidspunkt(sendtInn = now))
 
-        SoknadToJsonMapper.doMapping(soknad, metadata, jsonInternalSoknad)
+        val mappedJson = SoknadToJsonMapper.doMapping(soknad, metadata, jsonInternalSoknad)
 
-        jsonInternalSoknad.assertInnsendingstidspunkt(now)
-        jsonInternalSoknad.assertKategorier(soknad.begrunnelse.kategorier)
+        mappedJson.assertInnsendingstidspunkt(now)
+        mappedJson.assertKategorier(soknad.begrunnelse.kategorier)
     }
 }
 
 private fun JsonInternalSoknad.assertInnsendingstidspunkt(tidspunkt: LocalDateTime) {
     TimestampUtil.convertToOffsettDateTimeUTCString(tidspunkt).also {
-        assertThat(soknad.innsendingstidspunkt).isEqualTo(it)
+        assertThat(requireNotNull(soknad).innsendingstidspunkt).isEqualTo(it)
     }
 }
 
 private fun JsonInternalSoknad.assertBegrunnelse(begrunnelse: Begrunnelse?) {
     begrunnelse?.let {
-        assertThat(soknad.data.begrunnelse).isNotNull
-        assertThat(soknad.data.begrunnelse.hvaSokesOm).isEqualTo(it.hvaSokesOm)
-        assertThat(soknad.data.begrunnelse.hvorforSoke).isEqualTo(it.hvorforSoke)
+        assertThat(requireNotNull(soknad).data.begrunnelse).isNotNull
+        assertThat(requireNotNull(soknad).data.begrunnelse.hvaSokesOm).isEqualTo(it.hvaSokesOm)
+        assertThat(requireNotNull(soknad).data.begrunnelse.hvorforSoke).isEqualTo(it.hvorforSoke)
     }
-        ?: assertThat(soknad.data.begrunnelse).isNull()
+        ?: assertThat(requireNotNull(soknad).data.begrunnelse).isNull()
 }
 
 // TODO Denne asserter ingen kategorier?
 private fun JsonInternalSoknad.assertKategorier(kategorier: Kategorier) {
-    assertThat(soknad.data.begrunnelse).isNotNull
-    assertThat(soknad.data.begrunnelse.hvaSokesOm).isNotNull()
+    assertThat(requireNotNull(soknad).data.begrunnelse).isNotNull
+    assertThat(requireNotNull(soknad).data.begrunnelse.hvaSokesOm).isNotNull()
 }
 
 private fun createKategorier(

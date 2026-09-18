@@ -22,9 +22,9 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `Formue skal mappes til JsonOkonomioversiktFormue`() {
         val formuer = createFormuer()
 
-        FormueToJsonMapper(formuer, jsonOkonomi).doMapping()
+        jsonOkonomi = FormueToJsonMapper(formuer).doMapping(jsonOkonomi)
 
-        with(jsonOkonomi.oversikt) {
+        with(requireNotNull(jsonOkonomi.oversikt)) {
             assertThat(formue).hasSize(2)
             assertThat(formue)
                 .anyMatch { it.type == SoknadJsonTypeEnum.FORMUE_BRUKSKONTO.verdi }
@@ -36,9 +36,9 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `Formue med flere rader skal generere flere JsonOkonomioversiktFormue-innslag`() {
         val formuer = setOf(Formue(type = FormueType.FORMUE_BRUKSKONTO, formueDetaljer = createOkonomiskeDetaljer()))
 
-        FormueToJsonMapper(formuer, jsonOkonomi).doMapping()
+        jsonOkonomi = FormueToJsonMapper(formuer).doMapping(jsonOkonomi)
 
-        with(jsonOkonomi.oversikt) {
+        with(requireNotNull(jsonOkonomi.oversikt)) {
             assertThat(formue)
                 .hasSize(3)
                 .allMatch { it.type == SoknadJsonTypeEnum.FORMUE_BRUKSKONTO.verdi }
@@ -63,10 +63,10 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
                     formueDetaljer = OkonomiDetaljer(listOf(Belop(523.0), Belop(121.0))),
                 ),
             )
-        FormueToJsonMapper(formuer, jsonOkonomi).doMapping()
+        jsonOkonomi = FormueToJsonMapper(formuer).doMapping(jsonOkonomi)
 
         with(jsonOkonomi) {
-            assertThat(oversikt.formue)
+            assertThat(requireNotNull(oversikt).formue)
                 .hasSize(4)
                 .anyMatch { it.belop == 423 }
                 .anyMatch { it.belop == 288 }
@@ -76,10 +76,10 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
                     it.type == SoknadJsonTypeEnum.FORMUE_ANNET.verdi || it.type == SoknadJsonTypeEnum.VERDI_ANNET.verdi
                 }
 
-            assertThat(opplysninger.beskrivelseAvAnnet.sparing)
+            assertThat(requireNotNull(requireNotNull(opplysninger).beskrivelseAvAnnet).sparing)
                 .isEqualTo(formuer.find { it.type == FormueType.FORMUE_ANNET }?.beskrivelse)
 
-            assertThat(opplysninger.beskrivelseAvAnnet.verdi)
+            assertThat(requireNotNull(requireNotNull(opplysninger).beskrivelseAvAnnet).verdi)
                 .isEqualTo(formuer.find { it.type == FormueType.VERDI_ANNET }?.beskrivelse)
         }
     }
@@ -89,9 +89,9 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
         val nyFormue = Formue(type = FormueType.FORMUE_BRUKSKONTO)
         val annenFormue = Formue(type = FormueType.VERDI_BOLIG)
 
-        FormueToJsonMapper(formuer = setOf(nyFormue, annenFormue), jsonOkonomi).doMapping()
+        jsonOkonomi = FormueToJsonMapper(formuer = setOf(nyFormue, annenFormue)).doMapping(jsonOkonomi)
 
-        with(jsonOkonomi.oversikt) {
+        with(requireNotNull(jsonOkonomi.oversikt)) {
             assertThat(formue).hasSize(2)
             assertThat(formue)
                 .anyMatch { it.type == SoknadJsonTypeEnum.FORMUE_BRUKSKONTO.verdi }
