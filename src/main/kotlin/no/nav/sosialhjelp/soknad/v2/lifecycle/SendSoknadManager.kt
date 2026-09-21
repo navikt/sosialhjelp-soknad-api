@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
+import no.nav.sosialhjelp.soknad.app.exceptions.BrokenSoknadException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
@@ -114,12 +115,17 @@ class SendSoknadManager(
                 if (digisosId != null && response.e is WebClientResponseException.BadRequest) handleAlleredeMottatt(digisosId, soknadId, msg)
             }
 
-        throw FiksException(
-            message =
-                "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
-                    "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}",
-            cause = response.e,
-        )
+        val feilmelding =
+            "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
+                "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
+
+        // FIKS svarer 400 når søknaden er i en tilstand den aldri vil kunne sendes inn fra (og det ikke
+        // var en allerede-mottatt-situasjon, som er håndtert over). Retry vil ikke hjelpe her.
+        if (response.e is WebClientResponseException.BadRequest) {
+            throw BrokenSoknadException(feilmelding)
+        }
+
+        throw FiksException(message = feilmelding, cause = response.e)
     }
 
     private fun handleAlleredeMottatt(
