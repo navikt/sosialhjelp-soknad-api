@@ -65,4 +65,7 @@ enum class SoknadApiErrorType {
 
     // For mange soknader sendt siste 24 timer
     AntallSoknaderSendt,
+
+    // Søknaden er i en tilstand som gjør at den aldri vil kunne sendes inn. Retry hjelper ikke.
+    BrokenSoknad,
 }
