@@ -129,7 +129,7 @@ class ExceptionMapper(
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
             }
             is BrokenSoknadException -> {
-                log.warn("Innsending avvist av FIKS: søknaden er i en tilstand den ikke kan sendes inn fra", e)
+                log.error("Innsending feiler fordi søknaden er i en ugyldig tilstand", e)
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.BrokenSoknad, e))
             }
             else -> {

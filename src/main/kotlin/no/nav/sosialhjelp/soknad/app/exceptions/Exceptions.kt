@@ -41,10 +41,6 @@ class SoknadAlleredeSendtException(
     message: String?,
 ) : SosialhjelpSoknadApiException(message)
 
-/**
- * Kastes når FIKS svarer 400 fordi søknaden er i en tilstand den aldri vil kunne sendes inn fra
- * (i motsetning til f.eks. midlertidig utilgjengelig tjeneste hos kommunen). Retry vil ikke hjelpe.
- */
 class BrokenSoknadException(message: String?) : SosialhjelpSoknadApiException(message)
 
 open class SoknadLifecycleException(

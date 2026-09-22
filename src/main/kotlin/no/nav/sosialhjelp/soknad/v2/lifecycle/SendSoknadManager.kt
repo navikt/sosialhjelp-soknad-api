@@ -22,6 +22,7 @@ import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler.Companion.logger
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import java.io.ByteArrayInputStream
 import java.util.Collections
 import java.util.UUID
@@ -112,7 +113,7 @@ class SendSoknadManager(
         response.errorMessage.message
             ?.also { msg ->
                 val digisosId = Utils.getDigisosIdFromResponse(msg, soknadId)
-                if (digisosId != null && response.e is WebClientResponseException.BadRequest) handleAlleredeMottatt(digisosId, soknadId, msg)
+                if (digisosId != null && response.e is BadRequest) handleAlleredeMottatt(digisosId, soknadId, msg)
             }
 
         val feilmelding =
@@ -121,7 +122,7 @@ class SendSoknadManager(
 
         // FIKS svarer 400 når søknaden er i en tilstand den aldri vil kunne sendes inn fra (og det ikke
         // var en allerede-mottatt-situasjon, som er håndtert over). Retry vil ikke hjelpe her.
-        if (response.e is WebClientResponseException.BadRequest) {
+        if (response.e is BadRequest) {
             throw BrokenSoknadException(feilmelding)
         }
 
