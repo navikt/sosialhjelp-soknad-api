@@ -9,7 +9,6 @@ import java.util.UUID
 @Component
 class DokumentasjonStatusUseCaseHandler(
     private val dokumentasjonService: DokumentasjonService,
-    private val mellomlagerService: MellomlagerService,
     private val uploadClient: UploadClient,
 ) {
     fun findForventetDokumentasjon(soknadId: UUID): List<Dokumentasjon> =

@@ -104,6 +104,34 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .let { assertThat(it.status).isEqualTo(SoknadStatus.SENDT) }
     }
 
+    @Test
+    fun `Sende soknad skal lykkes nar sletting av opplastinger feiler`() {
+        val soknadId = createNewSoknad()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(soknadId.toString(), emptyList())
+        every { uploadClient.delete(soknadId) } throws RuntimeException("Kunne ikke slette opplastinger")
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        doPostFullResponse(uri = sendUri(soknadId))
+            .expectStatus().isOk
+            .expectBody<SoknadSendtDto>()
+            .returnResult().responseBody
+            .also { assertThat(it?.digisosId).isNotNull() }
+
+        metadataRepository.findByIdOrNull(soknadId)!!
+            .let { assertThat(it.status).isEqualTo(SoknadStatus.SENDT) }
+        verify(exactly = 1) { uploadClient.delete(soknadId) }
+    }
+
     // TODO Er dette riktig antakelse?
     @Test
     fun `Exception i fetcher med ContinueOnError = true skal ikke stoppe opprettelse av ny soknad`() {

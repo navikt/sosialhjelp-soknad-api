@@ -43,10 +43,13 @@ class SendSoknadHandler(
                         digisosId = digisosId,
                         innsendingsTidspunkt = innsendingstidspunkt,
                     )
-                    uploadClient.delete(soknadId)
                 }
                 .onFailure { e -> handleError(soknadId, navEnhet, e) }
                 .getOrThrow()
+                .also {
+                    runCatching { uploadClient.delete(soknadId) }
+                        .onFailure { e -> logger.warn("Kunne ikke slette opplastinger for søknad $soknadId", e) }
+                }
 
         json.checkDuplicateUtbetalinger()
 
