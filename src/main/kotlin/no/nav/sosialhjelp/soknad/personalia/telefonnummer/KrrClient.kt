@@ -34,10 +34,7 @@ class KrrClient(
             .build()
 
     suspend fun getDigitalKontaktinformasjon(): KontaktInfoResponse? =
-        runCatching {
-            logger.info("Henter Digital kontaktinformasjon fra KRR")
-            doPostRequest()
-        }
+        runCatching { doPostRequest() }
             .getOrElse { e ->
                 when (e) {
                     is Unauthorized -> {

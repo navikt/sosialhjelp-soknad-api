@@ -26,8 +26,6 @@ class KommuneInfoClient(
     webClientBuilder: WebClient.Builder,
 ) {
     fun getAll(): List<KommuneInfo> {
-        logger.info("Henter KommuneInfo fra FIKS")
-
         return kommuneInfoWebClient.get()
             .uri(PATH_ALLE_KOMMUNEINFO)
             .accept(MediaType.APPLICATION_JSON)

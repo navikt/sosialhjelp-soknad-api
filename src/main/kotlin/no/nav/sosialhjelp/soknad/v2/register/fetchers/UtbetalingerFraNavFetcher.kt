@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
@@ -18,8 +17,6 @@ class UtbetalingerFraNavFetcher(
     private val okonomiService: OkonomiService,
     private val integrasjonStatusService: IntegrasjonStatusService,
 ) : AsynchronousFetcher {
-    private val logger by logger()
-
     override suspend fun fetchAndSave(
         soknadId: UUID,
     ) {
@@ -35,8 +32,6 @@ class UtbetalingerFraNavFetcher(
         soknadId: UUID,
         utbetalinger: List<UtbetalingMedKomponent>,
     ) {
-        logger.info("Hentet ${utbetalinger.size} utbetalinger fra NAV")
-
         if (utbetalinger.isEmpty()) return
 
         Inntekt(

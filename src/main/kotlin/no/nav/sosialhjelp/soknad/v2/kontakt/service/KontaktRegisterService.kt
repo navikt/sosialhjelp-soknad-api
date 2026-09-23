@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt.service
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
@@ -11,8 +10,6 @@ import java.util.UUID
 
 @Service
 class KontaktRegisterService(private val kontaktRepository: KontaktRepository) {
-    private val logger by logger()
-
     @Transactional
     suspend fun saveAdresserRegister(
         soknadId: UUID,
@@ -30,7 +27,6 @@ class KontaktRegisterService(private val kontaktRepository: KontaktRepository) {
                 )
             }
             .also { kontaktRepository.save(it) }
-            .also { logger.info("Lagret adresser fra PDL-register") }
     }
 
     @Transactional
