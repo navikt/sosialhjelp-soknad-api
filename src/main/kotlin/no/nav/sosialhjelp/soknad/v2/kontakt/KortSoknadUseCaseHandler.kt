@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.stereotype.Component
@@ -22,7 +22,7 @@ import java.util.UUID
 @Component
 class KortSoknadUseCaseHandler(
     private val kortSoknadService: KortSoknadService,
-    private val mellomlagerService: MellomlagerService,
+    private val uploadClient: UploadClient,
     private val digisosApiService: DigisosApiService,
     private val metadataService: SoknadMetadataServiceImpl,
     private val unleash: Unleash,
@@ -55,7 +55,7 @@ class KortSoknadUseCaseHandler(
             false -> kortSoknadService.isTransitioningToStandard(soknadId)
         }
             .also { hasTransitioned ->
-                if (hasTransitioned) mellomlagerService.deleteAllDokumenterForSoknad(soknadId)
+                if (hasTransitioned) uploadClient.delete(soknadId)
             }
     }
 

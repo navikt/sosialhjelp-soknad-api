@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
@@ -11,7 +11,7 @@ import java.util.UUID
 class CancelSoknadHandler(
     private val soknadService: SoknadService,
     private val metadataService: SoknadMetadataServiceImpl,
-    private val mellomlagerService: MellomlagerService,
+    private val uploadClient: UploadClient,
 ) {
     @Transactional
     fun cancelSoknad(soknadId: UUID) {
@@ -20,6 +20,6 @@ class CancelSoknadHandler(
     }
 
     fun cleanUploadedDocuments(soknadId: UUID) {
-        mellomlagerService.deleteAllDokumenterForSoknad(soknadId)
+        uploadClient.delete(soknadId)
     }
 }

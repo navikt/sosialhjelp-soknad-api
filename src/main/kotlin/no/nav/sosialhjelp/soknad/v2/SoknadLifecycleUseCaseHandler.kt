@@ -68,7 +68,9 @@ class SoknadLifecycleHandlerImpl(
         logger.info("Starter innsending av søknad.")
 
         return runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId) }
-            .onSuccess { lifecycleMetricsService.reportSendt(it.isKortSoknad) }
+            .onSuccess {
+                lifecycleMetricsService.reportSendt(it.isKortSoknad)
+            }
             .getOrElse { e -> handleError(soknadId, e) }
             .let { Pair(it.digisosId, it.innsendingTidspunkt) }
     }

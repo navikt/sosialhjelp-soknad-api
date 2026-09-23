@@ -60,7 +60,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         metadataRepository.deleteAll()
         soknadRepository.deleteAll()
 
-        every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
+        every { uploadClient.delete(any()) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto("", emptyList())
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true

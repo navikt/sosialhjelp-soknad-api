@@ -23,7 +23,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
-import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
@@ -89,9 +88,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var personService: PersonService
 
-    @MockkBean
-    private lateinit var hentAdresseService: HentAdresseService
-
     @BeforeEach
     fun setup() {
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
@@ -135,7 +131,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { norgService.getEnhetForGt("2944") } returns navEnhet
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
-        every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
+        every { uploadClient.delete(lagretSoknad.id) } just runs
 
         val adresserInput =
             AdresserInput(
@@ -176,7 +172,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             )
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhet
 
-        every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
+        every { uploadClient.delete(lagretSoknad.id) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
         every { unleash.isEnabled(any(), any<Boolean>()) } returns false
@@ -222,7 +218,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val navEnhet = NavEnhet("Bærum Nav-senter", "1212", KOMMUNENUMMER, "123", "Bærum")
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
-        every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
+        every { uploadClient.delete(lagretSoknad.id) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
         val adresserInput =
             AdresserInput(
@@ -291,7 +287,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 lagretSoknad.id.toString(),
                 listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")),
             )
-        every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
+        every { uploadClient.delete(lagretSoknad.id) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
 
         every { digisosApiV2Client.getSoknader() } returns
@@ -356,7 +352,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         assertThat(dokumentasjon).anyMatch { it.type == InntektType.STUDIELAN_INNTEKT }
         assertThat(dokumentasjon).anyMatch { it.type == InntektType.BARNEBIDRAG_MOTTAR }
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.BARNEBIDRAG_BETALER }
-        verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) }
+        verify(exactly = 1) { uploadClient.delete(lagretSoknad.id) }
     }
 
     private fun createUpcomingUtbetaling(
@@ -403,7 +399,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val navEnhet = NavEnhet("Sandvika Nav-senter", "1212", KOMMUNENUMMER, "123", KOMMUNENAVN)
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
-        every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
+        every { uploadClient.delete(lagretSoknad.id) } just runs
         every { mellomlagringClient.slettDokument(any(), any()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
 
@@ -468,7 +464,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
             .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
 
-        verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(any()) }
+        verify(exactly = 1) { uploadClient.delete(lagretSoknad.id) }
     }
 
     companion object {
