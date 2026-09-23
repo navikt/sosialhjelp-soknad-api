@@ -81,7 +81,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
         setupPdlAnswers()
 
         every { uploadClient.getVedleggSpesifikasjon(any()) } returns JsonVedleggSpesifikasjon()
-        every { uploadClient.delete(any(), any()) } just runs
+        every { uploadClient.delete(any(), any<UUID>()) } just runs
 
         token =
             when (useTokenX) {

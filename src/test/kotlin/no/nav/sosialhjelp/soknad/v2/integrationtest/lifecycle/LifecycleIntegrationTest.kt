@@ -129,7 +129,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         metadataRepository.findByIdOrNull(soknadId)!!
             .let { assertThat(it.status).isEqualTo(SoknadStatus.SENDT) }
-        verify(exactly = 1) { uploadClient.delete(soknadId) }
+        verify(exactly = 1) { uploadClient.delete(soknadId, true) }
     }
 
     // TODO Er dette riktig antakelse?

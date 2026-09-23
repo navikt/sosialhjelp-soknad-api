@@ -109,13 +109,14 @@ class UploadClient(
 
     fun delete(
         soknadId: UUID,
+        keepMellomlagring: Boolean = false,
     ) {
         val userToken = SubjectHandlerUtils.getToken()
         val tokenXToken = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, uploadAudience)
 
         webClient
             .delete()
-            .uri("/sosialhjelp/upload/vedlegg/{soknadId}", soknadId)
+            .uri("/sosialhjelp/upload/vedlegg/{soknadId}?keepMellomlagring={keepMellomlagring}", soknadId, keepMellomlagring)
             .header(HttpHeaders.AUTHORIZATION, "Bearer $tokenXToken")
             .retrieve()
             .toBodilessEntity()
