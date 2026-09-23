@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.app.client.pdl
 
-import com.fasterxml.jackson.databind.JsonNode
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokDataDto
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.HentGeografiskTilknytning
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.HentAdresseDataDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.HentPersonDataDto
+import tools.jackson.databind.JsonNode
 
 sealed class BaseResponse(
     open val errors: List<JsonNode>?,

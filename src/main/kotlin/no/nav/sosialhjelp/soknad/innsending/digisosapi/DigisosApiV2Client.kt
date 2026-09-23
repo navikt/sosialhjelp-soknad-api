@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
@@ -37,6 +36,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.netty.http.client.HttpClient
+import tools.jackson.core.JacksonException
 import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.io.IOException
 import java.time.Duration
@@ -237,7 +237,7 @@ class DigisosApiV2Client(
     private fun getJson(objectFilForOpplasting: FilOpplasting): String =
         try {
             sosialhjelpJsonMapper.writeValueAsString(objectFilForOpplasting.metadata)
-        } catch (e: JsonProcessingException) {
+        } catch (e: JacksonException) {
             throw IllegalStateException(e)
         }
 
