@@ -32,6 +32,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(uuid.toString(), emptyList())
+        every { uploadClient.delete(uuid) } just runs
 
         doPost(
             uri = sendUrl(uuid),
@@ -50,7 +51,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
     fun `Skal slette metadata ved sletting av soknad`() {
         val uuid = opprettSoknadMedEierOgKontaktForInnsending()
 
-        every { mellomlagringClient.slettAlleDokumenter(uuid.toString()) } just runs
+        every { uploadClient.delete(uuid) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(uuid.toString(), emptyList())
 
@@ -59,7 +60,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
         )
 
         assertThat(metadataRepository.findByIdOrNull(uuid)).isNull()
-        verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(uuid.toString()) }
+        verify(exactly = 1) { uploadClient.delete(uuid) }
     }
 
     private fun opprettSoknadMedEierOgKontaktForInnsending(): UUID {

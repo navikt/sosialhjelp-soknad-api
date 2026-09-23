@@ -10,6 +10,7 @@ import java.util.UUID
 class DokumentasjonStatusUseCaseHandler(
     private val dokumentasjonService: DokumentasjonService,
     private val mellomlagerService: MellomlagerService,
+    private val uploadClient: UploadClient,
 ) {
     fun findForventetDokumentasjon(soknadId: UUID): List<Dokumentasjon> =
         dokumentasjonService.findDokumentasjonForSoknad(soknadId)
@@ -34,9 +35,7 @@ class DokumentasjonStatusUseCaseHandler(
         dokumentasjon.copy(status = LEVERT_TIDLIGERE, dokumenter = emptySet())
             .also { dokumentasjonService.updateDokumentasjon(it) }
 
-        dokumentasjon.dokumenter
-            .map { it.dokumentId }
-            .forEach { mellomlagerService.deleteDokument(dokumentasjon.soknadId, it) }
+        uploadClient.delete(dokumentasjon.type, dokumentasjon.soknadId)
     }
 }
 

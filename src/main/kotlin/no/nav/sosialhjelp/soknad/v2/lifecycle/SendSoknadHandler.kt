@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.v2.SoknadValidator
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
@@ -21,6 +22,7 @@ class SendSoknadHandler(
     private val sendSoknadManager: SendSoknadManager,
     private val metadataService: SoknadMetadataServiceImpl,
     private val soknadMottattHandler: SoknadMottattHandler,
+    private val uploadClient: UploadClient,
 ) {
     fun doSendAndReturnInfo(
         soknadId: UUID,
@@ -41,6 +43,7 @@ class SendSoknadHandler(
                         digisosId = digisosId,
                         innsendingsTidspunkt = innsendingstidspunkt,
                     )
+                    uploadClient.delete(soknadId)
                 }
                 .onFailure { e -> handleError(soknadId, navEnhet, e) }
                 .getOrThrow()

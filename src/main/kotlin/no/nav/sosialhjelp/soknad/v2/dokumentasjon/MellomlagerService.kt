@@ -36,8 +36,6 @@ interface MellomlagerService {
         soknadId: UUID,
         dokumentId: UUID,
     )
-
-    fun deleteAllDokumenterForSoknad(soknadId: UUID)
 }
 
 // Eksterne kall skal aldri inngå i en transaksjon
@@ -101,11 +99,6 @@ class FiksDokumentService(
             ?.let { dto -> dto.mellomlagringMetadataList?.find { it.filId == dokumentId.toString() } }
             ?.also { metadata -> mellomlagringClient.slettDokument(soknadId.toString(), metadata.filId) }
             ?: logger.warn("Kunne ikke finne dokument for sletting $dokumentId")
-    }
-
-    override fun deleteAllDokumenterForSoknad(soknadId: UUID) {
-        mellomlagringClient.hentDokumenterMetadata(soknadId.toString())
-            ?.also { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) }
     }
 
     companion object {

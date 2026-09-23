@@ -34,7 +34,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     fun setup() {
 //        clearAllMocks()
         soknadRepository.deleteAll()
-        every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
+        every { uploadClient.delete(any()) } just runs
         every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Success(UUID.randomUUID())
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns

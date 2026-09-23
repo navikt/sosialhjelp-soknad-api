@@ -64,12 +64,12 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(soknadId.toString()) } returns createMellomlagringDto(soknadId)
-        every { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) } just runs
+        every { uploadClient.delete(soknadId) } just runs
 
         doDelete(uri = deleteUri(soknadId))
 
         assertThat(soknadRepository.findByIdOrNull(soknadId)).isNull()
-        verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) }
+        verify(exactly = 1) { uploadClient.delete(soknadId) }
     }
 
     @Test
@@ -78,6 +78,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(soknadId.toString(), emptyList())
+
+        every { uploadClient.delete(soknadId) } just runs
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -119,7 +121,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doPostFullResponse(uri = createUri)
             .expectStatus().is5xxServerError
-            .expectBody(SoknadApiError::class.java)
+            .expectBody<SoknadApiError>()
 
         soknadRepository.findAll().let { assertThat(it).isEmpty() }
         metadataRepository.findAll().let { assertThat(it).isEmpty() }
@@ -209,7 +211,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doPostFullResponse(uri = sendUri(soknadId))
             .expectStatus().isOk
-            .expectBody(SoknadSendtDto::class.java)
+            .expectBody<SoknadSendtDto>()
             .returnResult().responseBody
             .also { dto ->
                 assertThat { dto?.digisosId }.isNotNull()
@@ -334,7 +336,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doPostFullResponse(uri = createUri)
             .expectStatus().isForbidden
-            .expectBody(SoknadApiError::class.java)
+            .expectBody<SoknadApiError>()
             .returnResult().responseBody
             .also { response -> assertThat(response!!.error).isEqualTo(SoknadApiErrorType.SokerUnder18) }
     }

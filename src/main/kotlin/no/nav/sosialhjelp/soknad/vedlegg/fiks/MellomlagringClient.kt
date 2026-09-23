@@ -38,8 +38,6 @@ interface MellomlagringClient {
         data: ByteArray,
     ): MellomlagringDto
 
-    fun slettAlleDokumenter(navEksternId: String)
-
     fun hentDokument(
         navEksternId: String,
         digisosDokumentId: String,
@@ -150,21 +148,6 @@ class MellomlagringClientImpl(
             }
             .block()
             ?: throw FiksException("MellomlagringDto er null ved opplasting av dokument", null)
-    }
-
-    /**
-     * Slett alle mellomlagrede vedlegg for `navEksternId`
-     */
-    override fun slettAlleDokumenter(navEksternId: String) {
-        webClient.delete()
-            .uri(MELLOMLAGRING_PATH, navEksternId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
-            .retrieve()
-            .bodyToMono<String>()
-            .doOnError(WebClientResponseException::class.java) {
-                logger.warn("Fiks - deleteAll mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
-            }
-            .block()
     }
 
     /**
