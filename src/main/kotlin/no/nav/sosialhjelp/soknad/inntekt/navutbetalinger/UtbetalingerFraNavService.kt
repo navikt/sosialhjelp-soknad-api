@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavService.Companion.ORGNR_NAV
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelse
@@ -18,25 +17,8 @@ class UtbetalingerFraNavService(
     private val navUtbetalingerClient: UtbetalingerFraNavClient,
     private val orgService: OrganisasjonService,
 ) {
-    suspend fun getUtbetalingerSiste40Dager(): List<UtbetalingMedKomponent>? {
-        return navUtbetalingerClient.getUtbetalingerSiste40Dager()
-            ?.toUtbetalingMedKomponent(orgNavn)
-            ?.also { utbetalinger ->
-
-                val duplicates =
-                    utbetalinger.groupBy {
-                        listOf(it.utbetaling.tittel, it.utbetaling.netto, it.utbetaling.brutto, it.utbetaling.utbetalingsdato)
-                    }.filter { it.value.size > 1 }
-
-                val totalDuplicatesCount = duplicates.values.sumOf { it.size }
-
-                if (totalDuplicatesCount > 0) {
-                    logger.info("Ut av ${utbetalinger.size} utbetaling(er) så er det $totalDuplicatesCount som er identiske utbetaling(er)")
-                }
-
-                logger.info("Antall navytelser utbetaling: ${utbetalinger.size}. ${utbetalinger.komponenterLogg()}")
-            }
-    }
+    suspend fun getUtbetalingerSiste40Dager(): List<UtbetalingMedKomponent>? =
+        navUtbetalingerClient.getUtbetalingerSiste40Dager()?.toUtbetalingMedKomponent(orgNavn)
 
     private fun UtbetalDataDto.toUtbetalingMedKomponent(orgNavn: String): List<UtbetalingMedKomponent>? {
         if (feilet || utbetalinger == null) return null
@@ -54,7 +36,6 @@ class UtbetalingerFraNavService(
     private val orgNavn get() = orgService.hentOrgNavn(ORGNR_NAV)
 
     companion object {
-        private val logger by logger()
         const val ORGNR_NAV = "889640782"
     }
 }
@@ -97,15 +78,5 @@ private fun Ytelse.isUtbetaltBruker(utbetaltTil: String?): Boolean {
         false
     } else {
         rettighetshaver.navn.trim().equals(utbetaltTil.trim(), ignoreCase = true)
-    }
-}
-
-private fun List<UtbetalingMedKomponent>.komponenterLogg(): String {
-    return when (isEmpty()) {
-        true -> ""
-        false ->
-            joinToString(prefix = "Antall komponenter: ", separator = ", ") {
-                "Utbetaling ${indexOf(it)} -> ${it.komponenter.size}"
-            }
     }
 }

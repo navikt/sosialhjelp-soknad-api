@@ -112,14 +112,14 @@ class FetchRegisterDataManager(
         fetcher: RegisterDataFetcher,
     ) {
         runCatching {
-            logger.info("${Thread.currentThread().name} running fetcher: $fetcher")
+            logger.info("${Thread.currentThread().name} running fetcher: ${fetcher::class.simpleName}")
             fetcher.fetchAndSave(soknadId)
-            logger.info("${Thread.currentThread().name} finished fetcher: $fetcher")
+            logger.info("${Thread.currentThread().name} finished fetcher: ${fetcher::class.simpleName}")
         }
             .onFailure {
                 if (it is AuthorizationException) throw it
 
-                logger.warn("Registerdata-fetcher feilet: $fetcher", it)
+                logger.warn("Registerdata-fetcher feilet: ${fetcher::class.simpleName}", it)
                 if (fetcher.exceptionOnError()) throw it
             }
     }

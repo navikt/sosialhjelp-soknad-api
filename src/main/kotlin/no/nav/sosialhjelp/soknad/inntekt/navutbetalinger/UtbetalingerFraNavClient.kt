@@ -37,8 +37,6 @@ class NavUtbetalingerClientImpl(
         webClientBuilder.configureWebClientBuilder(createNavFssServiceHttpClient()).build()
 
     override suspend fun getUtbetalingerSiste40Dager(): UtbetalDataDto? {
-        logger.info("Henter utbetalingsdata fra: $utbetalDataUrl ")
-
         val request = NavUtbetalingerRequest(currentUserContext().userId, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
 
         return runCatching { doRequest(request) }

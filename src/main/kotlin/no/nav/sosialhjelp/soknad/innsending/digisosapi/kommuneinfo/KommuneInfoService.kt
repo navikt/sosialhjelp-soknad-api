@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component
 @Component
 class KommuneInfoService(private val kommuneInfoClient: KommuneInfoClient) {
     fun hentAlleKommuneInfo(): Map<String, KommuneInfo>? {
+        logger.info("Henter KommuneInfo fra FIKS")
+
         return kommuneInfoClient.getAll()
             .associateBy { it.kommunenummer }
             .ifEmpty {

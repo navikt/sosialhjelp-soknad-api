@@ -40,6 +40,8 @@ class KortSoknadService(
     fun isTransitioningToStandard(soknadId: UUID): Boolean {
         if (soknadMetadataServiceImpl.getMetadataForSoknad(soknadId).soknadType == SoknadType.STANDARD) return false
 
+        logger.info("Transitioning soknad $soknadId to standard")
+
         soknadMetadataServiceImpl.updateSoknadType(soknadId, SoknadType.STANDARD)
 
         dokumentasjonService.fjernForventetDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)

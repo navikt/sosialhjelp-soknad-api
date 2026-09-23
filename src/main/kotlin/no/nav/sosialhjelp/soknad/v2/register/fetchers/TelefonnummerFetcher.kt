@@ -15,8 +15,6 @@ class TelefonnummerFetcher(
     override suspend fun fetchAndSave(
         soknadId: UUID,
     ) {
-        logger.info("Henter mobilnummer fra KRR")
-
         krrService.getMobilnummer()
             ?.let { norskTelefonnummer(it) }
             ?.also { kontaktService.updateTelefonRegister(soknadId, it) }

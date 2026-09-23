@@ -9,6 +9,8 @@ class KrrService(
     private val krrClient: KrrClient,
 ) {
     suspend fun getMobilnummer(): String? {
+        logger.info("Henter mobilnummer fra KRR")
+
         return doGet()
             ?.also { it.mobiltelefonnummer ?: logger.warn("KRR - mobiltelefonnummer er null") }
             ?.mobiltelefonnummer

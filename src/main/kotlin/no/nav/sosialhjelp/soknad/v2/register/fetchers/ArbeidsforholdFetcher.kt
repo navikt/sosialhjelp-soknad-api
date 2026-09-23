@@ -17,8 +17,6 @@ class ArbeidsforholdFetcher(
     override suspend fun fetchAndSave(
         soknadId: UUID,
     ) {
-        logger.info("Henter arbeidsforhold fra Aa-registeret")
-
         arbeidsforholdService.hentArbeidsforhold()
             ?.let { arbeidsforhold ->
                 livssituasjonService.updateArbeidsforhold(
