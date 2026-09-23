@@ -47,7 +47,7 @@ class SendSoknadHandler(
                 .onFailure { e -> handleError(soknadId, navEnhet, e) }
                 .getOrThrow()
                 .also {
-                    runCatching { uploadClient.delete(soknadId) }
+                    runCatching { uploadClient.delete(soknadId, keepMellomlagring = true) }
                         .onFailure { e -> logger.warn("Kunne ikke slette opplastinger for søknad $soknadId", e) }
                 }
 
