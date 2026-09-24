@@ -77,7 +77,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-                MellomlagringDto(soknadId.toString(), emptyList())
+            MellomlagringDto(soknadId.toString(), emptyList())
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -130,7 +130,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-                MellomlagringDto(soknadId.toString(), emptyList())
+            MellomlagringDto(soknadId.toString(), emptyList())
         every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -310,12 +310,12 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-                MellomlagringDto(soknadId.toString(), emptyList())
+            MellomlagringDto(soknadId.toString(), emptyList())
 
         every { kommuneInfoClient.getAll() } returns
-                listOf(
-                    createKommuneInfoList()[0].copy(kanMottaSoknader = false, harMidlertidigDeaktivertMottak = true),
-                )
+            listOf(
+                createKommuneInfoList()[0].copy(kanMottaSoknader = false, harMidlertidigDeaktivertMottak = true),
+            )
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -335,12 +335,12 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-                MellomlagringDto(soknadId.toString(), emptyList())
+            MellomlagringDto(soknadId.toString(), emptyList())
 
         every { kommuneInfoClient.getAll() } returns
-                listOf(
-                    createKommuneInfoList()[0].copy(harMidlertidigDeaktivertMottak = true),
-                )
+            listOf(
+                createKommuneInfoList()[0].copy(harMidlertidigDeaktivertMottak = true),
+            )
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -358,7 +358,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     @Test
     fun `Hvis soker er under 18 skal det returneres error`() {
         coEvery { personService.hentPerson() } returns
-                createPersonAnswer().copy(fodselsdato = LocalDate.now().minusYears(17))
+            createPersonAnswer().copy(fodselsdato = LocalDate.now().minusYears(17))
 
         doPostFullResponse(uri = createUri)
             .expectStatus().isForbidden
@@ -467,24 +467,29 @@ private fun createReadtimeoutException(soknadId: UUID): SendSoknadResponse.Error
 private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
     return SendSoknadResponse.FiksError(
         errorMessage = createSoknadAlleredeMottatFiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
-        e = createWebClientResponseException(
-            soknadId,
-            createSoknadAlleredeMottatFiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase)
-        ),
+        e =
+            createWebClientResponseException(
+                soknadId,
+                createSoknadAlleredeMottatFiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
+            ),
     )
 }
 
 private fun create400ResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
     return SendSoknadResponse.FiksError(
         errorMessage = createRandom400FiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
-        e = createWebClientResponseException(
-            soknadId,
-            createRandom400FiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase)
-        ),
+        e =
+            createWebClientResponseException(
+                soknadId,
+                createRandom400FiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
+            ),
     )
 }
 
-private fun createWebClientResponseException(soknadId: UUID, errorMessage: ErrorMessage): WebClientResponseException {
+private fun createWebClientResponseException(
+    soknadId: UUID,
+    errorMessage: ErrorMessage,
+): WebClientResponseException {
     return WebClientResponseException.create(
         HttpStatus.BAD_REQUEST.value(),
         HttpStatus.BAD_REQUEST.reasonPhrase,
