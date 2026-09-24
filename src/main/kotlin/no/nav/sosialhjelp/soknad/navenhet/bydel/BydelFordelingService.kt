@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.navenhet.bydel
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.navenhet.getGtFromAdresse
 import org.apache.commons.lang3.StringUtils
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
+import tools.jackson.core.JacksonException
 import tools.jackson.databind.DeserializationFeature
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 import tools.jackson.module.kotlin.readValue
@@ -23,7 +23,7 @@ class BydelFordelingService {
             val json = readBydelsfordelingFromFile()
             return try {
                 objectMapper.readValue(json)
-            } catch (e: JsonProcessingException) {
+            } catch (e: JacksonException) {
                 throw SosialhjelpSoknadApiException("BydelFordeling marka: Failed to parse json", e)
             }
         }

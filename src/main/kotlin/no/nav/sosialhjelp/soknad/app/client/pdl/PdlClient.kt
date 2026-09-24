@@ -1,13 +1,12 @@
 package no.nav.sosialhjelp.soknad.app.client.pdl
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import org.springframework.http.MediaType
 import org.springframework.http.codec.json.JacksonJsonDecoder
 import org.springframework.web.reactive.function.client.WebClient
+import tools.jackson.core.JacksonException
 import tools.jackson.module.kotlin.readValue
 
 abstract class PdlClient(
@@ -29,7 +28,7 @@ abstract class PdlClient(
     protected inline fun <reified T> parse(response: String): T =
         runCatching { soknadJacksonMapper.readValue<T>(response) }
             .getOrElse {
-                if (it is MismatchedInputException || it is JsonProcessingException) it.clearLocation()
+                if (it is JacksonException) it.clearLocation()
                 throw it
             }
 
