@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.oppsummering.steg
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn
@@ -19,6 +20,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
+import no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -156,10 +158,10 @@ internal class UtgifterOgGjeldStegTest {
         harForsorgerplikt: Boolean = false,
     ): JsonInternalSoknad {
         val forsorgerplikt = if (harForsorgerplikt) createForsorgerplikt() else JsonForsorgerplikt()
-        val base = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad()
+        val base = createValidEmptyJsonInternalSoknad()
         val soknad = requireNotNull(base.soknad)
         return base.copy(soknad = soknad.copy(data = soknad.data.copy(okonomi = JsonOkonomi(JsonOkonomiopplysninger(emptyList(), bekreftelser, null, opplysningUtgifter.orEmpty(), null), JsonOkonomioversikt(emptyList(), oversiktUtgifter.orEmpty(), emptyList())), familie = JsonFamilie(forsorgerplikt))))
     }
 
-    private fun createForsorgerplikt() = JsonForsorgerplikt(JsonHarForsorgerplikt(JsonKilde.SYSTEM, true), null, listOf(JsonAnsvar(JsonBarn(JsonKilde.SYSTEM, JsonNavn("Grønn", "", "Jakke"), "2020-02-02", "11111111111", false), null, JsonErFolkeregistrertSammen(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem.SYSTEM, true), null)))
+    private fun createForsorgerplikt() = JsonForsorgerplikt(JsonHarForsorgerplikt(JsonKilde.SYSTEM, true), null, listOf(JsonAnsvar(JsonBarn(JsonKilde.SYSTEM, JsonNavn("Grønn", "", "Jakke"), "2020-02-02", "11111111111", false), null, JsonErFolkeregistrertSammen(JsonKildeSystem.SYSTEM, true), null)))
 }

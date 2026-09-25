@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
+import no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -84,7 +85,7 @@ internal class BosituasjonStegTest {
         botype: Botype?,
         antallPersoner: Int?,
     ): JsonInternalSoknad {
-        val base = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad()
+        val base = createValidEmptyJsonInternalSoknad()
         val soknad = requireNotNull(base.soknad)
         return base.copy(soknad = soknad.copy(data = soknad.data.copy(bosituasjon = JsonBosituasjon(botype = botype, antallPersoner = antallPersoner))))
     }

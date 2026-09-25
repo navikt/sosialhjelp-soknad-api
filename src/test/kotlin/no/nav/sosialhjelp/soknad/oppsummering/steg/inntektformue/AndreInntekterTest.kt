@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
@@ -146,7 +147,7 @@ internal class AndreInntekterTest {
                     ),
                 beskrivelseAvAnnet =
                     JsonOkonomibeskrivelserAvAnnet(
-                        kilde = no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker.BRUKER,
+                        kilde = JsonKildeBruker.BRUKER,
                         verdi = "",
                         sparing = "",
                         utbetaling = "ANNEN",

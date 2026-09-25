@@ -8,10 +8,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
+import no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -19,9 +21,9 @@ internal class ArbeidOgUtdanningStegTest {
     private val steg = ArbeidOgUtdanningSteg
 
     private val arbeidsforholdMedSlutt =
-        JsonArbeidsforhold(kilde = no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, arbeidsgivernavn = "arbeidsgiver", fom = "01.01.2021", tom = "10.10.2021", stillingsprosent = 100, overstyrtAvBruker = false)
+        JsonArbeidsforhold(kilde = JsonKilde.BRUKER, arbeidsgivernavn = "arbeidsgiver", fom = "01.01.2021", tom = "10.10.2021", stillingsprosent = 100, overstyrtAvBruker = false)
     private val arbeidsforholdUtenSlutt =
-        JsonArbeidsforhold(kilde = no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, arbeidsgivernavn = "arbeidsgiver2", fom = "01.01.2021", stillingsprosent = 100, overstyrtAvBruker = false)
+        JsonArbeidsforhold(kilde = JsonKilde.BRUKER, arbeidsgivernavn = "arbeidsgiver2", fom = "01.01.2021", stillingsprosent = 100, overstyrtAvBruker = false)
     private val ikkeStudent = JsonUtdanning(erStudent = false)
     private val studentUtenStudentgrad = JsonUtdanning(erStudent = true)
     private val heltidstudent = JsonUtdanning(erStudent = true, studentgrad = JsonUtdanning.Studentgrad.HELTID)
@@ -177,6 +179,7 @@ internal class ArbeidOgUtdanningStegTest {
         arbeid: JsonArbeid,
         utdanning: JsonUtdanning,
     ): JsonInternalSoknad {
-        return JsonInternalSoknad(soknad = JsonSoknad("", JsonData(personalia = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad().soknad!!.data.personalia, begrunnelse = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad().soknad!!.data.begrunnelse, okonomi = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad().soknad!!.data.okonomi, arbeid = arbeid, utdanning = utdanning), JsonSoknadsmottaker(), JsonDriftsinformasjon(false), emptyList()))
+        val soknad = createValidEmptyJsonInternalSoknad().soknad!!
+        return JsonInternalSoknad(soknad = JsonSoknad("", JsonData(personalia = soknad.data.personalia, begrunnelse = soknad.data.begrunnelse, okonomi = soknad.data.okonomi, arbeid = arbeid, utdanning = utdanning), JsonSoknadsmottaker(), JsonDriftsinformasjon(false), emptyList()))
     }
 }

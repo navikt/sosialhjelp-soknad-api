@@ -7,7 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker as JsonSoknadsmottakerInternal
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
@@ -107,10 +108,10 @@ class KontaktToJsonMapper(
         ) = JsonUstrukturertAdresse(kilde = kilde, adresse = adresse, adresseValg = adresseValg)
 
         // JsonSoknadsmottaer på dette nivået sendes ikke med til fiks
-        private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottaker =
-            JsonSoknadsmottaker("", "$enhetsnavn, $kommunenavn")
+        private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottakerInternal =
+            JsonSoknadsmottakerInternal("", "$enhetsnavn, $kommunenavn")
 
-        private fun NavEnhet.toJsonSoknadsmottaker(): no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker =
-            no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker(kommunenummer = kommunenummer, enhetsnummer = enhetsnummer, navEnhetsnavn = "$enhetsnavn, $kommunenavn")
+        private fun NavEnhet.toJsonSoknadsmottaker(): JsonSoknadsmottaker =
+            JsonSoknadsmottaker(kommunenummer = kommunenummer, enhetsnummer = enhetsnummer, navEnhetsnavn = "$enhetsnavn, $kommunenavn")
     }
 }

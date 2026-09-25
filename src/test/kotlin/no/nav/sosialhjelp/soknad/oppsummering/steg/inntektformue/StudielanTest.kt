@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
@@ -30,7 +31,7 @@ internal class StudielanTest {
         val opplysninger =
             JsonOkonomiopplysninger(
                 utbetaling = emptyList(),
-                bekreftelse = listOf(JsonOkonomibekreftelse(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, SoknadJsonTyper.STUDIELAN, "", true)),
+                bekreftelse = listOf(JsonOkonomibekreftelse(JsonKilde.BRUKER, SoknadJsonTyper.STUDIELAN, "", true)),
             )
 
         val avsnitt = studielan.getAvsnitt(opplysninger)

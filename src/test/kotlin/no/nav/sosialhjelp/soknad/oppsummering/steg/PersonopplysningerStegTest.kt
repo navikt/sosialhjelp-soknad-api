@@ -20,6 +20,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
+import no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -260,8 +261,9 @@ internal class PersonopplysningerStegTest {
         oppholdsadresse: JsonAdresse,
         statsborgerskap: JsonStatsborgerskap? = JsonStatsborgerskap(JsonKilde.SYSTEM, "NOR"),
     ): JsonInternalSoknad {
+        val data = createValidEmptyJsonInternalSoknad().soknad!!.data
         return JsonInternalSoknad(
-            soknad = JsonSoknad("", JsonData(personalia = JsonPersonalia(JsonPersonIdentifikator(JsonPersonIdentifikator.Kilde.SYSTEM, "11111111111"), navn, kontonummer, statsborgerskap, oppholdsadresse = oppholdsadresse, telefonnummer = telefonnummer), begrunnelse = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad().soknad!!.data.begrunnelse, okonomi = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad().soknad!!.data.okonomi), JsonSoknadsmottaker(), JsonDriftsinformasjon(false), emptyList()),
+            soknad = JsonSoknad("", JsonData(personalia = JsonPersonalia(JsonPersonIdentifikator(JsonPersonIdentifikator.Kilde.SYSTEM, "11111111111"), navn, kontonummer, statsborgerskap, oppholdsadresse = oppholdsadresse, telefonnummer = telefonnummer), begrunnelse = data.begrunnelse, okonomi = data.okonomi), JsonSoknadsmottaker(), JsonDriftsinformasjon(false), emptyList()),
             vedlegg = JsonVedleggSpesifikasjon(emptyList()),
             mottaker = null,
             midlertidigAdresse = null,

@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
@@ -38,7 +39,7 @@ internal class BankTest {
                     createOkonomi(true).opplysninger.copy(
                         beskrivelseAvAnnet =
                             JsonOkonomibeskrivelserAvAnnet(
-                                kilde = no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker.BRUKER,
+                                kilde = JsonKildeBruker.BRUKER,
                                 verdi = "",
                                 sparing = "sparing",
                                 utbetaling = "",

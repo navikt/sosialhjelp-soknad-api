@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.oppsummering.steg
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
@@ -17,6 +18,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedleggSteg.OppsummeringVedleggInfo
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
+import no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -223,35 +225,35 @@ internal class OkonomiskeLivssituasjonOgDokumentasjonStegTest {
         type: String,
         netto: Int?,
     ): JsonOkonomioversiktInntekt {
-        return JsonOkonomioversiktInntekt(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, type, "", false, netto = netto)
+        return JsonOkonomioversiktInntekt(JsonKilde.BRUKER, type, "", false, netto = netto)
     }
 
     private fun createFormue(
         type: String,
         belop: Int?,
     ): JsonOkonomioversiktFormue {
-        return JsonOkonomioversiktFormue(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, type, "", false, belop = belop)
+        return JsonOkonomioversiktFormue(JsonKilde.BRUKER, type, "", false, belop = belop)
     }
 
     private fun createUtbetaling(
         type: String,
         belop: Int?,
     ): JsonOkonomiOpplysningUtbetaling {
-        return JsonOkonomiOpplysningUtbetaling(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, type, "", false, belop = belop)
+        return JsonOkonomiOpplysningUtbetaling(JsonKilde.BRUKER, type, "", false, belop = belop)
     }
 
     private fun createOpplysningUtgift(
         type: String,
         belop: Int?,
     ): JsonOkonomiOpplysningUtgift {
-        return JsonOkonomiOpplysningUtgift(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, type, "", false, belop = belop)
+        return JsonOkonomiOpplysningUtgift(JsonKilde.BRUKER, type, "", false, belop = belop)
     }
 
     private fun createOversiktUtgift(
         type: String,
         belop: Int?,
     ): JsonOkonomioversiktUtgift {
-        return JsonOkonomioversiktUtgift(no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER, type, "", false, belop = belop)
+        return JsonOkonomioversiktUtgift(JsonKilde.BRUKER, type, "", false, belop = belop)
     }
 
     private fun createVedlegg(
@@ -264,7 +266,7 @@ internal class OkonomiskeLivssituasjonOgDokumentasjonStegTest {
     }
 
     private fun createSoknad(): JsonInternalSoknad {
-        val base = no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad()
+        val base = createValidEmptyJsonInternalSoknad()
         val soknad = requireNotNull(base.soknad)
         return base.copy(soknad = soknad.copy(data = soknad.data.copy(okonomi = JsonOkonomi(JsonOkonomiopplysninger(emptyList(), emptyList(), null, emptyList(), null), JsonOkonomioversikt(emptyList(), emptyList(), emptyList())))), vedlegg = JsonVedleggSpesifikasjon(emptyList()))
     }
