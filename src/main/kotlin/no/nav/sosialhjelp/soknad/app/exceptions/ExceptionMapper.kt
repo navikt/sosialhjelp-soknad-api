@@ -128,6 +128,10 @@ class ExceptionMapper(
                 log.error(e.message, e)
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
             }
+            is BrokenSoknadException -> {
+                log.error("Innsending feiler fordi søknaden er i en ugyldig tilstand", e)
+                buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.BrokenSoknad, e))
+            }
             else -> {
                 log.error("REST-kall feilet", e)
                 buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError, e))

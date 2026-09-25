@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
+import no.nav.sosialhjelp.soknad.app.exceptions.BrokenSoknadException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
@@ -20,7 +21,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler.Companion.logger
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import java.io.ByteArrayInputStream
 import java.util.Collections
 import java.util.UUID
@@ -111,15 +112,20 @@ class SendSoknadManager(
         response.errorMessage.message
             ?.also { msg ->
                 val digisosId = Utils.getDigisosIdFromResponse(msg, soknadId)
-                if (digisosId != null && response.e is WebClientResponseException.BadRequest) handleAlleredeMottatt(digisosId, soknadId, msg)
+                if (digisosId != null && response.e is BadRequest) handleAlleredeMottatt(digisosId, soknadId, msg)
             }
 
-        throw FiksException(
-            message =
-                "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
-                    "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}",
-            cause = response.e,
-        )
+        val feilmelding =
+            "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
+                "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
+
+        // FIKS svarer 400 når søknaden er i en tilstand den aldri vil kunne sendes inn fra (og det ikke
+        // var en allerede-mottatt-situasjon, som er håndtert over). Retry vil ikke hjelpe her.
+        if (response.e is BadRequest) {
+            throw BrokenSoknadException(feilmelding)
+        }
+
+        throw FiksException(message = feilmelding, cause = response.e)
     }
 
     private fun handleAlleredeMottatt(

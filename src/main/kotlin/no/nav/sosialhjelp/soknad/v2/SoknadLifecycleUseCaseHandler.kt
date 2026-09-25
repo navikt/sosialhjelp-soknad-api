@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.BrokenSoknadException
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
@@ -91,10 +92,9 @@ class SoknadLifecycleHandlerImpl(
         soknadId: UUID,
         e: Throwable,
     ): SoknadSendtInfo {
-        return when (e) {
-            is SoknadAlleredeSendtException -> e.sendtInfo
-            is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException, is AntallSoknaderSendtException,
-            -> throw e
+        return when {
+            e is SoknadAlleredeSendtException -> e.sendtInfo
+            e.isHandledException() -> throw e
             else -> {
                 lifecycleMetricsService.reportSendSoknadFeilet()
                 throw InnsendingFeiletException(
@@ -105,6 +105,16 @@ class SoknadLifecycleHandlerImpl(
                 )
             }
         }
+    }
+
+    private fun Throwable.isHandledException(): Boolean {
+        return listOf(
+            SendingTilKommuneUtilgjengeligException::class,
+            SendingTilKommuneErMidlertidigUtilgjengeligException::class,
+            AntallSoknaderSendtException::class,
+            BrokenSoknadException::class,
+        )
+            .any { it.isInstance(this) }
     }
 
     companion object {
