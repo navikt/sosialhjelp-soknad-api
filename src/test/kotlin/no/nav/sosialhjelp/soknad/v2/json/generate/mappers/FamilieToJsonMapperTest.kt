@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidationException
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
@@ -57,6 +58,45 @@ class FamilieToJsonMapperTest : AbstractMapperTest() {
 
         val navn = requireNotNull(json.soknad?.data?.familie?.sivilstatus?.ektefelle).navn
         assertThat(listOf(navn.fornavn, navn.mellomnavn, navn.etternavn)).allMatch { it.isEmpty() }
+    }
+
+    @Test
+    fun `Systemregistrert ektefelle skal kun ha folkeregisteropplysninger`() {
+        val ektefelle =
+            Ektefelle(
+                navn = null,
+                fodselsdato = null,
+                personId = null,
+                folkeregistrertMedEktefelle = true,
+                borSammen = false,
+            )
+        json = FamilieToJsonMapper.doMapping(Familie(UUID.randomUUID(), sivilstatus = Sivilstatus.GIFT, ektefelle = ektefelle), json)
+
+        val sivilstatus = requireNotNull(json.soknad?.data?.familie?.sivilstatus)
+        assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.SYSTEM)
+        assertThat(sivilstatus.ektefelleHarDiskresjonskode).isFalse()
+        assertThat(sivilstatus.folkeregistrertMedEktefelle).isTrue()
+        assertThat(sivilstatus.borSammenMed).isNull()
+    }
+
+    @Test
+    fun `Brukerregistrert ektefelle skal kun ha brukersvar`() {
+        val ektefelle =
+            Ektefelle(
+                navn = null,
+                fodselsdato = null,
+                personId = null,
+                folkeregistrertMedEktefelle = true,
+                borSammen = false,
+                kildeErSystem = false,
+            )
+        json = FamilieToJsonMapper.doMapping(Familie(UUID.randomUUID(), sivilstatus = Sivilstatus.GIFT, ektefelle = ektefelle), json)
+
+        val sivilstatus = requireNotNull(json.soknad?.data?.familie?.sivilstatus)
+        assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.BRUKER)
+        assertThat(sivilstatus.ektefelleHarDiskresjonskode).isNull()
+        assertThat(sivilstatus.folkeregistrertMedEktefelle).isNull()
+        assertThat(sivilstatus.borSammenMed).isFalse()
     }
 
     @Test

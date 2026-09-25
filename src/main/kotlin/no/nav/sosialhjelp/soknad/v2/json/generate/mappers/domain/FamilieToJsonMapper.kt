@@ -60,23 +60,36 @@ class FamilieToJsonMapper(
     }
 }
 
-private fun Familie.toJsonSivilstatus() =
-    JsonSivilstatus(
-        kilde = ektefelle?.toJsonKilde() ?: JsonKilde.BRUKER,
-        status = sivilstatus?.toJson() ?: JsonSivilstatus.Status.UGIFT,
-        ektefelle = ektefelle?.toJson() ?: toEmptyEktefelleIfGift(sivilstatus),
-        ektefelleHarDiskresjonskode = ektefelle?.takeIf { it.kildeErSystem }?.let { false },
-        folkeregistrertMedEktefelle = ektefelle?.takeIf { it.kildeErSystem }?.folkeregistrertMedEktefelle,
-        borSammenMed = ektefelle?.takeUnless { it.kildeErSystem }?.borSammen,
-    )
+private fun Familie.toJsonSivilstatus(): JsonSivilstatus {
+    val status = sivilstatus?.toJson() ?: JsonSivilstatus.Status.UGIFT
+    val jsonEktefelle = ektefelle?.toJson() ?: toEmptyEktefelleIfGift(sivilstatus)
+
+    return if (ektefelle?.kildeErSystem == true) {
+        JsonSivilstatus(
+            kilde = JsonKilde.SYSTEM,
+            status = status,
+            ektefelle = jsonEktefelle,
+            ektefelleHarDiskresjonskode = false,
+            folkeregistrertMedEktefelle = ektefelle.folkeregistrertMedEktefelle,
+            borSammenMed = null,
+        )
+    } else {
+        JsonSivilstatus(
+            kilde = JsonKilde.BRUKER,
+            status = status,
+            ektefelle = jsonEktefelle,
+            ektefelleHarDiskresjonskode = null,
+            folkeregistrertMedEktefelle = null,
+            borSammenMed = ektefelle?.borSammen,
+        )
+    }
+}
 
 private fun toEmptyEktefelleIfGift(sivilstatus: Sivilstatus?): JsonEktefelle? =
     when (sivilstatus) {
         Sivilstatus.GIFT -> JsonEktefelle(toEmptyJsonNavn())
         else -> null
     }
-
-private fun Ektefelle.toJsonKilde() = if (kildeErSystem) JsonKilde.SYSTEM else JsonKilde.BRUKER
 
 private fun Sivilstatus.toJson() = JsonSivilstatus.Status.valueOf(name)
 
