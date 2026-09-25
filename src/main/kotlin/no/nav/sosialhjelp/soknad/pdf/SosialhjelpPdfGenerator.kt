@@ -33,7 +33,8 @@ class SosialhjelpPdfGenerator(
             validate(jsonInternalSoknad)
             val pdf = PdfGenerator()
 
-            val data = jsonInternalSoknad.soknad.data
+            val soknad = requireNotNull(jsonInternalSoknad.soknad)
+            val data = requireNotNull(soknad.data)
             val jsonPersonalia = data.personalia // personalia er required
 
             // Add header
@@ -41,13 +42,13 @@ class SosialhjelpPdfGenerator(
             val jsonPersonIdentifikator = jsonPersonalia.personIdentifikator // required
             val jsonSokernavn = jsonPersonalia.navn // required
 
-            val isKortSoknad = jsonInternalSoknad.soknad.data?.soknadstype == JsonData.Soknadstype.KORT
+            val isKortSoknad = data.soknadstype == JsonData.Soknadstype.KORT
 
             val navn = getJsonNavnTekst(jsonSokernavn)
 
             val fnr = jsonPersonIdentifikator.verdi // required
 
-            val soknadstype = "Type søknad: " + if (jsonInternalSoknad.soknad.data?.soknadstype == JsonData.Soknadstype.KORT) "kort" else "standard"
+            val soknadstype = "Type søknad: " + if (isKortSoknad) "kort" else "standard"
 
             leggTilHeading(pdf, heading, soknadstype, navn, fnr)
 
@@ -57,16 +58,16 @@ class SosialhjelpPdfGenerator(
                 leggTilSituasjonsendring(pdf, pdfUtils, utvidetSoknad, data.situasjonendring)
             }
             leggTilFamilie(pdf, pdfUtils, data.familie, utvidetSoknad, isKortSoknad)
-            leggTilInntektOgFormue(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad, isKortSoknad)
+            leggTilInntektOgFormue(pdf, pdfUtils, data.okonomi, soknad, utvidetSoknad, isKortSoknad)
             if (!isKortSoknad) {
                 leggTilArbeidOgUtdanning(pdf, pdfUtils, data.arbeid, data.utdanning, utvidetSoknad)
                 leggTilBosituasjon(pdf, pdfUtils, data.bosituasjon, utvidetSoknad)
-                leggTilUtgifterOgGjeld(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad)
+                leggTilUtgifterOgGjeld(pdf, pdfUtils, data.okonomi, soknad, utvidetSoknad)
                 leggTilOkonomiskeOpplysningerOgVedlegg(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.vedlegg, utvidetSoknad)
             }
             leggTilInformasjonFraForsiden(pdf, pdfUtils, data.personalia, utvidetSoknad)
-            leggTilJuridiskInformasjon(pdf, jsonInternalSoknad.soknad, utvidetSoknad)
-            leggTilMetainformasjon(pdf, jsonInternalSoknad.soknad)
+            leggTilJuridiskInformasjon(pdf, soknad, utvidetSoknad)
+            leggTilMetainformasjon(pdf, soknad)
 
             pdf.finish()
         } catch (e: Exception) {
@@ -109,5 +110,5 @@ class SosialhjelpPdfGenerator(
 
 private fun validate(json: JsonInternalSoknad) {
     // Innsendingstidspunkt skal ikke være null ved pdf-generering
-    requireNotNull(json.soknad.innsendingstidspunkt)
+    requireNotNull(json.soknad?.innsendingstidspunkt)
 }

@@ -37,11 +37,12 @@ object ArbeidOgUtdanning {
             pdf.addBlankLine()
         }
 
-        if (arbeid != null && arbeid.kommentarTilArbeidsforhold != null && arbeid.kommentarTilArbeidsforhold.verdi != null) {
+        val kommentarTilArbeidsforhold = arbeid?.kommentarTilArbeidsforhold?.verdi
+        if (kommentarTilArbeidsforhold != null) {
             pdf.skrivTekst(pdfUtils.getTekst("opplysninger.arbeidsituasjon.kommentarer.label"))
             pdf.addBlankLine()
             pdf.skrivTekstBold("Kommentar til arbeidsforhold:")
-            pdf.skrivTekst(arbeid.kommentarTilArbeidsforhold.verdi)
+            pdf.skrivTekst(kommentarTilArbeidsforhold)
             pdf.addBlankLine()
         } else if (utvidetSoknad) {
             pdf.skrivTekst(pdfUtils.getTekst("opplysninger.arbeidsituasjon.kommentarer.label"))
@@ -68,11 +69,11 @@ object ArbeidOgUtdanning {
             pdfUtils.skrivSvaralternativer(pdf, svaralternativer)
         }
 
-        if (utdanning != null && utdanning.erStudent != null && utdanning.erStudent) {
+        if (utdanning?.erStudent == true) {
             pdf.skrivTekstBold(pdfUtils.getTekst("dinsituasjon.studerer.true.grad.sporsmal"))
 
             utdanning.studentgrad
-                ?.let { pdf.skrivTekst(pdfUtils.getTekst("dinsituasjon.studerer.true.grad.$it")) }
+                ?.let { pdf.skrivTekst(pdfUtils.getTekst("dinsituasjon.studerer.true.grad.${it.value}")) }
                 ?: pdfUtils.skrivIkkeUtfylt(pdf)
 
             pdf.addBlankLine()

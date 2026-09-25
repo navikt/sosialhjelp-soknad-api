@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn
@@ -18,6 +18,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
+import no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.lang.Boolean.TRUE
@@ -39,10 +40,7 @@ internal class FamiliesituasjonStegTest {
 
     @Test
     fun brukerUtfyltSivilstatus_ulikGift() {
-        val ugift =
-            JsonSivilstatus()
-                .withKilde(JsonKilde.BRUKER)
-                .withStatus(JsonSivilstatus.Status.UGIFT)
+        val ugift = JsonSivilstatus(JsonKilde.BRUKER, JsonSivilstatus.Status.UGIFT)
         val soknad = createSoknad(ugift, null)
 
         val res = steg.get(soknad)
@@ -57,17 +55,7 @@ internal class FamiliesituasjonStegTest {
 
     @Test
     fun brukerUtfyltSivilstatus_ektefelle_manglerFelter() {
-        val gift =
-            JsonSivilstatus()
-                .withKilde(JsonKilde.BRUKER)
-                .withStatus(JsonSivilstatus.Status.GIFT)
-                .withEktefelle(
-                    JsonEktefelle()
-                        .withNavn(JsonNavn().withFornavn("Gul").withEtternavn("Knapp"))
-                        .withFodselsdato(null)
-                        .withPersonIdentifikator(null),
-                )
-                .withBorSammenMed(true)
+        val gift = JsonSivilstatus(JsonKilde.BRUKER, JsonSivilstatus.Status.GIFT, JsonEktefelle(JsonNavn("Gul", "", "Knapp")), borSammenMed = true)
         val soknad = createSoknad(gift, null)
 
         val res = steg.get(soknad)
@@ -90,11 +78,7 @@ internal class FamiliesituasjonStegTest {
 
     @Test
     fun systemSivilstatus_ektefelleMedAdressebeskyttelse() {
-        val giftMedAdressebeskyttelse =
-            JsonSivilstatus()
-                .withKilde(JsonKilde.SYSTEM)
-                .withStatus(JsonSivilstatus.Status.GIFT)
-                .withEktefelleHarDiskresjonskode(true)
+        val giftMedAdressebeskyttelse = JsonSivilstatus(JsonKilde.SYSTEM, JsonSivilstatus.Status.GIFT, ektefelleHarDiskresjonskode = true)
         val soknad = createSoknad(giftMedAdressebeskyttelse, null)
 
         val res = steg.get(soknad)
@@ -114,17 +98,7 @@ internal class FamiliesituasjonStegTest {
 
     @Test
     fun systemSivilstatus_ektefelle() {
-        val giftMedAdressebeskyttelse =
-            JsonSivilstatus()
-                .withKilde(JsonKilde.SYSTEM)
-                .withStatus(JsonSivilstatus.Status.GIFT)
-                .withEktefelle(
-                    JsonEktefelle()
-                        .withNavn(JsonNavn().withFornavn("Gul").withEtternavn("Knapp"))
-                        .withFodselsdato("1999-12-31")
-                        .withPersonIdentifikator("11111111111"),
-                )
-                .withFolkeregistrertMedEktefelle(true)
+        val giftMedAdressebeskyttelse = JsonSivilstatus(JsonKilde.SYSTEM, JsonSivilstatus.Status.GIFT, JsonEktefelle(JsonNavn("Gul", "", "Knapp"), "1999-12-31", "11111111111"), folkeregistrertMedEktefelle = true)
         val soknad = createSoknad(giftMedAdressebeskyttelse, null)
 
         val res = steg.get(soknad)
@@ -166,28 +140,7 @@ internal class FamiliesituasjonStegTest {
 
     @Test
     fun harSystemBarn_ikkeUtfyltDeltBosted_ikkeUtfyltBarnebidrag() {
-        val forsorgerplikt =
-            JsonForsorgerplikt()
-                .withHarForsorgerplikt(
-                    JsonHarForsorgerplikt()
-                        .withKilde(JsonKilde.SYSTEM)
-                        .withVerdi(TRUE),
-                )
-                .withAnsvar(
-                    listOf(
-                        JsonAnsvar()
-                            .withBarn(
-                                JsonBarn()
-                                    .withKilde(JsonKilde.SYSTEM)
-                                    .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
-                                    .withFodselsdato("2020-02-02")
-                                    .withPersonIdentifikator("11111111111"),
-                            )
-                            .withErFolkeregistrertSammen(JsonErFolkeregistrertSammen().withVerdi(TRUE))
-                            .withHarDeltBosted(null),
-                    ),
-                )
-                .withBarnebidrag(null)
+        val forsorgerplikt = JsonForsorgerplikt(JsonHarForsorgerplikt(JsonKilde.SYSTEM, TRUE), null, listOf(JsonAnsvar(JsonBarn(JsonKilde.SYSTEM, JsonNavn("Grønn", "", "Jakke"), "2020-02-02", "11111111111", false), null, JsonErFolkeregistrertSammen(JsonKildeSystem.SYSTEM, TRUE), null)))
         val soknad = createSoknad(null, forsorgerplikt)
 
         val res = steg.get(soknad)
@@ -219,37 +172,7 @@ internal class FamiliesituasjonStegTest {
 
     @Test
     fun harSystemBarn_utfyltDeltBosted_utfyltBarnebidrag() {
-        val forsorgerplikt =
-            JsonForsorgerplikt()
-                .withHarForsorgerplikt(
-                    JsonHarForsorgerplikt()
-                        .withKilde(JsonKilde.SYSTEM)
-                        .withVerdi(TRUE),
-                )
-                .withAnsvar(
-                    listOf(
-                        JsonAnsvar()
-                            .withBarn(
-                                JsonBarn()
-                                    .withKilde(JsonKilde.SYSTEM)
-                                    .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
-                                    .withFodselsdato("2020-02-02")
-                                    .withPersonIdentifikator("11111111111"),
-                            )
-                            .withErFolkeregistrertSammen(
-                                JsonErFolkeregistrertSammen()
-                                    .withVerdi(TRUE),
-                            )
-                            .withHarDeltBosted(
-                                JsonHarDeltBosted()
-                                    .withVerdi(TRUE),
-                            ),
-                    ),
-                )
-                .withBarnebidrag(
-                    JsonBarnebidrag()
-                        .withVerdi(JsonBarnebidrag.Verdi.BETALER),
-                )
+        val forsorgerplikt = JsonForsorgerplikt(JsonHarForsorgerplikt(JsonKilde.SYSTEM, TRUE), JsonBarnebidrag(JsonKildeBruker.BRUKER, JsonBarnebidrag.Verdi.BETALER), listOf(JsonAnsvar(JsonBarn(JsonKilde.SYSTEM, JsonNavn("Grønn", "", "Jakke"), "2020-02-02", "11111111111", false), null, JsonErFolkeregistrertSammen(JsonKildeSystem.SYSTEM, TRUE), JsonHarDeltBosted(JsonKildeBruker.BRUKER, TRUE))))
         val soknad = createSoknad(null, forsorgerplikt)
 
         val res = steg.get(soknad)
@@ -281,17 +204,8 @@ internal class FamiliesituasjonStegTest {
         sivilstatus: JsonSivilstatus?,
         forsorgerplikt: JsonForsorgerplikt?,
     ): JsonInternalSoknad {
-        return JsonInternalSoknad()
-            .withSoknad(
-                JsonSoknad()
-                    .withData(
-                        JsonData()
-                            .withFamilie(
-                                JsonFamilie()
-                                    .withSivilstatus(sivilstatus)
-                                    .withForsorgerplikt(forsorgerplikt ?: JsonForsorgerplikt()),
-                            ),
-                    ),
-            )
+        val base = createValidEmptyJsonInternalSoknad()
+        val soknad = requireNotNull(base.soknad)
+        return base.copy(soknad = soknad.copy(data = soknad.data.copy(familie = JsonFamilie(forsorgerplikt ?: JsonForsorgerplikt(), sivilstatus))))
     }
 }

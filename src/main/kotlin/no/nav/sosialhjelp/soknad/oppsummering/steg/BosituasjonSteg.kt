@@ -13,7 +13,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 
 object BosituasjonSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
-        val bosituasjon = jsonInternalSoknad.soknad.data.bosituasjon
+        val bosituasjon = requireNotNull(jsonInternalSoknad.soknad?.data?.bosituasjon)
         return Steg(
             stegNr = 5,
             tittel = "bosituasjonbolk.tittel",
@@ -39,7 +39,7 @@ object BosituasjonSteg {
                         listOf(
                             Felt(
                                 type = Type.CHECKBOX,
-                                svar = createSvar(botypeToTekstKey(bosituasjon.botype), SvarType.LOCALE_TEKST),
+                                svar = createSvar(botypeToTekstKey(requireNotNull(bosituasjon.botype)), SvarType.LOCALE_TEKST),
                             ),
                         )
                     } else {

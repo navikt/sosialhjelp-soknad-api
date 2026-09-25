@@ -11,11 +11,12 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 
 object BehovSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
-        val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
+        val data = requireNotNull(jsonInternalSoknad.soknad).data
+        val begrunnelse = requireNotNull(data.begrunnelse)
 
         val harUtfyltHvaSokesOm = !begrunnelse.hvaSokesOm.isNullOrEmpty()
 
-        val situasjonsendring = jsonInternalSoknad.soknad.data.situasjonendring
+        val situasjonsendring = data.situasjonendring
         val harFyltUtHvaErEndret = !situasjonsendring?.hvaHarEndretSeg.isNullOrBlank()
 
         return Steg(

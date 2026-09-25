@@ -29,8 +29,9 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrert
 
 object UtgifterOgGjeldSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
-        val forsorgerplikt = jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val data = requireNotNull(jsonInternalSoknad.soknad).data
+        val okonomi = requireNotNull(data.okonomi)
+        val forsorgerplikt = requireNotNull(data.familie?.forsorgerplikt)
         val boutgifterSporsmal = boutgifter(okonomi)
         val barneutgifterSporsmal = barneutgifter(okonomi)
         val alleSporsmal = boutgifterSporsmal.toMutableList()
@@ -73,7 +74,7 @@ object UtgifterOgGjeldSteg {
         )
         if (erBoutgifterUtfylt && harBoutgifter) {
             val utgifter = okonomi.opplysninger.utgift
-            val oversiktUtgift = okonomi.oversikt.utgift
+            val oversiktUtgift = okonomi.oversikt?.utgift
             val felter = mutableListOf<Felt>()
             addOversiktUtgiftIfPresent(felter, oversiktUtgift, UTGIFTER_HUSLEIE, "utgifter.boutgift.true.type.husleie")
             addOpplysningUtgiftIfPresent(felter, utgifter, UTGIFTER_STROM, "utgifter.boutgift.true.type.strom")
@@ -119,7 +120,7 @@ object UtgifterOgGjeldSteg {
         )
         if (erBarneutgifterUtfylt && harBarneutgifter) {
             val utgifter = okonomi.opplysninger.utgift
-            val oversiktUtgifter = okonomi.oversikt.utgift
+            val oversiktUtgifter = okonomi.oversikt?.utgift
             val felter = mutableListOf<Felt>()
             addOpplysningUtgiftIfPresent(
                 felter,
@@ -147,11 +148,11 @@ object UtgifterOgGjeldSteg {
      */
     private fun addOpplysningUtgiftIfPresent(
         felter: MutableList<Felt>,
-        utgifter: List<JsonOkonomiOpplysningUtgift>,
+        utgifter: List<JsonOkonomiOpplysningUtgift>?,
         type: String,
         key: String,
     ) {
-        utgifter.firstOrNull { type == it.type }
+        utgifter?.firstOrNull { type == it.type }
             ?.let {
                 felter.add(
                     Felt(
@@ -167,11 +168,11 @@ object UtgifterOgGjeldSteg {
      */
     private fun addOversiktUtgiftIfPresent(
         felter: MutableList<Felt>,
-        utgifter: List<JsonOkonomioversiktUtgift>,
+        utgifter: List<JsonOkonomioversiktUtgift>?,
         type: String,
         key: String,
     ) {
-        utgifter.firstOrNull { type == it.type }
+        utgifter?.firstOrNull { type == it.type }
             ?.let {
                 felter.add(
                     Felt(

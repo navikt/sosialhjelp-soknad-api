@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.kodeverk
 
 import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
+import no.nav.sosialhjelp.soknad.app.config.cacheValueType
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkCacheConfig.Companion.CACHE_NAME
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.context.annotation.Configuration
@@ -26,7 +27,7 @@ private fun KodeverkDto.toMap(): Map<String, String?> =
         .toMap()
 
 @Configuration
-class KodeverkCacheConfig : SoknadApiCacheConfig(CACHE_NAME, kodeverkTTL) {
+class KodeverkCacheConfig : SoknadApiCacheConfig(CACHE_NAME, cacheValueType<Map<String, String?>>(), kodeverkTTL) {
     companion object {
         const val CACHE_NAME: String = "kodeverk"
         private val kodeverkTTL: Duration = Duration.ofSeconds(86400L)

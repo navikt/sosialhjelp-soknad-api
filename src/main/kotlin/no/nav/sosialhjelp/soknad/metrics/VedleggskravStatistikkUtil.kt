@@ -81,13 +81,13 @@ object VedleggskravStatistikkUtil {
         val vedleggMetadataListe = VedleggMetadataListe()
 
         vedleggMetadataListe.vedleggListe =
-            json.vedlegg.vedlegg
+            requireNotNull(json.vedlegg).vedlegg
                 .map {
                     VedleggMetadata(
                         skjema = it.type,
                         tillegg = it.tilleggsinfo,
                         filnavn = it.type,
-                        status = Vedleggstatus.valueOf(it.status),
+                        status = Vedleggstatus.valueOf(requireNotNull(it.status)),
                     )
                 }.toMutableList()
         return vedleggMetadataListe

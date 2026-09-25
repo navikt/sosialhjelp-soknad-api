@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
@@ -20,11 +21,7 @@ internal class AnnenFormueTest {
     @Test
     fun ikkeUtfylt() {
         val okonomi =
-            JsonOkonomi()
-                .withOpplysninger(
-                    JsonOkonomiopplysninger()
-                        .withBekreftelse(emptyList()),
-                )
+            JsonOkonomi(opplysninger = JsonOkonomiopplysninger(utbetaling = emptyList(), bekreftelse = emptyList()))
 
         val avsnitt = annenFormue.getAvsnitt(okonomi)
         assertThat(avsnitt.sporsmal).hasSize(1)
@@ -49,11 +46,7 @@ internal class AnnenFormueTest {
 
     @Test
     fun harAnnenFormueUtenHvaEierDuSvar() {
-        val okonomi = createOkonomi(true)
-        okonomi.withOversikt(
-            JsonOkonomioversikt()
-                .withFormue(emptyList()),
-        )
+        val okonomi = createOkonomi(true).copy(oversikt = JsonOkonomioversikt(emptyList(), emptyList(), emptyList()))
 
         val avsnitt = annenFormue.getAvsnitt(okonomi)
         assertThat(avsnitt.sporsmal).hasSize(2)
@@ -70,17 +63,23 @@ internal class AnnenFormueTest {
 
     @Test
     fun harAnnenFormueMedBeksrivelseAnnet() {
-        val okonomi = createOkonomi(true)
-        okonomi.withOversikt(
-            JsonOkonomioversikt()
-                .withFormue(
-                    listOf(
-                        createFormue(SoknadJsonTyper.VERDI_BOLIG),
-                        createFormue(SoknadJsonTyper.VERDI_ANNET),
+        val originalOkonomi = createOkonomi(true)
+        val okonomi =
+            originalOkonomi.copy(
+                oversikt = JsonOkonomioversikt(emptyList(), emptyList(), listOf(createFormue(SoknadJsonTyper.VERDI_BOLIG), createFormue(SoknadJsonTyper.VERDI_ANNET))),
+                opplysninger =
+                    originalOkonomi.opplysninger.copy(
+                        beskrivelseAvAnnet =
+                            JsonOkonomibeskrivelserAvAnnet(
+                                kilde = JsonKildeBruker.BRUKER,
+                                verdi = "verdi",
+                                sparing = "",
+                                utbetaling = "",
+                                boutgifter = "",
+                                barneutgifter = "",
+                            ),
                     ),
-                ),
-        )
-        okonomi.opplysninger.beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet().withVerdi("verdi")
+            )
 
         val avsnitt = annenFormue.getAvsnitt(okonomi)
         assertThat(avsnitt.sporsmal).hasSize(3)
@@ -103,22 +102,16 @@ internal class AnnenFormueTest {
     }
 
     private fun createOkonomi(harBekreftelse: Boolean): JsonOkonomi {
-        return JsonOkonomi()
-            .withOpplysninger(
-                JsonOkonomiopplysninger()
-                    .withBekreftelse(
-                        listOf(
-                            JsonOkonomibekreftelse()
-                                .withType(SoknadJsonTyper.BEKREFTELSE_VERDI)
-                                .withVerdi(harBekreftelse),
-                        ),
-                    ),
-            )
+        return JsonOkonomi(
+            opplysninger =
+                JsonOkonomiopplysninger(
+                    utbetaling = emptyList(),
+                    bekreftelse = listOf(JsonOkonomibekreftelse(JsonKilde.BRUKER, SoknadJsonTyper.BEKREFTELSE_VERDI, "", harBekreftelse)),
+                ),
+        )
     }
 
     private fun createFormue(type: String): JsonOkonomioversiktFormue {
-        return JsonOkonomioversiktFormue()
-            .withType(type)
-            .withKilde(JsonKilde.BRUKER)
+        return JsonOkonomioversiktFormue(kilde = JsonKilde.BRUKER, type = type, tittel = "", overstyrtAvBruker = false)
     }
 }

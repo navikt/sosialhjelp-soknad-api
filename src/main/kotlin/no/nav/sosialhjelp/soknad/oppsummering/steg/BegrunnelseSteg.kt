@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -14,13 +13,14 @@ object BegrunnelseSteg {
     fun get(
         jsonInternalSoknad: JsonInternalSoknad,
     ): Steg {
-        val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
+        val begrunnelse = requireNotNull(jsonInternalSoknad.soknad?.data?.begrunnelse)
 
 //        val harUtfyltHvaSokesOm = begrunnelse.hvaSokesOm != null && begrunnelse.hvaSokesOm.isNotEmpty() && !BegrunnelseUtils.isEmptyJson(begrunnelse.hvaSokesOm)
 
         val harUtfyltHvaSokesOm = !begrunnelse.hvaSokesOm.isNullOrEmpty()
 
-        val harUtfyltHvorforSoke = begrunnelse.hvorforSoke != null && begrunnelse.hvorforSoke.isNotEmpty()
+        val hvorforSoke = begrunnelse.hvorforSoke
+        val harUtfyltHvorforSoke = !hvorforSoke.isNullOrEmpty()
         return Steg(
             stegNr = 2,
             tittel = "begrunnelsebolk.tittel",
@@ -39,7 +39,7 @@ object BegrunnelseSteg {
                                 Sporsmal(
                                     tittel = "begrunnelse.hvorfor.sporsmal",
                                     erUtfylt = harUtfyltHvorforSoke,
-                                    felt = if (harUtfyltHvorforSoke) hvorforSokeFelt(begrunnelse) else null,
+                                    felt = if (harUtfyltHvorforSoke) hvorforSokeFelt(requireNotNull(hvorforSoke)) else null,
                                 ),
                             ),
                     ),
@@ -55,11 +55,11 @@ object BegrunnelseSteg {
             ),
         )
 
-    private fun hvorforSokeFelt(begrunnelse: JsonBegrunnelse): List<Felt> =
+    private fun hvorforSokeFelt(hvorforSoke: String): List<Felt> =
         listOf(
             Felt(
                 type = Type.TEKST,
-                svar = createSvar(begrunnelse.hvorforSoke, SvarType.TEKST),
+                svar = createSvar(hvorforSoke, SvarType.TEKST),
             ),
         )
 }

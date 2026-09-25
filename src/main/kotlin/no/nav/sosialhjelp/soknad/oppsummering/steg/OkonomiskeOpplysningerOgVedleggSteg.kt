@@ -52,8 +52,8 @@ object OkonomiskeOpplysningerOgVedleggSteg {
         jsonInternalSoknad: JsonInternalSoknad,
         vedleggInfo: List<OppsummeringVedleggInfo>,
     ): Steg {
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
-        val vedlegg = jsonInternalSoknad.vedlegg
+        val okonomi = requireNotNull(jsonInternalSoknad.soknad?.data?.okonomi)
+        val vedlegg = requireNotNull(jsonInternalSoknad.vedlegg)
         return Steg(
             stegNr = 8,
             tittel = "opplysningerbolk.tittel",
@@ -96,7 +96,7 @@ object OkonomiskeOpplysningerOgVedleggSteg {
         sporsmal: MutableList<Sporsmal>,
         okonomi: JsonOkonomi,
     ) {
-        val inntekter: List<JsonOkonomioversiktInntekt>? = okonomi.oversikt.inntekt
+        val inntekter: List<JsonOkonomioversiktInntekt>? = okonomi.oversikt?.inntekt
 
         // Lønnsinntekt
         inntekter
@@ -162,7 +162,7 @@ object OkonomiskeOpplysningerOgVedleggSteg {
         sporsmal: MutableList<Sporsmal>,
         okonomi: JsonOkonomi,
     ) {
-        val formuer: List<JsonOkonomioversiktFormue>? = okonomi.oversikt.formue
+        val formuer: List<JsonOkonomioversiktFormue>? = okonomi.oversikt?.formue
 
         formuer
             ?.filter { formueTyper.contains(it.type) }
@@ -248,7 +248,7 @@ object OkonomiskeOpplysningerOgVedleggSteg {
                 )
             }
 
-        val oversiktUtgifter: List<JsonOkonomioversiktUtgift>? = okonomi.oversikt.utgift
+        val oversiktUtgifter: List<JsonOkonomioversiktUtgift>? = okonomi.oversikt?.utgift
         oversiktUtgifter
             ?.filter { barneutgifter.contains(it.type) }
             ?.forEach {
@@ -315,7 +315,7 @@ object OkonomiskeOpplysningerOgVedleggSteg {
         return vedleggSpesifikasjon.vedlegg
             .map {
                 Sporsmal(
-                    tittel = getTittelFrom(it.type, it.tilleggsinfo),
+                    tittel = getTittelFrom(requireNotNull(it.type), requireNotNull(it.tilleggsinfo)),
                     erUtfylt = true,
                     felt = vedleggFelter(it, vedleggInfo),
                 )
@@ -339,7 +339,7 @@ object OkonomiskeOpplysningerOgVedleggSteg {
                     type = Type.VEDLEGG,
                     vedlegg =
                         vedlegg.filer.map {
-                            Vedlegg(it.filnavn, getIdFraVedlegg(it, vedleggInfo))
+                            Vedlegg(requireNotNull(it.filnavn), getIdFraVedlegg(it, vedleggInfo))
                         },
                 )
             } else {

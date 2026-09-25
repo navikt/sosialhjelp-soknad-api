@@ -29,7 +29,7 @@ class OppsummeringService(
         soknadId: UUID,
     ): Oppsummering {
         return useActiveJsonInternalSoknad(soknadId).let {
-            when (it.soknad.data.soknadstype) {
+            when (requireNotNull(it.soknad).data.soknadstype) {
                 JsonData.Soknadstype.KORT -> kortSoknadOppsummering(it)
                 else -> soknadOppsummering(it, getVedleggInfo(soknadId))
             }

@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
+import no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -47,17 +47,8 @@ internal class BegrunnelseStegTest {
         hvaSokesOm: String?,
         hvorforSoke: String,
     ): JsonInternalSoknad {
-        return JsonInternalSoknad()
-            .withSoknad(
-                JsonSoknad()
-                    .withData(
-                        JsonData()
-                            .withBegrunnelse(
-                                JsonBegrunnelse()
-                                    .withHvaSokesOm(hvaSokesOm)
-                                    .withHvorforSoke(hvorforSoke),
-                            ),
-                    ),
-            )
+        val base = createValidEmptyJsonInternalSoknad()
+        val soknad = requireNotNull(base.soknad)
+        return base.copy(soknad = soknad.copy(data = soknad.data.copy(begrunnelse = JsonBegrunnelse(JsonKildeBruker.BRUKER, hvaSokesOm ?: "", hvorforSoke))))
     }
 }

@@ -23,9 +23,9 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `Inntekt med type BARNEBIDRAG_MOTTAR skal mappes til JsonOkonomioversiktInntekt`() {
         val inntekter = createInntekter()
 
-        InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()
+        jsonOkonomi = InntektToJsonMapper(inntekter).doMapping(jsonOkonomi)
 
-        with(jsonOkonomi.oversikt) {
+        with(requireNotNull(jsonOkonomi.oversikt)) {
             assertThat(inntekt).hasSize(2).allMatch { it.type == inntekter.first().type.getSoknadJsonTypeString() }
         }
     }
@@ -40,7 +40,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
                     inntektDetaljer = OkonomiDetaljer(listOf(createFullNavYtelseInntekt())),
                 ),
             )
-        InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()
+        jsonOkonomi = InntektToJsonMapper(inntekter).doMapping(jsonOkonomi)
 
         with(jsonOkonomi.opplysninger) {
             assertThat(utbetaling).hasSize(1)
@@ -65,7 +65,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
                         ),
                 ),
             )
-        InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()
+        jsonOkonomi = InntektToJsonMapper(inntekter).doMapping(jsonOkonomi)
 
         with(jsonOkonomi.opplysninger) {
             assertThat(utbetaling).hasSize(2).allMatch { it.type == SoknadJsonTypeEnum.UTBETALING_SALG.verdi }
@@ -76,11 +76,11 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
     fun `Type med Beskrivelse skal mappes til JsonBeskrivelseAvAnnet`() {
         val inntekter = setOf(Inntekt(InntektType.UTBETALING_ANNET, "Beskrivelse av annet"))
 
-        InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()
+        jsonOkonomi = InntektToJsonMapper(inntekter).doMapping(jsonOkonomi)
 
         with(jsonOkonomi.opplysninger) {
             assertThat(utbetaling).hasSize(1).allMatch { it.type == SoknadJsonTypeEnum.UTBETALING_ANNET.verdi }
-            assertThat(beskrivelseAvAnnet.utbetaling).isEqualTo(inntekter.first().beskrivelse)
+            assertThat(requireNotNull(beskrivelseAvAnnet).utbetaling).isEqualTo(inntekter.first().beskrivelse)
         }
     }
 
@@ -89,14 +89,14 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
         val nyUtgift = Inntekt(type = InntektType.UTBETALING_HUSBANKEN)
         val annenUtgift = Inntekt(type = InntektType.JOBB)
 
-        InntektToJsonMapper(inntekter = setOf(nyUtgift, annenUtgift), jsonOkonomi).doMapping()
+        jsonOkonomi = InntektToJsonMapper(inntekter = setOf(nyUtgift, annenUtgift)).doMapping(jsonOkonomi)
 
         with(jsonOkonomi) {
             assertThat(opplysninger.utbetaling).hasSize(1)
             assertThat(opplysninger.utbetaling.first().type).isEqualTo(SoknadJsonTypeEnum.UTBETALING_HUSBANKEN.verdi)
 
-            assertThat(oversikt.inntekt).hasSize(1)
-            assertThat(oversikt.inntekt.first().type).isEqualTo(SoknadJsonTypeEnum.JOBB.verdi)
+            assertThat(requireNotNull(oversikt).inntekt).hasSize(1)
+            assertThat(requireNotNull(oversikt).inntekt.first().type).isEqualTo(SoknadJsonTypeEnum.JOBB.verdi)
         }
     }
 
@@ -111,7 +111,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
                     ),
             )
 
-        InntektToJsonMapper(inntekter = setOf(inntekt), jsonOkonomi).doMapping()
+        jsonOkonomi = InntektToJsonMapper(inntekter = setOf(inntekt)).doMapping(jsonOkonomi)
 
         with(jsonOkonomi.opplysninger) {
             assertThat(utbetaling).hasSize(2)
@@ -162,7 +162,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
                     ),
             )
 
-        InntektToJsonMapper(inntekter = setOf(inntekt), jsonOkonomi).doMapping()
+        jsonOkonomi = InntektToJsonMapper(inntekter = setOf(inntekt)).doMapping(jsonOkonomi)
 
         assertThat(jsonOkonomi.opplysninger.utbetaling)
             .hasSize(1)
@@ -189,7 +189,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
                     ),
             )
 
-        InntektToJsonMapper(inntekter = setOf(inntekt), jsonOkonomi).doMapping()
+        jsonOkonomi = InntektToJsonMapper(inntekter = setOf(inntekt)).doMapping(jsonOkonomi)
 
         assertThat(jsonOkonomi.opplysninger.utbetaling).hasSize(1)
         jsonOkonomi.opplysninger.utbetaling.first().let {

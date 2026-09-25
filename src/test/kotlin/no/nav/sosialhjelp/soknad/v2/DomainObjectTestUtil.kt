@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
@@ -81,29 +80,24 @@ import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker as MottakerSoknad
 
 fun createValidEmptyJsonInternalSoknad(): JsonInternalSoknad {
-    return createJsonInternalSoknadWithInitializedSuperObjects()
-        .apply {
-            soknad
-                .withDriftsinformasjon(JsonDriftsinformasjon().withInntektFraSkatteetatenFeilet(false))
-                .withMottaker(MottakerSoknad())
-            soknad.data
-                .withOkonomi(JsonOkonomi().withOpplysninger(JsonOkonomiopplysninger()))
-                .withBegrunnelse(JsonBegrunnelse().withKilde(JsonKildeBruker.BRUKER).withHvaSokesOm(""))
-                .withPersonalia(JsonPersonalia())
-            soknad.data.personalia
-                .withKontonummer(JsonKontonummer().withKilde(JsonKilde.SYSTEM))
-                .withNavn(JsonSokernavn().withFornavn("").withMellomnavn("").withEtternavn(""))
-                .withPersonIdentifikator(JsonPersonIdentifikator().withVerdi("12345612345"))
-        }
+    val personalia =
+        JsonPersonalia(
+            JsonPersonIdentifikator(JsonPersonIdentifikator.Kilde.SYSTEM, "12345612345"),
+            JsonSokernavn(JsonSokernavn.Kilde.SYSTEM, "", "", ""),
+            JsonKontonummer(JsonKilde.SYSTEM),
+        )
+    val okonomi = JsonOkonomi(JsonOkonomiopplysninger(emptyList(), emptyList(), null, emptyList(), null), null)
+    val data = JsonData(personalia = personalia, begrunnelse = JsonBegrunnelse(JsonKildeBruker.BRUKER, "", ""), okonomi = okonomi)
+    return JsonInternalSoknad(
+        soknad = JsonSoknad(version = "1.0.11", data = data, mottaker = MottakerSoknad(), driftsinformasjon = JsonDriftsinformasjon(false), kompatibilitet = emptyList()),
+        vedlegg = JsonVedleggSpesifikasjon(emptyList()),
+        mottaker = JsonSoknadsmottaker(),
+        midlertidigAdresse = null,
+    )
 }
 
 fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad =
-    JsonInternalSoknad().apply {
-        soknad = JsonSoknad().withData(JsonData())
-        vedlegg = JsonVedleggSpesifikasjon()
-        mottaker = JsonSoknadsmottaker()
-        midlertidigAdresse = JsonAdresse()
-    }
+    createValidEmptyJsonInternalSoknad()
 
 fun createSituasjonsendring(
     soknadId: UUID,

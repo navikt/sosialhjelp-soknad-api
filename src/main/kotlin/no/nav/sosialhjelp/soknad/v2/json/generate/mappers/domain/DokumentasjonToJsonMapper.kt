@@ -29,13 +29,13 @@ class DokumentasjonToJsonMapper(
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) {
+    ): JsonInternalSoknad {
         val dokumentasjonList = dokumentasjonRepository.findAllBySoknadId(soknadId)
         if (unleash.isEnabled("sosialhjelp.soknad.tusUpload", false)) {
             val uploadVedlegg = uploadClient.getVedleggSpesifikasjon(soknadId)
-            doMapping(dokumentasjonList, uploadVedlegg, jsonInternalSoknad)
+            return doMapping(dokumentasjonList, uploadVedlegg, jsonInternalSoknad)
         } else {
-            doMappingLegacy(dokumentasjonList, jsonInternalSoknad)
+            return doMappingLegacy(dokumentasjonList, jsonInternalSoknad)
         }
     }
 
@@ -46,9 +46,7 @@ class DokumentasjonToJsonMapper(
             dokumentasjonList: List<Dokumentasjon>,
             uploadVedlegg: JsonVedleggSpesifikasjon,
             json: JsonInternalSoknad,
-        ) {
-            json.vedlegg ?: json.withVedlegg(JsonVedleggSpesifikasjon())
-
+        ): JsonInternalSoknad {
             val uploadByKey =
                 uploadVedlegg.vedlegg
                     .orEmpty()
@@ -69,7 +67,7 @@ class DokumentasjonToJsonMapper(
                     val mergedFiler =
                         (tusEntry?.filer.orEmpty() + dokumentasjon.dokumenter.map { it.toJsonFiler() })
                             .distinctBy { it.filnavn }
-                    (tusEntry ?: dokumentasjon.toJsonVedleggWithoutFiler()).withFiler(mergedFiler)
+                    (tusEntry ?: dokumentasjon.toJsonVedleggWithoutFiler()).copy(filer = mergedFiler)
                 }
 
             val extraFromUpload = uploadByKey.keys - localKeys
@@ -82,39 +80,23 @@ class DokumentasjonToJsonMapper(
                 )
             }
 
-            json.vedlegg.withVedlegg(mergedVedlegg + extraFromUpload.map { uploadByKey.getValue(it) })
+            return json.copy(vedlegg = JsonVedleggSpesifikasjon(mergedVedlegg + extraFromUpload.map { uploadByKey.getValue(it) }))
         }
 
         fun doMappingLegacy(
             dokumentasjonList: List<Dokumentasjon>,
             json: JsonInternalSoknad,
-        ) {
-            json.vedlegg ?: json.withVedlegg(JsonVedleggSpesifikasjon())
-            json.vedlegg.withVedlegg(dokumentasjonList.map { it.toJsonVedlegg() })
-        }
+        ): JsonInternalSoknad = json.copy(vedlegg = JsonVedleggSpesifikasjon(dokumentasjonList.map { it.toJsonVedlegg() }))
     }
 }
 
 private data class VedleggKey(val type: String?, val tilleggsinfo: String?)
 
 private fun Dokumentasjon.toJsonVedlegg() =
-    JsonVedlegg()
-        .withType(type.getVedleggTypeString())
-        .withStatus(status.toVedleggStatusString())
-        .withTilleggsinfo(mapToTilleggsinfo())
-        .withFiler(dokumenter.map { it.toJsonFiler() })
-        .withHendelseType(if (type.isUtgiftTypeAnnet()) JsonVedlegg.HendelseType.BRUKER else JsonVedlegg.HendelseType.SOKNAD)
-        // TODO Hvordan ønsker vi å benytte denne referansen... Altså hva skal den peke på?
-        .withHendelseReferanse(if (type.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
+    JsonVedlegg(type.getVedleggTypeString(), mapToTilleggsinfo(), null, status.toVedleggStatusString(), dokumenter.map { it.toJsonFiler() }, if (type.isUtgiftTypeAnnet()) JsonVedlegg.HendelseType.BRUKER else JsonVedlegg.HendelseType.SOKNAD, if (type.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
 
 private fun Dokumentasjon.toJsonVedleggWithoutFiler() =
-    JsonVedlegg()
-        .withType(type.getVedleggTypeString())
-        .withStatus(status.toVedleggStatusString())
-        .withTilleggsinfo(mapToTilleggsinfo())
-        .withFiler(emptyList())
-        .withHendelseType(if (type.isUtgiftTypeAnnet()) JsonVedlegg.HendelseType.BRUKER else JsonVedlegg.HendelseType.SOKNAD)
-        .withHendelseReferanse(if (type.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
+    JsonVedlegg(type.getVedleggTypeString(), mapToTilleggsinfo(), null, status.toVedleggStatusString(), emptyList(), if (type.isUtgiftTypeAnnet()) JsonVedlegg.HendelseType.BRUKER else JsonVedlegg.HendelseType.SOKNAD, if (type.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
 
 internal fun DokumentasjonStatus.toVedleggStatusString(): String =
     when (this) {
@@ -129,7 +111,6 @@ private fun Dokumentasjon.mapToTilleggsinfo(): String {
 }
 
 private fun DokumentRef.toJsonFiler() =
-    JsonFiler()
-        .withFilnavn(filnavn)
+    JsonFiler(filnavn)
 
 private fun OpplysningType.isUtgiftTypeAnnet() = this == UtgiftType.UTGIFTER_ANDRE_UTGIFTER

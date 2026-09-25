@@ -1,13 +1,12 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
+import no.nav.sosialhjelp.soknad.v2.createValidEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -86,17 +85,8 @@ internal class BosituasjonStegTest {
         botype: Botype?,
         antallPersoner: Int?,
     ): JsonInternalSoknad {
-        return JsonInternalSoknad()
-            .withSoknad(
-                JsonSoknad()
-                    .withData(
-                        JsonData()
-                            .withBosituasjon(
-                                JsonBosituasjon()
-                                    .withBotype(botype)
-                                    .withAntallPersoner(antallPersoner),
-                            ),
-                    ),
-            )
+        val base = createValidEmptyJsonInternalSoknad()
+        val soknad = requireNotNull(base.soknad)
+        return base.copy(soknad = soknad.copy(data = soknad.data.copy(bosituasjon = JsonBosituasjon(botype = botype, antallPersoner = antallPersoner))))
     }
 }

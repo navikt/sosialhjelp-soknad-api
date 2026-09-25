@@ -104,7 +104,7 @@ class SkattbarInntekt {
                             createSvar("Uten organisasjonsnummer", SvarType.TEKST)
                     } else {
                         map["utbetalinger.utbetaling.arbeidsgivernavn.label"] =
-                            createSvar(it.organisasjon.navn, SvarType.TEKST)
+                            createSvar(it.organisasjon?.navn, SvarType.TEKST)
                     }
                     map["utbetalinger.utbetaling.periodeFom.label"] = createSvar(it.periodeFom, SvarType.DATO)
                     map["utbetalinger.utbetaling.periodeTom.label"] = createSvar(it.periodeTom, SvarType.DATO)

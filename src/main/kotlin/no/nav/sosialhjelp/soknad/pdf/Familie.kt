@@ -43,7 +43,7 @@ object Familie {
 
             // Forsørgerplikt
             val forsorgerplikt = familie.forsorgerplikt
-            if (forsorgerplikt != null && forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.verdi == true) {
+            if (forsorgerplikt?.harForsorgerplikt?.verdi == true) {
                 leggTilForsorgerplikt(utvidetSoknad, pdf, pdfUtils, forsorgerplikt)
             } else {
                 if (utvidetSoknad) {
@@ -65,7 +65,7 @@ object Familie {
     ) {
         if (utvidetSoknad) {
             pdf.skrivTekst(pdfUtils.getTekst("familierelasjon.ingress_folkeregisteret"))
-            val antallBarnFraFolkeregisteret = forsorgerplikt.ansvar.count { it.barn.kilde == JsonKilde.SYSTEM }
+            val antallBarnFraFolkeregisteret = forsorgerplikt.ansvar.count { it.barn?.kilde == JsonKilde.SYSTEM }
             pdf.skrivTekst(
                 "${pdfUtils.getTekst("familierelasjon.ingress_forsorger")} $antallBarnFraFolkeregisteret barn under 18år",
             )
@@ -78,9 +78,9 @@ object Familie {
         pdf.skrivTekstBold(pdfUtils.getTekst("familie.barn.true.barnebidrag.sporsmal"))
         if (listeOverAnsvar.isNotEmpty()) {
             val barnebidrag = forsorgerplikt.barnebidrag
-            if (barnebidrag != null && barnebidrag.verdi != null) {
-                barnebidrag.verdi
-                    ?.let { pdf.skrivTekst(pdfUtils.getTekst("familie.barn.true.barnebidrag.${it.value()}")) }
+            val barnebidragVerdi = barnebidrag?.verdi
+            if (barnebidragVerdi != null) {
+                pdf.skrivTekst(pdfUtils.getTekst("familie.barn.true.barnebidrag.${barnebidragVerdi.value}"))
             }
         } else {
             pdfUtils.skrivIkkeUtfylt(pdf)
@@ -102,15 +102,15 @@ object Familie {
             if (status == JsonSivilstatus.Status.GIFT) {
                 if (utvidetSoknad) {
                     pdf.skrivTekst(pdfUtils.getTekst("system.familie.sivilstatus"))
-                    if (sivilstatus.ektefelleHarDiskresjonskode != null && !sivilstatus.ektefelleHarDiskresjonskode) {
+                    if (sivilstatus.ektefelleHarDiskresjonskode == false) {
                         pdf.skrivTekst(pdfUtils.getTekst("system.familie.sivilstatus.label"))
                     }
                 } else {
-                    pdf.skrivTekst(pdfUtils.getTekst("familie.sivilstatus.$status"))
+                    pdf.skrivTekst(pdfUtils.getTekst("familie.sivilstatus.${status.value}"))
                 }
                 pdf.addBlankLine()
 
-                if (sivilstatus.ektefelleHarDiskresjonskode != null && sivilstatus.ektefelleHarDiskresjonskode) {
+                if (sivilstatus.ektefelleHarDiskresjonskode == true) {
                     pdf.skrivTekstBold(pdfUtils.getTekst("system.familie.sivilstatus.ikkeTilgang.label"))
                     pdf.skrivTekst("Ektefelle/partner har diskresjonskode")
                 } else {
@@ -150,7 +150,7 @@ object Familie {
         if (kilde != null && kilde == JsonKilde.BRUKER) {
             val status = sivilstatus.status
             if (status != null) {
-                pdf.skrivTekst(pdfUtils.getTekst("familie.sivilstatus.$status"))
+                pdf.skrivTekst(pdfUtils.getTekst("familie.sivilstatus.${status.value}"))
                 pdf.addBlankLine()
 
                 if (utvidetSoknad) {
@@ -193,10 +193,11 @@ object Familie {
                         }
                         ?: pdfUtils.skrivIkkeUtfyltMedGuard(pdf, "familie.sivilstatus.gift.ektefelle.fnr.label")
 
-                    if (ektefelle.personIdentifikator != null && ektefelle.personIdentifikator.length == 11) {
+                    val personIdentifikator = ektefelle.personIdentifikator
+                    if (personIdentifikator?.length == 11) {
                         pdfUtils.skrivTekstMedGuard(
                             pdf,
-                            ektefelle.personIdentifikator.substring(6, 11),
+                            personIdentifikator.substring(6, 11),
                             "familie.sivilstatus.gift.ektefelle.pnr.label",
                         )
                     } else {
@@ -228,7 +229,7 @@ object Familie {
         }
         if (utvidetSoknad) {
             val status = sivilstatus.status
-            if (status != null && status.toString() == "gift" && sivilstatus.ektefelleHarDiskresjonskode != null && !sivilstatus.ektefelleHarDiskresjonskode) {
+            if (status == JsonSivilstatus.Status.GIFT && sivilstatus.ektefelleHarDiskresjonskode == false) {
                 pdf.addBlankLine()
                 pdf.skrivTekstBold(pdfUtils.getTekst("system.familie.sivilstatus.informasjonspanel.tittel"))
                 pdf.skrivTekst(pdfUtils.getTekst("system.familie.sivilstatus.informasjonspanel.tekst"))
@@ -244,7 +245,7 @@ object Familie {
     ) {
         listeOverAnsvar.forEach { ansvar ->
             val barn = ansvar.barn
-            if (barn.kilde == JsonKilde.SYSTEM && barn.harDiskresjonskode == null || !barn.harDiskresjonskode) {
+            if ((barn?.kilde == JsonKilde.SYSTEM && barn.harDiskresjonskode == null) || barn?.harDiskresjonskode == false) {
                 // navn
                 val navnPaBarnTekst = getJsonNavnTekst(barn.navn)
                 pdfUtils.skrivTekstMedGuard(pdf, navnPaBarnTekst, "familie.barn.true.barn.navn.label")
@@ -256,7 +257,7 @@ object Familie {
                 // Samme folkeregistrerte adresse
                 val erFolkeregistrertSammen = ansvar.erFolkeregistrertSammen
                 if (erFolkeregistrertSammen != null) {
-                    if (erFolkeregistrertSammen.verdi != null && erFolkeregistrertSammen.verdi) {
+                    if (erFolkeregistrertSammen.verdi) {
                         pdfUtils.skrivTekstMedGuard(pdf, "Ja", "familierelasjon.samme_folkeregistrerte_adresse")
                         leggTilDeltBosted(pdf, pdfUtils, ansvar, true, utvidetSoknad)
                     } else {
@@ -299,8 +300,9 @@ object Familie {
                 pdfUtils.skrivHjelpetest(pdf, "system.familie.barn.true.barn.deltbosted.hjelpetekst.tekst")
             }
         } else {
-            if (ansvar.samvarsgrad != null && ansvar.samvarsgrad.verdi != null) {
-                pdfUtils.skrivTekstMedGuard(pdf, ansvar.samvarsgrad.verdi.toString() + "%", "system.familie.barn.true.barn.grad.sporsmal")
+            val samvarsgrad = ansvar.samvarsgrad?.verdi
+            if (samvarsgrad != null) {
+                pdfUtils.skrivTekstMedGuard(pdf, "$samvarsgrad%", "system.familie.barn.true.barn.grad.sporsmal")
             } else {
                 pdfUtils.skrivIkkeUtfyltMedGuard(pdf, "system.familie.barn.true.barn.grad.sporsmal")
             }

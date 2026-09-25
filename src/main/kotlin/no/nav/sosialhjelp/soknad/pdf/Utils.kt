@@ -55,19 +55,8 @@ object Utils {
         } ?: ""
     }
 
-    fun getJsonNavnTekst(navn: JsonNavn?): String {
-        var fullstendigNavn = ""
-        if (navn != null) {
-            if (navn.fornavn != null) {
-                fullstendigNavn += navn.fornavn
-            }
-            if (navn.mellomnavn != null) {
-                fullstendigNavn += " " + navn.mellomnavn
-            }
-            if (navn.etternavn != null) {
-                fullstendigNavn += " " + navn.etternavn
-            }
-        }
-        return fullstendigNavn
-    }
+    fun getJsonNavnTekst(navn: JsonNavn?): String =
+        navn
+            ?.let { listOf(it.fornavn, it.mellomnavn, it.etternavn).filter(String::isNotBlank).joinToString(" ") }
+            .orEmpty()
 }

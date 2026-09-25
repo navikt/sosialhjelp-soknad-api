@@ -22,15 +22,16 @@ object InntektOgFormueSteg {
     private val annenFormue = AnnenFormue()
 
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
+        val soknad = requireNotNull(jsonInternalSoknad.soknad)
+        val okonomi = requireNotNull(soknad.data.okonomi)
         val opplysninger = okonomi.opplysninger
-        val driftsinformasjon = jsonInternalSoknad.soknad.driftsinformasjon
+        val driftsinformasjon = soknad.driftsinformasjon
 
         val avsnitt = mutableListOf<Avsnitt>()
         avsnitt.add(skattbarInntektAvsnitt.getAvsnitt(okonomi, driftsinformasjon))
         avsnitt.add(navUtbetalinger.getAvsnitt(opplysninger, driftsinformasjon))
         avsnitt.add(bostotteHusbanken.getAvsnitt(opplysninger, driftsinformasjon))
-        if (erStudent(jsonInternalSoknad.soknad.data.utdanning)) {
+        if (erStudent(soknad.data.utdanning)) {
             avsnitt.add(studielan.getAvsnitt(opplysninger))
         }
         avsnitt.add(andreInntekter.getAvsnitt(opplysninger))

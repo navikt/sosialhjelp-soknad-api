@@ -7,6 +7,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonAvsender
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
@@ -305,8 +306,10 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 ),
             )
         every { digisosApiV2Client.getInnsynsfil("abc", "metadataid") } returns
-            JsonDigisosSoker()
-                .withHendelser(
+            JsonDigisosSoker(
+                version = "1",
+                avsender = JsonAvsender("test", "1"),
+                hendelser =
                     listOf(
                         createUpcomingUtbetaling(
                             tidspunkt = "${LocalDate.now().minusDays(10)}T00:00:00Z",
@@ -315,7 +318,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                             utbetalingsdato = "${LocalDate.now()}T00:00:00Z",
                         ),
                     ),
-                )
+            )
 
         val adresserInput =
             AdresserInput(
@@ -361,12 +364,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         utbetalingsdato: String = "2022-10-01T00:00:00Z",
         status: JsonUtbetaling.Status = JsonUtbetaling.Status.PLANLAGT_UTBETALING,
     ): JsonHendelse =
-        JsonUtbetaling()
-            .withType(JsonHendelse.Type.UTBETALING)
-            .withHendelsestidspunkt(tidspunkt)
-            .withForfallsdato(forfallsdato)
-            .withStatus(status)
-            .withUtbetalingsdato(utbetalingsdato)
+        JsonUtbetaling(utbetalingsreferanse = "", hendelsestidspunkt = tidspunkt, forfallsdato = forfallsdato, status = status, utbetalingsdato = utbetalingsdato)
 
     @Test
     fun `skal slette dokumentasjon og dokumenter ved overgang til standard soknad`() {
@@ -420,14 +418,11 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every {
             digisosApiV2Client.getInnsynsfil("abc", "metadataid")
         } returns
-            JsonDigisosSoker()
-                .withHendelser(
-                    listOf(
-                        JsonSoknadsStatus()
-                            .withStatus(JsonSoknadsStatus.Status.MOTTATT)
-                            .withHendelsestidspunkt(LocalDate.now().minusMonths(1).toIsoString()),
-                    ),
-                )
+            JsonDigisosSoker(
+                version = "1",
+                avsender = JsonAvsender("test", "1"),
+                hendelser = listOf(JsonSoknadsStatus(JsonSoknadsStatus.Status.MOTTATT, LocalDate.now().minusMonths(1).toIsoString())),
+            )
 
         dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id).find { it.type == AnnenDokumentasjonType.BEHOV }!!
             .run {

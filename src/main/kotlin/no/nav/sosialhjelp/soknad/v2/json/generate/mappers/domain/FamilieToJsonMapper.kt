@@ -35,124 +35,103 @@ class FamilieToJsonMapper(
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ) {
-        familieRepository.findByIdOrNull(soknadId)?.let {
-            doMapping(it, jsonInternalSoknad)
-        }
-    }
+    ): JsonInternalSoknad = familieRepository.findByIdOrNull(soknadId)?.let { doMapping(it, jsonInternalSoknad) } ?: jsonInternalSoknad
 
     internal companion object Mapper {
         fun doMapping(
             familie: Familie,
             json: JsonInternalSoknad,
-        ) {
-            json.initializeObjects()
-
-            with(json.soknad.data.familie) {
-                if (familie.sivilstatus != null) {
-                    sivilstatus = familie.toJsonSivilstatus().apply { handleValidationDependencies() }
-                }
-                forsorgerplikt = familie.toJsonForsorgerplikt()
+        ): JsonInternalSoknad =
+            checkNotNull(json.soknad) { "SoknadToJsonMapper må kjøre først" }.let { soknad ->
+                json.copy(
+                    soknad =
+                        soknad.copy(
+                            data =
+                                soknad.data.copy(
+                                    familie =
+                                        JsonFamilie(
+                                            forsorgerplikt = familie.toJsonForsorgerplikt(),
+                                            sivilstatus = familie.sivilstatus?.let { familie.toJsonSivilstatus() },
+                                        ),
+                                ),
+                        ),
+                )
             }
-        }
     }
 }
 
-// Skjema-valideringen i filformatet legger føringer for data som er lovlig i sammenheng med kilde.
-private fun JsonSivilstatus.handleValidationDependencies() {
-    when (kilde) {
-        JsonKilde.SYSTEM -> borSammenMed = null
-        JsonKilde.BRUKER -> {
-            folkeregistrertMedEktefelle = null
-            ektefelleHarDiskresjonskode = null
-        }
-        else -> error("Ugyldig kilde for sivilstatus")
+private fun Familie.toJsonSivilstatus(): JsonSivilstatus {
+    val status = sivilstatus?.toJson() ?: JsonSivilstatus.Status.UGIFT
+    val jsonEktefelle = ektefelle?.toJson() ?: toEmptyEktefelleIfGift(sivilstatus)
+
+    return if (ektefelle?.kildeErSystem == true) {
+        JsonSivilstatus(
+            kilde = JsonKilde.SYSTEM,
+            status = status,
+            ektefelle = jsonEktefelle,
+            ektefelleHarDiskresjonskode = false,
+            folkeregistrertMedEktefelle = ektefelle.folkeregistrertMedEktefelle,
+            borSammenMed = null,
+        )
+    } else {
+        JsonSivilstatus(
+            kilde = JsonKilde.BRUKER,
+            status = status,
+            ektefelle = jsonEktefelle,
+            ektefelleHarDiskresjonskode = null,
+            folkeregistrertMedEktefelle = null,
+            borSammenMed = ektefelle?.borSammen,
+        )
     }
 }
-
-private fun JsonInternalSoknad.initializeObjects() {
-    soknad.data.familie ?: soknad.data.withFamilie(JsonFamilie())
-    // required i json-modellen uavhengig av om vi har data
-    soknad.data.familie.forsorgerplikt
-        ?: soknad.data.familie.withForsorgerplikt(JsonForsorgerplikt())
-}
-
-private fun Familie.toJsonSivilstatus() =
-    JsonSivilstatus()
-        // hvis ektefelle finnes - sjekk kilde, ellers bruker
-        .withKilde(ektefelle?.toJsonKilde() ?: JsonKilde.BRUKER)
-        // required i json-modellen
-        .withStatus(sivilstatus?.toJson() ?: JsonSivilstatus.Status.UGIFT)
-        .withEktefelle(ektefelle?.toJson() ?: toEmptyEktefelleIfGift(sivilstatus))
-        .withBorSammenMed(ektefelle?.borSammen)
-        .withFolkeregistrertMedEktefelle(ektefelle?.folkeregistrertMedEktefelle)
-        .withEktefelleHarDiskresjonskode(false)
 
 private fun toEmptyEktefelleIfGift(sivilstatus: Sivilstatus?): JsonEktefelle? =
     when (sivilstatus) {
-        Sivilstatus.GIFT -> JsonEktefelle().withNavn(toEmptyJsonNavn())
+        Sivilstatus.GIFT -> JsonEktefelle(toEmptyJsonNavn())
         else -> null
     }
-
-private fun Ektefelle.toJsonKilde() = if (kildeErSystem) JsonKilde.SYSTEM else JsonKilde.BRUKER
 
 private fun Sivilstatus.toJson() = JsonSivilstatus.Status.valueOf(name)
 
 private fun Ektefelle.toJson() =
-    JsonEktefelle()
-        .withNavn(navn?.toJson() ?: toEmptyJsonNavn())
-        .withFodselsdato(fodselsdato)
-        .withPersonIdentifikator(personId)
+    JsonEktefelle(
+        navn = navn?.toJson() ?: toEmptyJsonNavn(),
+        fodselsdato = fodselsdato,
+        personIdentifikator = personId,
+    )
 
 private fun toEmptyJsonNavn() =
-    JsonNavn()
-        .withFornavn("")
-        .withMellomnavn("")
-        .withEtternavn("")
+    JsonNavn("", "", "")
 
 private fun Familie.toJsonForsorgerplikt() =
-    JsonForsorgerplikt()
-        .withHarForsorgerplikt(
-            JsonHarForsorgerplikt()
-                .withKilde(JsonKilde.SYSTEM)
-                .withVerdi(harForsorgerplikt),
-        ).withBarnebidrag(
-            JsonBarnebidrag()
-                .withKilde(JsonKildeBruker.BRUKER)
-                .withVerdi(barnebidrag?.toJson()),
-        ).withAnsvar(ansvar.values.toJson())
+    JsonForsorgerplikt(
+        harForsorgerplikt = JsonHarForsorgerplikt(kilde = JsonKilde.SYSTEM, verdi = harForsorgerplikt),
+        barnebidrag = JsonBarnebidrag(kilde = JsonKildeBruker.BRUKER, verdi = barnebidrag?.toJson()),
+        ansvar = ansvar.values.toJson(),
+    )
 
 private fun Barnebidrag.toJson() = JsonBarnebidrag.Verdi.valueOf(name)
 
 private fun Barn.toJson() =
-    JsonAnsvar()
-        .withBarn(
-            JsonBarn()
-                .withKilde(JsonKilde.SYSTEM)
-                .withFodselsdato(fodselsdato)
-                .withNavn(navn?.toJson())
-                .withPersonIdentifikator(personId)
-                .withHarDiskresjonskode(false),
-        ).withErFolkeregistrertSammen(
-            JsonErFolkeregistrertSammen()
-                .withKilde(JsonKildeSystem.SYSTEM)
-                .withVerdi(folkeregistrertSammen),
-        ).withHarDeltBosted(
-            deltBosted?.let {
-                JsonHarDeltBosted()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(it)
-            },
-        )
-        .withSamvarsgrad(
-            samvarsgrad?.let {
-                JsonSamvarsgrad()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(it)
-            },
-        )
+    JsonAnsvar(
+        barn =
+            JsonBarn(
+                kilde = JsonKilde.SYSTEM,
+                navn = requireNotNull(navn) { "Barn mangler navn" }.toJson(),
+                fodselsdato = fodselsdato,
+                personIdentifikator = personId,
+                harDiskresjonskode = false,
+            ),
+        erFolkeregistrertSammen =
+            JsonErFolkeregistrertSammen(
+                kilde = JsonKildeSystem.SYSTEM,
+                verdi = requireNotNull(folkeregistrertSammen) { "Barn mangler folkeregistrertSammen" },
+            ),
+        harDeltBosted = deltBosted?.let { JsonHarDeltBosted(JsonKildeBruker.BRUKER, it) },
+        samvarsgrad = samvarsgrad?.let { JsonSamvarsgrad(JsonKildeBruker.BRUKER, it) },
+    )
 
 // mellomnavn er required i json-modellen
-fun Navn.toJson(): JsonNavn = JsonNavn().withFornavn(fornavn ?: "").withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn ?: "")
+fun Navn.toJson(): JsonNavn = JsonNavn(fornavn ?: "", mellomnavn ?: "", etternavn ?: "")
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)

@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
@@ -19,7 +20,7 @@ internal class BankTest {
 
     @Test
     fun ikkeUtfylt() {
-        val okonomi = JsonOkonomi().withOpplysninger(JsonOkonomiopplysninger())
+        val okonomi = JsonOkonomi(opplysninger = JsonOkonomiopplysninger(utbetaling = emptyList()))
 
         val avsnitt = bank.getAvsnitt(okonomi)
         assertThat(avsnitt.sporsmal).hasSize(1)
@@ -31,16 +32,22 @@ internal class BankTest {
 
     @Test
     fun valgtFlereBankFormuerMedBeskrivelseAvAnnet() {
-        val okonomi = createOkonomi(true)
-        okonomi.oversikt =
-            JsonOkonomioversikt()
-                .withFormue(
-                    listOf(
-                        createFormue(SoknadJsonTyper.FORMUE_BRUKSKONTO),
-                        createFormue(SoknadJsonTyper.FORMUE_ANNET),
+        val okonomi =
+            createOkonomi(true).copy(
+                oversikt = JsonOkonomioversikt(emptyList(), emptyList(), listOf(createFormue(SoknadJsonTyper.FORMUE_BRUKSKONTO), createFormue(SoknadJsonTyper.FORMUE_ANNET))),
+                opplysninger =
+                    createOkonomi(true).opplysninger.copy(
+                        beskrivelseAvAnnet =
+                            JsonOkonomibeskrivelserAvAnnet(
+                                kilde = JsonKildeBruker.BRUKER,
+                                verdi = "",
+                                sparing = "sparing",
+                                utbetaling = "",
+                                boutgifter = "",
+                                barneutgifter = "",
+                            ),
                     ),
-                )
-        okonomi.opplysninger.beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet().withSparing("sparing")
+            )
 
         val avsnitt = bank.getAvsnitt(okonomi)
         assertThat(avsnitt.sporsmal).hasSize(2)
@@ -58,22 +65,16 @@ internal class BankTest {
     }
 
     private fun createOkonomi(harBekreftelse: Boolean): JsonOkonomi {
-        return JsonOkonomi()
-            .withOpplysninger(
-                JsonOkonomiopplysninger()
-                    .withBekreftelse(
-                        listOf(
-                            JsonOkonomibekreftelse()
-                                .withType(SoknadJsonTyper.BEKREFTELSE_SPARING)
-                                .withVerdi(harBekreftelse),
-                        ),
-                    ),
-            )
+        return JsonOkonomi(
+            opplysninger =
+                JsonOkonomiopplysninger(
+                    utbetaling = emptyList(),
+                    bekreftelse = listOf(JsonOkonomibekreftelse(JsonKilde.BRUKER, SoknadJsonTyper.BEKREFTELSE_SPARING, "", harBekreftelse)),
+                ),
+        )
     }
 
     private fun createFormue(type: String): JsonOkonomioversiktFormue {
-        return JsonOkonomioversiktFormue()
-            .withType(type)
-            .withKilde(JsonKilde.BRUKER)
+        return JsonOkonomioversiktFormue(kilde = JsonKilde.BRUKER, type = type, tittel = "", overstyrtAvBruker = false)
     }
 }

@@ -12,23 +12,19 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 
 class UtgiftToJsonMapper(
     private val utgifter: Set<Utgift>,
-    jsonOkonomi: JsonOkonomi,
 ) : OkonomiElementsToJsonMapper {
-    private val oversikt = jsonOkonomi.oversikt
-    private val opplysninger = jsonOkonomi.opplysninger
+    override fun doMapping(jsonOkonomi: JsonOkonomi): JsonOkonomi =
+        utgifter.fold(jsonOkonomi.copy(opplysninger = jsonOkonomi.opplysninger.copy(utgift = emptyList()))) { accumulated, utgift ->
+            utgift.mapToJsonObject(accumulated)
+        }
 
-    override fun doMapping() {
-        opplysninger.withUtgift(mutableListOf())
-        utgifter.forEach { it.mapToJsonObject() }
-    }
-
-    private fun Utgift.mapToJsonObject() {
+    private fun Utgift.mapToJsonObject(jsonOkonomi: JsonOkonomi): JsonOkonomi {
         when (type) {
             UtgiftType.BARNEBIDRAG_BETALER, UtgiftType.UTGIFTER_SFO, UtgiftType.UTGIFTER_BARNEHAGE,
             UtgiftType.UTGIFTER_HUSLEIE, UtgiftType.UTGIFTER_BOLIGLAN, UtgiftType.UTGIFTER_BOLIGLAN_RENTER,
             UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG,
-            -> oversikt.utgift.addAll(toJsonOversiktUtgifter())
-            else -> opplysninger.utgift.addAll(toJsonOpplysningUtgifter())
+            -> return jsonOkonomi.oversikt!!.let { oversikt -> jsonOkonomi.copy(oversikt = oversikt.copy(utgift = oversikt.utgift.orEmpty() + toJsonOversiktUtgifter())) }
+            else -> return jsonOkonomi.copy(opplysninger = jsonOkonomi.opplysninger.copy(utgift = jsonOkonomi.opplysninger.utgift.orEmpty() + toJsonOpplysningUtgifter()))
         }
     }
 
@@ -49,18 +45,8 @@ class UtgiftToJsonMapper(
 
     private fun Utgift.handleAvdragRenter(detalj: AvdragRenter): List<JsonOkonomioversiktUtgift> {
         return listOf(
-            JsonOkonomioversiktUtgift()
-                .withKilde(JsonKilde.BRUKER)
-                .withType(UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG.toSoknadJsonTypeString())
-                .withTittel(toTittel())
-                .withBelop(detalj.avdrag?.toInt())
-                .withOverstyrtAvBruker(false),
-            JsonOkonomioversiktUtgift()
-                .withKilde(JsonKilde.BRUKER)
-                .withType(UtgiftType.UTGIFTER_BOLIGLAN_RENTER.toSoknadJsonTypeString())
-                .withTittel(toTittel())
-                .withBelop(detalj.renter?.toInt())
-                .withOverstyrtAvBruker(false),
+            JsonOkonomioversiktUtgift(JsonKilde.BRUKER, UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG.toSoknadJsonTypeString(), toTittel(), false, detalj.avdrag?.toInt()),
+            JsonOkonomioversiktUtgift(JsonKilde.BRUKER, UtgiftType.UTGIFTER_BOLIGLAN_RENTER.toSoknadJsonTypeString(), toTittel(), false, detalj.renter?.toInt()),
         )
     }
 
@@ -70,12 +56,7 @@ class UtgiftToJsonMapper(
     }
 
     private fun Utgift.toJsonOversiktUtgift(belop: Belop? = null) =
-        JsonOkonomioversiktUtgift()
-            .withKilde(JsonKilde.BRUKER)
-            .withType(type.toSoknadJsonTypeString())
-            .withTittel(toTittel())
-            .withBelop(belop?.belop?.toInt())
-            .withOverstyrtAvBruker(false)
+        JsonOkonomioversiktUtgift(JsonKilde.BRUKER, type.toSoknadJsonTypeString(), toTittel(), false, belop?.belop?.toInt())
 
     private fun Utgift.toJsonOpplysningUtgifter(): List<JsonOkonomiOpplysningUtgift> {
         // Hvis bruker ikke har lagt til andre utgifter, så skal det ikke opprettes en tom opplysning.
@@ -95,12 +76,7 @@ class UtgiftToJsonMapper(
         belop: Belop? = null,
         detaljBeskrivelse: String? = null,
     ) =
-        JsonOkonomiOpplysningUtgift()
-            .withKilde(JsonKilde.BRUKER)
-            .withType(type.toSoknadJsonTypeString())
-            .withTittel(toTittel(detaljBeskrivelse))
-            .withBelop(belop?.belop?.toInt())
-            .withOverstyrtAvBruker(false)
+        JsonOkonomiOpplysningUtgift(JsonKilde.BRUKER, type.toSoknadJsonTypeString(), toTittel(detaljBeskrivelse), false, belop?.belop?.toInt())
 }
 
 private fun Utgift.toTittel(detaljBeskrivelse: String? = null): String {

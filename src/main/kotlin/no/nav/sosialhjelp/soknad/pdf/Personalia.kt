@@ -57,13 +57,13 @@ object Personalia {
 
         if (utvidetSoknad) {
             pdf.skrivTekst("Valgt adresse:")
-            if (jsonPersonalia.oppholdsadresse != null) {
-                val adresseValg = jsonPersonalia.oppholdsadresse.adresseValg
+            jsonPersonalia.oppholdsadresse?.let { oppholdsadresse ->
+                val adresseValg = oppholdsadresse.adresseValg
                 if (adresseValg == JsonAdresseValg.SOKNAD) {
                     pdf.skrivTekstMedInnrykk(pdfUtils.getTekst("kontakt.system.oppholdsadresse.valg.soknad"), INNRYKK_2)
-                } else {
+                } else if (adresseValg != null) {
                     pdf.skrivTekstMedInnrykk(
-                        pdfUtils.getTekst("kontakt.system.oppholdsadresse." + adresseValg.value() + "Adresse"),
+                        pdfUtils.getTekst("kontakt.system.oppholdsadresse.${adresseValg.value}Adresse"),
                         INNRYKK_2,
                     )
                 }
@@ -77,7 +77,7 @@ object Personalia {
                 midlertidigAdresse?.let {
                     pdf.skrivTekstMedInnrykk(pdfUtils.getTekst("kontakt.system.oppholdsadresse.midlertidigAdresse"), INNRYKK_2)
                     if (adresseValg == JsonAdresseValg.MIDLERTIDIG) {
-                        leggTilUtvidetInfoAdresse(pdf, pdfUtils, jsonPersonalia.oppholdsadresse)
+                        leggTilUtvidetInfoAdresse(pdf, pdfUtils, oppholdsadresse)
                     } else {
                         leggTilUtvidetInfoAdresse(pdf, pdfUtils, it)
                     }
@@ -129,13 +129,14 @@ object Personalia {
             } else {
                 pdf.skrivTekst(pdfUtils.getTekst("kontakt.kontonummer.label"))
             }
-            if (it.harIkkeKonto != null && it.harIkkeKonto) {
+            if (it.harIkkeKonto == true) {
                 pdf.skrivTekst(pdfUtils.getTekst("kontakt.kontonummer.harikke.true"))
             } else {
-                if (it.verdi == null || it.verdi.isEmpty()) {
+                val kontonummer = it.verdi
+                if (kontonummer.isNullOrEmpty()) {
                     pdfUtils.skrivIkkeUtfylt(pdf)
                 } else {
-                    pdf.skrivTekst(it.verdi)
+                    pdf.skrivTekst(kontonummer)
                 }
             }
             pdf.addBlankLine()
