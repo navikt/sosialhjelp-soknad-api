@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: nais/deploy/actions/deploy@v2
+      - uses: nais/deploy/actions/deploy@v3
         env:
           RESOURCE: nais/dev/${{ matrix.env }}.yaml
           CLUSTER: 'dev-gcp'
@@ -49,7 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: nais/deploy/actions/deploy@v2
+      - uses: nais/deploy/actions/deploy@v3
         env:
           RESOURCE: nais/prod/prod-gcp.yaml
           CLUSTER: 'prod-gcp'
