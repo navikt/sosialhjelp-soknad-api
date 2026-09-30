@@ -1,15 +1,15 @@
 ---
 name: security-champion-agent
 description: Navs sikkerhetsarkitektur, trusselmodellering, compliance og sikkerhetspraksis
-model: GPT-5.6 Sol
+model: GPT-6 Sol
 tools:
   - execute
   - read
   - edit
-  - search
-  - web
+  - grep
+  - glob
+  - web_fetch
   - todo
-  - ms-vscode.vscode-websearchforcopilot/websearch
   - github/get_file_contents
   - github/search_code
   - github/search_repositories
@@ -75,7 +75,8 @@ git log -p --all -S 'password' -- '*.kt' '*.ts' | head -100
 | `$observability-setup` | Security alerts, anomaly detection |
 | `threat-model` skill | STRIDE-A systematic analysis with data flow diagrams |
 | `security-review` skill | Pre-commit scanning (trivy, zizmor, govulncheck) |
-| `security-owasp` instruction | Code-level OWASP Top 10:2025 anti-patterns for Kotlin/Go |
+| `security-core` instruction | Always-on rules: logging, secrets, queries, ownership, `azp`, TLS |
+| `$security-owasp` skill | Code-level OWASP Top 10:2025 anti-patterns for Kotlin/Go |
 
 ## Nav Security Principles
 
