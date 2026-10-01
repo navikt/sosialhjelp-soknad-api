@@ -1,8 +1,8 @@
 {
   "collection": "nav-pilot",
-  "version": "2026.09.30-060130-a873eab",
+  "version": "2026.10.01-060911-c544521",
   "scope": "repo",
-  "source_sha": "a873eab96bbe29df8c1f5d50fea2c2c151d44820",
+  "source_sha": "c5445219dc86b834f7528eabf7dd3de1ede821b6",
   "installed_at": "2026-06-04T12:42:23Z",
   "files": [
     {
@@ -20,11 +20,13 @@
     },
     {
       "path": ".github/agents/forfatter.agent.md",
-      "hash": "aee2b3b98fa5ec39"
+      "hash": "81d4560449214a21",
+      "revision": "c5445219dc86b834f7528eabf7dd3de1ede821b6"
     },
     {
       "path": ".github/agents/kafka.agent.md",
-      "hash": "c2616223f6228f8e"
+      "hash": "743153095326cb24",
+      "revision": "c5445219dc86b834f7528eabf7dd3de1ede821b6"
     },
     {
       "path": ".github/agents/nav-pilot-opus.agent.md",
@@ -42,7 +44,8 @@
     },
     {
       "path": ".github/agents/rust.agent.md",
-      "hash": "877fab8c93fa0ae6"
+      "hash": "f915a28c049a0f64",
+      "revision": "c5445219dc86b834f7528eabf7dd3de1ede821b6"
     },
     {
       "path": ".github/agents/security-champion.agent.md",
@@ -221,7 +224,8 @@
     },
     {
       "path": ".github/skills/nav-dekoratoren/",
-      "hash": "fd8cf68c2c9bfbc5"
+      "hash": "36a286dece9e2c63",
+      "revision": "c5445219dc86b834f7528eabf7dd3de1ede821b6"
     },
     {
       "path": ".github/skills/nav-plan/",
