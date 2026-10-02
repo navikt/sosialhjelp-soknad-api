@@ -16,14 +16,12 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler.Companion.logger
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import java.io.ByteArrayInputStream
-import java.time.ZoneOffset
 import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.Future
