@@ -41,6 +41,8 @@ class SoknadAlleredeSendtException(
     message: String?,
 ) : SosialhjelpSoknadApiException(message)
 
+class BrokenSoknadException(message: String?) : SosialhjelpSoknadApiException(message)
+
 open class SoknadLifecycleException(
     message: String?,
     t: Throwable?,

@@ -248,6 +248,34 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     }
 
     @Test
+    fun `Soknad i ugyldig state skal returnere BrokenSoknad Error`() {
+        val soknadId = createInnsendtSoknad()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
+        every {
+            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+        } returns create400ResponseFiksError(soknadId)
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        doPostFullResponse(uri = sendUri(soknadId))
+            .expectStatus().isBadRequest
+            .expectBody(SoknadApiError::class.java)
+            .returnResult().responseBody
+            .also { error ->
+                assertThat(error?.error).isNotNull
+                assertThat(error?.error).isEqualTo(SoknadApiErrorType.BrokenSoknad)
+            }
+    }
+
+    @Test
     fun `Soknad feiler ved forste innsending, men blir mottatt - ved andre innsending skal den oppdateres med riktig status`() {
         val soknadId = createNewSoknad()
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
@@ -468,22 +496,60 @@ private fun createReadtimeoutException(soknadId: UUID): SendSoknadResponse.Error
 
 private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
     return SendSoknadResponse.FiksError(
-        errorMessage = createFiksErrorBody(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
-        e = createWebClientResponseException(soknadId),
+        errorMessage = createSoknadAlleredeMottatFiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
+        e =
+            createWebClientResponseException(
+                soknadId,
+                createSoknadAlleredeMottatFiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
+            ),
     )
 }
 
-private fun createWebClientResponseException(soknadId: UUID): WebClientResponseException {
+private fun create400ResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
+    return SendSoknadResponse.FiksError(
+        errorMessage = createRandom400FiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
+        e =
+            createWebClientResponseException(
+                soknadId,
+                createRandom400FiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
+            ),
+    )
+}
+
+private fun createWebClientResponseException(
+    soknadId: UUID,
+    errorMessage: ErrorMessage,
+): WebClientResponseException {
     return WebClientResponseException.create(
         HttpStatus.BAD_REQUEST.value(),
         HttpStatus.BAD_REQUEST.reasonPhrase,
         HttpHeaders.EMPTY,
-        createFiksErrorBody(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase).toJsonByteArray(),
+        errorMessage.toJsonByteArray(),
         Charset.forName("UTF-8"),
     )
 }
 
-private fun createFiksErrorBody(
+private fun createRandom400FiksError(
+    soknadId: UUID,
+    status: Int,
+    error: String,
+): ErrorMessage {
+    val message = "Her erre no galt som er umulig a fikse"
+
+    return ErrorMessage(
+        timestamp = LocalDateTime.now().toEpochSecond(java.time.ZoneOffset.UTC),
+        status = status,
+        error = error,
+        errorId = UUID.randomUUID().toString(),
+        path = "/digisos/api/v2/soknader/1234/$soknadId",
+        message = message,
+        errorCode = null,
+        errorJson = null,
+        originalPath = null,
+    )
+}
+
+private fun createSoknadAlleredeMottatFiksError(
     soknadId: UUID,
     status: Int,
     error: String,
