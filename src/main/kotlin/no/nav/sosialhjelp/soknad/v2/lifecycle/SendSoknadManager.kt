@@ -115,12 +115,12 @@ class SendSoknadManager(
 
         val feilmelding =
             "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
-                "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
+                    "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
 
         // FIKS svarer 400 når søknaden er i en tilstand den aldri vil kunne sendes inn fra (og det ikke
         // var en allerede-mottatt-situasjon, som er håndtert over). Retry vil ikke hjelpe her.
         if (response.e is BadRequest) {
-            throw BrokenSoknadException(feilmelding)
+            throw BrokenSoknadException("Broken søknad: $feilmelding")
         }
 
         throw FiksException(message = feilmelding, cause = response.e)
@@ -133,8 +133,8 @@ class SendSoknadManager(
     ): Nothing {
         logger.warn(
             "Søknad $soknadId er allerede sendt med id $digisosId. " +
-                "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
-                "ErrorResponse var: $errorResponse",
+                    "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
+                    "ErrorResponse var: $errorResponse",
         )
         throw AlleredeMottattException(
             digisosId = digisosId,
