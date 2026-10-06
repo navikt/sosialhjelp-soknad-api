@@ -100,8 +100,8 @@ class FetchRegisterDataManager(
         fetchers: List<AsynchronousFetcher>,
     ) {
         val mdcSnapshot = MDC.getCopyOfContextMap()
-        fetchers.forEach { fetcher ->
-            backgroundScope.launch(MDCContext(mdcSnapshot) + userContext) {
+        backgroundScope.launch(MDCContext(mdcSnapshot) + userContext) {
+            fetchers.forEach { fetcher ->
                 runFetcher(soknadId, fetcher)
             }
         }
