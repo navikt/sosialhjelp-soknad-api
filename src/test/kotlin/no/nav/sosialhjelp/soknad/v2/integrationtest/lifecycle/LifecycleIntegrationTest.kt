@@ -298,7 +298,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody
             .also { error ->
-                 assertThat(error?.error).isEqualTo(SoknadApiErrorType.MottakPabegynt)
+                assertThat(error?.error).isEqualTo(SoknadApiErrorType.MottakPabegynt)
             }
     }
 
@@ -540,8 +540,6 @@ private fun create400ResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksE
             ),
     )
 }
-
-
 
 private fun createWebClientResponseException(
     errorMessage: ErrorMessage,

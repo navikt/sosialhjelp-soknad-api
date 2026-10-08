@@ -110,15 +110,19 @@ class SendSoknadManager(
     ): Nothing {
         val feilmelding =
             "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
-                    "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
+                "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
 
-        if(response.e is BadRequest) resolveBadRequest(soknadId, response, feilmelding)
+        if (response.e is BadRequest) resolveBadRequest(soknadId, response, feilmelding)
 
         throw FiksException(message = feilmelding, cause = response.e)
     }
 
     // BadRequest
-    private fun resolveBadRequest(soknadId: UUID, response: SendSoknadResponse.FiksError, feilmelding: String) {
+    private fun resolveBadRequest(
+        soknadId: UUID,
+        response: SendSoknadResponse.FiksError,
+        feilmelding: String,
+    ) {
         val errorMessage = response.errorMessage
         val digisosId = errorMessage.message?.let { Utils.isAlleredeMottatt(it, soknadId) }
 
@@ -136,8 +140,8 @@ class SendSoknadManager(
     ): Nothing {
         logger.warn(
             "Søknad $soknadId er allerede sendt med id $digisosId. " +
-                    "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
-                    "ErrorResponse var: $errorResponse",
+                "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
+                "ErrorResponse var: $errorResponse",
         )
         throw AlleredeMottattException(
             digisosId = digisosId,
@@ -150,7 +154,7 @@ class SendSoknadManager(
         errorResponse: String,
     ): Nothing {
         logger.warn("Mottak av søknad $soknadId er allerede påbegynt hos FIKS.")
-        throw MottakPabegyntException("Søknad $soknadId er allerede påbegynt hos FIKS. ErrorResponse var: $errorResponse",)
+        throw MottakPabegyntException("Søknad $soknadId er allerede påbegynt hos FIKS. ErrorResponse var: $errorResponse")
     }
 
     private fun JsonInternalSoknad.toSoknadJson(): String =

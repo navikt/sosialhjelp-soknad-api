@@ -16,7 +16,6 @@ object Utils {
             .addModule(kotlinModule())
             .build()
 
-
     fun isAlleredeMottatt(
         errorMessage: String,
         soknadId: UUID,
@@ -30,7 +29,6 @@ object Utils {
             .find { it.matches(Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) }
             ?.let { UUID.fromString(it) }
     }
-
 
     fun isMottakPabegynt(
         errorMessage: String,
