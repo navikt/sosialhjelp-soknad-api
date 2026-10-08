@@ -278,8 +278,3 @@ data class FiksSoknadStatus(
     val digisosId: UUID,
     val levertFagsystem: Boolean,
 )
-
-class AlleredeMottattException(
-    val digisosId: UUID,
-    message: String,
-) : SosialhjelpSoknadApiException(message)

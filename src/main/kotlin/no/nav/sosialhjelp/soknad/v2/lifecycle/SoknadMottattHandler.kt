@@ -54,7 +54,7 @@ class SoknadMottattHandler(private val metadataService: SoknadMetadataServiceImp
             .also { info ->
                 throw SoknadAlleredeSendtException(
                     sendtInfo = info.copy(navEnhetNavn = navEnhetNavn),
-                    message = "Søknad med ID $soknadId er allerede sendt.",
+                    message = "Søknad med ID $soknadId er allerede mottatt.",
                 )
             }
     }

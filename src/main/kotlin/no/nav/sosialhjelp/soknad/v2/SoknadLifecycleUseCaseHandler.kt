@@ -8,10 +8,12 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUt
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.SoknadLifecycleMetricsService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CancelSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.lifecycle.MottakPabegyntException
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.stereotype.Service
@@ -94,7 +96,7 @@ class SoknadLifecycleHandlerImpl(
     ): SoknadSendtInfo {
         return when {
             e is SoknadAlleredeSendtException -> e.sendtInfo
-            e.isHandledException() -> throw e
+            e is HandledException -> throw e
             else -> {
                 lifecycleMetricsService.reportSendSoknadFeilet()
                 throw InnsendingFeiletException(
@@ -107,17 +109,10 @@ class SoknadLifecycleHandlerImpl(
         }
     }
 
-    private fun Throwable.isHandledException(): Boolean {
-        return listOf(
-            SendingTilKommuneUtilgjengeligException::class,
-            SendingTilKommuneErMidlertidigUtilgjengeligException::class,
-            AntallSoknaderSendtException::class,
-            BrokenSoknadException::class,
-        )
-            .any { it.isInstance(this) }
-    }
-
     companion object {
         private val logger by logger()
     }
 }
+
+// exceptions som håndteres og ikke skal incremente metrikk
+interface HandledException
