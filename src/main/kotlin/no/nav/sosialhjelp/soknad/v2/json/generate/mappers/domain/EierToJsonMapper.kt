@@ -22,12 +22,9 @@ class EierToJsonMapper(
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    ): JsonInternalSoknad {
-        eierRepository.findByIdOrNull(soknadId)?.let {
-            return doMapping(it, jsonInternalSoknad)
-        }
+    ): JsonInternalSoknad =
+        eierRepository.findByIdOrNull(soknadId)?.let { doMapping(it, jsonInternalSoknad) }
             ?: throw IllegalStateException("Fant ikke Eier")
-    }
 
     internal companion object Mapper {
         fun doMapping(

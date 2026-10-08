@@ -4,7 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
+import no.nav.sosialhjelp.soknad.app.exceptions.BrokenSoknadException
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.JsonTilleggsinformasjon
@@ -15,11 +16,12 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.v2.HandledException
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler.Companion.logger
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import java.io.ByteArrayInputStream
 import java.util.Collections
 import java.util.UUID
@@ -74,7 +76,6 @@ class SendSoknadManager(
         val response: SendSoknadResponse
         val startTime = System.currentTimeMillis()
         try {
-            // TODO soknadJson og vedleggJson bør også krypteres
             response =
                 digisosApiV2Client.lastOppFiler(
                     soknadJson,
@@ -107,24 +108,35 @@ class SendSoknadManager(
         startTime: Long,
         response: SendSoknadResponse.FiksError,
     ): Nothing {
-        response.errorMessage.message
-            ?.also { msg ->
-                val digisosId = Utils.getDigisosIdFromResponse(msg, soknadId)
-                if (digisosId != null && response.e is WebClientResponseException.BadRequest) handleAlleredeMottatt(digisosId, soknadId, msg)
-            }
+        val feilmelding =
+            "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
+                "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
 
-        throw FiksException(
-            message =
-                "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
-                    "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}",
-            cause = response.e,
-        )
+        if (response.e is BadRequest) resolveBadRequest(soknadId, response, feilmelding)
+
+        throw FiksException(message = feilmelding, cause = response.e)
+    }
+
+    // BadRequest
+    private fun resolveBadRequest(
+        soknadId: UUID,
+        response: SendSoknadResponse.FiksError,
+        feilmelding: String,
+    ) {
+        val errorMessage = response.errorMessage
+        val digisosId = errorMessage.message?.let { Utils.isAlleredeMottatt(it, soknadId) }
+
+        errorMessage.message?.let {
+            if (digisosId != null) handleAlleredeMottatt(digisosId = digisosId, soknadId = soknadId, errorResponse = it)
+            if (Utils.isMottakPabegynt(it, soknadId)) handleMottakPabegynt(soknadId = soknadId, errorResponse = it)
+        }
+        throw BrokenSoknadException("Broken søknad: $feilmelding")
     }
 
     private fun handleAlleredeMottatt(
         digisosId: UUID,
         soknadId: UUID,
-        errorResponse: String,
+        errorResponse: String?,
     ): Nothing {
         logger.warn(
             "Søknad $soknadId er allerede sendt med id $digisosId. " +
@@ -135,6 +147,14 @@ class SendSoknadManager(
             digisosId = digisosId,
             message = "Søknad $soknadId er allerede sendt med id $digisosId. ErrorResponse var: $errorResponse",
         )
+    }
+
+    private fun handleMottakPabegynt(
+        soknadId: UUID,
+        errorResponse: String,
+    ): Nothing {
+        logger.warn("Mottak av søknad $soknadId er allerede påbegynt hos FIKS.")
+        throw MottakPabegyntException("Søknad $soknadId er allerede påbegynt hos FIKS. ErrorResponse var: $errorResponse")
     }
 
     private fun JsonInternalSoknad.toSoknadJson(): String =
@@ -194,3 +214,12 @@ private fun opprettFilOpplastingFraByteArray(
             ),
         data = ByteArrayInputStream(bytes),
     )
+
+class AlleredeMottattException(
+    val digisosId: UUID,
+    message: String,
+) : SosialhjelpSoknadApiException(message)
+
+class MottakPabegyntException(
+    message: String,
+) : SosialhjelpSoknadApiException(message), HandledException

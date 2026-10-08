@@ -16,7 +16,7 @@ object Utils {
             .addModule(kotlinModule())
             .build()
 
-    fun getDigisosIdFromResponse(
+    fun isAlleredeMottatt(
         errorMessage: String,
         soknadId: UUID,
     ): UUID? {
@@ -28,6 +28,16 @@ object Utils {
             .split(" ")
             .find { it.matches(Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) }
             ?.let { UUID.fromString(it) }
+    }
+
+    fun isMottakPabegynt(
+        errorMessage: String,
+        soknadId: UUID,
+    ): Boolean {
+        listOf("Mottak av søknad", soknadId.toString(), "navExternRefId", "er allerede påbegynt")
+            .forEach { if (!errorMessage.contains(it)) return false }
+
+        return true
     }
 
     fun stripVekkFnutter(tekstMedFnutt: String): String {
