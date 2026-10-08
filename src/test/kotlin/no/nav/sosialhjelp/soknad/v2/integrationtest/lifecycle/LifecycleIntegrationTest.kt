@@ -276,6 +276,33 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     }
 
     @Test
+    fun `Mottak pabegynt hos FIKS skal returnere MottakPabegynt error`() {
+        val soknadId = createNewSoknad()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
+        every {
+            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+        } returns createMottakPabegyntFiksError(soknadId)
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        doPostFullResponse(uri = sendUri(soknadId))
+            .expectStatus().isBadRequest
+            .expectBody(SoknadApiError::class.java)
+            .returnResult().responseBody
+            .also { error ->
+                 assertThat(error?.error).isEqualTo(SoknadApiErrorType.MottakPabegynt)
+            }
+    }
+
+    @Test
     fun `Soknad feiler ved forste innsending, men blir mottatt - ved andre innsending skal den oppdateres med riktig status`() {
         val soknadId = createNewSoknad()
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
@@ -499,7 +526,6 @@ private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadRespons
         errorMessage = createSoknadAlleredeMottatFiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
         e =
             createWebClientResponseException(
-                soknadId,
                 createSoknadAlleredeMottatFiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
             ),
     )
@@ -510,14 +536,14 @@ private fun create400ResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksE
         errorMessage = createRandom400FiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
         e =
             createWebClientResponseException(
-                soknadId,
                 createRandom400FiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
             ),
     )
 }
 
+
+
 private fun createWebClientResponseException(
-    soknadId: UUID,
     errorMessage: ErrorMessage,
 ): WebClientResponseException {
     return WebClientResponseException.create(
@@ -566,6 +592,26 @@ private fun createSoknadAlleredeMottatFiksError(
         errorCode = null,
         errorJson = null,
         originalPath = null,
+    )
+}
+
+private fun createMottakPabegyntFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
+    val errorMessage =
+        ErrorMessage(
+            timestamp = LocalDateTime.now().toEpochSecond(java.time.ZoneOffset.UTC),
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = HttpStatus.BAD_REQUEST.reasonPhrase,
+            errorId = UUID.randomUUID().toString(),
+            path = "/digisos/api/v2/soknader/1234/$soknadId",
+            message = "Mottak av søknad med navExternRefId $soknadId er allerede påbegynt",
+            errorCode = null,
+            errorJson = null,
+            originalPath = null,
+        )
+
+    return SendSoknadResponse.FiksError(
+        errorMessage = errorMessage,
+        e = createWebClientResponseException(errorMessage),
     )
 }
 

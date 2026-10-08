@@ -68,4 +68,7 @@ enum class SoknadApiErrorType {
 
     // Søknaden er i en tilstand som gjør at den aldri vil kunne sendes inn. Retry hjelper ikke.
     BrokenSoknad,
+
+    // Mottak er allerede påbegynt hos FIKS
+    MottakPabegynt,
 }

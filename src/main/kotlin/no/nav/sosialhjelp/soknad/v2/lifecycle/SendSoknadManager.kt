@@ -112,28 +112,27 @@ class SendSoknadManager(
             "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
                     "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
 
-        if(response.e is BadRequest) resolveBadRequest(soknadId, response.e, feilmelding)
+        if(response.e is BadRequest) resolveBadRequest(soknadId, response, feilmelding)
 
         throw FiksException(message = feilmelding, cause = response.e)
     }
 
     // BadRequest
-    private fun resolveBadRequest(soknadId: UUID, ex: BadRequest, feilmelding: String) {
-        val digisosId = Utils.isAlleredeMottatt(ex.message, soknadId)
+    private fun resolveBadRequest(soknadId: UUID, response: SendSoknadResponse.FiksError, feilmelding: String) {
+        val errorMessage = response.errorMessage
+        val digisosId = errorMessage.message?.let { Utils.isAlleredeMottatt(it, soknadId) }
 
-        when{
-            digisosId != null -> handleAlleredeMottatt(digisosId = digisosId, soknadId = soknadId, errorResponse = ex.message)
-            Utils.isMottakPabegynt(ex.message, soknadId) -> handleMottakPabegynt(soknadId = soknadId, errorResponse = ex.message)
-            // FIKS svarer 400 når søknaden er i en tilstand hvor retry ikke vil hjelpe
-            // Unntak som håndteres annerledes er listet over
-            else -> throw BrokenSoknadException("Broken søknad: $feilmelding")
+        errorMessage.message?.let {
+            if (digisosId != null) handleAlleredeMottatt(digisosId = digisosId, soknadId = soknadId, errorResponse = it)
+            if (Utils.isMottakPabegynt(it, soknadId)) handleMottakPabegynt(soknadId = soknadId, errorResponse = it)
         }
+        throw BrokenSoknadException("Broken søknad: $feilmelding")
     }
 
     private fun handleAlleredeMottatt(
         digisosId: UUID,
         soknadId: UUID,
-        errorResponse: String,
+        errorResponse: String?,
     ): Nothing {
         logger.warn(
             "Søknad $soknadId er allerede sendt med id $digisosId. " +

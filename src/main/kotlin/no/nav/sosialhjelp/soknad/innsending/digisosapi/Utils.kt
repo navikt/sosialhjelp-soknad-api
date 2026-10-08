@@ -36,7 +36,7 @@ object Utils {
         errorMessage: String,
         soknadId: UUID,
     ): Boolean {
-        listOf("Mottak av søknad", soknadId.toString(), "navEksternRefId", "er allerede påbegynt")
+        listOf("Mottak av søknad", soknadId.toString(), "navExternRefId", "er allerede påbegynt")
             .forEach { if (!errorMessage.contains(it)) return false }
 
         return true
