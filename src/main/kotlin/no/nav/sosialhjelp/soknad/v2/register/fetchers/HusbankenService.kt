@@ -24,13 +24,13 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling as Utbetali
 class HusbankenService(
     private val husbankenClient: HusbankenClient,
 ) {
-    fun getBostotte(): Pair<List<BostotteSak>, Inntekt?> {
+    suspend fun getBostotte(): Pair<List<BostotteSak>, Inntekt?> {
         return doGetBostotte(LocalDate.now().minusDays(60), LocalDate.now())
             .toDomain()
             .let { Pair(saveToSaker(it), saveToInntekt(it)) }
     }
 
-    private fun doGetBostotte(
+    private suspend fun doGetBostotte(
         fra: LocalDate = LocalDate.now().minusDays(60),
         til: LocalDate = LocalDate.now(),
     ): BostotteDto =

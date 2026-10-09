@@ -1,7 +1,10 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.withContext
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
+import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.http.HttpHeaders
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -14,27 +17,28 @@ private const val QUERY_PARAMS = "?fra={fra}&til={til}"
 class HusbankenClient(
     private val webClient: WebClient,
 ) {
-    fun getBostotte(
+    suspend fun getBostotte(
         fra: LocalDate = LocalDate.now().minusDays(60),
         til: LocalDate = LocalDate.now(),
     ): HusbankenResponse = doGet(fra, til)
 
-    private fun doGet(
+    private suspend fun doGet(
         fra: LocalDate,
         til: LocalDate,
     ): HusbankenResponse {
-        return webClient.get()
-            .uri(QUERY_PARAMS, fra, til)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${userToken()}")
-            .retrieve()
-            .bodyToMono<BostotteDto>()
-            .map<HusbankenResponse> { dto -> HusbankenResponse.Success(dto) }
-            .onErrorResume(WebClientResponseException::class.java) { e -> Mono.just(HusbankenResponse.Error(e)) }
-            .block()
-            ?: HusbankenResponse.Null
+        return withContext(Dispatchers.IO) {
+            webClient.get()
+                .uri(QUERY_PARAMS, fra, til)
+                .header(HttpHeaders.AUTHORIZATION, authorizationHeader())
+                .retrieve()
+                .bodyToMono<BostotteDto>()
+                .map<HusbankenResponse> { dto -> HusbankenResponse.Success(dto) }
+                .onErrorResume(WebClientResponseException::class.java) { e -> Mono.just(HusbankenResponse.Error(e)) }
+                .awaitSingleOrNull() ?: HusbankenResponse.Null
+        }
     }
 
-    private fun userToken() = SubjectHandlerUtils.getTokenOrNull() ?: error("Token is null, kan ikke kalle Husbanken")
+    private suspend fun authorizationHeader(): String = "Bearer ${currentUserContext().userToken}"
 }
 
 sealed interface HusbankenResponse {

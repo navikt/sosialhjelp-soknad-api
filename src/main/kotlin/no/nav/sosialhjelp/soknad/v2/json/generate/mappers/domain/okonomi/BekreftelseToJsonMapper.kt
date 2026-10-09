@@ -15,26 +15,9 @@ class BekreftelseToJsonMapper(
         jsonOkonomi.copy(
             opplysninger =
                 jsonOkonomi.opplysninger.copy(
-                    bekreftelse = jsonOkonomi.opplysninger.bekreftelse + bekreftelser.map { it.toJsonBekreftelse() } + bostotteSamtykke(),
+                    bekreftelse = jsonOkonomi.opplysninger.bekreftelse + bekreftelser.map { it.toJsonBekreftelse() },
                 ),
         )
-
-    // "Gammel modell" legger til samtykke uavhengig av om eksisterende bostotte er true eller false
-    private fun bostotteSamtykke(): List<JsonOkonomibekreftelse> =
-        bekreftelser.find { it.type == BekreftelseType.BOSTOTTE }
-            ?.takeIf { !it.verdi }
-            ?.let { bostotte ->
-                listOf(
-                    JsonOkonomibekreftelse(
-                        kilde = JsonKilde.BRUKER,
-                        type = BekreftelseType.BOSTOTTE_SAMTYKKE.toSoknadJsonTypeString(),
-                        tittel = BekreftelseType.BOSTOTTE_SAMTYKKE.toTittel(),
-                        verdi = false,
-                        bekreftelsesDato = TimestampUtil.convertToOffsettDateTimeUTCString(bostotte.tidspunkt),
-                    ),
-                )
-            }
-            .orEmpty()
 }
 
 private fun Bekreftelse.toJsonBekreftelse(): JsonOkonomibekreftelse {

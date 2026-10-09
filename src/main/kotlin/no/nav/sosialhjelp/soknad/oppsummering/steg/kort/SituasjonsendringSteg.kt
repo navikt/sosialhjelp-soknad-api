@@ -22,7 +22,7 @@ object SituasjonsendringSteg {
             avsnitt =
                 listOf(
                     skatt.getAvsnitt(okonomi, soknad.driftsinformasjon),
-                    bostotteHusbanken.getAvsnitt(okonomi.opplysninger, soknad.driftsinformasjon, autoConfirmation = true),
+                    bostotteHusbanken.getAvsnitt(okonomi.opplysninger, soknad.driftsinformasjon),
                     navUtbetalinger.getAvsnitt(okonomi.opplysninger, soknad.driftsinformasjon),
                     saldoBrukskonto.getAvsnitt(requireNotNull(okonomi.oversikt)),
                 ),

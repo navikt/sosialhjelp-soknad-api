@@ -7,8 +7,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
-import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
-import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
@@ -22,11 +20,9 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 
 class InntektToJsonMapper(
     private val inntekter: Set<Inntekt>,
-    private val bekreftelser: Set<Bekreftelse> = emptySet(),
 ) : OkonomiElementsToJsonMapper {
     override fun doMapping(jsonOkonomi: JsonOkonomi): JsonOkonomi =
         inntekter.fold(jsonOkonomi) { accumulated, inntekt -> inntekt.mapToJsonObject(accumulated) }
-            .handleHusbankenSpecialCase()
             .let { accumulated ->
                 inntekter.find { it.type == InntektType.UTBETALING_ANNET }
                     ?.let {
@@ -35,28 +31,6 @@ class InntektToJsonMapper(
                     }
                     ?: accumulated
             }
-
-    // Hvis bostotte == true && bostotte_samtykke == null || false skal kilde være bruker
-    private fun JsonOkonomi.handleHusbankenSpecialCase(): JsonOkonomi {
-        val skalOverstyreKilde =
-            bekreftelser.find { it.type == BekreftelseType.BOSTOTTE }?.verdi == true &&
-                bekreftelser.find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi != true
-        if (!skalOverstyreKilde) return this
-
-        val husbankenType = InntektType.UTBETALING_HUSBANKEN.toSoknadJsonTypeString()
-        val index = opplysninger.utbetaling.indexOfFirst { it.type == husbankenType }
-        if (index == -1) return this
-
-        return copy(
-            opplysninger =
-                opplysninger.copy(
-                    utbetaling =
-                        opplysninger.utbetaling.mapIndexed { currentIndex, utbetaling ->
-                            if (currentIndex == index) utbetaling.copy(kilde = JsonKilde.BRUKER) else utbetaling
-                        },
-                ),
-        )
-    }
 
     private fun Inntekt.mapToJsonObject(jsonOkonomi: JsonOkonomi): JsonOkonomi {
         return when (type) {

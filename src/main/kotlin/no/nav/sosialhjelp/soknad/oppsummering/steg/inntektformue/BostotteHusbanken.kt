@@ -1,63 +1,36 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue
 
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Svar
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
-import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.booleanVerdiFelt
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
-import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.getBekreftelse
-import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse
-import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue
 import org.slf4j.LoggerFactory
 
 class BostotteHusbanken {
     fun getAvsnitt(
         opplysninger: JsonOkonomiopplysninger,
         driftsinformasjon: JsonDriftsinformasjon,
-        autoConfirmation: Boolean = false,
     ): Avsnitt =
         Avsnitt(
             tittel = "inntekt.bostotte.husbanken.tittel",
-            sporsmal = bostotteSporsmal(opplysninger, driftsinformasjon, autoConfirmation),
+            sporsmal = bostotteSporsmal(opplysninger, driftsinformasjon),
         )
 
     private fun bostotteSporsmal(
         opplysninger: JsonOkonomiopplysninger,
         driftsinformasjon: JsonDriftsinformasjon,
-        autoConfirmation: Boolean,
     ): List<Sporsmal> {
-        val harUtfyltBostotteSporsmal = harBekreftelse(opplysninger, SoknadJsonTyper.BOSTOTTE)
-        val harSvartJaBostotte = harUtfyltBostotteSporsmal && harBekreftelseTrue(opplysninger, SoknadJsonTyper.BOSTOTTE)
-        val harBostotteSamtykke = harSvartJaBostotte && harBekreftelseTrue(opplysninger, BOSTOTTE_SAMTYKKE)
         val fikkFeilMotHusbanken = java.lang.Boolean.TRUE == driftsinformasjon.stotteFraHusbankenFeilet
         val sporsmal = mutableListOf<Sporsmal>()
-        sporsmal.add(
-            Sporsmal(
-                tittel = "inntekt.bostotte.sporsmal.sporsmal",
-                erUtfylt = harUtfyltBostotteSporsmal,
-                felt =
-                    if (harUtfyltBostotteSporsmal && !autoConfirmation) {
-                        booleanVerdiFelt(
-                            harSvartJaBostotte,
-                            "inntekt.bostotte.sporsmal.true",
-                            "inntekt.bostotte.sporsmal.false",
-                        )
-                    } else {
-                        null
-                    },
-            ),
-        )
-        if (harSvartJaBostotte && fikkFeilMotHusbanken) {
+
+        if (fikkFeilMotHusbanken) {
             sporsmal.add(
                 Sporsmal(
                     tittel = "inntekt.bostotte.kontaktproblemer",
@@ -66,21 +39,9 @@ class BostotteHusbanken {
                 ),
             )
         }
-        if (harSvartJaBostotte && !fikkFeilMotHusbanken && !harBostotteSamtykke) {
-            sporsmal.add(
-                Sporsmal(
-                    tittel = "inntekt.bostotte.mangler_samtykke",
-                    erUtfylt = true,
-                    felt = null,
-                ),
-            )
-        }
-        if (harSvartJaBostotte && !fikkFeilMotHusbanken && harBostotteSamtykke) {
+        if (!fikkFeilMotHusbanken) {
             val harUtbetalinger = harHusbankenUtbetalinger(opplysninger)
             val harSaker = opplysninger.bostotte?.saker?.isNotEmpty() == true
-            getBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE)
-                ?.let { bekreftelseTidspunktSporsmal(it) }
-                ?.let { sporsmal.add(it) }
             if (!harUtbetalinger && !harSaker) {
                 sporsmal.add(sporsmalMedIngenUtbetalingerEllerSakerSvar())
             } else {
@@ -90,19 +51,6 @@ class BostotteHusbanken {
         }
         return sporsmal
     }
-
-    private fun bekreftelseTidspunktSporsmal(bostotteBekreftelse: JsonOkonomibekreftelse): Sporsmal =
-        Sporsmal(
-            tittel = "inntekt.bostotte.har_gitt_samtykke",
-            erUtfylt = true,
-            felt =
-                listOf(
-                    Felt(
-                        type = Type.TEKST,
-                        svar = createSvar(bostotteBekreftelse.bekreftelsesDato, SvarType.TIDSPUNKT),
-                    ),
-                ),
-        )
 
     private fun sporsmalMedIngenUtbetalingerEllerSakerSvar(): Sporsmal =
         Sporsmal(

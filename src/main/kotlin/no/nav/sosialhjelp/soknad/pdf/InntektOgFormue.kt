@@ -150,74 +150,10 @@ object InntektOgFormue {
 
         // Bostotte
         pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bostotte.overskrift"))
-        pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bostotte.sporsmal.sporsmal"))
-
-        var mottarBostotte = false
-        if (!isKortSoknad) {
-            val bostotteBekreftelser = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE)
-            if (bostotteBekreftelser.isNotEmpty()) {
-                val bostotteBekreftelse = bostotteBekreftelser[0]
-                mottarBostotte = bostotteBekreftelse.verdi == true
-                pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.sporsmal." + bostotteBekreftelse.verdi))
-
-                if (utvidetSoknad && bostotteBekreftelse.verdi == false) {
-                    pdfUtils.skrivInfotekst(pdf, "informasjon.husbanken.bostotte.v2")
-                    urisOnPage["støtte fra Husbanken"] = pdfUtils.getTekst("informasjon.husbanken.bostotte.url") ?: ""
-                }
-            } else {
-                pdfUtils.skrivIkkeUtfylt(pdf)
-            }
-            if (utvidetSoknad) {
-                pdf.addBlankLine()
-                val bostotteSvaralternativer: MutableList<String> = ArrayList(2)
-                bostotteSvaralternativer.add("inntekt.bostotte.sporsmal.true")
-                bostotteSvaralternativer.add("inntekt.bostotte.sporsmal.false")
-                pdfUtils.skrivSvaralternativer(pdf, bostotteSvaralternativer)
-            }
-            pdf.addBlankLine()
-        }
-        if (isKortSoknad) {
-            val bostotteBekreftelser = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE)
-            if (bostotteBekreftelser.isEmpty()) {
-                pdfUtils.skrivIkkeUtfylt(pdf)
-            }
-        }
 
         val hentingFraHusbankenHarFeilet = soknad.driftsinformasjon?.stotteFraHusbankenFeilet == true
-        val bostotteSamtykke = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
-        val harBostotteSamtykke = bostotteSamtykke.firstOrNull()?.verdi == true
-        if (harBostotteSamtykke) {
-            if (utvidetSoknad) {
-                pdfUtils.skrivInfotekst(pdf, "inntekt.bostotte.gi_samtykke.overskrift")
-                pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.gi_samtykke.tekst"))
-                pdf.addBlankLine()
-                pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.gi_samtykke"))
-                pdf.addBlankLine()
-            }
-            pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.har_gitt_samtykke"))
-            pdf.addBlankLine()
-            if (bostotteSamtykke.isNotEmpty()) {
-                pdfUtils.skrivTekstMedGuard(
-                    pdf,
-                    formaterDatoOgTidspunkt(bostotteSamtykke[0].bekreftelsesDato),
-                    "inntekt.bostotte.tidspunkt",
-                )
-            }
-            if (hentingFraHusbankenHarFeilet) {
-                pdfUtils.skrivInfotekst(pdf, "informasjon.husbanken.bostotte.nedlasting_feilet")
-            }
-        } else {
-            if (utvidetSoknad) {
-                pdfUtils.skrivInfotekst(pdf, "inntekt.bostotte.gi_samtykke.overskrift")
-                pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.gi_samtykke.tekst"))
-                pdf.addBlankLine()
-                pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.gi_samtykke"))
-                pdf.addBlankLine()
-            }
-            if (mottarBostotte) {
-                pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.mangler_samtykke"))
-                pdf.addBlankLine()
-            }
+        if (hentingFraHusbankenHarFeilet) {
+            pdfUtils.skrivInfotekst(pdf, "informasjon.husbanken.bostotte.nedlasting_feilet")
         }
 
         var harBostotteUtbetalinger = false
@@ -242,8 +178,8 @@ object InntektOgFormue {
         }
 
         var harBostotteSaker = false
-        val bostotte = okonomi.opplysninger?.bostotte
-        if (bostotte != null && bostotte.saker != null) {
+        val bostotte = okonomi.opplysninger.bostotte
+        if (bostotte?.saker != null) {
             bostotte.saker.forEach { bostotteSak ->
                 pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.sak"))
                 pdf.skrivTekst(formaterDato(bostotteSak.dato, DATO_FORMAT))
@@ -252,29 +188,27 @@ object InntektOgFormue {
             }
         }
 
-        if (harBostotteSamtykke) {
-            if (harBostotteSaker) {
-                if (!harBostotteUtbetalinger) {
-                    pdf.addBlankLine()
-                    pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.utbetalingerIkkefunnet"))
-                }
-            } else {
-                if (harBostotteUtbetalinger) {
-                    pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.sakerIkkefunnet"))
-                } else {
-                    pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.ikkefunnet"))
-                }
-            }
-            pdf.addBlankLine()
-            if (utvidetSoknad) {
-                pdfUtils.skrivInfotekst(pdf, "inntekt.bostotte.husbanken.lenkeText")
-                pdfUtils.skrivInfotekst(pdf, "inntekt.bostotte.ta_bort_samtykke")
-                pdfUtils.getTekst("inntekt.bostotte.husbanken.lenkeText")?.let {
-                    urisOnPage[it] = pdfUtils.getTekst("inntekt.bostotte.husbanken.url") ?: ""
-                }
+        if (harBostotteSaker) {
+            if (!harBostotteUtbetalinger) {
                 pdf.addBlankLine()
+                pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.utbetalingerIkkefunnet"))
+            }
+        } else {
+            if (harBostotteUtbetalinger) {
+                pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.sakerIkkefunnet"))
+            } else {
+                pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.ikkefunnet"))
             }
         }
+        pdf.addBlankLine()
+        if (utvidetSoknad) {
+            pdfUtils.skrivInfotekst(pdf, "inntekt.bostotte.husbanken.lenkeText")
+            pdfUtils.getTekst("inntekt.bostotte.husbanken.lenkeText")?.let {
+                urisOnPage[it] = pdfUtils.getTekst("inntekt.bostotte.husbanken.url") ?: ""
+            }
+            pdf.addBlankLine()
+        }
+
 
         // Bankinnskudd
         if (isKortSoknad) {

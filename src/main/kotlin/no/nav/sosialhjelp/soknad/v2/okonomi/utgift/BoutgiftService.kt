@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 
-import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
@@ -21,7 +20,7 @@ interface BoutgiftService {
         existingBoutgifter: Set<UtgiftType>,
     )
 
-    fun skalViseInfoVedBekreftelse(soknadId: UUID): Boolean
+    fun skalViseInfo(soknadId: UUID): Boolean
 }
 
 @Service
@@ -62,28 +61,17 @@ class BoutgiftServiceImpl(
         }
     }
 
-    override fun skalViseInfoVedBekreftelse(soknadId: UUID): Boolean {
-        return if (fetchBostotteFailedOrMissingSamtykke(soknadId)) {
-            getBostotteRelatedBekreftelser(soknadId)
-                // hvis bruker ikke har svart på noe relatert til bostotte - ikke vis
-                .ifEmpty { return false }
-                // hvis bruker har svart nei, eller ikke svart - vis info (returner true)
-                .isBostotteBekreftelseFalseOrNull()
+    override fun skalViseInfo(soknadId: UUID): Boolean {
+        return if (fetchBostotteFailed(soknadId)) {
+            // hvis fetch av bostøtte feilet - ikke vis info (returner false)
+            false
         } else {
-            // ingen bostotte-utbetalinger eller saker - vis info (returnerer true)
+            // hvis ingen bostøtte-utbetalinger eller saker - vis info (returner true)
             trueIfNoBostottesakerOrUtbetalinger(soknadId)
         }
     }
-
-    private fun getBostotteRelatedBekreftelser(soknadId: UUID) =
-        okonomiService.getBekreftelser(soknadId)
-            .filter { bekreftelse -> boutgiftsRelevanteBekreftelser.contains(bekreftelse.type) }
-
-    private fun fetchBostotteFailedOrMissingSamtykke(soknadId: UUID): Boolean {
-        return integrasjonstatusRepository.findByIdOrNull(soknadId)?.feilStotteHusbanken == true ||
-            okonomiService.getBekreftelser(soknadId).none {
-                it.type == BekreftelseType.BOSTOTTE_SAMTYKKE && it.verdi
-            }
+    private fun fetchBostotteFailed(soknadId: UUID): Boolean {
+        return integrasjonstatusRepository.findByIdOrNull(soknadId)?.feilStotteHusbanken == true
     }
 
     private fun trueIfNoBostottesakerOrUtbetalinger(soknadId: UUID): Boolean {
@@ -91,17 +79,7 @@ class BoutgiftServiceImpl(
             okonomiService.getBostotteSaker(soknadId).isEmpty()
     }
 
-    private fun List<Bekreftelse>.isBostotteBekreftelseFalseOrNull() =
-        find { it.type == BekreftelseType.BOSTOTTE }
-            ?.let { !it.verdi } ?: true
-
     companion object {
-        private val boutgiftsRelevanteBekreftelser: List<BekreftelseType> =
-            listOf(
-                BekreftelseType.BEKREFTELSE_BOUTGIFTER,
-                BekreftelseType.BOSTOTTE,
-                BekreftelseType.BOSTOTTE_SAMTYKKE,
-            )
         private val boutgiftTypes: Set<UtgiftType> =
             setOf(
                 UtgiftType.UTGIFTER_HUSLEIE,
