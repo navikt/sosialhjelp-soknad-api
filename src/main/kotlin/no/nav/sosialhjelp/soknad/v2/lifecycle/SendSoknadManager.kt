@@ -53,6 +53,9 @@ class SendSoknadManager(
         json: JsonInternalSoknad,
         kommunenummer: String,
     ): UUID {
+
+        throw FiksException("Søknad $soknadId er allerede påbegynt hos FIKS. ErrorResponse var: Fysjameg", cause = RuntimeException("Fysjameg"))
+
         // lager nødvendige filer
         return krypterOgLastOppFiler(
             navEksternRefId = soknadId,
@@ -123,10 +126,8 @@ class SendSoknadManager(
         response: SendSoknadResponse.FiksError,
         feilmelding: String,
     ) {
-        val errorMessage = response.errorMessage
-        val digisosId = errorMessage.message?.let { Utils.isAlleredeMottatt(it, soknadId) }
-
-        errorMessage.message?.let {
+        response.errorMessage.message?.let {
+            val digisosId = Utils.isAlleredeMottatt(it, soknadId)
             if (digisosId != null) handleAlleredeMottatt(digisosId = digisosId, soknadId = soknadId, errorResponse = it)
             if (Utils.isMottakPabegynt(it, soknadId)) handleMottakPabegynt(soknadId = soknadId, errorResponse = it)
         }
