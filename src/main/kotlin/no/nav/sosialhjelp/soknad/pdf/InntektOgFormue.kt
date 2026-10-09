@@ -209,7 +209,6 @@ object InntektOgFormue {
             pdf.addBlankLine()
         }
 
-
         // Bankinnskudd
         if (isKortSoknad) {
             pdf.addBlankLine()

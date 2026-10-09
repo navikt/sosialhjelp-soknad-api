@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
+import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
@@ -16,7 +17,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import kotlinx.coroutines.runBlocking
 
 class HusbankenServiceTest : AbstractOkonomiRegisterDataTest() {
     @Autowired

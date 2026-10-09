@@ -15,5 +15,4 @@ class BostotteUseCaseHandler(
             integrasjonStatusService.hasFetchHusbankenFailed(soknadId),
         )
     }
-
 }

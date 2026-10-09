@@ -70,6 +70,7 @@ class BoutgiftServiceImpl(
             trueIfNoBostottesakerOrUtbetalinger(soknadId)
         }
     }
+
     private fun fetchBostotteFailed(soknadId: UUID): Boolean {
         return integrasjonstatusRepository.findByIdOrNull(soknadId)?.feilStotteHusbanken == true
     }

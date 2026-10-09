@@ -11,15 +11,14 @@ import java.util.UUID
 class BostotteFetcher(
     private val husbankenService: HusbankenService,
     private val bostotteService: BostotteService,
-    private val integrasjonStatusService: IntegrasjonStatusService
-)  : AsynchronousFetcher{
-
+    private val integrasjonStatusService: IntegrasjonStatusService,
+) : AsynchronousFetcher {
     private val logger by logger()
 
     override suspend fun fetchAndSave(soknadId: UUID) {
-       runCatching {  husbankenService.getBostotte() }
+        runCatching { husbankenService.getBostotte() }
             .onSuccess { (saker, inntekt) ->
-                    bostotteService.saveDataFromHusbanken(soknadId, saker, inntekt)
+                bostotteService.saveDataFromHusbanken(soknadId, saker, inntekt)
             }
             .onFailure {
                 logger.error("Lagring av bostøtte fra Husbanken feilet", it)
@@ -29,4 +28,3 @@ class BostotteFetcher(
             }
     }
 }
-
