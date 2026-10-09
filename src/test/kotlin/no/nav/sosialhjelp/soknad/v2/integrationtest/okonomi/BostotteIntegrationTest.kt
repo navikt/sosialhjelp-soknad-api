@@ -240,6 +240,8 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
                     .create(500, "Feil", HttpHeaders(), ByteArray(0), null),
             )
 
+        runBlocking { bostotteFetcher.fetchAndSave(soknad.id) }
+
         integrasjonStatusService.hasFetchHusbankenFailed(soknad.id)
             .also { assertThat(it).isTrue() }
 

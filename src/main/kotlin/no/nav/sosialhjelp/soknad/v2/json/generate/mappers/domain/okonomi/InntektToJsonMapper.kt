@@ -84,7 +84,7 @@ private fun Inntekt.toJsonOpplysningUtbetalinger(): List<JsonOkonomiOpplysningUt
 
 private fun Inntekt.toJsonOpplysingUtbetaling(detalj: OkonomiDetalj? = null): JsonOkonomiOpplysningUtbetaling {
     return JsonOkonomiOpplysningUtbetaling(
-        kilde = InntektTypeToKildeMapper.getKilde(type),
+        kilde = if (type == InntektType.UTBETALING_HUSBANKEN && detalj is Belop) JsonKilde.BRUKER else InntektTypeToKildeMapper.getKilde(type),
         type = type.toSoknadJsonTypeString(),
         tittel = toTittel(),
         overstyrtAvBruker = false,

@@ -151,9 +151,9 @@ object InntektOgFormue {
         // Bostotte
         pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bostotte.overskrift"))
 
-        val hentingFraHusbankenHarFeilet = soknad.driftsinformasjon?.stotteFraHusbankenFeilet == true
+        val hentingFraHusbankenHarFeilet = soknad.driftsinformasjon.stotteFraHusbankenFeilet == true
         if (hentingFraHusbankenHarFeilet) {
-            pdfUtils.skrivInfotekst(pdf, "informasjon.husbanken.bostotte.nedlasting_feilet")
+            pdfUtils.skrivInfotekst(pdf, "inntekt.bostotte.kontaktproblemer")
         }
 
         var harBostotteUtbetalinger = false

@@ -16,15 +16,17 @@ class BostotteFetcher(
     private val logger by logger()
 
     override suspend fun fetchAndSave(soknadId: UUID) {
-        runCatching { husbankenService.getBostotte() }
-            .onSuccess { (saker, inntekt) ->
-                bostotteService.saveDataFromHusbanken(soknadId, saker, inntekt)
-            }
-            .onFailure {
-                logger.error("Lagring av bostøtte fra Husbanken feilet", it)
-                // gir bruker mulighet til å legge ved denne informasjonen selv
-                bostotteService.addForventetDokumentasjon(soknadId)
-                integrasjonStatusService.setStotteHusbankenStatus(soknadId, true)
-            }
+        val (saker, inntekt) = try {
+            husbankenService.getBostotte()
+        } catch (e: Exception) {
+            logger.error("Henting av bostøtte fra Husbanken feilet", e)
+            // gir bruker mulighet til å legge ved denne informasjonen selv
+            bostotteService.addForventetDokumentasjon(soknadId) //todo er det riktig?
+            integrasjonStatusService.setStotteHusbankenStatus(soknadId, true)
+            return
+        }
+
+        bostotteService.saveDataFromHusbanken(soknadId, saker, inntekt)
+        integrasjonStatusService.setStotteHusbankenStatus(soknadId, feilet = false)
     }
 }
