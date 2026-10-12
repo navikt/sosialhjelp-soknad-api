@@ -45,10 +45,7 @@ class KrrClient(
                         logger.warn("Krr - 403 Forbidden - ${e.message}")
                         throw e
                     }
-                    is NotFound -> {
-                        logger.info("Krr - 404 Not Found")
-                        null
-                    }
+                    is NotFound -> null
                     else -> throw TjenesteUtilgjengeligException("Krr - Noe uventet feilet", e)
                 }
             }
