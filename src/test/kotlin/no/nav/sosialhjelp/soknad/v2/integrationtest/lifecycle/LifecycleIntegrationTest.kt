@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 
+import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
@@ -12,6 +13,7 @@ import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
@@ -19,6 +21,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
@@ -45,6 +48,9 @@ import java.util.UUID
 class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     @Autowired
     private lateinit var familieRepository: FamilieRepository
+
+    @MockkSpyBean
+    private lateinit var createSoknadHandler: CreateSoknadHandler
 
     @Test
     fun `Opprette soknad skal generere soknads-objekt og hente register-data`() {
@@ -153,6 +159,20 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         soknadRepository.findAll().let { assertThat(it).isEmpty() }
         metadataRepository.findAll().let { assertThat(it).isEmpty() }
+    }
+
+    @Test
+    fun `Feil ved opprettelse av soknad skal returnere GeneralError`() {
+        every { createSoknadHandler.createSoknad(any(), any()) } throws
+                SoknadLifecycleException("Feil ved opprettelse av søknad", RuntimeException("Noe feilet"), UUID.randomUUID())
+
+        doPostFullResponse(uri = createUri)
+            .expectStatus().isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
+            .expectBody<SoknadApiError>()
+            .returnResult().responseBody
+            .also { error ->
+                assertThat(error?.error).isEqualTo(SoknadApiErrorType.GeneralError)
+            }
     }
 
     @Test
@@ -295,7 +315,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doPostFullResponse(uri = sendUri(soknadId))
             .expectStatus().isBadRequest
-            .expectBody(SoknadApiError::class.java)
+            .expectBody<SoknadApiError>()
             .returnResult().responseBody
             .also { error ->
                 assertThat(error?.error).isEqualTo(SoknadApiErrorType.MottakPabegynt)

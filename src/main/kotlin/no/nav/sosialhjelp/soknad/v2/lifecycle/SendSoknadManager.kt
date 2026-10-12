@@ -53,9 +53,6 @@ class SendSoknadManager(
         json: JsonInternalSoknad,
         kommunenummer: String,
     ): UUID {
-
-        throw FiksException("Søknad $soknadId er allerede påbegynt hos FIKS. ErrorResponse var: Fysjameg", cause = RuntimeException("Fysjameg"))
-
         // lager nødvendige filer
         return krypterOgLastOppFiler(
             navEksternRefId = soknadId,

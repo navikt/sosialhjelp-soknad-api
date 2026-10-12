@@ -131,7 +131,7 @@ class ExceptionMapper(
             }
             is BrokenSoknadException -> {
                 log.error("Innsending feiler fordi søknaden er i en ugyldig tilstand", e)
-                buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.BrokenSoknad, e))
+                buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.BrokenSoknad))
             }
             is MottakPabegyntException -> {
                 log.error("Innsending feiler fordi mottak allerede er påbegynt hos FIKS", e)
@@ -227,6 +227,13 @@ class ExceptionMapper(
     fun handleInnsendingFeiletException(e: InnsendingFeiletException): ResponseEntity<InnsendingFeiletError> {
         log.error("Innsending feilet", e)
         return buildError(HttpStatus.INTERNAL_SERVER_ERROR, InnsendingFeiletError(e.deletionDate.toDateString()))
+    }
+
+    @ExceptionHandler(SoknadLifecycleException::class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    fun handleSoknadLifecycleException(e: SoknadLifecycleException): ResponseEntity<SoknadApiError> {
+        log.error("Ukjent feil for søknad", e)
+        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError))
     }
 
     override fun handleMaxUploadSizeExceededException(
