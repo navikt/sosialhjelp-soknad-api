@@ -76,4 +76,14 @@ class ExceptionMapperTest {
             )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
     }
+
+    @Test
+    fun `skal gi 400 Bad Request med BrokenSoknad ved BrokenSoknadException`() {
+        val responseEntity =
+            exceptionMapper.handleSoknadApiException(
+                BrokenSoknadException("søknaden kan ikke sendes inn"),
+            )
+        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(responseEntity.body?.error).isEqualTo(SoknadApiErrorType.BrokenSoknad)
+    }
 }

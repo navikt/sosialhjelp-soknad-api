@@ -119,4 +119,4 @@ data class AntallSoknaderSendtException(
     val antall: Int,
     val soknadId: UUID,
     val innsendingTillattFra: LocalDateTime,
-) : SosialhjelpSoknadApiException("$antall soknader sendt siste 24 timer", null, soknadId.toString())
+) : SosialhjelpSoknadApiException("$antall soknader sendt siste 24 timer", null, soknadId.toString()), HandledException

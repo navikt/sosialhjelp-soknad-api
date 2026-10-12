@@ -3,8 +3,6 @@ package no.nav.sosialhjelp.soknad.v2
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
-import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
-import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
@@ -91,10 +89,9 @@ class SoknadLifecycleHandlerImpl(
         soknadId: UUID,
         e: Throwable,
     ): SoknadSendtInfo {
-        return when (e) {
-            is SoknadAlleredeSendtException -> e.sendtInfo
-            is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException, is AntallSoknaderSendtException,
-            -> throw e
+        return when {
+            e is SoknadAlleredeSendtException -> e.sendtInfo
+            e is HandledException -> throw e
             else -> {
                 lifecycleMetricsService.reportSendSoknadFeilet()
                 throw InnsendingFeiletException(
@@ -111,3 +108,6 @@ class SoknadLifecycleHandlerImpl(
         private val logger by logger()
     }
 }
+
+// exceptions som håndteres og ikke skal incremente metrikk
+interface HandledException

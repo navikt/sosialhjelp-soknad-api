@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.lifecycle
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.v2.SoknadValidator
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
@@ -78,6 +77,7 @@ class SendSoknadHandler(
     ): Nothing {
         when (e) {
             is AlleredeMottattException -> soknadMottattHandler.resolveSoknadMottatt(soknadId, navEnhet, e.digisosId)
+            is MottakPabegyntException -> throw e
             else -> {
                 metadataService.updateSendingFeilet(soknadId)
                 throw e

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
+import no.nav.sosialhjelp.soknad.v2.HandledException
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import java.time.LocalDateTime
 import java.util.UUID
@@ -23,9 +24,9 @@ class SamtidigOppdateringException(message: String?) : RuntimeException(message)
 
 class SendingTilKommuneErIkkeAktivertException(message: String?) : SosialhjelpSoknadApiException(message)
 
-class SendingTilKommuneErMidlertidigUtilgjengeligException(message: String?) : SosialhjelpSoknadApiException(message)
+class SendingTilKommuneErMidlertidigUtilgjengeligException(message: String?) : SosialhjelpSoknadApiException(message), HandledException
 
-class SendingTilKommuneUtilgjengeligException(message: String?) : SosialhjelpSoknadApiException(message)
+class SendingTilKommuneUtilgjengeligException(message: String?) : SosialhjelpSoknadApiException(message), HandledException
 
 class SoknadenHarNedetidException(message: String?) : SosialhjelpSoknadApiException(message)
 
@@ -40,6 +41,8 @@ class SoknadAlleredeSendtException(
     val sendtInfo: SoknadSendtInfo,
     message: String?,
 ) : SosialhjelpSoknadApiException(message)
+
+class BrokenSoknadException(message: String?) : SosialhjelpSoknadApiException(message), HandledException
 
 open class SoknadLifecycleException(
     message: String?,

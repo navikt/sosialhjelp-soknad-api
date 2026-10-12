@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtException
 import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.UgyldigTelefonnummerException
+import no.nav.sosialhjelp.soknad.v2.lifecycle.MottakPabegyntException
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
@@ -128,6 +129,14 @@ class ExceptionMapper(
                 log.error(e.message, e)
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
             }
+            is BrokenSoknadException -> {
+                log.error("Innsending feiler fordi søknaden er i en ugyldig tilstand", e)
+                buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.BrokenSoknad))
+            }
+            is MottakPabegyntException -> {
+                log.error("Innsending feiler fordi mottak allerede er påbegynt hos FIKS", e)
+                buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.MottakPabegynt, e))
+            }
             else -> {
                 log.error("REST-kall feilet", e)
                 buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError, e))
@@ -218,6 +227,13 @@ class ExceptionMapper(
     fun handleInnsendingFeiletException(e: InnsendingFeiletException): ResponseEntity<InnsendingFeiletError> {
         log.error("Innsending feilet", e)
         return buildError(HttpStatus.INTERNAL_SERVER_ERROR, InnsendingFeiletError(e.deletionDate.toDateString()))
+    }
+
+    @ExceptionHandler(SoknadLifecycleException::class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    fun handleSoknadLifecycleException(e: SoknadLifecycleException): ResponseEntity<SoknadApiError> {
+        log.error("Ukjent feil for søknad", e)
+        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError))
     }
 
     override fun handleMaxUploadSizeExceededException(
