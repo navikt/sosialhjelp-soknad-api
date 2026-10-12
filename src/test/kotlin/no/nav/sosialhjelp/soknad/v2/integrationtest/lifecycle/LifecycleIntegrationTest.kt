@@ -164,7 +164,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     @Test
     fun `Feil ved opprettelse av soknad skal returnere GeneralError`() {
         every { createSoknadHandler.createSoknad(any(), any()) } throws
-                SoknadLifecycleException("Feil ved opprettelse av søknad", RuntimeException("Noe feilet"), UUID.randomUUID())
+            SoknadLifecycleException("Feil ved opprettelse av søknad", RuntimeException("Noe feilet"), UUID.randomUUID())
 
         doPostFullResponse(uri = createUri)
             .expectStatus().isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
