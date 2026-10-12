@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 import tools.jackson.module.kotlin.jacksonObjectMapper
+import java.util.UUID
 
 class VirusScannerTest {
     private val mockWebServer = MockWebServer()
@@ -27,7 +28,7 @@ class VirusScannerTest {
     private val virusScanner = VirusScanner(webClient, enabled)
 
     private val filnavn = "virustest"
-    private val behandlingsId = "1100001"
+    private val soknadId = UUID.randomUUID().toString()
     private val data = byteArrayOf()
 
     @BeforeEach
@@ -51,14 +52,14 @@ class VirusScannerTest {
                 .setBody(jacksonObjectMapper().writeValueAsString(arrayOf(ScanResult(filnavn, Result.FOUND)))),
         )
         assertThatExceptionOfType(DokumentUploadError::class.java)
-            .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
+            .isThrownBy { virusScanner.scan(filnavn, data, soknadId, "pdf") }
             .withMessageStartingWith("Fant virus")
     }
 
     @Test
     fun scanFile_scanningIsNotEnabled_doesNotThrowException() {
         val virusScanner2 = VirusScanner(webClient, false)
-        assertThatCode { virusScanner2.scan(filnavn, data, behandlingsId, "pdf") }
+        assertThatCode { virusScanner2.scan(filnavn, data, soknadId, "pdf") }
             .doesNotThrowAnyException()
     }
 
@@ -66,7 +67,7 @@ class VirusScannerTest {
     fun scanFile_filenameIsVirustest_isInfected() {
         every { MiljoUtils.isNonProduction() } returns true
         assertThatExceptionOfType(DokumentUploadError::class.java)
-            .isThrownBy { virusScanner.scan("virustest", data, behandlingsId, "pdf") }
+            .isThrownBy { virusScanner.scan("virustest", data, soknadId, "pdf") }
     }
 
     @Test
@@ -84,7 +85,7 @@ class VirusScannerTest {
                     ),
                 ),
         )
-        assertThatCode { virusScanner.scan(filnavn, data, behandlingsId, "png") }
+        assertThatCode { virusScanner.scan(filnavn, data, soknadId, "png") }
             .doesNotThrowAnyException()
     }
 
@@ -96,7 +97,7 @@ class VirusScannerTest {
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setBody(jacksonObjectMapper().writeValueAsString(arrayOf(ScanResult("test", Result.OK)))),
         )
-        assertThatCode { virusScanner.scan(filnavn, data, behandlingsId, "jpg") }
+        assertThatCode { virusScanner.scan(filnavn, data, soknadId, "jpg") }
             .doesNotThrowAnyException()
     }
 
@@ -109,7 +110,7 @@ class VirusScannerTest {
                 .setBody(jacksonObjectMapper().writeValueAsString(arrayOf(ScanResult("test", Result.FOUND)))),
         )
         assertThatExceptionOfType(DokumentUploadError::class.java)
-            .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
+            .isThrownBy { virusScanner.scan(filnavn, data, soknadId, "pdf") }
     }
 
     @Test
@@ -121,6 +122,6 @@ class VirusScannerTest {
                 .setBody(jacksonObjectMapper().writeValueAsString(arrayOf(ScanResult("test", Result.ERROR)))),
         )
         assertThatExceptionOfType(DokumentUploadError::class.java)
-            .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
+            .isThrownBy { virusScanner.scan(filnavn, data, soknadId, "pdf") }
     }
 }

@@ -46,7 +46,7 @@ data class SoknadApiError(
                 SoknadApiErrorType.InnsendingUtilgjengelig to "Tjenesten er midlertidig ikke tilgjengelig",
                 SoknadApiErrorType.PlanlagtNedetid to "Søknaden har planlagt nedetid nå",
                 SoknadApiErrorType.PdfGenereringFeilet to "Rendering av søknad til PDF mislyktes",
-                SoknadApiErrorType.NotFound to "Ingen søknad med denne behandlingsId funnet",
+                SoknadApiErrorType.NotFound to "Ingen søknad med denne soknadId funnet",
                 SoknadApiErrorType.DokumentUploadDuplicateFilename to "Fil er allerede lastet opp",
                 SoknadApiErrorType.SoknadAlleredeSendt to "Søknaden er allerede sendt inn",
                 SoknadApiErrorType.Forbidden to "Ikke tilgang til ressurs",

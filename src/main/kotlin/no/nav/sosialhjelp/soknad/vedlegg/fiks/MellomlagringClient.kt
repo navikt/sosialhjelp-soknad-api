@@ -179,7 +179,7 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<String>()
             .doOnSuccess {
-                logger.info("Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId, behandlingsId=$navEksternId")
+                logger.info("Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId, soknadId=$navEksternId")
             }
             .doOnError(WebClientResponseException::class.java) {
                 logger.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)

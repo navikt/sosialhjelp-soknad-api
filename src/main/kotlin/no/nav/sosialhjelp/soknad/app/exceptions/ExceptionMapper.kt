@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtException
 import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.UgyldigTelefonnummerException
+import no.nav.sosialhjelp.soknad.v2.lifecycle.InnsendingTimeoutException
 import no.nav.sosialhjelp.soknad.v2.lifecycle.MottakPabegyntException
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
@@ -134,8 +135,12 @@ class ExceptionMapper(
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.BrokenSoknad))
             }
             is MottakPabegyntException -> {
-                log.error("Innsending feiler fordi mottak allerede er påbegynt hos FIKS", e)
+                log.warn("Innsending feiler fordi mottak allerede er påbegynt hos FIKS", e)
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.MottakPabegynt, e))
+            }
+            is InnsendingTimeoutException -> {
+                log.warn("Innsending feilet pga. timeout. Søknad kan være mottatt hos Fiks", e)
+                buildError(HttpStatus.REQUEST_TIMEOUT, SoknadApiError(SoknadApiErrorType.MottakPabegynt, e))
             }
             else -> {
                 log.error("REST-kall feilet", e)

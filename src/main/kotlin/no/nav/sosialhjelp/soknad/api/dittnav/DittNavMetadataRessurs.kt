@@ -42,7 +42,7 @@ class DittNavMetadataRessurs(
                     eventId = "${it.soknadId}_aktiv",
                     grupperingsId = it.soknadId.toString(),
                     tekst = PABEGYNT_SOKNAD_TITTEL,
-                    link = lenkeTilPabegyntSoknad(it.soknadId.toString()),
+                    link = lenkeTilPabegyntSoknad(it.soknadId),
                     sikkerhetsnivaa = SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på Min side
                     sistOppdatert = toUtc(it.tidspunkt.sistEndret, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                     isAktiv = true,

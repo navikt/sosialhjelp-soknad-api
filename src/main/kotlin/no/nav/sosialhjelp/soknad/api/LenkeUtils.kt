@@ -1,10 +1,11 @@
 package no.nav.sosialhjelp.soknad.api
 
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import java.util.UUID
 
 object LenkeUtils {
-    fun lenkeTilPabegyntSoknad(behandlingsId: String): String {
-        return "$lagContextLenke/skjema/$behandlingsId/1"
+    fun lenkeTilPabegyntSoknad(soknadId: UUID): String {
+        return "$lagContextLenke/skjema/$soknadId/1"
     }
 
     private val lagContextLenke: String

@@ -39,7 +39,7 @@ class VirusScanner(
         scan(
             filnavn = filnavn,
             data = data,
-            behandlingsId = soknadId.toString(),
+            soknadId = soknadId.toString(),
             fileType = FileDetectionUtils.detectMimeType(data),
         )
     }
@@ -47,7 +47,7 @@ class VirusScanner(
     fun scan(
         filnavn: String,
         data: ByteArray,
-        behandlingsId: String,
+        soknadId: String,
         fileType: String,
     ) {
         if (!enabled) {
@@ -55,15 +55,15 @@ class VirusScanner(
             return
         }
 
-        if (isInfected(filnavn, data, behandlingsId, fileType)) {
-            throw DokumentUploadPossibleVirus("Fant virus i fil for behandlingsId $behandlingsId")
+        if (isInfected(filnavn, data, soknadId, fileType)) {
+            throw DokumentUploadPossibleVirus("Fant virus i fil for soknadId $soknadId")
         }
     }
 
     private fun isInfected(
         filnavn: String,
         data: ByteArray,
-        behandlingsId: String,
+        soknadId: String,
         fileType: String,
     ): Boolean {
         try {
@@ -81,7 +81,7 @@ class VirusScanner(
                     .block()
 
             if (scanResults == null) {
-                log.warn("Uventet respons for behandlingsId=$behandlingsId, scanResults=null")
+                log.warn("Uventet respons for soknadId=$soknadId, scanResults=null")
                 return false
             }
             if (scanResults.size != 1) {
@@ -94,10 +94,10 @@ class VirusScanner(
                 log.info("Ingen virus i fil")
                 return false
             }
-            log.warn("Fant virus i fil for behandlingsId $behandlingsId, status ${scanResult.result}")
+            log.warn("Fant virus i fil for soknadID $soknadId, status ${scanResult.result}")
             return true
         } catch (e: Exception) {
-            log.warn("Kunne ikke scanne fil for behandlingsId $behandlingsId", e)
+            log.warn("Kunne ikke scanne fil for soknadId $soknadId", e)
             return false
         }
     }

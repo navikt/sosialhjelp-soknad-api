@@ -89,9 +89,9 @@ class SoknadLifecycleHandlerImpl(
         soknadId: UUID,
         e: Throwable,
     ): SoknadSendtInfo {
-        return when {
-            e is SoknadAlleredeSendtException -> e.sendtInfo
-            e is HandledException -> throw e
+        return when (e) {
+            is SoknadAlleredeSendtException -> e.sendtInfo
+            is HandledException -> throw e
             else -> {
                 lifecycleMetricsService.reportSendSoknadFeilet()
                 throw InnsendingFeiletException(

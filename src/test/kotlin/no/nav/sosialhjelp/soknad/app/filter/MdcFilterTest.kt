@@ -45,20 +45,20 @@ internal class MdcFilterTest {
     }
 
     @Test
-    fun `should add behandlingsId`() {
+    fun `should add soknadId`() {
         val request = MockHttpServletRequest()
-        request.setAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, mapOf("behandlingsId" to MOCK_BEHANDLINGS_ID))
-        request.requestURI = "/sosialhjelp/soknad-api/soknader/$MOCK_BEHANDLINGS_ID/arbeid"
+        request.setAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, mapOf("soknadId" to MOCK_SOKNAD_ID))
+        request.requestURI = "/sosialhjelp/soknad-api/soknader/$MOCK_SOKNAD_ID/arbeid"
 
         val response = MockHttpServletResponse()
 
         mdcFilter.doFilter(request, response, filterChain)
 
-        assertThat(filterChain.capturedMDCValue(MDC_SOKNAD_ID)).isEqualTo(MOCK_BEHANDLINGS_ID)
+        assertThat(filterChain.capturedMDCValue(MDC_SOKNAD_ID)).isEqualTo(MOCK_SOKNAD_ID)
     }
 
     @Test
-    fun `should not add behandlingsid for opprettSoknad`() {
+    fun `should not add soknadId for opprettSoknad`() {
         val request = MockHttpServletRequest()
         request.requestURI = "/sosialhjelp/soknad-api/soknader/opprettSoknad"
 
@@ -71,7 +71,7 @@ internal class MdcFilterTest {
     }
 
     companion object {
-        private const val MOCK_BEHANDLINGS_ID = "mock_behandlings_id"
+        private const val MOCK_SOKNAD_ID = "mock_soknad_id"
     }
 
     class MDCCapturingMockFilterChain : FilterChain {

@@ -105,7 +105,7 @@ class DigisosApiV2Client(
     ): UUID {
         return fiksWebClient
             .post()
-            .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, soknadId)
+            .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{soknadId}", kommunenummer, soknadId)
             .header(AUTHORIZATION, "Bearer $userToken")
             .contentType(MediaType.MULTIPART_FORM_DATA)
             .body(BodyInserters.fromMultipartData(body))

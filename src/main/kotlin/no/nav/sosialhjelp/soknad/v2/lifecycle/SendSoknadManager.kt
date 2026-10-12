@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
+import io.netty.handler.timeout.ReadTimeoutException
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -21,6 +22,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler.Companion.logger
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.WebClientRequestException
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import java.io.ByteArrayInputStream
 import java.util.Collections
@@ -98,10 +100,29 @@ class SendSoknadManager(
         }
         return when (response) {
             is SendSoknadResponse.Success -> response.digisosId
-            is SendSoknadResponse.Error -> throw FiksException("Opplasting av $navEksternRefId til fiks-digisos-api feilet", response.e)
+            is SendSoknadResponse.Error -> resolveError(navEksternRefId, startTime, response)
             is SendSoknadResponse.FiksError -> handleFiksError(navEksternRefId, startTime, response)
         }
     }
+
+    private fun resolveError(
+        soknadId: UUID,
+        startTime: Long,
+        response: SendSoknadResponse.Error,
+    ): Nothing {
+        with(response.e) {
+            if (this is WebClientRequestException && cause is ReadTimeoutException) {
+                throw InnsendingTimeoutException("Søknad $soknadId er allerede påbegynt hos FIKS. Feil var: $message")
+            }
+        }
+
+        val feilmelding =
+            "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
+                    "ms med status ${response.e} og response: ${response.e.message}"
+
+        throw FiksException(message = feilmelding, cause = response.e)
+    }
+
 
     private fun handleFiksError(
         soknadId: UUID,
@@ -110,7 +131,7 @@ class SendSoknadManager(
     ): Nothing {
         val feilmelding =
             "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
-                "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
+                    "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
 
         if (response.e is BadRequest) resolveBadRequest(soknadId, response, feilmelding)
 
@@ -138,8 +159,8 @@ class SendSoknadManager(
     ): Nothing {
         logger.warn(
             "Søknad $soknadId er allerede sendt med id $digisosId. " +
-                "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
-                "ErrorResponse var: $errorResponse",
+                    "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
+                    "ErrorResponse var: $errorResponse",
         )
         throw AlleredeMottattException(
             digisosId = digisosId,
@@ -219,5 +240,9 @@ class AlleredeMottattException(
 ) : SosialhjelpSoknadApiException(message)
 
 class MottakPabegyntException(
+    message: String,
+) : SosialhjelpSoknadApiException(message), HandledException
+
+class InnsendingTimeoutException(
     message: String,
 ) : SosialhjelpSoknadApiException(message), HandledException

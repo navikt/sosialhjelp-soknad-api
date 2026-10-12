@@ -29,7 +29,7 @@ class UtilsTest {
     }
 
     @Test
-    fun getDigisosId_whenErrorForAnotherBehandlingsId_shouldNotReturnIdTest() {
+    fun getDigisosId_whenErrorForAnotherSoknadId_shouldNotReturnIdTest() {
         val testresponse =
             """{"timestamp":1579253567738,"status":400,"error":"Bad Request","errorId":"afb2627d-1795-4ec1-a772-989d0a42a11a","path":"/digisos/api/v1/soknader/3002/1100006QX","originalPath":null,"message":"Det er skjedd en uventet feil. Her er en random id a7b1c576-0851-455c-ad08-4f067be43629","errorCode":null,"errorJson":null}"""
         val digisosId = isAlleredeMottatt(testresponse, UUID.randomUUID())

@@ -17,7 +17,7 @@ enum class SoknadApiErrorType {
     // Rendering av søknad til PDF mislyktes
     PdfGenereringFeilet,
 
-    // Ingen søknad med denne behandlingsId funnet
+    // Ingen søknad med denne soknadId funnet
     NotFound,
 
     // En fil med samme filnavn eksisterer allerede i søknad
