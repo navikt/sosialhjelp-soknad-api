@@ -1,8 +1,8 @@
 {
   "collection": "nav-pilot",
-  "version": "2026.10.01-060911-c544521",
+  "version": "2026.10.11-201029-b998fab",
   "scope": "repo",
-  "source_sha": "c5445219dc86b834f7528eabf7dd3de1ede821b6",
+  "source_sha": "6f8c2449a3124af5e88ba352d6eb0658ce39346e",
   "installed_at": "2026-06-04T12:42:23Z",
   "files": [
     {
@@ -15,8 +15,8 @@
     },
     {
       "path": ".github/agents/code-review.agent.md",
-      "hash": "5a019cbf3eda9ce2",
-      "revision": "a873eab96bbe29df8c1f5d50fea2c2c151d44820"
+      "hash": "811b2a6765ff86de",
+      "revision": "6f8c2449a3124af5e88ba352d6eb0658ce39346e"
     },
     {
       "path": ".github/agents/forfatter.agent.md",
@@ -34,8 +34,8 @@
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "c2ec92805bae041b",
-      "revision": "a873eab96bbe29df8c1f5d50fea2c2c151d44820"
+      "hash": "8c6cbe9101b541c5",
+      "revision": "6f8c2449a3124af5e88ba352d6eb0658ce39346e"
     },
     {
       "path": ".github/agents/research.agent.md",
@@ -44,13 +44,17 @@
     },
     {
       "path": ".github/agents/rust.agent.md",
-      "hash": "f915a28c049a0f64",
-      "revision": "c5445219dc86b834f7528eabf7dd3de1ede821b6"
+      "hash": "e1cb55806cd87d8c",
+      "revision": "6f8c2449a3124af5e88ba352d6eb0658ce39346e"
     },
     {
       "path": ".github/agents/security-champion.agent.md",
-      "hash": "09850437ed89c7bb",
-      "revision": "a873eab96bbe29df8c1f5d50fea2c2c151d44820"
+      "hash": "65fed295fcdd5bd1",
+      "revision": "6f8c2449a3124af5e88ba352d6eb0658ce39346e"
+    },
+    {
+      "path": ".github/agents/worker.agent.md",
+      "hash": "43c860f99cd1337e"
     },
     {
       "path": ".github/hooks/ask-first-aria.py",
@@ -174,7 +178,8 @@
     },
     {
       "path": ".github/skills/deliberate-ai-use/",
-      "hash": "7c195e344bca6924"
+      "hash": "81fe98e25424c81c",
+      "revision": "6f8c2449a3124af5e88ba352d6eb0658ce39346e"
     },
     {
       "path": ".github/skills/flyway-migration/",
@@ -224,8 +229,8 @@
     },
     {
       "path": ".github/skills/nav-dekoratoren/",
-      "hash": "36a286dece9e2c63",
-      "revision": "c5445219dc86b834f7528eabf7dd3de1ede821b6"
+      "hash": "4b5d432477529d66",
+      "revision": "6f8c2449a3124af5e88ba352d6eb0658ce39346e"
     },
     {
       "path": ".github/skills/nav-plan/",
