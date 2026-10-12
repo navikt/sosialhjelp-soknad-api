@@ -22,7 +22,7 @@ class BostotteFetcher(
             } catch (e: Exception) {
                 logger.error("Henting av bostøtte fra Husbanken feilet", e)
                 // gir bruker mulighet til å legge ved denne informasjonen selv
-                bostotteService.addForventetDokumentasjon(soknadId) // todo er det riktig?
+                //bostotteService.addForventetDokumentasjon(soknadId) // todo ha med bare dokumentaasjon?
                 integrasjonStatusService.setStotteHusbankenStatus(soknadId, true)
                 return
             }

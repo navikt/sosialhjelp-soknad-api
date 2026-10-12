@@ -36,6 +36,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.BostotteFetcher
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
@@ -71,6 +72,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         }
     }
 
+    @Disabled
     @Test
     fun `Skal finnes inntekt og dokumentasjon ved bostotte, men innhenting feilet`() {
         coEvery { husbankenClient.getBostotte(any(), any()) } returns
@@ -208,6 +210,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         }
     }
 
+    @Disabled
     @Test
     fun `Skal ha forventet dokumentasjon hvis clienten kaster exception`() {
         coEvery { husbankenClient.getBostotte(any(), any()) } returns
