@@ -323,6 +323,33 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     }
 
     @Test
+    fun `Innsending timer ut skal returnere MottakPabegynt error`() {
+        val soknadId = createNewSoknad()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
+        every {
+            digisosApiSendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+        } returns createReadtimeoutException(soknadId)
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        doPostFullResponse(uri = sendUri(soknadId))
+            .expectStatus().is5xxServerError
+            .expectBody<SoknadApiError>()
+            .returnResult().responseBody
+            .also { error ->
+                assertThat(error?.error).isEqualTo(SoknadApiErrorType.MottakPabegynt)
+            }
+    }
+
+    @Test
     fun `Soknad feiler ved forste innsending, men blir mottatt - ved andre innsending skal den oppdateres med riktig status`() {
         val soknadId = createNewSoknad()
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
@@ -343,11 +370,11 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doPostFullResponse(uri = sendUri(soknadId))
             .expectStatus().is5xxServerError
-            .expectBody<String>()
+            .expectBody<SoknadApiError>()
             .returnResult().responseBody
             .also {
                 assertThat(it).isNotNull
-                assertThat(it!!).contains("InnsendingFeiletError")
+                assertThat(it?.error).isEqualTo(SoknadApiErrorType.MottakPabegynt)
             }
 
         metadataRepository.findByIdOrNull(soknadId)!!

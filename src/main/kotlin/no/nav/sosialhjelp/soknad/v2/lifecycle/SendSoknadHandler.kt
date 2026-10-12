@@ -74,7 +74,7 @@ class SendSoknadHandler(
     ): Nothing {
         when (e) {
             is AlleredeMottattException -> soknadMottattHandler.resolveSoknadMottatt(soknadId, navEnhet, e.digisosId)
-            is MottakPabegyntException, is InnsendingTimeoutException -> throw e
+            is MottakPabegyntException -> throw e
             else -> {
                 metadataService.updateSendingFeilet(soknadId)
                 throw e
