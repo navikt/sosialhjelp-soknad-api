@@ -140,7 +140,7 @@ class ExceptionMapper(
             }
             is InnsendingTimeoutException -> {
                 log.warn("Innsending feilet pga. timeout. Søknad kan være mottatt hos Fiks", e)
-                buildError(HttpStatus.REQUEST_TIMEOUT, SoknadApiError(SoknadApiErrorType.MottakPabegynt, e))
+                buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.MottakPabegynt, e))
             }
             else -> {
                 log.error("REST-kall feilet", e)
