@@ -13,7 +13,10 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.util.UUID
 
 object SendSoknadErrorHandler {
-    fun handleError(response: SendSoknadResponse, soknadId: UUID,): Nothing {
+    fun handleError(
+        response: SendSoknadResponse,
+        soknadId: UUID,
+    ): Nothing {
         when (response) {
             is SendSoknadResponse.FiksError -> handleFiksError(soknadId, response)
             is SendSoknadResponse.Error -> resolveError(soknadId, response)
@@ -33,7 +36,7 @@ object SendSoknadErrorHandler {
 
         val feilmelding =
             "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - response.startTime} " +
-                    "ms med status ${response.e} og response: ${response.e.message}"
+                "ms med status ${response.e} og response: ${response.e.message}"
 
         throw FiksException(message = feilmelding, cause = response.e)
     }
@@ -44,7 +47,7 @@ object SendSoknadErrorHandler {
     ): Nothing {
         val feilmelding =
             "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - response.startTime} " +
-                    "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
+                "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
 
         if (response.e is BadRequest) resolveBadRequest(soknadId, response, feilmelding)
 
@@ -72,8 +75,8 @@ object SendSoknadErrorHandler {
     ): Nothing {
         logger.warn(
             "Søknad $soknadId er allerede sendt med id $digisosId. " +
-                    "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
-                    "ErrorResponse var: $errorResponse",
+                "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
+                "ErrorResponse var: $errorResponse",
         )
         throw AlleredeMottattException(
             digisosId = digisosId,

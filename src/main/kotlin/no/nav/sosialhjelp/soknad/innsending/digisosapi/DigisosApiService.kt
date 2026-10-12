@@ -47,19 +47,20 @@ class DigisosApiService(
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(pdfDokumenter.size))
         val response: SendSoknadResponse
         try {
-            response = digisosApiSSendSoknadClient.lastOppFiler(
-                soknadJson,
-                tilleggsinformasjonJson,
-                vedleggJson,
-                pdfDokumenter.map { dokument: FilOpplasting ->
-                    FilOpplasting(
-                        metadata = dokument.metadata,
-                        data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate),
-                    )
-                },
-                kommunenr,
-                navEksternRefId,
-            )
+            response =
+                digisosApiSSendSoknadClient.lastOppFiler(
+                    soknadJson,
+                    tilleggsinformasjonJson,
+                    vedleggJson,
+                    pdfDokumenter.map { dokument: FilOpplasting ->
+                        FilOpplasting(
+                            metadata = dokument.metadata,
+                            data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate),
+                        )
+                    },
+                    kommunenr,
+                    navEksternRefId,
+                )
             waitForFutures(krypteringFutureList)
         } finally {
             krypteringFutureList

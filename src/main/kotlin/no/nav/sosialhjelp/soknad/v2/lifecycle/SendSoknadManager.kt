@@ -96,7 +96,6 @@ class SendSoknadManager(
         val pdf = sosialhjelpPdfGenerator.generate(internalSoknad, true)
         return opprettFilOpplastingFraByteArray(filnavn, pdf)
     }
-
 }
 
 private fun opprettFilOpplastingFraByteArray(

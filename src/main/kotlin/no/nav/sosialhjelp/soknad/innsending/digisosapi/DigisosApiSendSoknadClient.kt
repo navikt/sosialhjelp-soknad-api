@@ -81,9 +81,10 @@ private fun Throwable.toFiksErrorMessageOrNull(): ErrorMessage? =
         }
     }.getOrNull()
 
-
 sealed interface SendSoknadResponse {
     class Success(val digisosId: UUID) : SendSoknadResponse
+
     class FiksError(val errorMessage: ErrorMessage, val e: Throwable, val startTime: Long) : SendSoknadResponse
+
     class Error(val e: Throwable, val startTime: Long) : SendSoknadResponse
 }
