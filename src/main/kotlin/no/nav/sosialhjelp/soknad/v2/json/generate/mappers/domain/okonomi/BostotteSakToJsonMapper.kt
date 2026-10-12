@@ -13,6 +13,7 @@ class BostotteSakToJsonMapper(
     private val saker: List<BostotteSak>,
 ) : OkonomiElementsToJsonMapper {
     override fun doMapping(jsonOkonomi: JsonOkonomi): JsonOkonomi {
+        // At denne settes til tross for ingen saker, indikerer at bruker har fått spørsmål om bostotte
         return jsonOkonomi.copy(
             opplysninger = jsonOkonomi.opplysninger.copy(bostotte = JsonBostotte(saker.map { it.toJsonBostotteSak() })),
         )
