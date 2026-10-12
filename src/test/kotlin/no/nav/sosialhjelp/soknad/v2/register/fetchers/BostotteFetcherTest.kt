@@ -18,8 +18,9 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
 import org.springframework.web.reactive.function.client.WebClientResponseException
 
-class BostotteFetcherTest(@Autowired private val okonomiRepository: OkonomiRepository) : AbstractRegisterDataTest() {
-
+class BostotteFetcherTest(
+    @Autowired private val okonomiRepository: OkonomiRepository,
+) : AbstractRegisterDataTest() {
     @Autowired
     private lateinit var bostotteFetcher: BostotteFetcher
 
@@ -32,10 +33,9 @@ class BostotteFetcherTest(@Autowired private val okonomiRepository: OkonomiRepos
     @MockkBean
     private lateinit var husbankenClient: HusbankenClient
 
-
     @Test
     suspend fun `lagrer saker og utbetalinger og setter status til vellykket`() {
-        //coEvery { husbankenService.getBostotte() } returns Pair(defaultResponseForHusbankenClient().bostotte.saker[0, defaultResponseForHusbankenClient().bostotte)
+        // coEvery { husbankenService.getBostotte() } returns Pair(defaultResponseForHusbankenClient().bostotte.saker[0, defaultResponseForHusbankenClient().bostotte)
         coEvery { husbankenClient.getBostotte(any(), any()) } returns defaultResponseForHusbankenClient()
 
         bostotteFetcher.fetchAndSave(soknad.id)
@@ -48,7 +48,6 @@ class BostotteFetcherTest(@Autowired private val okonomiRepository: OkonomiRepos
                 .anyMatch { it.type == InntektType.UTBETALING_HUSBANKEN }
         }
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilStotteHusbanken).isFalse()
-
     }
 
     @Disabled
@@ -61,11 +60,10 @@ class BostotteFetcherTest(@Autowired private val okonomiRepository: OkonomiRepos
     @Test
     suspend fun `oppretter forventet dokumentasjon og setter feilstatus ved hentefeil`() {
         coEvery { husbankenClient.getBostotte(any(), any()) } returns
-                HusbankenResponse.Error(
-                    WebClientResponseException
-                        .create(500, "Feil", HttpHeaders(), ByteArray(0), null),
-                )
-
+            HusbankenResponse.Error(
+                WebClientResponseException
+                    .create(500, "Feil", HttpHeaders(), ByteArray(0), null),
+            )
 
         bostotteFetcher.fetchAndSave(soknad.id)
 
@@ -77,5 +75,4 @@ class BostotteFetcherTest(@Autowired private val okonomiRepository: OkonomiRepos
         }
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilStotteHusbanken).isTrue()
     }
-
 }
