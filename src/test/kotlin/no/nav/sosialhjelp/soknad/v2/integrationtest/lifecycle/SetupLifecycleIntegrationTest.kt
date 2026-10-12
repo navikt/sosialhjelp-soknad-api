@@ -12,7 +12,8 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiReadClient
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiSendSoknadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
@@ -79,7 +80,10 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var mellomlagringClient: MellomlagringClient
 
     @MockkSpyBean
-    protected lateinit var digisosApiV2Client: DigisosApiV2Client
+    protected lateinit var digisosApiSendSoknadClient: DigisosApiSendSoknadClient
+
+    @MockkSpyBean
+    protected lateinit var digisosApiReadClient: DigisosApiReadClient
 
     @MockkSpyBean
     protected lateinit var kommuneInfoClient: KommuneInfoClient
@@ -122,7 +126,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         every { kommuneInfoClient.getAll() } returns createKommuneInfoList()
         every { krypteringService.krypter(any(), any(), any()) } answers { ByteArrayInputStream(byteArrayOf(0, 1, 2)) }
         every {
-            digisosApiV2Client.lastOppFiler(
+            digisosApiSendSoknadClient.lastOppFiler(
                 soknadJson = capture(soknadJsonSlot),
                 tilleggsinformasjonJson = capture(tilleggsinformasjonSlot),
                 vedleggJson = capture(vedleggJsonSlot),

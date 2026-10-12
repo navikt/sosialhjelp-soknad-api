@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.metrics
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class MetricsUtilsTest {
+internal class MetricsFiksUtilsTest {
     @Test
     fun prosent_shouldWork() {
         assertThat(MetricsUtils.getProsent(4, 18)).isEqualTo(22)

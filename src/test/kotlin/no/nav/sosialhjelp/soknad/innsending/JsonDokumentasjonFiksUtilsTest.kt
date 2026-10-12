@@ -10,7 +10,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-internal class JsonDokumentasjonUtilsTest {
+internal class JsonDokumentasjonFiksUtilsTest {
     @Test
     fun addHendelseTypeAndHendelseReferanse_forSoknad() {
         val originalJsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon()

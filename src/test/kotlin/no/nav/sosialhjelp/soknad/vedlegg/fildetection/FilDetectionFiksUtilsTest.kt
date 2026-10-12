@@ -15,7 +15,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.File
 
-internal class FilDetectionUtilsTest {
+internal class FilDetectionFiksUtilsTest {
     @Test
     fun `Test detect returnerer pdf`() {
         val tikaType = getAndDetectExampleFile(PDF_FILE)

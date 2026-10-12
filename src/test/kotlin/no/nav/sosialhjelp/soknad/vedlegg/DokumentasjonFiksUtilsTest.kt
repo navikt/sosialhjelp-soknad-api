@@ -15,7 +15,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-internal class DokumentasjonUtilsTest {
+internal class DokumentasjonFiksUtilsTest {
     @Test
     fun lagerFilnavn() {
         val uuid = UUID.fromString("5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99")

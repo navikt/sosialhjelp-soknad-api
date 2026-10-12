@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-internal class TimeUtilsTest {
+internal class TimeFiksUtilsTest {
     @Test
     fun skalKonvertereTilUtc() {
         val summerTime = LocalDateTime.of(2021, 6, 6, 12, 12, 12)

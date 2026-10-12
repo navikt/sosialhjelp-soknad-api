@@ -6,7 +6,8 @@ import io.getunleash.Unleash
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiReadClient
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiSendSoknadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
@@ -28,14 +29,17 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     private lateinit var unleash: Unleash
 
     @MockkBean
-    private lateinit var digisosApiV2Client: DigisosApiV2Client
+    private lateinit var digisosApiSendSoknadClient: DigisosApiSendSoknadClient
+
+    @MockkBean
+    private lateinit var digisosApiReadClient: DigisosApiReadClient
 
     @BeforeEach
     fun setup() {
 //        clearAllMocks()
         soknadRepository.deleteAll()
         every { uploadClient.delete(any()) } just runs
-        every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Success(UUID.randomUUID())
+        every { digisosApiSendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Success(UUID.randomUUID())
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(UUID.randomUUID().toString(), mellomlagringMetadataList = emptyList())
@@ -43,7 +47,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Opprett soknad skal ikke bli kort hvis bruker ikke har sendt inn soknad de siste 120 dager og ikke har nylige utbetalinger`() {
-        every { digisosApiV2Client.getSoknader() } returns listOf()
+        every { digisosApiReadClient.getSoknader() } returns listOf()
 
         val (id, useKortSoknad) =
             doPost(

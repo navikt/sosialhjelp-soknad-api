@@ -44,14 +44,11 @@ class SendSoknadHandler(
                         innsendingsTidspunkt = innsendingstidspunkt,
                     )
                 }
-                .onFailure { e -> handleError(soknadId, navEnhet, e) }
-                .getOrThrow()
+                .getOrElse { e -> handleError(soknadId, navEnhet, e) }
                 .also {
                     runCatching { uploadClient.delete(soknadId, keepMellomlagring = true) }
                         .onFailure { e -> logger.warn("Kunne ikke slette opplastinger for søknad $soknadId", e) }
                 }
-
-        json.checkDuplicateUtbetalinger()
 
         logger.info("Sendt (kort=${metadataService.isKortSoknad(soknadId)}) søknad til FIKS med DigisosId: $digisosId")
 
@@ -77,7 +74,7 @@ class SendSoknadHandler(
     ): Nothing {
         when (e) {
             is AlleredeMottattException -> soknadMottattHandler.resolveSoknadMottatt(soknadId, navEnhet, e.digisosId)
-            is MottakPabegyntException -> throw e
+            is MottakPabegyntException, is InnsendingTimeoutException -> throw e
             else -> {
                 metadataService.updateSendingFeilet(soknadId)
                 throw e
@@ -109,23 +106,6 @@ internal fun JsonInternalSoknad.withoutVedleggUtenFilerForKort(): JsonInternalSo
     SendSoknadHandler.logger.info("Søknadstype er KORT, fjerner alle vedlegg som ikke har filer")
     val vedlegg = checkNotNull(vedlegg) { "Vedlegg mangler" }
     return copy(vedlegg = vedlegg.copy(vedlegg = vedlegg.vedlegg.filter { it.filer.isNotEmpty() }))
-}
-
-private fun JsonInternalSoknad.checkDuplicateUtbetalinger() {
-    val soknad = requireNotNull(soknad)
-    val duplicates =
-        soknad.data.okonomi.opplysninger.utbetaling
-            .groupBy { listOf(it.tittel, it.utbetalingsdato, it.netto, it.brutto) }
-            .filter { it.value.size > 1 }
-
-    val totalDuplicatesCount = duplicates.values.sumOf { it.size }
-
-    if (totalDuplicatesCount > 0) {
-        SendSoknadHandler.logger.info(
-            "Søknad sendt, ut av ${soknad.data.okonomi.opplysninger.utbetaling.size} " +
-                "utbetaling(er) så er det $totalDuplicatesCount som er identiske utbetaling(er)",
-        )
-    }
 }
 
 data class NavEnhetForSending(
