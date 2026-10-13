@@ -42,7 +42,7 @@ class SjekkStatusInnsendingFeiletJobTest : AbstractJobTest() {
             soknader.mapIndexed { index, metadata ->
                 mottattSoknad(
                     metadata.soknadId,
-                    mottattTidspunkt,
+                    mottattTidspunkt.plusMinutes(index.toLong()),
                     UUID.randomUUID(),
                 )
             }
@@ -69,7 +69,7 @@ class SjekkStatusInnsendingFeiletJobTest : AbstractJobTest() {
         val soknader = List(2) { metadataRepository.save(failedMetadata()) }
         val mottattTidspunkt = LocalDateTime.now().minusDays(1)
         every { readClient.getInnsendingsstatus(any()) } returns
-                listOf(mottattSoknad(soknader.first().soknadId, mottattTidspunkt))
+            listOf(mottattSoknad(soknader.first().soknadId, mottattTidspunkt))
 
         sjekkStatusInnsendingFeiletJob.sjekkStatusInnsendingFeilet()
 

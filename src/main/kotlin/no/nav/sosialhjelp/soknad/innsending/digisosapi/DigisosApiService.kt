@@ -9,7 +9,6 @@ import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.Future
 
-
 interface DigisosApiService {
     fun sendSoknad(
         tilleggsinformasjonJson: String,
@@ -30,6 +29,7 @@ interface DigisosApiService {
 
 interface DigisosApiJobService {
     fun getDigisosIdsStatusMottatt(digisosIds: List<UUID>): List<UUID>
+
     fun checkSoknaderMottatt(soknadIds: List<UUID>): List<InnsendingStatusDto>
 }
 
@@ -39,7 +39,7 @@ class DigisosApiServiceImpl(
     private val sendSoknadClient: SendSoknadClient,
     private val krypteringService: KrypteringService,
     private val dokumentlagerClient: DokumentlagerClient,
-): DigisosApiService, DigisosApiJobService {
+) : DigisosApiService, DigisosApiJobService {
     private val fiksX509Certificate get() = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
 
     override fun sendSoknad(

@@ -108,8 +108,8 @@ class ReadClient(
             val errorResponse = e.responseBodyAsString
             throw IllegalStateException(
                 "Henting av status for søknader hos Fiks feilet etter " +
-                        "${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} " +
-                        "og response: $errorResponse. SporingsId: $sporingsId",
+                    "${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} " +
+                    "og response: $errorResponse. SporingsId: $sporingsId",
             )
         } catch (e: IOException) {
             throw IllegalStateException("Henting av status for søknader hos Fiks feilet. SporingsId: $sporingsId", e)
@@ -139,7 +139,7 @@ class ReadClient(
                 )
         }
             .getOrElse { ex ->
-                when(ex) {
+                when (ex) {
                     is WebClientResponseException -> throw FiksException("Feil ved henting av innsendingsstatus: ${ex.responseBodyAsString}", ex)
                     else -> throw FiksException("Uventet feil ved henting av innsendingsstatus", ex)
                 }
@@ -171,5 +171,5 @@ data class InnsendingStatusDto(
     val navEksternRefId: UUID,
     val digisosId: UUID,
     val kommunenummer: String,
-    val opprettet: Long
+    val opprettet: Long,
 )

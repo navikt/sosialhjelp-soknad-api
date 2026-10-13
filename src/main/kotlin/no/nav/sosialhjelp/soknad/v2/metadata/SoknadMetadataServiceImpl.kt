@@ -40,6 +40,7 @@ interface SoknadMetadataService {
 
 interface SoknadMetadataJobService {
     fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata>
+
     fun saveMetadatas(metadatas: List<SoknadMetadata>)
 }
 
