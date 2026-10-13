@@ -181,7 +181,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
+        every { sendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"), System.currentTimeMillis())
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -209,8 +209,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any())
-        } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
+            sendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), any())
+        } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"), System.currentTimeMillis())
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -245,7 +245,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+            sendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
         } returns createSendSoknadResponseFiksError(soknadId)
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -263,7 +263,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .returnResult().responseBody
             .also { dto ->
                 assertThat { dto?.digisosId }.isNotNull()
-                verify(exactly = 1) { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+                verify(exactly = 1) { sendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
             }
     }
 
@@ -273,7 +273,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+            sendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
         } returns create400ResponseFiksError(soknadId)
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -301,7 +301,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+            sendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
         } returns createMottakPabegyntFiksError(soknadId)
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -338,7 +338,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         // første innsending - timer ut
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+            sendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
         } returns createReadtimeoutException(soknadId)
 
         doPostFullResponse(uri = sendUri(soknadId))
@@ -360,7 +360,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         // andre innsending - 400 fra FIks og melding om at søknaden allerede er sendt inn
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any())
+            sendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), any())
         } returns createSendSoknadResponseFiksError(soknadId)
 
         val responseBody =
@@ -370,7 +370,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
                 .returnResult().responseBody
                 .also { dto ->
                     assertThat { dto?.digisosId }.isNotNull()
-                    verify(exactly = 2) { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+                    verify(exactly = 2) { sendSoknadClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
                 }
 
         metadataRepository.findByIdOrNull(soknadId)!!
@@ -539,6 +539,7 @@ private fun createReadtimeoutException(soknadId: UUID): SendSoknadResponse.Error
             URI("https://api.fiks.ks.no/digisos/api/v2/soknader/4203/$soknadId"),
             HttpHeaders.EMPTY,
         ),
+        startTime = System.currentTimeMillis(),
     )
 
 private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
@@ -548,6 +549,7 @@ private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadRespons
             createWebClientResponseException(
                 createSoknadAlleredeMottatFiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
             ),
+        startTime = System.currentTimeMillis(),
     )
 }
 
@@ -558,6 +560,7 @@ private fun create400ResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksE
             createWebClientResponseException(
                 createRandom400FiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
             ),
+        startTime = System.currentTimeMillis(),
     )
 }
 
@@ -630,6 +633,7 @@ private fun createMottakPabegyntFiksError(soknadId: UUID): SendSoknadResponse.Fi
     return SendSoknadResponse.FiksError(
         errorMessage = errorMessage,
         e = createWebClientResponseException(errorMessage),
+        startTime = System.currentTimeMillis(),
     )
 }
 
