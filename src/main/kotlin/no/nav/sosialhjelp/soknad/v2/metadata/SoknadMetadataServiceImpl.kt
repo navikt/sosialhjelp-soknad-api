@@ -38,11 +38,16 @@ interface SoknadMetadataService {
     fun findOldSoknaderStatusSendt(): List<SoknadMetadata>
 }
 
+interface SoknadMetadataJobService {
+    fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata>
+    fun saveMetadatas(metadatas: List<SoknadMetadata>)
+}
+
 @Component
 @Transactional
 class SoknadMetadataServiceImpl(
     private val metadataRepository: SoknadMetadataRepository,
-) : SoknadMetadataService {
+) : SoknadMetadataService, SoknadMetadataJobService {
     fun createSoknadMetadata(
         soknadId: UUID,
         isKort: Boolean,
@@ -171,6 +176,11 @@ class SoknadMetadataServiceImpl(
     @Transactional(readOnly = true)
     override fun findMetadataForStatus(status: SoknadStatus): List<SoknadMetadata> =
         metadataRepository.findMetadataByStatus(listOf(status))
+
+    @Transactional
+    override fun saveMetadatas(metadatas: List<SoknadMetadata>) {
+        metadataRepository.saveAll(metadatas)
+    }
 
     @Transactional(readOnly = true)
     override fun findMetadataForStatus(status: List<SoknadStatus>): List<SoknadMetadata> =

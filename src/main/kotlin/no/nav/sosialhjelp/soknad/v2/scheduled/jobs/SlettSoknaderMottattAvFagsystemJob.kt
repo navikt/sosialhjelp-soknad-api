@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiJobService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
@@ -20,7 +20,7 @@ class SlettSoknaderMottattAvFagsystemJob(
     leaderElection: LeaderElection,
     private val metadataJobService: SoknadMetadataService,
     private val soknadJobService: SoknadJobService,
-    private val digisosApiService: DigisosApiService,
+    private val digisosApiService: DigisosApiJobService,
 ) : AbstractJob(leaderElection, "Slette mottatte soknader", logger) {
     @Scheduled(cron = "0 */10 * * * *")
     fun slettSoknaderSomErMottattAvFagsystem() = doInJob { findAndDeleteMottatteSoknader() }

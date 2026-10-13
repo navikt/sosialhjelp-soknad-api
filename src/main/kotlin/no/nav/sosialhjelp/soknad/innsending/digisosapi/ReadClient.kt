@@ -108,12 +108,42 @@ class ReadClient(
             val errorResponse = e.responseBodyAsString
             throw IllegalStateException(
                 "Henting av status for søknader hos Fiks feilet etter " +
-                    "${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} " +
-                    "og response: $errorResponse. SporingsId: $sporingsId",
+                        "${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} " +
+                        "og response: $errorResponse. SporingsId: $sporingsId",
             )
         } catch (e: IOException) {
             throw IllegalStateException("Henting av status for søknader hos Fiks feilet. SporingsId: $sporingsId", e)
         }
+    }
+
+    fun getInnsendingsstatus(
+        soknadIds: List<UUID>,
+    ): List<InnsendingStatusDto> {
+        val sporingsId = UUID.randomUUID().toString()
+
+        return runCatching {
+            fiksWebClient
+                .post()
+                .uri("$digisosApiEndpoint/digisos/api/v1/nav/soknader/innsendingsstatus".plus("?sporingsId=$sporingsId"))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "BEARER $maskinportenToken")
+                .bodyValue(InnsendingsstatusRequest(soknadIds))
+                .retrieve()
+                .bodyToMono<List<InnsendingStatusDto>>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block()
+                ?: throw FiksException(
+                    message = "Fiks - noe uventet feilet ved henting av innsendingstatus for søknader. Response er null?",
+                    cause = null,
+                )
+        }
+            .getOrElse { ex ->
+                when(ex) {
+                    is WebClientResponseException -> throw FiksException("Feil ved henting av innsendingsstatus: ${ex.responseBodyAsString}", ex)
+                    else -> throw FiksException("Uventet feil ved henting av innsendingsstatus", ex)
+                }
+            }
     }
 
     private val maskinportenToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
@@ -131,4 +161,15 @@ data class FiksSoknadStatusListe(
 data class FiksSoknadStatus(
     val digisosId: UUID,
     val levertFagsystem: Boolean,
+)
+
+data class InnsendingsstatusRequest(
+    val navEksternRefIdListe: List<UUID>,
+)
+
+data class InnsendingStatusDto(
+    val navEksternRefId: UUID,
+    val digisosId: UUID,
+    val kommunenummer: String,
+    val opprettet: Long
 )
