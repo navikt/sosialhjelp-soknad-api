@@ -16,7 +16,7 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiServiceImpl
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
@@ -66,7 +66,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
         every { navEnhetService.findNavEnhetByAdresse(any()) } returns createNavEnhet()
-        every { digisosService.getSoknaderForUser() } returns emptyList()
+        every { digisosApiService.getSoknaderForUser() } returns emptyList()
 
         setupPdlAnswers()
     }
@@ -173,7 +173,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         )
             .also { assertThat(it).isFalse() }
 
-        verify(exactly = 1) { digisosService.getSoknaderForUser() }
+        verify(exactly = 1) { digisosApiService.getSoknaderForUser() }
     }
 
     @Test
@@ -188,14 +188,14 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         )
             .also { assertThat(it).isFalse() }
 
-        verify(exactly = 1) { digisosService.getSoknaderForUser() }
+        verify(exactly = 1) { digisosApiService.getSoknaderForUser() }
     }
 
     @Test
     fun `Funn av gammel soknad eldre enn 120 dager hos FIKS skal ikke gi kort soknad`() {
-        every { digisosService.getSoknaderForUser() } returns
+        every { digisosApiService.getSoknaderForUser() } returns
             listOf(createDigisosSak(TimestampUtil.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(121))))
-        every { digisosService.getInnsynsfilForSoknad(any(), any()) } returns
+        every { digisosApiService.getInnsynsfilForSoknad(any(), any()) } returns
             createJsonDigisosSoker(
                 listOf(
                     createMottattHendelse(TimestampUtil.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(121))),
@@ -332,7 +332,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     private lateinit var navEnhetService: NavEnhetService
 
     @MockkBean
-    private lateinit var digisosService: DigisosApiService
+    private lateinit var digisosApiService: DigisosApiServiceImpl
 
     @MockkBean
     private lateinit var kommuneInfoService: KommuneInfoService
