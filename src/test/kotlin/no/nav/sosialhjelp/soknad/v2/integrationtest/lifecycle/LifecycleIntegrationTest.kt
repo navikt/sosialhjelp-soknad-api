@@ -341,7 +341,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .also { kontaktRepository.save(it) }
 
         doPostFullResponse(uri = sendUri(soknadId))
-            .expectStatus().is5xxServerError
+            .expectStatus().isEqualTo(HttpStatus.SERVICE_UNAVAILABLE)
             .expectBody<SoknadApiError>()
             .returnResult().responseBody
             .also { error ->

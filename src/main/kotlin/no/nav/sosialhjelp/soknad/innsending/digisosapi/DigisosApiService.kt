@@ -12,7 +12,7 @@ import java.util.concurrent.Future
 @Component
 class DigisosApiService(
     private val digisosApiReadClient: DigisosApiReadClient,
-    private val digisosApiSSendSoknadClient: DigisosApiSendSoknadClient,
+    private val digisosApiSendSoknadClient: DigisosApiSendSoknadClient,
     private val krypteringService: KrypteringService,
     private val dokumentlagerClient: DokumentlagerClient,
 ) {
@@ -48,7 +48,7 @@ class DigisosApiService(
         val response: SendSoknadResponse
         try {
             response =
-                digisosApiSSendSoknadClient.lastOppFiler(
+                digisosApiSendSoknadClient.lastOppFiler(
                     soknadJson,
                     tilleggsinformasjonJson,
                     vedleggJson,
