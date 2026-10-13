@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.ReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoClient
@@ -79,6 +80,9 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var mellomlagringClient: MellomlagringClient
 
     @MockkSpyBean
+    protected lateinit var sendSoknadClient: SendSoknadClient
+
+    @MockkSpyBean
     protected lateinit var readClient: ReadClient
 
     @MockkSpyBean
@@ -122,7 +126,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         every { kommuneInfoClient.getAll() } returns createKommuneInfoList()
         every { krypteringService.krypter(any(), any(), any()) } answers { ByteArrayInputStream(byteArrayOf(0, 1, 2)) }
         every {
-            readClient.lastOppFiler(
+            sendSoknadClient.lastOppFiler(
                 soknadJson = capture(soknadJsonSlot),
                 tilleggsinformasjonJson = capture(tilleggsinformasjonSlot),
                 vedleggJson = capture(vedleggJsonSlot),

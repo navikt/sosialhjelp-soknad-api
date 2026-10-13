@@ -26,6 +26,7 @@ import tools.jackson.databind.json.JsonMapper
 import tools.jackson.module.kotlin.kotlinModule
 import java.time.Duration
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 object FiksUtils {
     val sosialhjelpJsonMapper: JsonMapper =
@@ -81,15 +82,15 @@ object FiksUtils {
         return HttpEntity(body, HttpHeaders(headerMap))
     }
 
-    private val ONE_MINUTE = Duration.ofMinutes(1)
-    private val TWO_MINUTES = Duration.ofMinutes(2)
+    private val ONE_MINUTE = Duration.ofSeconds(60)
+    private val TWO_MINUTES = Duration.ofSeconds(120)
 
-    private val fiksHttpClient =
+    private fun createFiksHttpClient(readTimeout: Duration): HttpClient =
         HttpClient.create(fiksServiceConnectionProvider)
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, ONE_MINUTE.toMillis().toInt())
             .doOnConnected {
                 it
-                    .addHandlerLast(ReadTimeoutHandler(ONE_MINUTE.toSeconds().toInt()))
+                    .addHandlerLast(ReadTimeoutHandler(readTimeout.toMillis(), TimeUnit.MILLISECONDS))
                     .addHandlerLast(WriteTimeoutHandler(ONE_MINUTE.toSeconds().toInt()))
             }
             .responseTimeout(TWO_MINUTES)
@@ -97,9 +98,12 @@ object FiksUtils {
     fun createFiksWebClient(
         webClientBuilder: WebClient.Builder,
         integrasjonsidFiks: String,
-        integrasjonpassordFiks: String
+        integrasjonpassordFiks: String,
+        readTimeout: Duration = ONE_MINUTE,
     ) = webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(fiksHttpClient))
+        .clientConnector(
+            ReactorClientHttpConnector(createFiksHttpClient(readTimeout)),
+        )
         .codecs {
             it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
             it.defaultCodecs().jacksonJsonEncoder(JacksonJsonEncoder(sosialhjelpJsonMapper))
