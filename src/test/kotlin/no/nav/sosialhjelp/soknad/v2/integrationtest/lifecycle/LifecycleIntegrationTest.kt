@@ -181,7 +181,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
+        every { readClient.lastOppFiler(any(), any(), any(), any(), any(), any()) } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -209,7 +209,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any())
+            readClient.lastOppFiler(any(), any(), any(), any(), any(), any())
         } returns SendSoknadResponse.Error(RuntimeException("Noe feilet"))
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -245,7 +245,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+            readClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
         } returns createSendSoknadResponseFiksError(soknadId)
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -263,7 +263,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .returnResult().responseBody
             .also { dto ->
                 assertThat { dto?.digisosId }.isNotNull()
-                verify(exactly = 1) { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+                verify(exactly = 1) { readClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
             }
     }
 
@@ -273,7 +273,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+            readClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
         } returns create400ResponseFiksError(soknadId)
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -301,7 +301,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+            readClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
         } returns createMottakPabegyntFiksError(soknadId)
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -338,7 +338,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         // første innsending - timer ut
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
+            readClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId)
         } returns createReadtimeoutException(soknadId)
 
         doPostFullResponse(uri = sendUri(soknadId))
@@ -360,7 +360,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         // andre innsending - 400 fra FIks og melding om at søknaden allerede er sendt inn
         every {
-            digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), any())
+            readClient.lastOppFiler(any(), any(), any(), any(), any(), any())
         } returns createSendSoknadResponseFiksError(soknadId)
 
         val responseBody =
@@ -370,7 +370,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
                 .returnResult().responseBody
                 .also { dto ->
                     assertThat { dto?.digisosId }.isNotNull()
-                    verify(exactly = 2) { digisosApiV2Client.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+                    verify(exactly = 2) { readClient.lastOppFiler(any(), any(), any(), any(), any(), soknadId) }
                 }
 
         metadataRepository.findByIdOrNull(soknadId)!!

@@ -1,13 +1,13 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.isAlleredeMottatt
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksUtils.isAlleredeMottatt
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.util.UUID
 
-class UtilsTest {
+class FiksUtilsTest {
     @Test
     fun getDigisosId_whenFinnesAllerede_shouldReturnIdTest() {
         val soknadId = UUID.randomUUID()

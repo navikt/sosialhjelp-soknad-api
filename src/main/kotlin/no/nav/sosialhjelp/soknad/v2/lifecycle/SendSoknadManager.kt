@@ -6,13 +6,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.exceptions.BrokenSoknadException
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.JsonTilleggsinformasjon
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
@@ -23,17 +20,13 @@ import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import java.io.ByteArrayInputStream
-import java.util.Collections
 import java.util.UUID
-import java.util.concurrent.Future
 
 @Component
 class SendSoknadManager(
-    private val digisosApiV2Client: DigisosApiV2Client,
+    private val digisosApiService: DigisosApiService,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val adresseService: AdresseService,
-    private val krypteringService: KrypteringService,
-    private val dokumentlagerClient: DokumentlagerClient,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -54,105 +47,20 @@ class SendSoknadManager(
         kommunenummer: String,
     ): UUID {
         // lager nødvendige filer
-        return krypterOgLastOppFiler(
-            navEksternRefId = soknadId,
+        return digisosApiService.sendSoknad(
+            soknadId = soknadId,
             soknadJson = json.toSoknadJson(),
             vedleggJson = json.toVedleggJson(),
             tilleggsinformasjonJson = json.createTilleggsinformasjonJson(),
             pdfDokumenter = json.getFilOpplastingList(),
-            kommunenr = kommunenummer,
+            kommunenummer = kommunenummer,
         )
-    }
-
-    private fun krypterOgLastOppFiler(
-        tilleggsinformasjonJson: String,
-        soknadJson: String,
-        vedleggJson: String,
-        pdfDokumenter: List<FilOpplasting>,
-        kommunenr: String,
-        navEksternRefId: UUID,
-    ): UUID {
-        val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(pdfDokumenter.size))
-        val response: SendSoknadResponse
-        val startTime = System.currentTimeMillis()
-        try {
-            response =
-                digisosApiV2Client.lastOppFiler(
-                    soknadJson,
-                    tilleggsinformasjonJson,
-                    vedleggJson,
-                    pdfDokumenter.map { dokument: FilOpplasting ->
-                        FilOpplasting(
-                            metadata = dokument.metadata,
-                            data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate),
-                        )
-                    },
-                    kommunenr,
-                    navEksternRefId,
-                )
-            waitForFutures(krypteringFutureList)
-        } finally {
-            krypteringFutureList
-                .filter { !it.isDone && !it.isCancelled }
-                .forEach { it.cancel(true) }
-        }
-        return when (response) {
-            is SendSoknadResponse.Success -> response.digisosId
-            is SendSoknadResponse.Error -> throw FiksException("Opplasting av $navEksternRefId til fiks-digisos-api feilet", response.e)
-            is SendSoknadResponse.FiksError -> handleFiksError(navEksternRefId, startTime, response)
-        }
-    }
-
-    private fun handleFiksError(
-        soknadId: UUID,
-        startTime: Long,
-        response: SendSoknadResponse.FiksError,
-    ): Nothing {
-        val feilmelding =
-            "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} " +
-                "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
-
-        if (response.e is BadRequest) resolveBadRequest(soknadId, response, feilmelding)
-
-        throw FiksException(message = feilmelding, cause = response.e)
-    }
-
-    // BadRequest
-    private fun resolveBadRequest(
-        soknadId: UUID,
-        response: SendSoknadResponse.FiksError,
-        feilmelding: String,
-    ) {
-        response.errorMessage.message?.let {
-            val digisosId = Utils.isAlleredeMottatt(it, soknadId)
-            if (digisosId != null) handleAlleredeMottatt(digisosId = digisosId, soknadId = soknadId, errorResponse = it)
-            if (Utils.isMottakPabegynt(it, soknadId)) handleMottakPabegynt(soknadId = soknadId, errorResponse = it)
-        }
-        throw BrokenSoknadException("Broken søknad: $feilmelding")
-    }
-
-    private fun handleAlleredeMottatt(
-        digisosId: UUID,
-        soknadId: UUID,
-        errorResponse: String?,
-    ): Nothing {
-        logger.warn(
-            "Søknad $soknadId er allerede sendt med id $digisosId. " +
-                "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
-                "ErrorResponse var: $errorResponse",
-        )
-        throw AlleredeMottattException(
-            digisosId = digisosId,
-            message = "Søknad $soknadId er allerede sendt med id $digisosId. ErrorResponse var: $errorResponse",
-        )
-    }
-
-    private fun handleMottakPabegynt(
-        soknadId: UUID,
-        errorResponse: String,
-    ): Nothing {
-        logger.warn("Mottak av søknad $soknadId er allerede påbegynt hos FIKS.")
-        throw MottakPabegyntException("Søknad $soknadId er allerede påbegynt hos FIKS. ErrorResponse var: $errorResponse")
+            .let { response ->
+                when (response) {
+                    is SendSoknadResponse.Success -> response.digisosId
+                    else -> SendSoknadErrorHandler.handleInnsendingError(soknadId, response)
+                }
+            }
     }
 
     private fun JsonInternalSoknad.toSoknadJson(): String =
@@ -196,7 +104,6 @@ class SendSoknadManager(
         return opprettFilOpplastingFraByteArray(filnavn, pdf)
     }
 
-    private val fiksX509Certificate get() = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
 }
 
 private fun opprettFilOpplastingFraByteArray(
