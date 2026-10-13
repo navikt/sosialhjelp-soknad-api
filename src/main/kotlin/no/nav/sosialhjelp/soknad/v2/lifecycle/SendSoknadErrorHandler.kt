@@ -16,7 +16,7 @@ object SendSoknadErrorHandler {
         when (response) {
             is SendSoknadResponse.FiksError -> handleFiksError(soknadId, response)
             is SendSoknadResponse.Error -> handleError(soknadId, response)
-            is SendSoknadResponse.Success ->  error("Success is not a bad thing")
+            is SendSoknadResponse.Success -> error("Success is not a bad thing")
         }
     }
 
@@ -33,7 +33,7 @@ object SendSoknadErrorHandler {
     ): Nothing {
         val feilmelding =
             "Opplasting av $soknadId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - response.startTime} " +
-                    "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
+                "ms med status ${response.errorMessage.status} og response: ${response.errorMessage}"
 
         if (response.e is BadRequest) resolveBadRequest(soknadId, response, feilmelding)
 
@@ -61,8 +61,8 @@ object SendSoknadErrorHandler {
     ): Nothing {
         logger.warn(
             "Søknad $soknadId er allerede sendt med id $digisosId. " +
-                    "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
-                    "ErrorResponse var: $errorResponse",
+                "Returner exception med digisos-id så brukeren blir rutet til innsyn. " +
+                "ErrorResponse var: $errorResponse",
         )
         throw AlleredeMottattException(
             digisosId = digisosId,

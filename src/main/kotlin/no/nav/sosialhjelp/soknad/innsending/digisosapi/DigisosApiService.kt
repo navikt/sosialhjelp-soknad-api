@@ -52,7 +52,6 @@ class DigisosApiService(
         return response
     }
 
-
     fun getSoknaderForUser(): List<DigisosSak> = readClient.getSoknader()
 
     fun getInnsynsfilForSoknad(

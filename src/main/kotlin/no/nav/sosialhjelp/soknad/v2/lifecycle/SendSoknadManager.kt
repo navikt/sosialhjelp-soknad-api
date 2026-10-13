@@ -3,11 +3,8 @@ package no.nav.sosialhjelp.soknad.v2.lifecycle
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
-import no.nav.sosialhjelp.soknad.app.exceptions.BrokenSoknadException
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.JsonTilleggsinformasjon
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
@@ -15,10 +12,8 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.HandledException
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
-import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler.Companion.logger
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import java.io.ByteArrayInputStream
 import java.util.UUID
 
@@ -103,7 +98,6 @@ class SendSoknadManager(
         val pdf = sosialhjelpPdfGenerator.generate(internalSoknad, true)
         return opprettFilOpplastingFraByteArray(filnavn, pdf)
     }
-
 }
 
 private fun opprettFilOpplastingFraByteArray(

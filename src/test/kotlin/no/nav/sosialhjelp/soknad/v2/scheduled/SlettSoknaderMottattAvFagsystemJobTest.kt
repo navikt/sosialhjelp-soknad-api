@@ -4,9 +4,9 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.ReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksSoknadStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksSoknadStatusListe
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.ReadClient
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata

@@ -31,7 +31,6 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var sendSoknadClient: SendSoknadClient
 
-
     @MockkBean
     private lateinit var readClient: ReadClient
 

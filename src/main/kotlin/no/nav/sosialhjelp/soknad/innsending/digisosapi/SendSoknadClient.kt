@@ -93,9 +93,10 @@ sealed interface SendSoknadResponse {
 }
 
 private object InnsendingRetrySpec {
-    val retrySpec: RetryBackoffSpec = Retry
-        .backoff(1, Duration.ofSeconds(1))
-        .filter { it.shouldRetry() }
+    val retrySpec: RetryBackoffSpec =
+        Retry
+            .backoff(1, Duration.ofSeconds(1))
+            .filter { it.shouldRetry() }
 
     private fun Throwable.shouldRetry(): Boolean = this is WebClientRequestException && this.cause is ReadTimeoutException
 }

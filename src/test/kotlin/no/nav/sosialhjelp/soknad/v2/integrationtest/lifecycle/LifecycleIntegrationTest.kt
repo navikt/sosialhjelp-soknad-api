@@ -539,7 +539,7 @@ private fun createReadtimeoutException(soknadId: UUID): SendSoknadResponse.Error
             URI("https://api.fiks.ks.no/digisos/api/v2/soknader/4203/$soknadId"),
             HttpHeaders.EMPTY,
         ),
-        startTime = System.currentTimeMillis()
+        startTime = System.currentTimeMillis(),
     )
 
 private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksError {
@@ -549,7 +549,7 @@ private fun createSendSoknadResponseFiksError(soknadId: UUID): SendSoknadRespons
             createWebClientResponseException(
                 createSoknadAlleredeMottatFiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
             ),
-        startTime = System.currentTimeMillis()
+        startTime = System.currentTimeMillis(),
     )
 }
 
@@ -560,7 +560,7 @@ private fun create400ResponseFiksError(soknadId: UUID): SendSoknadResponse.FiksE
             createWebClientResponseException(
                 createRandom400FiksError(soknadId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase),
             ),
-        startTime = System.currentTimeMillis()
+        startTime = System.currentTimeMillis(),
     )
 }
 

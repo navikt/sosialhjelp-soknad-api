@@ -1,44 +1,22 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
-import io.netty.channel.ChannelOption
-import io.netty.handler.timeout.ReadTimeoutHandler
-import io.netty.handler.timeout.WriteTimeoutHandler
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
-import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
-import no.nav.sosialhjelp.soknad.app.client.config.fiksServiceConnectionProvider
-import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksUtils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksUtils.sosialhjelpJsonMapper
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
-import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
-import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
-import org.springframework.http.MediaType.TEXT_PLAIN_VALUE
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
-import org.springframework.http.codec.json.JacksonJsonDecoder
-import org.springframework.http.codec.json.JacksonJsonEncoder
 import org.springframework.stereotype.Component
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.netty.http.client.HttpClient
-import tools.jackson.core.JacksonException
-import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.io.IOException
-import java.time.Duration
 import java.util.UUID
 
 @Component
@@ -140,8 +118,6 @@ class ReadClient(
 
     private val maskinportenToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
     private val userToken get() = SubjectHandlerUtils.getTokenOrNull() ?: error("Mangler userToken")
-
-
 }
 
 data class FiksSoknaderStatusRequest(
