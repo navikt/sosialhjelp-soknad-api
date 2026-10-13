@@ -33,30 +33,38 @@ class SjekkStatusInnsendingFeiletJob(
 
     private fun checkFiksStatusInnsendingFeilet(metadata: List<SoknadMetadata>) {
         val mottatteSoknader = digisosApiJobService.checkSoknaderMottatt(metadata.map { it.soknadId })
-        if (mottatteSoknader.isEmpty()) { return }
+        if (mottatteSoknader.isEmpty()) return
 
-        val relevanteMetadata = mottatteSoknader
-            .map { it.navEksternRefId }
-            .let { mottatteIds -> metadata.filter { it.soknadId in mottatteIds } }
+        val relevanteMetadata =
+            mottatteSoknader
+                .map { it.navEksternRefId }
+                .let { mottatteIds -> metadata.filter { it.soknadId in mottatteIds } }
 
         updateMetadata(relevanteMetadata, mottatteSoknader)
     }
 
-    private fun updateMetadata(relevanteMetadata: List<SoknadMetadata>, mottattFiks: List<InnsendingStatusDto>) {
+    private fun updateMetadata(
+        relevanteMetadata: List<SoknadMetadata>,
+        mottattFiks: List<InnsendingStatusDto>,
+    ) {
         logger.info("Fant ${relevanteMetadata.size} soknader som er mottatt hos FIKS. Oppdaterer metadata")
 
         relevanteMetadata
             .map { metadata ->
-                val mottatt = (mottattFiks.find { mottatt -> mottatt.navEksternRefId == metadata.soknadId }
-                    ?: error("Fant ikke mottatt soknad for ${metadata.soknadId}"))
+                val mottatt = (
+                    mottattFiks.find { mottatt -> mottatt.navEksternRefId == metadata.soknadId }
+                        ?: error("Fant ikke mottatt soknad for ${metadata.soknadId}")
+                )
+                val mottattTidspunkt = mottatt.opprettet.toLocalDateTime()
 
                 metadata.copy(
                     status = SoknadStatus.SENDT,
                     digisosId = mottatt.digisosId,
                     mottakerKommunenummer = mottatt.kommunenummer,
-                    tidspunkt = metadata.tidspunkt.copy(
-                        opprettet = mottatt.opprettet.toLocalDateTime()
-                    )
+                    tidspunkt =
+                        metadata.tidspunkt.copy(
+                            sendtInn = mottattTidspunkt,
+                        ),
                 )
             }
             .let { metadatas -> metadataJobService.saveMetadatas(metadatas) }
@@ -67,4 +75,5 @@ class SjekkStatusInnsendingFeiletJob(
         private const val JOB_NAME = "Sjekk Fiks-status innsending feilet"
     }
 }
+
 private fun Long.toLocalDateTime() = TimestampUtil.convertInstantToLocalDateTime(Instant.ofEpochMilli(this))
