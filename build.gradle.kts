@@ -56,11 +56,7 @@ repositories {
     maven("https://plugins.gradle.org/m2/")
     maven("https://repo.spring.io/plugins-release/")
     maven {
-        url = uri("https://maven.pkg.github.com/navikt/*")
-        credentials {
-            username = githubUser
-            password = githubPassword
-        }
+        url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
     }
 }
 
