@@ -20,7 +20,7 @@ import java.io.IOException
 import java.util.UUID
 
 @Component
-class ReadClient(
+class FiksReadClient(
     @param:Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @param:Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
@@ -116,6 +116,37 @@ class ReadClient(
         }
     }
 
+    fun getInnsendingsstatus(
+        soknadIds: List<UUID>,
+    ): List<InnsendingStatusDto> {
+        val sporingsId = UUID.randomUUID().toString()
+
+        return runCatching {
+            fiksWebClient
+                .post()
+                .uri("$digisosApiEndpoint/digisos/api/v1/nav/soknader/innsendingsstatus".plus("?sporingsId=$sporingsId"))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "BEARER $maskinportenToken")
+                .bodyValue(InnsendingsstatusRequest(soknadIds))
+                .retrieve()
+                .bodyToMono<List<InnsendingStatusDto>>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block()
+                ?: throw FiksException(
+                    message = "Fiks - noe uventet feilet ved henting av innsendingstatus for søknader. Response er null?",
+                    cause = null,
+                )
+        }
+            .getOrElse { ex ->
+                when (ex) {
+                    is WebClientResponseException ->
+                        throw FiksException("Feil ved henting av innsendingsstatus: ${ex.responseBodyAsString}. SporingsId: $sporingsId", ex)
+                    else -> throw FiksException("Uventet feil ved henting av innsendingsstatus. SporingsId: $sporingsId", ex)
+                }
+            }
+    }
+
     private val maskinportenToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
     private val userToken get() = SubjectHandlerUtils.getTokenOrNull() ?: error("Mangler userToken")
 }
@@ -131,4 +162,15 @@ data class FiksSoknadStatusListe(
 data class FiksSoknadStatus(
     val digisosId: UUID,
     val levertFagsystem: Boolean,
+)
+
+data class InnsendingsstatusRequest(
+    val navEksternRefIdListe: List<UUID>,
+)
+
+data class InnsendingStatusDto(
+    val navEksternRefId: UUID,
+    val digisosId: UUID,
+    val kommunenummer: String,
+    val opprettet: Long,
 )

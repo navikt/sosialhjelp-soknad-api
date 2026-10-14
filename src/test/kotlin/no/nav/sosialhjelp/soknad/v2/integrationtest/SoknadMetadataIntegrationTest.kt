@@ -64,7 +64,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
     }
 
     private fun opprettSoknadMedEierOgKontaktForInnsending(): UUID {
-        every { readClient.getSoknader() } returns listOf()
+        every { fiksReadClient.getSoknader() } returns listOf()
 
         val (soknadId, _) =
             doPost(
