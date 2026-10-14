@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.InntektSkatteetatenFetcher
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
@@ -17,8 +16,8 @@ class InntektSkatteetatenUseCaseHandler(
     fun getInntektSkattInfo(soknadId: UUID): InntektSkattInfo {
         return InntektSkattInfo(
             inntekt = inntektSkatteetatenService.getInntektSkatt(soknadId),
-            getFailed = integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId) ?: false
-            //samtykke = inntektSkatteetatenService.getSamtykkeSkatt(soknadId),
+            getFailed = integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId) ?: false,
+            // samtykke = inntektSkatteetatenService.getSamtykkeSkatt(soknadId),
         )
     }
 
@@ -69,6 +68,6 @@ class InntektSkatteetatenUseCaseHandler(
 
 data class InntektSkattInfo(
     val inntekt: Inntekt?,
-    val getFailed: Boolean
-    //val samtykke: Bekreftelse?,
+    val getFailed: Boolean,
+    // val samtykke: Bekreftelse?,
 )

@@ -27,11 +27,12 @@ object InntektOgFormue {
             return
         }
 
+
         val urisOnPage: MutableMap<String, String> = HashMap()
 
         // Skatt
         pdf.skrivTekstBold(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.tittel"))
-        val skattetatenSamtykke = hentBekreftelser(okonomi, SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
+//        val skattetatenSamtykke = hentBekreftelser(okonomi, SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
 
 //        val harSkattetatenSamtykke = skattetatenSamtykke.firstOrNull()?.verdi ?: false
 //        if (!harSkattetatenSamtykke) {
@@ -105,10 +106,9 @@ object InntektOgFormue {
                 urisOnPage["Dine Utbetalinger"] = pdfUtils.getTekst("utbetalinger.infotekst.tekst.url") ?: ""
             }
         }
-        if (utvidetSoknad) {
-            pdfUtils.skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.ta_bort_samtykke")
-        }
-
+//        if (utvidetSoknad) {
+//            pdfUtils.skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.ta_bort_samtykke")
+//        }
 
         // NAV ytelser
         pdf.skrivTekstBold(pdfUtils.getTekst("navytelser.sporsmal"))

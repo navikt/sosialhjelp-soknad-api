@@ -30,7 +30,7 @@ class SkattbarInntekt {
         opplysninger: JsonOkonomiopplysninger,
         fikkFeilMotSkatteetaten: Boolean,
     ): List<Sporsmal> {
-        //val harSkatteetatenSamtykke = harBekreftelseTrue(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE)
+        // val harSkatteetatenSamtykke = harBekreftelseTrue(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE)
         val sporsmal = mutableListOf<Sporsmal>()
 //        if (!harSkatteetatenSamtykke) {
 //            sporsmal.add(

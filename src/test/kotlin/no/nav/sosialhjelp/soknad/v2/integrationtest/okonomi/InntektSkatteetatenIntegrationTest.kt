@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.verify
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektResponse
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
@@ -48,7 +46,7 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
                 responseBodyClass = SkattbarInntektDto::class.java,
             )
 
-        //assertThat(dto.samtykke?.verdi).isTrue()
+        // assertThat(dto.samtykke?.verdi).isTrue()
         assertThat(dto.inntektFraSkatteetatenFeilet).isFalse()
 
         assertThat(dto.inntektSkatteetaten).hasSize(inntekt.inntektDetaljer.detaljer.size)
@@ -84,7 +82,7 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
                 responseBodyClass = SkattbarInntektDto::class.java,
             )
 
-        //assertThat(dto.samtykke?.verdi).isTrue()
+        // assertThat(dto.samtykke?.verdi).isTrue()
         assertThat(dto.inntektFraSkatteetatenFeilet).isFalse()
 
         assertThat(dto.inntektSkatteetaten).hasSize(1)
@@ -180,7 +178,7 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     private fun opprettDataForInntektSkatt(utbetalinger: List<Utbetaling> = utbetalingerForskjelligePeriode()): Inntekt {
         integrasjonStatusService.setInntektSkatteetatenStatus(soknad.id, false)
-        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE, true)
+//        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE, true)
         okonomiService.addElementToOkonomi(
             soknadId = soknad.id,
             opplysning =
@@ -251,7 +249,7 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
     companion object {
         private fun skattUrl(soknadId: UUID) = "/soknad/$soknadId/inntekt/skattbarinntekt"
 
-        //private fun updateUrl(soknadId: UUID) = "/soknad/$soknadId/inntekt/skattbarinntekt/samtykke"
+        // private fun updateUrl(soknadId: UUID) = "/soknad/$soknadId/inntekt/skattbarinntekt/samtykke"
     }
 
     private fun readResponseFromPath(path: String = "/skatt/InntektOgSkattToMaanederToArbeidsgivere.json"): SkattbarInntektResponse {
