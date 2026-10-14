@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektResponse
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
-import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.JOBB
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.UTBETALING_SKATTEETATEN
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektSkatteetatenUseCaseHandler
@@ -21,7 +20,9 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class InntektSkattUseCaseHandlerTest(@Autowired private val okonomiService: OkonomiService) : AbstractOkonomiRegisterDataTest() {
+class InntektSkattUseCaseHandlerTest(
+    @Autowired private val okonomiService: OkonomiService,
+) : AbstractOkonomiRegisterDataTest() {
     @Autowired
     private lateinit var inntektSkatteetatenUseCaseHandler: InntektSkatteetatenUseCaseHandler
 
@@ -37,8 +38,7 @@ class InntektSkattUseCaseHandlerTest(@Autowired private val okonomiService: Okon
 
 //        inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
 
-        runBlocking {inntektSkatteetatenFetcher.fetchAndSave(soknad.id)}
-
+        runBlocking { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
             assertThat(okonomi.inntekter.toList()).hasSize(1)
@@ -52,10 +52,10 @@ class InntektSkattUseCaseHandlerTest(@Autowired private val okonomiService: Okon
     fun `Tom liste lagrer ingen Inntekt`() {
         coEvery { skattbarInntektService.hentInntekt() } returns emptyList()
 
-        //inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
-        runBlocking {inntektSkatteetatenFetcher.fetchAndSave(soknad.id)}
+        // inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
+        runBlocking { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
 
-        //assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
+        // assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
         assertThat(okonomiService.getInntekter(soknad.id)).isEmpty()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isFalse()
     }
@@ -66,8 +66,7 @@ class InntektSkattUseCaseHandlerTest(@Autowired private val okonomiService: Okon
 
 //        inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
 
-        runBlocking {inntektSkatteetatenFetcher.fetchAndSave(soknad.id)}
-
+        runBlocking { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
 
 //        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
 //            .hasSize(1)

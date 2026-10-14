@@ -18,15 +18,15 @@ class InntektSkatteetatenFetcher(
     private val skattbarInntektService: SkattbarInntektService,
     private val inntektSkatteetatenService: InntektSkatteetatenService,
     private val organisasjonService: OrganisasjonService,
-    private val integrasjonStatusService: IntegrasjonStatusService
-    ) : AsynchronousFetcher {
-
+    private val integrasjonStatusService: IntegrasjonStatusService,
+) : AsynchronousFetcher {
     private val logger by logger()
 
     override suspend fun fetchAndSave(soknadId: UUID) {
         runCatching { fetchInntekt() }
             .onSuccess {
-                utbetalinger -> inntektSkatteetatenService.saveUtbetalinger(soknadId, utbetalinger)
+                    utbetalinger ->
+                inntektSkatteetatenService.saveUtbetalinger(soknadId, utbetalinger)
                 integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, false)
             }
             .onFailure { ex ->
