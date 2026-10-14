@@ -27,7 +27,6 @@ object InntektOgFormue {
             return
         }
 
-
         val urisOnPage: MutableMap<String, String> = HashMap()
 
         // Skatt
