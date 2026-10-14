@@ -18,7 +18,7 @@ plugins {
 
 buildscript {
     dependencies {
-        classpath("org.apache.httpcomponents.client5:httpclient5:5.6.4")
+        classpath("org.apache.httpcomponents.client5:httpclient5:5.6.5")
     }
 }
 
