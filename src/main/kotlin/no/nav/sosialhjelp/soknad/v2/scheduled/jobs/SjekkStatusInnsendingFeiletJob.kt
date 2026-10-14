@@ -19,7 +19,7 @@ class SjekkStatusInnsendingFeiletJob(
     private val metadataJobService: SoknadMetadataJobService,
     private val digisosApiJobService: DigisosApiJobService,
 ) : AbstractJob(leaderElection, JOB_NAME, logger) {
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     fun sjekkStatusInnsendingFeilet() = doInJob { findAndCheckInnsendingFeilet() }
 
     private fun findAndCheckInnsendingFeilet() {
@@ -72,7 +72,7 @@ class SjekkStatusInnsendingFeiletJob(
 
     companion object {
         private val logger by logger()
-        private const val JOB_NAME = "Sjekk Fiks-status innsending feilet"
+        private const val JOB_NAME = "Sjekk Fiks-status for INNSENDING_FEILET"
     }
 }
 
