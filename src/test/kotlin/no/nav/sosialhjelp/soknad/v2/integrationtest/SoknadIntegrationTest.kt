@@ -6,7 +6,7 @@ import io.getunleash.Unleash
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.ReadClient
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
@@ -32,7 +32,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     private lateinit var sendSoknadClient: SendSoknadClient
 
     @MockkBean
-    private lateinit var readClient: ReadClient
+    private lateinit var fiksReadClient: FiksReadClient
 
     @BeforeEach
     fun setup() {
@@ -47,7 +47,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Opprett soknad skal ikke bli kort hvis bruker ikke har sendt inn soknad de siste 120 dager og ikke har nylige utbetalinger`() {
-        every { readClient.getSoknader() } returns listOf()
+        every { fiksReadClient.getSoknader() } returns listOf()
 
         val (id, useKortSoknad) =
             doPost(

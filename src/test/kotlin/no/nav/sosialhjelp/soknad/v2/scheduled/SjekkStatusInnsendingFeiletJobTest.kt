@@ -4,8 +4,8 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.InnsendingStatusDto
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.ReadClient
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
@@ -25,7 +25,7 @@ class SjekkStatusInnsendingFeiletJobTest : AbstractJobTest() {
     private lateinit var sjekkStatusInnsendingFeiletJob: SjekkStatusInnsendingFeiletJob
 
     @MockkBean
-    private lateinit var readClient: ReadClient
+    private lateinit var fiksReadClient: FiksReadClient
 
     private val requestedIds = slot<List<UUID>>()
 
@@ -47,11 +47,11 @@ class SjekkStatusInnsendingFeiletJobTest : AbstractJobTest() {
                 )
             }
 
-        every { readClient.getInnsendingsstatus(any()) } returns mottatteSoknader
+        every { fiksReadClient.getInnsendingsstatus(any()) } returns mottatteSoknader
 
         sjekkStatusInnsendingFeiletJob.sjekkStatusInnsendingFeilet()
 
-        verify(exactly = 1) { readClient.getInnsendingsstatus(capture(requestedIds)) }
+        verify(exactly = 1) { fiksReadClient.getInnsendingsstatus(capture(requestedIds)) }
         assertThat(requestedIds.captured).containsExactlyInAnyOrderElementsOf(soknader.map { it.soknadId })
         soknader.forEachIndexed { index, metadata ->
             val oppdatert = metadataRepository.findByIdOrNull(metadata.soknadId)!!
@@ -68,12 +68,12 @@ class SjekkStatusInnsendingFeiletJobTest : AbstractJobTest() {
     fun `Bare soknadene som er mottatt hos FIKS far oppdatert status`() {
         val soknader = List(2) { metadataRepository.save(failedMetadata()) }
         val mottattTidspunkt = LocalDateTime.now().minusDays(1)
-        every { readClient.getInnsendingsstatus(any()) } returns
+        every { fiksReadClient.getInnsendingsstatus(any()) } returns
             listOf(mottattSoknad(soknader.first().soknadId, mottattTidspunkt))
 
         sjekkStatusInnsendingFeiletJob.sjekkStatusInnsendingFeilet()
 
-        verify(exactly = 1) { readClient.getInnsendingsstatus(capture(requestedIds)) }
+        verify(exactly = 1) { fiksReadClient.getInnsendingsstatus(capture(requestedIds)) }
         assertThat(requestedIds.captured).containsExactlyInAnyOrderElementsOf(soknader.map { it.soknadId })
         assertThat(metadataRepository.findByIdOrNull(soknader.first().soknadId)!!.status).isEqualTo(SoknadStatus.SENDT)
         assertThat(metadataRepository.findByIdOrNull(soknader.last().soknadId)!!.status).isEqualTo(SoknadStatus.INNSENDING_FEILET)
@@ -82,11 +82,11 @@ class SjekkStatusInnsendingFeiletJobTest : AbstractJobTest() {
     @Test
     fun `Ingen soknader far oppdatert status nar FIKS ikke har mottatt noen`() {
         val soknader = List(2) { metadataRepository.save(failedMetadata()) }
-        every { readClient.getInnsendingsstatus(any()) } returns emptyList()
+        every { fiksReadClient.getInnsendingsstatus(any()) } returns emptyList()
 
         sjekkStatusInnsendingFeiletJob.sjekkStatusInnsendingFeilet()
 
-        verify(exactly = 1) { readClient.getInnsendingsstatus(capture(requestedIds)) }
+        verify(exactly = 1) { fiksReadClient.getInnsendingsstatus(capture(requestedIds)) }
         assertThat(requestedIds.captured).containsExactlyInAnyOrderElementsOf(soknader.map { it.soknadId })
         soknader.forEach { metadata ->
             assertThat(metadataRepository.findByIdOrNull(metadata.soknadId)!!.status)
@@ -100,7 +100,7 @@ class SjekkStatusInnsendingFeiletJobTest : AbstractJobTest() {
 
         sjekkStatusInnsendingFeiletJob.sjekkStatusInnsendingFeilet()
 
-        verify(exactly = 0) { readClient.getInnsendingsstatus(any()) }
+        verify(exactly = 0) { fiksReadClient.getInnsendingsstatus(any()) }
     }
 
     private fun failedMetadata() =

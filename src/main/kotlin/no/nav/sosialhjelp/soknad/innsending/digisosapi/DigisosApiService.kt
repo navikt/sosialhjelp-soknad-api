@@ -35,7 +35,7 @@ interface DigisosApiJobService {
 
 @Component
 class DigisosApiServiceImpl(
-    private val readClient: ReadClient,
+    private val fiksReadClient: FiksReadClient,
     private val sendSoknadClient: SendSoknadClient,
     private val krypteringService: KrypteringService,
     private val dokumentlagerClient: DokumentlagerClient,
@@ -76,18 +76,18 @@ class DigisosApiServiceImpl(
         return response
     }
 
-    override fun getSoknaderForUser(): List<DigisosSak> = readClient.getSoknader()
+    override fun getSoknaderForUser(): List<DigisosSak> = fiksReadClient.getSoknader()
 
     override fun getInnsynsfilForSoknad(
         fiksDigisosId: String,
         dokumentId: String,
-    ): JsonDigisosSoker = readClient.getInnsynsfil(fiksDigisosId, dokumentId)
+    ): JsonDigisosSoker = fiksReadClient.getInnsynsfil(fiksDigisosId, dokumentId)
 
     override fun getDigisosIdsStatusMottatt(digisosIds: List<UUID>): List<UUID> {
         return if (digisosIds.isEmpty()) {
             emptyList()
         } else {
-            readClient
+            fiksReadClient
                 .getStatusForSoknader(digisosIds).statusListe
                 .filter { it.levertFagsystem }
                 .map { it.digisosId }
@@ -95,5 +95,5 @@ class DigisosApiServiceImpl(
     }
 
     override fun checkSoknaderMottatt(soknadIds: List<UUID>): List<InnsendingStatusDto> =
-        readClient.getInnsendingsstatus(soknadIds)
+        fiksReadClient.getInnsendingsstatus(soknadIds)
 }

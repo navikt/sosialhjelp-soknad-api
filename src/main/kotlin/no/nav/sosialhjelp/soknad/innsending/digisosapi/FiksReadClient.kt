@@ -20,7 +20,7 @@ import java.io.IOException
 import java.util.UUID
 
 @Component
-class ReadClient(
+class FiksReadClient(
     @param:Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @param:Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,

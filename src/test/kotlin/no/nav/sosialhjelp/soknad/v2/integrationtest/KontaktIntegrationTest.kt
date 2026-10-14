@@ -20,7 +20,7 @@ import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.ReadClient
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
@@ -72,7 +72,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     private lateinit var mellomlagringClient: MellomlagringClient
 
     @MockkBean
-    private lateinit var readClient: ReadClient
+    private lateinit var fiksReadClient: FiksReadClient
 
     @MockkBean(relaxed = true)
     private lateinit var unleash: Unleash
@@ -92,7 +92,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
-        every { readClient.getSoknader() } returns emptyList()
+        every { fiksReadClient.getSoknader() } returns emptyList()
         every { personService.hasAdressebeskyttelse(any()) } returns false
         every { kodeverkService.getKommunenavn(KOMMUNENUMMER) } returns KOMMUNENAVN
     }
@@ -291,7 +291,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { uploadClient.delete(lagretSoknad.id) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
 
-        every { readClient.getSoknader() } returns
+        every { fiksReadClient.getSoknader() } returns
             listOf(
                 DigisosSak(
                     "abc",
@@ -305,7 +305,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                     null,
                 ),
             )
-        every { readClient.getInnsynsfil("abc", "metadataid") } returns
+        every { fiksReadClient.getInnsynsfil("abc", "metadataid") } returns
             JsonDigisosSoker(
                 version = "1",
                 avsender = JsonAvsender("test", "1"),
@@ -401,7 +401,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { mellomlagringClient.slettDokument(any(), any()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
 
-        every { readClient.getSoknader() } returns
+        every { fiksReadClient.getSoknader() } returns
             listOf(
                 DigisosSak(
                     "abc",
@@ -416,7 +416,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 ),
             )
         every {
-            readClient.getInnsynsfil("abc", "metadataid")
+            fiksReadClient.getInnsynsfil("abc", "metadataid")
         } returns
             JsonDigisosSoker(
                 version = "1",
