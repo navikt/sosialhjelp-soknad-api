@@ -140,8 +140,9 @@ class ReadClient(
         }
             .getOrElse { ex ->
                 when (ex) {
-                    is WebClientResponseException -> throw FiksException("Feil ved henting av innsendingsstatus: ${ex.responseBodyAsString}", ex)
-                    else -> throw FiksException("Uventet feil ved henting av innsendingsstatus", ex)
+                    is WebClientResponseException ->
+                        throw FiksException("Feil ved henting av innsendingsstatus: ${ex.responseBodyAsString}. SporingsId: $sporingsId", ex)
+                    else -> throw FiksException("Uventet feil ved henting av innsendingsstatus. SporingsId: $sporingsId", ex)
                 }
             }
     }

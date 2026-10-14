@@ -51,19 +51,20 @@ class SjekkStatusInnsendingFeiletJob(
 
         relevanteMetadata
             .map { metadata ->
-                val mottatt = (
+                val mottattSoknad =
                     mottattFiks.find { mottatt -> mottatt.navEksternRefId == metadata.soknadId }
                         ?: error("Fant ikke mottatt soknad for ${metadata.soknadId}")
-                )
-                val mottattTidspunkt = mottatt.opprettet.toLocalDateTime()
+
+                val tidspunktOpprettetFiks = mottattSoknad.opprettet.toLocalDateTime()
 
                 metadata.copy(
                     status = SoknadStatus.SENDT,
-                    digisosId = mottatt.digisosId,
-                    mottakerKommunenummer = mottatt.kommunenummer,
+                    digisosId = mottattSoknad.digisosId,
+                    mottakerKommunenummer = mottattSoknad.kommunenummer,
                     tidspunkt =
                         metadata.tidspunkt.copy(
-                            sendtInn = mottattTidspunkt,
+                            sendtInn = tidspunktOpprettetFiks,
+                            sistEndret = tidspunktOpprettetFiks,
                         ),
                 )
             }
