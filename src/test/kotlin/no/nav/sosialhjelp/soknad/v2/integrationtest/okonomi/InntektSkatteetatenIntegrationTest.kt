@@ -5,7 +5,6 @@ import io.mockk.coEvery
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektResponse
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
