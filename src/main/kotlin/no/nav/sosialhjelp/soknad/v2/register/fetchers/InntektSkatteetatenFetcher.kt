@@ -24,14 +24,14 @@ class InntektSkatteetatenFetcher(
 
     override suspend fun fetchAndSave(soknadId: UUID) {
         runCatching { fetchInntekt() }
-            .onSuccess {
-                    utbetalinger ->
+            .onSuccess { utbetalinger ->
                 inntektSkatteetatenService.saveUtbetalinger(soknadId, utbetalinger)
                 integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, false)
             }
             .onFailure { ex ->
                 logger.error("Fetching fra Skatteetaten feilet: ${ex.message}", ex)
                 integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, true)
+                inntektSkatteetatenService.createJobbElement(soknadId)
             }
     }
 
