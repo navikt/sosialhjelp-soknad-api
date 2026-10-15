@@ -73,7 +73,7 @@ class InntektSkattUseCaseHandlerTest(
             .hasSize(1)
             .allMatch { it.type == InntektType.JOBB }
         assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
-        //assertThat(okonomiService.getInntekter(soknad.id)).isEmpty()
+        // assertThat(okonomiService.getInntekter(soknad.id)).isEmpty()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isTrue()
     }
 
