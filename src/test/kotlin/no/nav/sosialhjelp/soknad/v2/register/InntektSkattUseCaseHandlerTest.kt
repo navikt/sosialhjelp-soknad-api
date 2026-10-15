@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektResponse
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.UTBETALING_SKATTEETATEN
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektSkatteetatenUseCaseHandler
@@ -68,11 +69,11 @@ class InntektSkattUseCaseHandlerTest(
 
         runBlocking { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
 
-//        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
-//            .hasSize(1)
-//            .allMatch { it.type == JOBB }
-//        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, JOBB)).isNotNull()
-        assertThat(okonomiService.getInntekter(soknad.id)).isEmpty()
+        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
+            .hasSize(1)
+            .allMatch { it.type == InntektType.JOBB }
+        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
+        //assertThat(okonomiService.getInntekter(soknad.id)).isEmpty()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isTrue()
     }
 
