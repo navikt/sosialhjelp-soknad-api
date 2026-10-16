@@ -131,7 +131,7 @@ class FiksReadClient(
                 .bodyValue(InnsendingsstatusRequest(soknadIds))
                 .retrieve()
                 .bodyToMono<List<InnsendingStatusDto>>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+//                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
                 ?: throw FiksException(
                     message = "Fiks - noe uventet feilet ved henting av innsendingstatus for søknader. Response er null?",
