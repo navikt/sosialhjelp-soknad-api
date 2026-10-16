@@ -23,6 +23,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
@@ -45,7 +46,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
+class LifecycleIntegrationTest(
+    @Autowired private val okonomiRepository: OkonomiRepository,
+) : SetupLifecycleIntegrationTest() {
     @Autowired
     private lateinit var familieRepository: FamilieRepository
 
@@ -62,6 +65,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
                 assertThat(eierRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(kontaktRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(familieRepository.findByIdOrNull(soknadId)).isNotNull
+                assertThat(okonomiRepository.findByIdOrNull(soknadId)).isNotNull
             }
     }
 
