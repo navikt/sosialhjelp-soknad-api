@@ -12,12 +12,9 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
@@ -32,24 +29,11 @@ class BostotteController(
     ): BostotteDto {
         return bostotteUseCaseHandler.getBostotteInfo(soknadId).toBostotteDto()
     }
-
-    @PostMapping
-    fun updateBostotte(
-        @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody input: BostotteInput,
-    ): BostotteDto {
-        bostotteUseCaseHandler.updateBostotte(soknadId, input.hasBostotte, input.hasSamtykke)
-
-        return getBostotte(soknadId)
-    }
 }
 
 private fun Pair<BostotteInfo, Boolean?>.toBostotteDto() =
     let { (info, fetchHusbankenFeilet) ->
         BostotteDto(
-            hasBostotte = info.bostotte?.verdi,
-            hasSamtykke = info.samtykke?.verdi,
-            samtykkeTidspunkt = info.samtykke?.tidspunkt,
             utbetalinger = info.utbetalinger.flatMap { inntekt -> inntekt.inntektDetaljer.detaljer.map { it.toUtbetalingBostotteDto() } },
             saker = info.saker.map { it.toBostotteSakDto() },
             fetchHusbankenFeilet = fetchHusbankenFeilet,
@@ -71,9 +55,6 @@ private fun OkonomiDetalj.toUtbetalingBostotteDto(): UtbetalingBostotteDto {
 }
 
 data class BostotteDto(
-    val hasBostotte: Boolean?,
-    val hasSamtykke: Boolean?,
-    val samtykkeTidspunkt: LocalDateTime?,
     val utbetalinger: List<UtbetalingBostotteDto>,
     val saker: List<BostotteSakDto>,
     val fetchHusbankenFeilet: Boolean?,
@@ -101,5 +82,3 @@ private fun BostotteSak.toBostotteSakDto() =
         beskrivelse = beskrivelse,
         vedtaksstatus = vedtaksstatus,
     )
-
-data class BostotteInput(val hasBostotte: Boolean? = null, val hasSamtykke: Boolean? = null)

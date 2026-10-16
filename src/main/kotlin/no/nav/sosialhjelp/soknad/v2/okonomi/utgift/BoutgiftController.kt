@@ -27,7 +27,7 @@ class BoutgiftController(
     fun getBoutgifter(
         @PathVariable("soknadId") soknadId: UUID,
     ): BoutgifterDto {
-        val skalVise = boutgiftService.skalViseInfoVedBekreftelse(soknadId)
+        val skalVise = boutgiftService.skalViseInfo(soknadId)
 
         return boutgiftService.getBoutgifter(soknadId)?.let {
             if (it.isNotEmpty()) {

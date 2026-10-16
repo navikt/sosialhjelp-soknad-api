@@ -19,75 +19,21 @@ internal class BostotteHusbankenTest {
     private val bostotteHusbanken = BostotteHusbanken()
 
     @Test
-    fun ikkeUtfylt() {
+    fun harSoktEllerMottattBostotte_feilMotHusbanken() {
         val opplysninger = createOpplysninger(emptyList())
-
-        val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon(false))
-        assertThat(avsnitt.sporsmal).hasSize(1)
-
-        val harSoktBostotteSporsmal = avsnitt.sporsmal[0]
-        assertThat(harSoktBostotteSporsmal.tittel).isEqualTo("inntekt.bostotte.sporsmal.sporsmal")
-        assertThat(harSoktBostotteSporsmal.erUtfylt).isFalse
-        assertThat(harSoktBostotteSporsmal.felt).isNull()
-    }
-
-    @Test
-    fun harSoktEllerMottattBostotte_manglerSamtykke() {
-        val opplysninger =
-            createOpplysninger(
-                listOf(
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                ),
-            )
-
-        val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon(false))
-        assertThat(avsnitt.sporsmal).hasSize(2)
-
-        val harSoktBostotteSporsmal = avsnitt.sporsmal[0]
-        assertThat(harSoktBostotteSporsmal.tittel).isEqualTo("inntekt.bostotte.sporsmal.sporsmal")
-        assertThat(harSoktBostotteSporsmal.erUtfylt).isTrue
-        assertThat(harSoktBostotteSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(harSoktBostotteSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true")
-
-        val manglerSamtykkeSporsmal = avsnitt.sporsmal[1]
-        assertThat(manglerSamtykkeSporsmal.tittel).isEqualTo("inntekt.bostotte.mangler_samtykke")
-        assertThat(manglerSamtykkeSporsmal.felt).isNull()
-    }
-
-    @Test
-    fun harSoktEllerMottattBostotteOgSamtykke_feilMotHusbanken() {
-        val opplysninger =
-            createOpplysninger(
-                listOf(
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
-                ),
-            )
         val driftsinformasjon = JsonDriftsinformasjon(false, false, true)
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, driftsinformasjon)
-        assertThat(avsnitt.sporsmal).hasSize(2)
+        assertThat(avsnitt.sporsmal).hasSize(1)
 
-        val harSoktBostotteSporsmal = avsnitt.sporsmal[0]
-        assertThat(harSoktBostotteSporsmal.tittel).isEqualTo("inntekt.bostotte.sporsmal.sporsmal")
-        assertThat(harSoktBostotteSporsmal.erUtfylt).isTrue
-        assertThat(harSoktBostotteSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(harSoktBostotteSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true")
-
-        val husbankenFeiletSporsmal = avsnitt.sporsmal[1]
+        val husbankenFeiletSporsmal = avsnitt.sporsmal[0]
         assertThat(husbankenFeiletSporsmal.tittel).isEqualTo("inntekt.bostotte.kontaktproblemer")
         assertThat(husbankenFeiletSporsmal.erUtfylt).isTrue
     }
 
     @Test
-    fun harSoktEllerMottattBostotteOgSamtykke_medUtbetalinger_medSaker() {
-        val initialOpplysninger =
-            createOpplysninger(
-                listOf(
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
-                ),
-            )
+    fun harSoktEllerMottattBostotteUtbetalinger_medSaker() {
+        val initialOpplysninger = createOpplysninger(emptyList())
         val opplysninger =
             initialOpplysninger.copy(
                 utbetaling =
@@ -99,20 +45,9 @@ internal class BostotteHusbankenTest {
             )
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon(false))
-        assertThat(avsnitt.sporsmal).hasSize(4)
+        assertThat(avsnitt.sporsmal).hasSize(2)
 
-        val harSoktBostotteSporsmal = avsnitt.sporsmal[0]
-        assertThat(harSoktBostotteSporsmal.tittel).isEqualTo("inntekt.bostotte.sporsmal.sporsmal")
-        assertThat(harSoktBostotteSporsmal.erUtfylt).isTrue
-        assertThat(harSoktBostotteSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(harSoktBostotteSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true")
-
-        val bekreftelseTidspunktSporsmal = avsnitt.sporsmal[1]
-        assertThat(bekreftelseTidspunktSporsmal.tittel).isEqualTo("inntekt.bostotte.har_gitt_samtykke")
-        assertThat(bekreftelseTidspunktSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(bekreftelseTidspunktSporsmal.felt!![0], Type.TEKST, SvarType.TIDSPUNKT, "2018-10-04T13:37:00.134Z")
-
-        val utbetalingerSporsmal = avsnitt.sporsmal[2]
+        val utbetalingerSporsmal = avsnitt.sporsmal[0]
         assertThat(utbetalingerSporsmal.tittel).isEqualTo("inntekt.bostotte.utbetaling")
         assertThat(utbetalingerSporsmal.felt).hasSize(2)
 
@@ -130,7 +65,7 @@ internal class BostotteHusbankenTest {
         assertThat(utbetaling2.labelSvarMap["inntekt.bostotte.utbetaling.utbetalingsdato"]!!.value).isEqualTo("2020-02-02")
         assertThat(utbetaling2.labelSvarMap["inntekt.bostotte.utbetaling.belop"]!!.value).isEqualTo("1000.0")
 
-        val sakerSporsmal = avsnitt.sporsmal[3]
+        val sakerSporsmal = avsnitt.sporsmal[1]
         assertThat(sakerSporsmal.tittel).isEqualTo("inntekt.bostotte.sak")
         assertThat(sakerSporsmal.felt).hasSize(1)
 
@@ -142,31 +77,15 @@ internal class BostotteHusbankenTest {
     }
 
     @Test
-    fun harSoktEllerMottattBostotteOgSamtykke_medUtbetalinger_utenSaker() {
-        val initialOpplysninger =
-            createOpplysninger(
-                listOf(
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
-                ),
-            )
+    fun harSoktEllerMottattBostotte_medUtbetalinger_utenSaker() {
+        val initialOpplysninger = createOpplysninger(emptyList())
+
         val opplysninger = initialOpplysninger.copy(utbetaling = listOf(createUtbetaling(42.0, "2020-01-01")), bostotte = JsonBostotte(emptyList()))
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon(false))
-        assertThat(avsnitt.sporsmal).hasSize(4)
+        assertThat(avsnitt.sporsmal).hasSize(2)
 
-        val harSoktBostotteSporsmal = avsnitt.sporsmal[0]
-        assertThat(harSoktBostotteSporsmal.tittel).isEqualTo("inntekt.bostotte.sporsmal.sporsmal")
-        assertThat(harSoktBostotteSporsmal.erUtfylt).isTrue
-        assertThat(harSoktBostotteSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(harSoktBostotteSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true")
-
-        val bekreftelseTidspunktSporsmal = avsnitt.sporsmal[1]
-        assertThat(bekreftelseTidspunktSporsmal.tittel).isEqualTo("inntekt.bostotte.har_gitt_samtykke")
-        assertThat(bekreftelseTidspunktSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(bekreftelseTidspunktSporsmal.felt!![0], Type.TEKST, SvarType.TIDSPUNKT, "2018-10-04T13:37:00.134Z")
-
-        val utbetalingerSporsmal = avsnitt.sporsmal[2]
+        val utbetalingerSporsmal = avsnitt.sporsmal[0]
         assertThat(utbetalingerSporsmal.erUtfylt).isTrue
         assertThat(utbetalingerSporsmal.felt).hasSize(1)
 
@@ -177,7 +96,7 @@ internal class BostotteHusbankenTest {
         assertThat(utbetaling.labelSvarMap["inntekt.bostotte.utbetaling.utbetalingsdato"]!!.value).isEqualTo("2020-01-01")
         assertThat(utbetaling.labelSvarMap["inntekt.bostotte.utbetaling.belop"]!!.value).isEqualTo("42.0")
 
-        val sakerSporsmal = avsnitt.sporsmal[3]
+        val sakerSporsmal = avsnitt.sporsmal[1]
         assertThat(sakerSporsmal.tittel).isEqualTo("inntekt.bostotte.sak")
         assertThat(sakerSporsmal.felt).hasSize(1)
         validateFeltMedSvar(sakerSporsmal.felt!![0], Type.TEKST, SvarType.LOCALE_TEKST, "inntekt.bostotte.sakerIkkefunnet")
@@ -185,25 +104,14 @@ internal class BostotteHusbankenTest {
 
     @Test
     fun nullsafe_utbetaling_mottaker() {
-        val initialOpplysninger =
-            createOpplysninger(
-                listOf(
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
-                ),
-            )
+        val initialOpplysninger = createOpplysninger(emptyList())
+
         val opplysninger = initialOpplysninger.copy(utbetaling = listOf(createUtbetaling(42.0, "2020-01-01").copy(mottaker = null)), bostotte = JsonBostotte(emptyList()))
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon(false))
-        assertThat(avsnitt.sporsmal).hasSize(4)
+        assertThat(avsnitt.sporsmal).hasSize(2)
 
-        val harSoktBostotteSporsmal = avsnitt.sporsmal[0]
-        assertThat(harSoktBostotteSporsmal.tittel).isEqualTo("inntekt.bostotte.sporsmal.sporsmal")
-
-        val bekreftelseTidspunktSporsmal = avsnitt.sporsmal[1]
-        assertThat(bekreftelseTidspunktSporsmal.tittel).isEqualTo("inntekt.bostotte.har_gitt_samtykke")
-
-        val utbetalingerSporsmal = avsnitt.sporsmal[2]
+        val utbetalingerSporsmal = avsnitt.sporsmal[0]
         assertThat(utbetalingerSporsmal.tittel).isEqualTo("inntekt.bostotte.utbetaling")
         assertThat(utbetalingerSporsmal.felt).hasSize(1)
 
@@ -211,42 +119,26 @@ internal class BostotteHusbankenTest {
         assertThat(utbetaling.type).isEqualTo(Type.SYSTEMDATA_MAP)
         assertThat(utbetaling.labelSvarMap!!["inntekt.bostotte.utbetaling.mottaker"]!!.value).isEmpty()
 
-        val sakerSporsmal = avsnitt.sporsmal[3]
+        val sakerSporsmal = avsnitt.sporsmal[1]
         assertThat(sakerSporsmal.tittel).isEqualTo("inntekt.bostotte.sak")
     }
 
     @Test
-    fun harSoktEllerMottattBostotteOgSamtykke_utenUtbetalinger_medSaker() {
-        val initialOpplysninger =
-            createOpplysninger(
-                listOf(
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
-                ),
-            )
+    fun harSoktEllerMottattBostotte_utenUtbetalinger_medSaker() {
+        val initialOpplysninger = createOpplysninger(emptyList())
+
         val opplysninger = initialOpplysninger.copy(utbetaling = emptyList(), bostotte = JsonBostotte(listOf(JsonBostotteSak(JsonKildeSystem.SYSTEM, SoknadJsonTyper.UTBETALING_HUSBANKEN, "2020-01-01", "Vedtatt", "Ekstra info", JsonBostotteSak.Vedtaksstatus.INNVILGET))))
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon(false))
-        assertThat(avsnitt.sporsmal).hasSize(4)
+        assertThat(avsnitt.sporsmal).hasSize(2)
 
-        val harSoktBostotteSporsmal = avsnitt.sporsmal[0]
-        assertThat(harSoktBostotteSporsmal.tittel).isEqualTo("inntekt.bostotte.sporsmal.sporsmal")
-        assertThat(harSoktBostotteSporsmal.erUtfylt).isTrue
-        assertThat(harSoktBostotteSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(harSoktBostotteSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true")
-
-        val bekreftelseTidspunktSporsmal = avsnitt.sporsmal[1]
-        assertThat(bekreftelseTidspunktSporsmal.tittel).isEqualTo("inntekt.bostotte.har_gitt_samtykke")
-        assertThat(bekreftelseTidspunktSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(bekreftelseTidspunktSporsmal.felt!![0], Type.TEKST, SvarType.TIDSPUNKT, "2018-10-04T13:37:00.134Z")
-
-        val utbetalingerSporsmal = avsnitt.sporsmal[2]
+        val utbetalingerSporsmal = avsnitt.sporsmal[0]
         assertThat(utbetalingerSporsmal.tittel).isEqualTo("inntekt.bostotte.utbetaling")
         assertThat(utbetalingerSporsmal.erUtfylt).isTrue
         assertThat(utbetalingerSporsmal.felt).hasSize(1)
         validateFeltMedSvar(utbetalingerSporsmal.felt!![0], Type.TEKST, SvarType.LOCALE_TEKST, "inntekt.bostotte.utbetalingerIkkefunnet")
 
-        val sakerSporsmal = avsnitt.sporsmal[3]
+        val sakerSporsmal = avsnitt.sporsmal[1]
         assertThat(sakerSporsmal.tittel).isEqualTo("inntekt.bostotte.sak")
         assertThat(sakerSporsmal.felt).hasSize(1)
 
@@ -258,30 +150,15 @@ internal class BostotteHusbankenTest {
     }
 
     @Test
-    fun harSoktEllerMottattBostotteOgSamtykke_utenUtbetalinger_utenSaker() {
-        val initialOpplysninger =
-            createOpplysninger(
-                listOf(
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
-                ),
-            )
+    fun harSoktEllerMottattBostotte_utenUtbetalinger_utenSaker() {
+        val initialOpplysninger = createOpplysninger(emptyList())
+
         val opplysninger = initialOpplysninger.copy(utbetaling = emptyList(), bostotte = JsonBostotte(emptyList()))
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon(false))
-        assertThat(avsnitt.sporsmal).hasSize(3)
+        assertThat(avsnitt.sporsmal).hasSize(1)
 
-        val harSoktBostotteSporsmal = avsnitt.sporsmal[0]
-        assertThat(harSoktBostotteSporsmal.erUtfylt).isTrue
-        assertThat(harSoktBostotteSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(harSoktBostotteSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true")
-
-        val bekreftelseTidspunktSporsmal = avsnitt.sporsmal[1]
-        assertThat(bekreftelseTidspunktSporsmal.tittel).isEqualTo("inntekt.bostotte.har_gitt_samtykke")
-        assertThat(bekreftelseTidspunktSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(bekreftelseTidspunktSporsmal.felt!![0], Type.TEKST, SvarType.TIDSPUNKT, "2018-10-04T13:37:00.134Z")
-
-        val ingenUtbetalingerEllerSakerSporsmal = avsnitt.sporsmal[2]
+        val ingenUtbetalingerEllerSakerSporsmal = avsnitt.sporsmal[0]
         assertThat(ingenUtbetalingerEllerSakerSporsmal.tittel).isEmpty()
         assertThat(ingenUtbetalingerEllerSakerSporsmal.felt).hasSize(1)
         validateFeltMedSvar(ingenUtbetalingerEllerSakerSporsmal.felt!![0], Type.TEKST, SvarType.LOCALE_TEKST, "inntekt.bostotte.ikkefunnet")
@@ -289,13 +166,6 @@ internal class BostotteHusbankenTest {
 
     private fun createOpplysninger(bekreftelser: List<JsonOkonomibekreftelse>): JsonOkonomiopplysninger {
         return JsonOkonomiopplysninger(emptyList(), bekreftelser, null, emptyList(), null)
-    }
-
-    private fun createBekreftelse(
-        type: String,
-        verdi: Boolean,
-    ): JsonOkonomibekreftelse {
-        return JsonOkonomibekreftelse(JsonKilde.BRUKER, type, "", verdi, "2018-10-04T13:37:00.134Z")
     }
 
     private fun createUtbetaling(

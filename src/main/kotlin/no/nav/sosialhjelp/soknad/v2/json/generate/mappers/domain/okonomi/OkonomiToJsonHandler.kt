@@ -59,7 +59,7 @@ class OkonomiToJsonHandler(
 private fun Okonomi.setupMappers(): List<OkonomiElementsToJsonMapper> =
     listOf(
         FormueToJsonMapper(formuer),
-        InntektToJsonMapper(inntekter, bekreftelser),
+        InntektToJsonMapper(inntekter),
         UtgiftToJsonMapper(utgifter),
         BostotteSakToJsonMapper(bostotteSaker),
     ).let { list ->
@@ -71,7 +71,7 @@ private fun Okonomi.setupMappers(): List<OkonomiElementsToJsonMapper> =
 
 private fun Okonomi.setupKortMappers(): List<OkonomiElementsToJsonMapper> =
     listOf(
-        InntektToJsonMapper(inntekter, bekreftelser),
+        InntektToJsonMapper(inntekter),
         BostotteSakToJsonMapper(bostotteSaker),
         FormueToJsonMapper(formuer),
     ).let { list ->

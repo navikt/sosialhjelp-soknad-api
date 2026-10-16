@@ -17,7 +17,7 @@ class BekreftelseToJsonMapperTest : AbstractOkonomiMapperTest() {
         val bekreftelser =
             setOf(
                 Bekreftelse(type = BekreftelseType.BEKREFTELSE_SPARING, verdi = true),
-                Bekreftelse(type = BekreftelseType.BOSTOTTE_SAMTYKKE, verdi = false),
+                Bekreftelse(type = BekreftelseType.BEKREFTELSE_BOUTGIFTER, verdi = false),
             )
         jsonOkonomi = BekreftelseToJsonMapper(bekreftelser).doMapping(jsonOkonomi)
 
@@ -30,10 +30,10 @@ class BekreftelseToJsonMapperTest : AbstractOkonomiMapperTest() {
                 assertThat(it.tittel).isEqualTo(BekreftelseType.BEKREFTELSE_SPARING.toTittel())
                 assertThat(it.kilde).isEqualTo(JsonKilde.BRUKER)
             }
-            bekreftelse.find { it.type == SoknadJsonTypeEnum.BOSTOTTE_SAMTYKKE.verdi }!!.let {
+            bekreftelse.find { it.type == SoknadJsonTypeEnum.BEKREFTELSE_BOUTGIFTER.verdi }!!.let {
                 assertThat(it.verdi).isEqualTo(false)
                 assertThat(it.bekreftelsesDato).matches(timestampRegex)
-                assertThat(it.tittel).isEqualTo(BekreftelseType.BOSTOTTE_SAMTYKKE.toTittel())
+                assertThat(it.tittel).isEqualTo(BekreftelseType.BEKREFTELSE_BOUTGIFTER.toTittel())
                 assertThat(it.kilde).isEqualTo(JsonKilde.BRUKER)
             }
         }
