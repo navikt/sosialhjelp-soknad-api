@@ -31,85 +31,50 @@ object InntektOgFormue {
 
         // Skatt
         pdf.skrivTekstBold(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.tittel"))
-        val skattetatenSamtykke = hentBekreftelser(okonomi, SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
-
-        val harSkattetatenSamtykke = skattetatenSamtykke.firstOrNull()?.verdi ?: false
-        if (!harSkattetatenSamtykke) {
-            if (utvidetSoknad) {
-                pdfUtils.skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_sporsmal")
-                pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.samtykke_info"))
-                pdf.addBlankLine()
-                pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.gi_samtykke"))
-                pdf.addBlankLine()
-            }
-            pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.mangler_samtykke"))
+        val skatteetatenUtbetalinger = hentUtbetalinger(okonomi, "skatteetaten")
+        if (soknad.driftsinformasjon.inntektFraSkatteetatenFeilet) {
+            pdf.skrivTekst("Kunne ikke hente utbetalinger fra Skatteetaten")
             pdf.addBlankLine()
         } else {
-            if (utvidetSoknad) {
-                pdfUtils.skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_sporsmal")
-                pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.samtykke_info"))
+            if (skatteetatenUtbetalinger.isEmpty()) {
+                pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.ingen"))
                 pdf.addBlankLine()
-                pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.gi_samtykke"))
-                pdf.addBlankLine()
-            }
-            pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.har_gitt_samtykke"))
-            pdf.addBlankLine()
-            if (skattetatenSamtykke.isNotEmpty()) {
-                pdfUtils.skrivTekstMedGuard(
-                    pdf,
-                    formaterDatoOgTidspunkt(skattetatenSamtykke[0].bekreftelsesDato),
-                    "utbetalinger.inntekt.skattbar.tidspunkt",
-                )
-            }
-            val skatteetatenUtbetalinger = hentUtbetalinger(okonomi, "skatteetaten")
-            if (soknad.driftsinformasjon?.inntektFraSkatteetatenFeilet == true) {
-                pdf.skrivTekst("Kunne ikke hente utbetalinger fra Skatteetaten")
-                pdf.addBlankLine()
-            } else {
-                if (skatteetatenUtbetalinger.isEmpty()) {
-                    pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.ingen"))
-                    pdf.addBlankLine()
-                }
-            }
-            if (skatteetatenUtbetalinger.isNotEmpty()) {
-                pdf.skrivTekstBold(pdfUtils.getTekst("utbetalinger.skatt"))
-                for (skatt in skatteetatenUtbetalinger) {
-                    val organisasjonNavn = skatt.organisasjon?.navn
-                    if (organisasjonNavn != null) {
-                        pdfUtils.skrivTekstMedGuard(pdf, organisasjonNavn, "utbetalinger.utbetaling.arbeidsgivernavn.label")
-                    }
-                    if (skatt.periodeFom != null) {
-                        pdfUtils.skrivTekstMedGuard(
-                            pdf,
-                            formaterDato(skatt.periodeFom, DATO_FORMAT),
-                            "utbetalinger.utbetaling.periodeFom.label",
-                        )
-                    }
-                    if (skatt.periodeTom != null) {
-                        pdfUtils.skrivTekstMedGuard(
-                            pdf,
-                            formaterDato(skatt.periodeTom, DATO_FORMAT),
-                            "utbetalinger.utbetaling.periodeTom.label",
-                        )
-                    }
-                    if (skatt.brutto != null) {
-                        pdfUtils.skrivTekstMedGuard(pdf, skatt.brutto.toString(), "utbetalinger.utbetaling.brutto.label")
-                    }
-                    if (skatt.skattetrekk != null) {
-                        pdfUtils.skrivTekstMedGuard(pdf, skatt.skattetrekk.toString(), "utbetalinger.utbetaling.skattetrekk.label")
-                    }
-                    pdf.addBlankLine()
-                }
-                if (utvidetSoknad) {
-                    pdfUtils.skrivInfotekst(pdf, "utbetalinger.infotekst.tekst.v2")
-                    urisOnPage["Dine Utbetalinger"] = pdfUtils.getTekst("utbetalinger.infotekst.tekst.url") ?: ""
-                }
-            }
-            if (utvidetSoknad) {
-                pdfUtils.skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.ta_bort_samtykke")
             }
         }
-
+        if (skatteetatenUtbetalinger.isNotEmpty()) {
+            pdf.skrivTekstBold(pdfUtils.getTekst("utbetalinger.skatt"))
+            for (skatt in skatteetatenUtbetalinger) {
+                val organisasjonNavn = skatt.organisasjon?.navn
+                if (organisasjonNavn != null) {
+                    pdfUtils.skrivTekstMedGuard(pdf, organisasjonNavn, "utbetalinger.utbetaling.arbeidsgivernavn.label")
+                }
+                if (skatt.periodeFom != null) {
+                    pdfUtils.skrivTekstMedGuard(
+                        pdf,
+                        formaterDato(skatt.periodeFom, DATO_FORMAT),
+                        "utbetalinger.utbetaling.periodeFom.label",
+                    )
+                }
+                if (skatt.periodeTom != null) {
+                    pdfUtils.skrivTekstMedGuard(
+                        pdf,
+                        formaterDato(skatt.periodeTom, DATO_FORMAT),
+                        "utbetalinger.utbetaling.periodeTom.label",
+                    )
+                }
+                if (skatt.brutto != null) {
+                    pdfUtils.skrivTekstMedGuard(pdf, skatt.brutto.toString(), "utbetalinger.utbetaling.brutto.label")
+                }
+                if (skatt.skattetrekk != null) {
+                    pdfUtils.skrivTekstMedGuard(pdf, skatt.skattetrekk.toString(), "utbetalinger.utbetaling.skattetrekk.label")
+                }
+                pdf.addBlankLine()
+            }
+            if (utvidetSoknad) {
+                pdfUtils.skrivInfotekst(pdf, "utbetalinger.infotekst.tekst.v2")
+                urisOnPage["Dine Utbetalinger"] = pdfUtils.getTekst("utbetalinger.infotekst.tekst.url") ?: ""
+            }
+        }
         // NAV ytelser
         pdf.skrivTekstBold(pdfUtils.getTekst("navytelser.sporsmal"))
         if (utvidetSoknad) {
