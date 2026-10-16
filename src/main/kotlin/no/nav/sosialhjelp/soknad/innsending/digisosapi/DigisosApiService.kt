@@ -95,5 +95,5 @@ class DigisosApiServiceImpl(
     }
 
     override fun checkSoknaderMottatt(soknadIds: List<UUID>): List<InnsendingStatusDto> =
-        fiksReadClient.getInnsendingsstatus(soknadIds)
+        soknadIds.chunked(50).flatMap { fiksReadClient.getInnsendingsstatus(it) }
 }
