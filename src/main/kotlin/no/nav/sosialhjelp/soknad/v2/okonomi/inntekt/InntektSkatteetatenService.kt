@@ -11,14 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 interface InntektSkatteetatenService {
-//    fun getSamtykkeSkatt(soknadId: UUID): Bekreftelse?
-
     fun getInntektSkatt(soknadId: UUID): Inntekt?
-
-//    fun updateSamtykkeSkatt(
-//        soknadId: UUID,
-//        samtykke: Boolean,
-//    )
 
     fun saveUtbetalinger(
         soknadId: UUID,
@@ -34,27 +27,10 @@ interface InntektSkatteetatenService {
 class InntektSkatteetatenServiceImpl(
     private val okonomiService: OkonomiService,
 ) : InntektSkatteetatenService {
-//    @Transactional(readOnly = true)
-//    override fun getSamtykkeSkatt(soknadId: UUID): Bekreftelse? =
-//        okonomiService.getBekreftelser(soknadId)
-//            .find { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE }
-
     @Transactional(readOnly = true)
     override fun getInntektSkatt(soknadId: UUID): Inntekt? {
         return okonomiService.getInntekter(soknadId).find { it.type == UTBETALING_SKATTEETATEN }
     }
-
-//    @Transactional
-//    override fun updateSamtykkeSkatt(
-//        soknadId: UUID,
-//        samtykke: Boolean,
-//    ) {
-//        // starter på scratch da vi regner med endring ved oppdatering
-//        okonomiService.removeElementFromOkonomi(soknadId, UTBETALING_SKATTEETATEN)
-//        okonomiService.removeElementFromOkonomi(soknadId, JOBB)
-//
-//        okonomiService.updateBekreftelse(soknadId, UTBETALING_SKATTEETATEN_SAMTYKKE, samtykke)
-//    }
 
     @Transactional
     override fun saveUtbetalinger(

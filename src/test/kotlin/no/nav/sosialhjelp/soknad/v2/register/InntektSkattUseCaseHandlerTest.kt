@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.UTBETALING_SKATTEETATEN
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektSkatteetatenUseCaseHandler
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.InntektSkatteetatenFetcher
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.SkatteetatenException
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
@@ -25,9 +24,6 @@ class InntektSkattUseCaseHandlerTest(
     @Autowired private val okonomiService: OkonomiService,
 ) : AbstractOkonomiRegisterDataTest() {
     @Autowired
-    private lateinit var inntektSkatteetatenUseCaseHandler: InntektSkatteetatenUseCaseHandler
-
-    @Autowired
     private lateinit var integrasjonStatusService: IntegrasjonStatusService
 
     @Autowired
@@ -36,8 +32,6 @@ class InntektSkattUseCaseHandlerTest(
     @Test
     fun `Hente inntekt skal lagres i db`() {
         createAnswerForSkatteetatenClient()
-
-//        inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
 
         runBlocking { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
 
@@ -53,10 +47,8 @@ class InntektSkattUseCaseHandlerTest(
     fun `Tom liste lagrer ingen Inntekt`() {
         coEvery { skattbarInntektService.hentInntekt() } returns emptyList()
 
-        // inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
         runBlocking { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
 
-        // assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
         assertThat(okonomiService.getInntekter(soknad.id)).isEmpty()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isFalse()
     }
@@ -65,39 +57,14 @@ class InntektSkattUseCaseHandlerTest(
     fun `Service returnerer null setter integrasjonstatus feilet til true`() {
         coEvery { skatteetatenClient.hentSkattbarinntekt() } returns SkattbarInntektResponse.Error("Feil", SkatteetatenException("error"))
 
-//        inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
-
         runBlocking { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
             .hasSize(1)
             .allMatch { it.type == InntektType.JOBB }
         assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
-        // assertThat(okonomiService.getInntekter(soknad.id)).isEmpty()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isTrue()
     }
-
-//    @Test
-//    fun `Sette samtykke = false skal fjerne inntekt og opprette JOBB dokumentasjon`() {
-//        createAnswerForSkatteetatenClient()
-//
-//        //inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
-//        runBlocking {inntektSkatteetatenFetcher.fetchAndSave(soknad.id)}
-//
-//
-//        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
-//            .hasSize(1)
-//            .allMatch { it.type == UTBETALING_SKATTEETATEN }
-//
-//        //inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, false)
-//        runBlocking {inntektSkatteetatenFetcher.fetchAndSave(soknad.id)}
-//
-//        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
-//            .hasSize(1)
-//            .allMatch { it.type == JOBB }
-//
-//        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, JOBB)).isNotNull()
-//    }
 
     private fun createAnswerForSkatteetatenClient() {
         coEvery { skattbarInntektService.hentInntekt() } returns defaultResponseForSkattbarInntektService()

@@ -31,36 +31,6 @@ object InntektOgFormue {
 
         // Skatt
         pdf.skrivTekstBold(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.tittel"))
-//        val skattetatenSamtykke = hentBekreftelser(okonomi, SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
-
-//        val harSkattetatenSamtykke = skattetatenSamtykke.firstOrNull()?.verdi ?: false
-//        if (!harSkattetatenSamtykke) {
-//            if (utvidetSoknad) {
-//                pdfUtils.skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_sporsmal")
-//                pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.samtykke_info"))
-//                pdf.addBlankLine()
-//                pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.gi_samtykke"))
-//                pdf.addBlankLine()
-//            }
-//            pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.mangler_samtykke"))
-//            pdf.addBlankLine()
-//        } else {
-//            if (utvidetSoknad) {
-//                pdfUtils.skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_sporsmal")
-//                pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.samtykke_info"))
-//                pdf.addBlankLine()
-//                pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.gi_samtykke"))
-//                pdf.addBlankLine()
-//            }
-//            pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.har_gitt_samtykke"))
-//            pdf.addBlankLine()
-//            if (skattetatenSamtykke.isNotEmpty()) {
-//                pdfUtils.skrivTekstMedGuard(
-//                    pdf,
-//                    formaterDatoOgTidspunkt(skattetatenSamtykke[0].bekreftelsesDato),
-//                    "utbetalinger.inntekt.skattbar.tidspunkt",
-//                )
-//            }
         val skatteetatenUtbetalinger = hentUtbetalinger(okonomi, "skatteetaten")
         if (soknad.driftsinformasjon.inntektFraSkatteetatenFeilet) {
             pdf.skrivTekst("Kunne ikke hente utbetalinger fra Skatteetaten")
@@ -105,10 +75,6 @@ object InntektOgFormue {
                 urisOnPage["Dine Utbetalinger"] = pdfUtils.getTekst("utbetalinger.infotekst.tekst.url") ?: ""
             }
         }
-//        if (utvidetSoknad) {
-//            pdfUtils.skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.ta_bort_samtykke")
-//        }
-
         // NAV ytelser
         pdf.skrivTekstBold(pdfUtils.getTekst("navytelser.sporsmal"))
         if (utvidetSoknad) {
