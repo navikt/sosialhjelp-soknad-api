@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiJobService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.InnsendingStatusDto
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataJobService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
@@ -16,14 +16,14 @@ import java.time.Instant
 @Component
 class SjekkStatusInnsendingFeiletJob(
     leaderElection: LeaderElection,
-    private val metadataJobService: SoknadMetadataJobService,
+    private val metadataJobService: SoknadMetadataService,
     private val digisosApiJobService: DigisosApiJobService,
 ) : AbstractJob(leaderElection, JOB_NAME, logger) {
     @Scheduled(cron = "0 */10 * * * *")
     fun sjekkStatusInnsendingFeilet() = doInJob { findAndCheckInnsendingFeilet() }
 
     private fun findAndCheckInnsendingFeilet() {
-        metadataJobService.findMetadataForStatus(SoknadStatus.INNSENDING_FEILET)
+        metadataJobService.findMetadataForStatus(listOf(SoknadStatus.SENDT, SoknadStatus.MOTTATT_FSL))
             .takeIf { it.isNotEmpty() }
             ?.also {
                 logger.info("Fant ${it.size} soknader hvor innsending feilet. Sjekker om status kan fikses")
@@ -34,6 +34,7 @@ class SjekkStatusInnsendingFeiletJob(
     private fun checkFiksStatusInnsendingFeilet(metadata: List<SoknadMetadata>) {
         val mottatteSoknader = digisosApiJobService.checkSoknaderMottatt(metadata.map { it.soknadId })
         if (mottatteSoknader.isEmpty()) return
+        logger.info("MOTTATTE SØKNADER: $mottatteSoknader")
 
         val relevanteMetadata =
             mottatteSoknader
@@ -68,7 +69,7 @@ class SjekkStatusInnsendingFeiletJob(
                         ),
                 )
             }
-            .let { metadatas -> metadataJobService.saveMetadatas(metadatas) }
+//            .let { metadatas -> metadataJobService.saveMetadatas(metadatas) }
     }
 
     companion object {
