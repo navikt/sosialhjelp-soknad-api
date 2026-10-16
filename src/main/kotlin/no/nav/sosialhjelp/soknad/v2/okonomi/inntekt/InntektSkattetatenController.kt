@@ -25,19 +25,9 @@ class InntektSkattetatenController(
                 SkattbarInntektDto(
                     inntektSkatteetaten = it.inntekt?.toInntektFraOrganisasjonDtos() ?: emptyList(),
                     inntektFraSkatteetatenFeilet = it.getFailed,
-                    // samtykke = it.samtykke?.toSamtykkeDto(),
                 )
             }
     }
-
-//    @PutMapping("/samtykke")
-//    fun updateSamtykke(
-//        @PathVariable("soknadId") soknadId: UUID,
-//        @RequestBody samtykke: Boolean,
-//    ): SkattbarInntektDto {
-//        useCaseHandler.updateSamtykke(soknadId, samtykke)
-//        return getSkattbarInntekt(soknadId)
-//    }
 }
 
 private fun Inntekt.toInntektFraOrganisasjonDtos(): List<InntektFraOrganisasjonDto> {
@@ -74,22 +64,14 @@ private fun Utbetaling.toUtbetalingDto(): UtbetalingFraSkatteetatenDto {
     )
 }
 
-// private fun Bekreftelse.toSamtykkeDto() = SamtykkeDto(verdi, samtykkeTidspunkt = tidspunkt.toString())
-
 data class SkattbarInntektDto(
     val inntektSkatteetaten: List<InntektFraOrganisasjonDto>,
     val inntektFraSkatteetatenFeilet: Boolean? = null,
-    // val samtykke: SamtykkeDto? = null,
 )
 
 data class InntektFraOrganisasjonDto(
     val organisasjoner: List<OrganisasjonDto>,
 )
-
-// data class SamtykkeDto(
-//    val verdi: Boolean,
-//    val samtykkeTidspunkt: String,
-// )
 
 data class OrganisasjonDto(
     val utbetalinger: List<UtbetalingFraSkatteetatenDto>,

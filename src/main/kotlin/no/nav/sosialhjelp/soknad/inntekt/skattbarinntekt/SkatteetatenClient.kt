@@ -72,8 +72,6 @@ class SkatteetatenClient(
     }
 
     private suspend fun resolveIdent(): String {
-//        return SubjectHandlerUtils.getUserIdFromToken()
-//            .let { if (MiljoUtils.isProduction()) it else System.getenv("TESTBRUKER_SKATT") ?: it }
         return currentUserContext().userId
             .let { if (MiljoUtils.isProduction()) it else System.getenv("TESTBRUKER_SKATT") ?: it }
     }
