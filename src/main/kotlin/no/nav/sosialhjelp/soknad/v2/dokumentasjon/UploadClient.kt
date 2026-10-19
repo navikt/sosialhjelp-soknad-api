@@ -82,9 +82,9 @@ class UploadClient(
     fun delete(
         vedleggType: OpplysningType,
         soknadId: UUID,
+        userToken: String? = null,
     ) {
-        val userToken = SubjectHandlerUtils.getToken()
-        val tokenXToken = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, uploadAudience)
+        val tokenXToken = texasService.exchangeToken(userToken ?: SubjectHandlerUtils.getToken(), IdentityProvider.TOKENX, uploadAudience)
 
         webClient
             .delete()

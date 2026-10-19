@@ -33,7 +33,7 @@ class InntektSkattUseCaseHandlerTest(
     fun `Hente inntekt skal lagres i db`() {
         createAnswerForSkatteetatenClient()
 
-        runBlocking { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
+        runBlocking(UserContextElement("dummy-token", soknad.eierPersonId)) { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
             assertThat(okonomi.inntekter.toList()).hasSize(1)
@@ -47,7 +47,7 @@ class InntektSkattUseCaseHandlerTest(
     fun `Tom liste lagrer ingen Inntekt`() {
         coEvery { skattbarInntektService.hentInntekt() } returns emptyList()
 
-        runBlocking { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
+        runBlocking(UserContextElement("dummy-token", soknad.eierPersonId)) { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
 
         assertThat(okonomiService.getInntekter(soknad.id)).isEmpty()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isFalse()
