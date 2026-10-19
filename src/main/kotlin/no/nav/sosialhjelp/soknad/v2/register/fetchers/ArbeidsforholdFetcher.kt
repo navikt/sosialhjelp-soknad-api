@@ -4,10 +4,13 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRegisterService
 import no.nav.sosialhjelp.soknad.v2.register.AsynchronousFetcher
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 class ArbeidsforholdFetcher(
     private val arbeidsforholdService: AaregService,
     private val livssituasjonService: LivssituasjonRegisterService,
