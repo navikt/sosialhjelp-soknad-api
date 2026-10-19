@@ -143,6 +143,7 @@ class OkonomiService(
     fun removeElementFromOkonomi(
         soknadId: UUID,
         type: OkonomiOpplysningType,
+        userToken: String? = null,
     ) {
         findOkonomi(soknadId)
             ?.also {
@@ -152,7 +153,7 @@ class OkonomiService(
                     is InntektType -> okonomiRepository.deleteInntekt(soknadId, type)
                 }
             }
-        if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
+        if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type, userToken)
     }
 
     private fun findOrCreateOkonomi(soknadId: UUID) = findOkonomi(soknadId) ?: okonomiRepository.save(Okonomi(soknadId))
