@@ -37,16 +37,18 @@ class InntektSkatteetatenServiceImpl(
         soknadId: UUID,
         utbetalinger: List<Utbetaling>,
     ) {
-        if (utbetalinger.isEmpty()) return
+        if (utbetalinger.isNotEmpty()) {
+            Inntekt(
+                type = UTBETALING_SKATTEETATEN,
+                inntektDetaljer =
+                    OkonomiDetaljer(
+                        detaljer = utbetalinger,
+                    ),
+            )
+                .also { okonomiService.addElementToOkonomi(soknadId, it) }
+        }
 
-        Inntekt(
-            type = UTBETALING_SKATTEETATEN,
-            inntektDetaljer =
-                OkonomiDetaljer(
-                    detaljer = utbetalinger,
-                ),
-        )
-            .also { okonomiService.addElementToOkonomi(soknadId, it) }
+        okonomiService.removeElementFromOkonomi(soknadId, JOBB)
     }
 
     // hvis fetch fra skatt feiler, opprettes en dokumentasjonskrav så bruker kan laste opp selv
