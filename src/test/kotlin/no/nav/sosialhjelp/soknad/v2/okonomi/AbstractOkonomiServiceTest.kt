@@ -38,8 +38,7 @@ abstract class AbstractOkonomiServiceTest {
 
     @BeforeEach
     fun setup() {
-        every { uploadClient.delete(any(), any<UUID>(), null) } just runs
-        every { uploadClient.delete(any(), any<UUID>(), any<String>()) } just runs
+        every { uploadClient.delete(any(), any<UUID>()) } just runs
         val soknadId = soknadMetadataRepository.save(opprettSoknadMetadata()).soknadId
         soknad = soknadRepository.save(Soknad(id = soknadId, eierPersonId = "1234561212345"))
     }

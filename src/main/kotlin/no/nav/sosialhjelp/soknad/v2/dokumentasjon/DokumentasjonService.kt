@@ -22,7 +22,6 @@ interface DokumentasjonService {
     fun fjernForventetDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
-        userToken: String? = null,
     )
 
     fun resetForventetDokumentasjon(soknadId: UUID)
@@ -88,14 +87,13 @@ class DokumentasjonServiceImpl(
     override fun fjernForventetDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
-        userToken: String?,
     ) {
         dokumentasjonRepository
             .findAllBySoknadId(soknadId)
             .find { it.type == opplysningType }
             ?.also {
                 dokumentasjonRepository.deleteById(it.id)
-                uploadClient.delete(opplysningType, soknadId, userToken)
+                uploadClient.delete(opplysningType, soknadId)
             }
     }
 

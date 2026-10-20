@@ -16,7 +16,6 @@ interface InntektSkatteetatenService {
     fun saveUtbetalinger(
         soknadId: UUID,
         utbetalinger: List<Utbetaling>,
-        userToken: String? = null,
     )
 
     fun createJobbElement(soknadId: UUID)
@@ -37,7 +36,6 @@ class InntektSkatteetatenServiceImpl(
     override fun saveUtbetalinger(
         soknadId: UUID,
         utbetalinger: List<Utbetaling>,
-        userToken: String?,
     ) {
         if (utbetalinger.isNotEmpty()) {
             Inntekt(
@@ -50,7 +48,7 @@ class InntektSkatteetatenServiceImpl(
                 .also { okonomiService.addElementToOkonomi(soknadId, it) }
         }
 
-        okonomiService.removeElementFromOkonomi(soknadId, JOBB, userToken)
+        okonomiService.removeElementFromOkonomi(soknadId, JOBB)
     }
 
     // hvis fetch fra skatt feiler, opprettes en dokumentasjonskrav så bruker kan laste opp selv
