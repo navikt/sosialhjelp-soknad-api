@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
+import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
 import org.springframework.stereotype.Component
 
 @Component

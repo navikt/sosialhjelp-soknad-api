@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektSkatteetatenService
 import no.nav.sosialhjelp.soknad.v2.register.AsynchronousFetcher
-import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
@@ -29,7 +28,7 @@ class InntektSkatteetatenFetcher(
     override suspend fun fetchAndSave(soknadId: UUID) {
         runCatching {
             val utbetalinger = fetchInntekt()
-            inntektSkatteetatenService.saveUtbetalinger(soknadId, utbetalinger, currentUserContext().userToken)
+            inntektSkatteetatenService.saveUtbetalinger(soknadId, utbetalinger)
             integrasjonStatusService.setInntektSkatteetatenStatus(soknadId, false)
         }.onFailure { ex ->
             logger.error("Fetching fra Skatteetaten feilet: ${ex.message}", ex)
