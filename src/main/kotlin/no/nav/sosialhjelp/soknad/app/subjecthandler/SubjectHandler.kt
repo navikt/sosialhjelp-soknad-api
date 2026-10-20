@@ -21,29 +21,20 @@ interface SubjectHandler {
 class SubjectHandlerImpl(
     private val tokenValidationContextHolder: TokenValidationContextHolder,
 ) : SubjectHandler {
-    private val tokenValidationContext: TokenValidationContext
-        get() {
-            return tokenValidationContextHolder
-                .getTokenValidationContext()
-                .also {
-                    if (!it.hasValidToken()) {
-                        log.error(
-                            "Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.",
-                        )
-                        throw RuntimeException("Could not find TokenValidationContext. Possibly no token in request.")
-                    }
-                }
-        }
+    private val tokenValidationContext: TokenValidationContext?
+        get() = tokenValidationContextHolder.getTokenValidationContext().takeIf { it.hasValidToken() }
 
     override fun getUserIdFromToken(): String =
         when {
-            tokenValidationContext.hasTokenFor(TOKENX) -> getUserIdFromTokenWithIssuer(TOKENX)
-            else -> getUserIdFromTokenWithIssuer(SELVBETJENING)
+            tokenValidationContext?.hasTokenFor(TOKENX) == true -> getUserIdFromTokenWithIssuer(TOKENX)
+            tokenValidationContext?.hasTokenFor(SELVBETJENING) == true -> getUserIdFromTokenWithIssuer(SELVBETJENING)
+            else -> UserContextElement.current()?.userId ?: throwMissingTokenContext()
         }
 
     private fun getUserIdFromTokenWithIssuer(issuer: String): String {
-        val pid: String? = tokenValidationContext.getClaims(issuer).getStringClaim(CLAIM_PID)
-        val sub: String? = tokenValidationContext.getClaims(issuer).subject
+        val context = tokenValidationContext ?: throwMissingTokenContext()
+        val pid: String? = context.getClaims(issuer).getStringClaim(CLAIM_PID)
+        val sub: String? = context.getClaims(issuer).subject
         return pid ?: sub ?: throw RuntimeException("Could not find any userId for token in pid or sub claim")
     }
 
@@ -51,8 +42,14 @@ class SubjectHandlerImpl(
         getTokenOrNull() ?: throw IllegalStateException("Finnes ingen tokens (TOKENX/SELVBETJENING")
 
     override fun getTokenOrNull(): String? =
-        tokenValidationContext.getJwtToken(TOKENX)?.encodedToken
-            ?: tokenValidationContext.getJwtToken(SELVBETJENING)?.encodedToken
+        tokenValidationContext?.getJwtToken(TOKENX)?.encodedToken
+            ?: tokenValidationContext?.getJwtToken(SELVBETJENING)?.encodedToken
+            ?: UserContextElement.current()?.userToken
+
+    private fun throwMissingTokenContext(): Nothing {
+        log.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.")
+        throw RuntimeException("Could not find TokenValidationContext. Possibly no token in request.")
+    }
 
     override fun getConsumerId(): String = "srvsoknadsosialhje"
 
