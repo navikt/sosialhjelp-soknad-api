@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.stereotype.Component
+import org.springframework.web.context.request.RequestContextHolder
 
 interface SubjectHandler {
     fun getConsumerId(): String
@@ -41,10 +42,14 @@ class SubjectHandlerImpl(
     override fun getToken(): String =
         getTokenOrNull() ?: throw IllegalStateException("Finnes ingen tokens (TOKENX/SELVBETJENING")
 
-    override fun getTokenOrNull(): String? =
-        tokenValidationContext?.getJwtToken(TOKENX)?.encodedToken
-            ?: tokenValidationContext?.getJwtToken(SELVBETJENING)?.encodedToken
-            ?: UserContextElement.current()?.userToken
+    override fun getTokenOrNull(): String? {
+        if (RequestContextHolder.getRequestAttributes() == null) return UserContextElement.current()?.userToken
+
+        val context = tokenValidationContext ?: throwMissingTokenContext()
+        return context.getJwtToken(TOKENX)?.encodedToken
+            ?: context.getJwtToken(SELVBETJENING)?.encodedToken
+            ?: throwMissingTokenContext()
+    }
 
     private fun throwMissingTokenContext(): Nothing {
         log.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.")
