@@ -68,8 +68,6 @@ class InntektSkatteetatenServiceImpl(
             )
                 .also { okonomiService.addElementToOkonomi(soknadId, it) }
         }
-
-        okonomiService.removeElementFromOkonomi(soknadId, JOBB)
     }
 
     // hvis fetch fra skatt feiler, opprettes en dokumentasjonskrav så bruker kan laste opp selv

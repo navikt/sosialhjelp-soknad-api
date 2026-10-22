@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.app.subjecthandler
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -9,32 +10,34 @@ import org.junit.jupiter.api.Test
 
 class UserContextTest {
     @Test
-    fun `makes user context available to blocking code on an IO thread`() =
+    fun `makes user context available to suspend code on an IO thread`() =
         runBlocking {
             withContext(Dispatchers.IO + UserContextElement("token", "user")) {
-                assertEquals("token", UserContextElement.current()?.userToken)
-                assertEquals("user", UserContextElement.current()?.userId)
+                assertEquals("token", currentUserContext().userToken)
+                assertEquals("user", currentUserContext().userId)
             }
         }
 
     @Test
     fun `restores outer user context after nested context`() =
         runBlocking(UserContextElement("outer-token", "outer-user")) {
-            assertEquals("outer-token", UserContextElement.current()?.userToken)
+            assertEquals("outer-token", currentUserContext().userToken)
 
             withContext(UserContextElement("inner-token", "inner-user")) {
-                assertEquals("inner-token", UserContextElement.current()?.userToken)
+                assertEquals("inner-token", currentUserContext().userToken)
             }
 
-            assertEquals("outer-token", UserContextElement.current()?.userToken)
+            assertEquals("outer-token", currentUserContext().userToken)
         }
 
     @Test
-    fun `clears user context when coroutine completes`() {
+    fun `does not leak user context into a new coroutine`() {
         runBlocking(UserContextElement("token", "user")) {
-            assertEquals("token", UserContextElement.current()?.userToken)
+            assertEquals("token", currentUserContext().userToken)
         }
 
-        assertNull(UserContextElement.current())
+        runBlocking {
+            assertNull(currentCoroutineContext()[UserContextElement])
+        }
     }
 }

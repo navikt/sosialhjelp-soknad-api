@@ -34,13 +34,17 @@ class InntektSkattUseCaseHandlerTest(
     fun `Hente inntekt skal lagres i db`() {
         createAnswerForSkatteetatenClient()
 
-        runBlocking(UserContextElement("dummy-token", soknad.eierPersonId)) { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
+        runBlocking(UserContextElement("dummy-token", soknad.eierPersonId)) {
+            okonomiService.addElementToOkonomi(soknad.id, InntektType.JOBB)
+            assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
 
-        okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
-            assertThat(okonomi.inntekter.toList()).hasSize(1)
-                .allMatch { it.type == UTBETALING_SKATTEETATEN }
-                .allMatch { it.inntektDetaljer.detaljer.size == 2 }
+            inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
         }
+
+        val inntekter = okonomiService.getInntekter(soknad.id)
+        assertThat(inntekter.map { it.type }).containsExactlyInAnyOrder(InntektType.JOBB, UTBETALING_SKATTEETATEN)
+        assertThat(inntekter.single { it.type == UTBETALING_SKATTEETATEN }.inntektDetaljer.detaljer).hasSize(2)
+        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isFalse()
     }
 
@@ -48,9 +52,15 @@ class InntektSkattUseCaseHandlerTest(
     fun `Tom liste lagrer ingen Inntekt`() {
         coEvery { skattbarInntektService.hentInntekt() } returns emptyList()
 
-        runBlocking(UserContextElement("dummy-token", soknad.eierPersonId)) { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
+        runBlocking(UserContextElement("dummy-token", soknad.eierPersonId)) {
+            okonomiService.addElementToOkonomi(soknad.id, InntektType.JOBB)
+            assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
 
-        assertThat(okonomiService.getInntekter(soknad.id)).isEmpty()
+            inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
+        }
+
+        assertThat(okonomiService.getInntekter(soknad.id).map { it.type }).containsExactly(InntektType.JOBB)
+        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isFalse()
     }
 
