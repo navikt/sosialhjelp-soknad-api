@@ -17,6 +17,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.KortSoknadUseCaseHandler
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.springframework.core.env.Environment
 import java.time.LocalDateTime
 
 class KortSoknadServiceTest {
@@ -34,6 +35,7 @@ class KortSoknadServiceTest {
             digisosApiService = digisosApiService,
             metadataService = mockk(relaxed = true),
             unleash = mockk(relaxed = true),
+            environment = mockk<Environment> { every { activeProfiles } returns emptyArray() },
         )
 
     @Test

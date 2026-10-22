@@ -5,12 +5,12 @@ import io.getunleash.UnleashContext
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
+import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -26,6 +26,7 @@ class KortSoknadUseCaseHandler(
     private val digisosApiService: DigisosApiService,
     private val metadataService: SoknadMetadataServiceImpl,
     private val unleash: Unleash,
+    private val environment: Environment,
 ) {
     fun resolveKortSoknad(
         soknadId: UUID,
@@ -34,7 +35,7 @@ class KortSoknadUseCaseHandler(
         nyMottaker: NavEnhet?,
     ) {
         // I mock overstyrer man dette med valg på forsiden
-        if (MiljoUtils.isMockAltProfil()) return
+        if ("mock-alt" in environment.activeProfiles) return
 
         // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
         if (oldMottaker?.hasMottakerNotChanged(nyMottaker, oldAdresser.adressevalg) == true) return
@@ -111,12 +112,11 @@ class KortSoknadUseCaseHandler(
         val in14Days = LocalDateTime.now().plusDays(14)
 
         val utbetaltSiste120Dager =
-            hendelser
-                ?.asSequence()
-                ?.filterIsInstance<JsonUtbetaling>()
-                ?.filter { it.status == JsonUtbetaling.Status.UTBETALT && it.utbetalingsdato != null }
-                ?.map { requireNotNull(it.utbetalingsdato).toLocalDateTime() }
-                ?.firstOrNull { it >= fourMonthsAgo }
+            hendelser.asSequence()
+                .filterIsInstance<JsonUtbetaling>()
+                .filter { it.status == JsonUtbetaling.Status.UTBETALT && it.utbetalingsdato != null }
+                .map { requireNotNull(it.utbetalingsdato).toLocalDateTime() }
+                .firstOrNull { it >= fourMonthsAgo }
 
         if (utbetaltSiste120Dager != null) {
             logger.info("Bruker kvalifiserer til kort søknad via utbetaling $utbetaltSiste120Dager")
@@ -125,12 +125,12 @@ class KortSoknadUseCaseHandler(
 
         val planlagtInnen14Dager =
             hendelser
-                ?.asSequence()
-                ?.filterIsInstance<JsonUtbetaling>()
-                ?.filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
-                ?.map { requireNotNull(it.forfallsdato).toLocalDateTime() }
-                ?.filter { it >= LocalDateTime.now() }
-                ?.firstOrNull { it < in14Days }
+                .asSequence()
+                .filterIsInstance<JsonUtbetaling>()
+                .filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
+                .map { requireNotNull(it.forfallsdato).toLocalDateTime() }
+                .filter { it >= LocalDateTime.now() }
+                .firstOrNull { it < in14Days }
 
         if (planlagtInnen14Dager != null) {
             logger.info("Bruker kvalifiserer til kort søknad via planlagt utbetaling $planlagtInnen14Dager")
