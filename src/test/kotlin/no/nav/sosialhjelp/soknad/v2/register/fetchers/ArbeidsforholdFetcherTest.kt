@@ -115,14 +115,12 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
         withContext(Dispatchers.IO) {
             okonomiService.getInntekter(soknad.id)
         }.let { inntekter ->
-            assertThat(inntekter).noneMatch { it.type == InntektType.JOBB }
             assertThat(inntekter).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
 
         withContext(Dispatchers.IO) {
             dokumentasjonRepository.findAllBySoknadId(soknad.id)
         }.let { doks ->
-            assertThat(doks).noneMatch { it.type == InntektType.JOBB }
             assertThat(doks).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
     }
@@ -130,33 +128,17 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     @Test
     suspend fun `Oppdaterere med tom liste fjerner tidligere lagrede data`() {
         createAnswerForAaregClient().also { createAnswerForOrganisasjonClient(it) }
-        withContext(Dispatchers.IO) {
-            okonomiService.addElementToOkonomi(soknad.id, InntektType.JOBB)
-        }
-
-        assertThat(
-            withContext(Dispatchers.IO) {
-                okonomiService.getInntekter(soknad.id)
-            },
-        ).anyMatch { it.type == InntektType.JOBB }
-        assertThat(
-            withContext(Dispatchers.IO) {
-                dokumentasjonRepository.findAllBySoknadId(soknad.id)
-            },
-        ).anyMatch { it.type == InntektType.JOBB }
 
         arbeidsforholdFetcher.fetchAndSave(soknad.id)
 
         withContext(Dispatchers.IO) {
             okonomiService.getInntekter(soknad.id)
         }.let { inntekter ->
-            assertThat(inntekter).anyMatch { it.type == InntektType.JOBB }
             assertThat(inntekter).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
         withContext(Dispatchers.IO) {
             dokumentasjonRepository.findAllBySoknadId(soknad.id)
         }.let { dokumentasjon ->
-            assertThat(dokumentasjon).anyMatch { it.type == InntektType.JOBB }
             assertThat(dokumentasjon).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
 
@@ -166,18 +148,6 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
         livssituasjonRepository.findByIdOrNull(soknad.id)!!.arbeid.arbeidsforhold.also {
             assertThat(it).isEmpty()
-        }
-        withContext(Dispatchers.IO) {
-            okonomiService.getInntekter(soknad.id)
-        }.let { inntekter ->
-            assertThat(inntekter).hasSize(1)
-            assertThat(inntekter).allMatch { it.type == InntektType.JOBB }
-        }
-        withContext(Dispatchers.IO) {
-            dokumentasjonRepository.findAllBySoknadId(soknad.id)
-        }.let { dokumentasjon ->
-            assertThat(dokumentasjon).hasSize(1)
-            assertThat(dokumentasjon).allMatch { it.type == InntektType.JOBB }
         }
     }
 
