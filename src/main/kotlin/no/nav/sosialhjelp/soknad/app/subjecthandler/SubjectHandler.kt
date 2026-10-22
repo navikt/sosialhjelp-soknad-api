@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.stereotype.Component
-import org.springframework.web.context.request.RequestContextHolder
 
 interface SubjectHandler {
     fun getConsumerId(): String
@@ -22,39 +21,33 @@ interface SubjectHandler {
 class SubjectHandlerImpl(
     private val tokenValidationContextHolder: TokenValidationContextHolder,
 ) : SubjectHandler {
-    private val tokenValidationContext: TokenValidationContext?
-        get() = tokenValidationContextHolder.getTokenValidationContext().takeIf { it.hasValidToken() }
+    private val tokenValidationContext: TokenValidationContext
+        get() =
+            tokenValidationContextHolder.getTokenValidationContext().also {
+                if (!it.hasValidToken()) {
+                    log.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.")
+                    throw RuntimeException("Could not find TokenValidationContext. Possibly no token in request.")
+                }
+            }
 
     override fun getUserIdFromToken(): String =
         when {
-            tokenValidationContext?.hasTokenFor(TOKENX) == true -> getUserIdFromTokenWithIssuer(TOKENX)
-            tokenValidationContext?.hasTokenFor(SELVBETJENING) == true -> getUserIdFromTokenWithIssuer(SELVBETJENING)
-            else -> UserContextElement.current()?.userId ?: throwMissingTokenContext()
+            tokenValidationContext.hasTokenFor(TOKENX) -> getUserIdFromTokenWithIssuer(TOKENX)
+            else -> getUserIdFromTokenWithIssuer(SELVBETJENING)
         }
 
     private fun getUserIdFromTokenWithIssuer(issuer: String): String {
-        val context = tokenValidationContext ?: throwMissingTokenContext()
-        val pid: String? = context.getClaims(issuer).getStringClaim(CLAIM_PID)
-        val sub: String? = context.getClaims(issuer).subject
+        val pid: String? = tokenValidationContext.getClaims(issuer).getStringClaim(CLAIM_PID)
+        val sub: String? = tokenValidationContext.getClaims(issuer).subject
         return pid ?: sub ?: throw RuntimeException("Could not find any userId for token in pid or sub claim")
     }
 
     override fun getToken(): String =
         getTokenOrNull() ?: throw IllegalStateException("Finnes ingen tokens (TOKENX/SELVBETJENING")
 
-    override fun getTokenOrNull(): String? {
-        if (RequestContextHolder.getRequestAttributes() == null) return UserContextElement.current()?.userToken
-
-        val context = tokenValidationContext ?: throwMissingTokenContext()
-        return context.getJwtToken(TOKENX)?.encodedToken
-            ?: context.getJwtToken(SELVBETJENING)?.encodedToken
-            ?: throwMissingTokenContext()
-    }
-
-    private fun throwMissingTokenContext(): Nothing {
-        log.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.")
-        throw RuntimeException("Could not find TokenValidationContext. Possibly no token in request.")
-    }
+    override fun getTokenOrNull(): String? =
+        tokenValidationContext.getJwtToken(TOKENX)?.encodedToken
+            ?: tokenValidationContext.getJwtToken(SELVBETJENING)?.encodedToken
 
     override fun getConsumerId(): String = "srvsoknadsosialhje"
 
