@@ -23,7 +23,7 @@ class SkattbarInntektService(
                 is SkattbarInntektResponse.Success -> response.inntekt
                 is SkattbarInntektResponse.Error -> throw SkatteetatenException(response.error, response.cause)
                 is SkattbarInntektResponse.NotFound -> {
-                    logger.info("Fant ingen skattbar inntekt")
+                    logger.info("Fant ingen skattbar inntekt. Melding: ${response.message}")
                     SkattbarInntekt()
                 }
             }
