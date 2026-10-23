@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -53,7 +52,7 @@ class SkatteetatenClient(
 
     private fun handleError(e: Throwable): SkattbarInntektResponse =
         when (e) {
-            is WebClientResponseException.NotFound -> SkattbarInntektResponse.NotFound
+            is WebClientResponseException.NotFound -> SkattbarInntektResponse.NotFound(maskerFnr(e.responseBodyAsString) ?: "ingen feilmelding")
             is WebClientResponseException -> {
                 val msg = "Klarer ikke hente skatteopplysninger ${maskerFnr(e.responseBodyAsString)} status ${e.statusCode}"
                 SkattbarInntektResponse.Error(msg, e)
@@ -63,15 +62,10 @@ class SkatteetatenClient(
 
     private fun createSokedata(): Sokedata {
         return Sokedata(
-            identifikator = resolveIdent(),
+            identifikator = SubjectHandlerUtils.getUserIdFromToken(),
             fom = LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()),
             tom = LocalDate.now(),
         )
-    }
-
-    private fun resolveIdent(): String {
-        return SubjectHandlerUtils.getUserIdFromToken()
-            .let { if (MiljoUtils.isProduction()) it else System.getenv("TESTBRUKER_SKATT") ?: it }
     }
 
     private fun getMaskinportenToken(): String =
@@ -87,5 +81,5 @@ sealed interface SkattbarInntektResponse {
 
     class Error(val error: String, val cause: Throwable) : SkattbarInntektResponse
 
-    object NotFound : SkattbarInntektResponse
+    class NotFound(val message: String) : SkattbarInntektResponse
 }
