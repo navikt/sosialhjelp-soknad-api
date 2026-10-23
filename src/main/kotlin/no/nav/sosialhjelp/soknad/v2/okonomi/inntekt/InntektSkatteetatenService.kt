@@ -1,21 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.slf4j.MDCContext
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
-import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.JOBB
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.UTBETALING_SKATTEETATEN
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
-import no.nav.sosialhjelp.soknad.v2.register.fetchers.InntektSkatteetatenFetcher
-import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
-import org.slf4j.MDC
-import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -36,21 +26,10 @@ interface InntektSkatteetatenService {
 @Service
 class InntektSkatteetatenServiceImpl(
     private val okonomiService: OkonomiService,
-    @param:Lazy
-    private val skatteetatenFetcher: InntektSkatteetatenFetcher,
-    private val integrasjonStatusService: IntegrasjonStatusService,
 ) : InntektSkatteetatenService {
     @Transactional(readOnly = true)
     override fun getInntektSkatt(soknadId: UUID): Inntekt? {
-        val inntekt = okonomiService.getInntekter(soknadId).find { it.type == UTBETALING_SKATTEETATEN }
-        // TODO: Fjern to uker etter fjerning av samtykke
-        if (inntekt == null && integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId) != false) {
-            runBlocking(Dispatchers.IO + MDCContext(MDC.getCopyOfContextMap()) + UserContextElement(getToken(), getUserIdFromToken())) {
-                skatteetatenFetcher.fetchAndSave(soknadId)
-            }
-            return okonomiService.getInntekter(soknadId).find { it.type == UTBETALING_SKATTEETATEN }
-        }
-        return inntekt
+        return okonomiService.getInntekter(soknadId).find { it.type == UTBETALING_SKATTEETATEN }
     }
 
     @Transactional
