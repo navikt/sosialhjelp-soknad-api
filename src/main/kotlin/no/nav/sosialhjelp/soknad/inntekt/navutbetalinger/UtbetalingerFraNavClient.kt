@@ -8,12 +8,12 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider.TOKENX
 import no.nav.sosialhjelp.soknad.auth.texas.NonBlockingTexasService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
-import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component

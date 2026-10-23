@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers.person
 
 import kotlinx.coroutines.test.runTest
+import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.register.UserContextElement
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.AbstractPersonDataFetcherTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail

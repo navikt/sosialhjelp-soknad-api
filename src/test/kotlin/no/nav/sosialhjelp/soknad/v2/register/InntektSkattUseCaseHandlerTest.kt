@@ -2,14 +2,18 @@ package no.nav.sosialhjelp.soknad.v2.register
 
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
+import io.mockk.coEvery
 import io.mockk.every
+import kotlinx.coroutines.runBlocking
+import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektResponse
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
-import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.JOBB
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.UTBETALING_SKATTEETATEN
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektSkatteetatenUseCaseHandler
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.InntektSkatteetatenFetcher
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.SkatteetatenException
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.assertj.core.api.Assertions.assertThat
@@ -17,70 +21,64 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
-    @Autowired
-    private lateinit var inntektSkatteetatenUseCaseHandler: InntektSkatteetatenUseCaseHandler
-
+class InntektSkattUseCaseHandlerTest(
+    @Autowired private val okonomiService: OkonomiService,
+) : AbstractOkonomiRegisterDataTest() {
     @Autowired
     private lateinit var integrasjonStatusService: IntegrasjonStatusService
+
+    @Autowired
+    private lateinit var inntektSkatteetatenFetcher: InntektSkatteetatenFetcher
 
     @Test
     fun `Hente inntekt skal lagres i db`() {
         createAnswerForSkatteetatenClient()
 
-        inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
+        runBlocking(UserContextElement("dummy-token", soknad.eierPersonId)) {
+            okonomiService.addElementToOkonomi(soknad.id, InntektType.JOBB)
+            assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
 
-        okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
-            assertThat(okonomi.inntekter.toList()).hasSize(1)
-                .allMatch { it.type == UTBETALING_SKATTEETATEN }
-                .allMatch { it.inntektDetaljer.detaljer.size == 2 }
+            inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
         }
+
+        val inntekter = okonomiService.getInntekter(soknad.id)
+        assertThat(inntekter.map { it.type }).containsExactlyInAnyOrder(InntektType.JOBB, UTBETALING_SKATTEETATEN)
+        assertThat(inntekter.single { it.type == UTBETALING_SKATTEETATEN }.inntektDetaljer.detaljer).hasSize(2)
+        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isFalse()
     }
 
     @Test
     fun `Tom liste lagrer ingen Inntekt`() {
-        every { skattbarInntektService.hentInntekt() } returns emptyList()
+        coEvery { skattbarInntektService.hentInntekt() } returns emptyList()
 
-        inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
+        runBlocking(UserContextElement("dummy-token", soknad.eierPersonId)) {
+            okonomiService.addElementToOkonomi(soknad.id, InntektType.JOBB)
+            assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
 
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
+            inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
+        }
+
+        assertThat(okonomiService.getInntekter(soknad.id).map { it.type }).containsExactly(InntektType.JOBB)
+        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isFalse()
     }
 
     @Test
-    fun `Service returnerer null setter integrasjonstatus feilet til true, og oppretter InntektType JOBB`() {
-        every { skatteetatenClient.hentSkattbarinntekt() } returns SkattbarInntektResponse.Error("Feil", SkatteetatenException("error"))
+    fun `Service returnerer null setter integrasjonstatus feilet til true`() {
+        coEvery { skatteetatenClient.hentSkattbarinntekt() } returns SkattbarInntektResponse.Error("Feil", SkatteetatenException("error"))
 
-        inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
+        runBlocking { inntektSkatteetatenFetcher.fetchAndSave(soknad.id) }
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
             .hasSize(1)
-            .allMatch { it.type == JOBB }
-        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, JOBB)).isNotNull()
+            .allMatch { it.type == InntektType.JOBB }
+        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isTrue()
     }
 
-    @Test
-    fun `Sette samtykke = false skal fjerne inntekt og opprette JOBB dokumentasjon`() {
-        createAnswerForSkatteetatenClient()
-
-        inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, true)
-
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
-            .hasSize(1)
-            .allMatch { it.type == UTBETALING_SKATTEETATEN }
-
-        inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, false)
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
-            .hasSize(1)
-            .allMatch { it.type == JOBB }
-
-        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, JOBB)).isNotNull()
-    }
-
     private fun createAnswerForSkatteetatenClient() {
-        every { skattbarInntektService.hentInntekt() } returns defaultResponseForSkattbarInntektService()
+        coEvery { skattbarInntektService.hentInntekt() } returns defaultResponseForSkattbarInntektService()
         every { organisasjonService.hentOrgNavn(any()) } returns "Navn på arbeidsgiver"
     }
 
