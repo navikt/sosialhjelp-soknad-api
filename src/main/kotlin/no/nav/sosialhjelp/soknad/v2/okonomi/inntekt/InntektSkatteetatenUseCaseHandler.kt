@@ -9,8 +9,10 @@ import java.util.UUID
 class InntektSkatteetatenUseCaseHandler(
     private val inntektSkatteetatenService: InntektSkatteetatenService,
     private val integrasjonStatusService: IntegrasjonStatusService,
+    private val skatteetatenTempDraftHandler: SkatteetatenTempDraftHandler,
 ) {
     fun getInntektSkattInfo(soknadId: UUID): InntektSkattInfo {
+        skatteetatenTempDraftHandler.fetchData(soknadId) // TODO: Fjern etter to uker
         return InntektSkattInfo(
             inntekt = inntektSkatteetatenService.getInntektSkatt(soknadId),
             getFailed = integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId) ?: false,
