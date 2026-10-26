@@ -47,9 +47,6 @@ flyway {
     encoding = "ISO-8859-1"
 }
 
-val githubUser: String? = project.findProperty("githubUser") as String?
-val githubPassword: String? = project.findProperty("githubPassword") as String?
-
 repositories {
     mavenLocal()
     mavenCentral()
@@ -171,6 +168,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs("-Xmx2g")
     testLogging {
         events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         exceptionFormat = TestExceptionFormat.FULL
@@ -195,8 +193,4 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
     rejectVersionIf {
         candidate.version.isNonStable() && !currentVersion.isNonStable()
     }
-}
-
-tasks.withType<Test> {
-    jvmArgs("-Xmx2g")
 }
