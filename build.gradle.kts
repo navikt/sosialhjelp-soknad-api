@@ -171,6 +171,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs("-Xmx2g")
     testLogging {
         events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         exceptionFormat = TestExceptionFormat.FULL
@@ -195,8 +196,4 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
     rejectVersionIf {
         candidate.version.isNonStable() && !currentVersion.isNonStable()
     }
-}
-
-tasks.withType<Test> {
-    jvmArgs("-Xmx2g")
 }
