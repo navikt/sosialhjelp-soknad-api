@@ -8,7 +8,7 @@ fiks_kryptering = "2.5.0"
 springdoc = "3.1.1"
 flyway = "13.10.0"
 postgres = "42.7.14"
-lettuce = "7.8.0.RELEASE"
+lettuce = "7.9.0.RELEASE"
 token_validation = "6.0.13"
 java_jwt = "4.6.1"
 prometheus = "0.16.0"
@@ -21,11 +21,11 @@ logstash = "9.0"
 pdfbox = "3.0.8"
 jakarta_servlet = "6.1.0"
 unleash_client = "12.3.0"
-tika = "4.0.0"
+tika = "4.1.0"
 commons_text = "1.15.0"
 ktlint = "1.2.1"
 mockk = "1.14.11"
-versions = "0.65.0"
+versions = "0.66.0"
 spotless = "8.10.4"
 opentelemetry = "1.67.0"
 opentelemetry-logback = "2.32.0-alpha"
@@ -144,6 +144,6 @@ pdfbox = [
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
-versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
+versions = { id = "io.github.ben-manes.versions", version.ref = "versions" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
