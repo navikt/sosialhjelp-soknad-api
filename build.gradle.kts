@@ -18,7 +18,7 @@ plugins {
 
 buildscript {
     dependencies {
-        classpath("org.apache.httpcomponents.client5:httpclient5:5.6.4")
+        classpath("org.apache.httpcomponents.client5:httpclient5:5.6.5")
     }
 }
 
@@ -47,20 +47,13 @@ flyway {
     encoding = "ISO-8859-1"
 }
 
-val githubUser: String? by project
-val githubPassword: String? by project
-
 repositories {
     mavenLocal()
     mavenCentral()
     maven("https://plugins.gradle.org/m2/")
     maven("https://repo.spring.io/plugins-release/")
     maven {
-        url = uri("https://maven.pkg.github.com/navikt/*")
-        credentials {
-            username = githubUser
-            password = githubPassword
-        }
+        url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
     }
 }
 
@@ -173,24 +166,15 @@ tasks.withType<KotlinCompile> {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
 }
 
-testing {
-    suites {
-        val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter()
-            targets {
-                all {
-                    testTask.configure {
-                        testLogging {
-                            events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
-                            exceptionFormat = TestExceptionFormat.FULL
-                            showCauses = true
-                            showExceptions = true
-                            showStackTraces = true
-                        }
-                    }
-                }
-            }
-        }
+tasks.withType<Test> {
+    useJUnitPlatform()
+    jvmArgs("-Xmx2g")
+    testLogging {
+        events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+        exceptionFormat = TestExceptionFormat.FULL
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
     }
 }
 
@@ -209,8 +193,4 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
     rejectVersionIf {
         candidate.version.isNonStable() && !currentVersion.isNonStable()
     }
-}
-
-tasks.withType<Test> {
-    jvmArgs("-Xmx2g")
 }

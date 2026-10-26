@@ -13,8 +13,8 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.ReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.SendSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
@@ -83,7 +83,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var sendSoknadClient: SendSoknadClient
 
     @MockkSpyBean
-    protected lateinit var readClient: ReadClient
+    protected lateinit var fiksReadClient: FiksReadClient
 
     @MockkSpyBean
     protected lateinit var kommuneInfoClient: KommuneInfoClient

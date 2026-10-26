@@ -1,8 +1,8 @@
 {
   "collection": "nav-pilot",
-  "version": "2026.10.11-201029-b998fab",
+  "version": "2026.10.25-034335-3e799c9",
   "scope": "repo",
-  "source_sha": "6f8c2449a3124af5e88ba352d6eb0658ce39346e",
+  "source_sha": "ca96b9428d1580bdef8d75e0c56249193f8c45e0",
   "installed_at": "2026-06-04T12:42:23Z",
   "files": [
     {
@@ -11,12 +11,13 @@
     },
     {
       "path": ".github/agents/aksel.agent.md",
-      "hash": "700721ce34d631f5"
+      "hash": "c14ba829b924f33c",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/agents/code-review.agent.md",
-      "hash": "811b2a6765ff86de",
-      "revision": "6f8c2449a3124af5e88ba352d6eb0658ce39346e"
+      "hash": "fa76255226b84d06",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/agents/forfatter.agent.md",
@@ -34,8 +35,8 @@
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "8c6cbe9101b541c5",
-      "revision": "6f8c2449a3124af5e88ba352d6eb0658ce39346e"
+      "hash": "763a798b28967762",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/agents/research.agent.md",
@@ -54,19 +55,23 @@
     },
     {
       "path": ".github/agents/worker.agent.md",
-      "hash": "43c860f99cd1337e"
+      "hash": "8ca54845d3fa2a73",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/hooks/ask-first-aria.py",
-      "hash": "41be8eec026b7bb1"
+      "hash": "fc5c399249a5d7b2",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/hooks/gh-poll-gate.py",
-      "hash": "7b144af18aef7c2f"
+      "hash": "72b72d28f9ec16bf",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/hooks/klarsprak-gate.py",
-      "hash": "ecc2bc6b2d637131"
+      "hash": "c2155ad041f460fd",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/instructions/accessibility.instructions.md",
@@ -78,8 +83,8 @@
     },
     {
       "path": ".github/instructions/deliberate-ai-use.instructions.md",
-      "hash": "5e2d7a2f23285de8",
-      "revision": "a873eab96bbe29df8c1f5d50fea2c2c151d44820"
+      "hash": "c323e57324694374",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/instructions/docker.instructions.md",
@@ -101,7 +106,8 @@
     },
     {
       "path": ".github/instructions/nextjs-aksel.instructions.md",
-      "hash": "342cce96431f6ca5"
+      "hash": "0b83049114a7b86a",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/instructions/norwegian-text.instructions.md",
@@ -162,15 +168,16 @@
     },
     {
       "path": ".github/skills/aksel-builder/",
-      "hash": "3075f3a92c2eb6fc"
-    },
-    {
-      "path": ".github/skills/aksel-spacing/",
-      "hash": "177594fc5ae8d7e3"
+      "hash": "8bb00941b6cd738a",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/skills/api-design/",
       "hash": "a353aded69a4bd4c"
+    },
+    {
+      "path": ".github/skills/appsec-advisory/",
+      "hash": "47dc8fb85cebb2bb"
     },
     {
       "path": ".github/skills/conventional-commit/",
@@ -178,8 +185,12 @@
     },
     {
       "path": ".github/skills/deliberate-ai-use/",
-      "hash": "81fe98e25424c81c",
-      "revision": "6f8c2449a3124af5e88ba352d6eb0658ce39346e"
+      "hash": "c329412b61d8f8c1",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
+    },
+    {
+      "path": ".github/skills/dependency-upgrade/",
+      "hash": "03b9bf451939b567"
     },
     {
       "path": ".github/skills/flyway-migration/",
@@ -200,7 +211,8 @@
     },
     {
       "path": ".github/skills/klarsprak/",
-      "hash": "28545e8d5ed779fe"
+      "hash": "618a0dbf98be8b11",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/skills/kotlin-app-config/",
@@ -225,7 +237,8 @@
     },
     {
       "path": ".github/skills/nav-deep-interview/",
-      "hash": "eeb3399ecd4e352c"
+      "hash": "c830bf6956bda64f",
+      "revision": "ca96b9428d1580bdef8d75e0c56249193f8c45e0"
     },
     {
       "path": ".github/skills/nav-dekoratoren/",

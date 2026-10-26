@@ -9,16 +9,40 @@ import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.Future
 
+interface DigisosApiService {
+    fun sendSoknad(
+        tilleggsinformasjonJson: String,
+        soknadJson: String,
+        vedleggJson: String,
+        pdfDokumenter: List<FilOpplasting>,
+        kommunenummer: String,
+        soknadId: UUID,
+    ): SendSoknadResponse
+
+    fun getSoknaderForUser(): List<DigisosSak>
+
+    fun getInnsynsfilForSoknad(
+        fiksDigisosId: String,
+        dokumentId: String,
+    ): JsonDigisosSoker
+}
+
+interface DigisosApiJobService {
+    fun getDigisosIdsStatusMottatt(digisosIds: List<UUID>): List<UUID>
+
+    fun checkSoknaderMottatt(soknadIds: List<UUID>): List<InnsendingStatusDto>
+}
+
 @Component
-class DigisosApiService(
-    private val readClient: ReadClient,
+class DigisosApiServiceImpl(
+    private val fiksReadClient: FiksReadClient,
     private val sendSoknadClient: SendSoknadClient,
     private val krypteringService: KrypteringService,
     private val dokumentlagerClient: DokumentlagerClient,
-) {
+) : DigisosApiService, DigisosApiJobService {
     private val fiksX509Certificate get() = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
 
-    fun sendSoknad(
+    override fun sendSoknad(
         tilleggsinformasjonJson: String,
         soknadJson: String,
         vedleggJson: String,
@@ -52,21 +76,24 @@ class DigisosApiService(
         return response
     }
 
-    fun getSoknaderForUser(): List<DigisosSak> = readClient.getSoknader()
+    override fun getSoknaderForUser(): List<DigisosSak> = fiksReadClient.getSoknader()
 
-    fun getInnsynsfilForSoknad(
+    override fun getInnsynsfilForSoknad(
         fiksDigisosId: String,
         dokumentId: String,
-    ): JsonDigisosSoker = readClient.getInnsynsfil(fiksDigisosId, dokumentId)
+    ): JsonDigisosSoker = fiksReadClient.getInnsynsfil(fiksDigisosId, dokumentId)
 
-    fun getDigisosIdsStatusMottatt(digisosIds: List<UUID>): List<UUID> {
+    override fun getDigisosIdsStatusMottatt(digisosIds: List<UUID>): List<UUID> {
         return if (digisosIds.isEmpty()) {
             emptyList()
         } else {
-            readClient
+            fiksReadClient
                 .getStatusForSoknader(digisosIds).statusListe
                 .filter { it.levertFagsystem }
                 .map { it.digisosId }
         }
     }
+
+    override fun checkSoknaderMottatt(soknadIds: List<UUID>): List<InnsendingStatusDto> =
+        soknadIds.chunked(50).flatMap { fiksReadClient.getInnsendingsstatus(it) }
 }

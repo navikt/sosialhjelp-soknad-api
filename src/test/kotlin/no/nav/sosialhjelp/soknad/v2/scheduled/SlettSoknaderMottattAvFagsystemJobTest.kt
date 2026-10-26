@@ -4,9 +4,9 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksSoknadStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksSoknadStatusListe
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.ReadClient
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
@@ -21,7 +21,7 @@ import java.util.UUID
 
 class SlettSoknaderMottattAvFagsystemJobTest : AbstractJobTest() {
     @MockkBean
-    private lateinit var readClient: ReadClient
+    private lateinit var fiksReadClient: FiksReadClient
 
     @Autowired
     private lateinit var slettMottatteSoknaderJob: SlettSoknaderMottattAvFagsystemJob
@@ -45,7 +45,7 @@ class SlettSoknaderMottattAvFagsystemJobTest : AbstractJobTest() {
             assertThat(soknadRepository.findByIdOrNull(soknadId)).isNotNull()
             assertThat(metadataRepository.findByIdOrNull(soknadId)).isNotNull()
 
-            every { readClient.getStatusForSoknader(any()) } returns
+            every { fiksReadClient.getStatusForSoknader(any()) } returns
                 createFiksSoknadStatusListe(soknadMetadata.digisosId!!)
 
             slettMottatteSoknaderJob.slettSoknaderSomErMottattAvFagsystem()
@@ -68,7 +68,7 @@ class SlettSoknaderMottattAvFagsystemJobTest : AbstractJobTest() {
             assertThat(soknadRepository.findById(soknadId)).isNotEmpty
             assertThat(metadataRepository.findById(soknadId)).isNotEmpty
 
-            every { readClient.getStatusForSoknader(any()) } returns createEmptyFiksSoknadStatusListe()
+            every { fiksReadClient.getStatusForSoknader(any()) } returns createEmptyFiksSoknadStatusListe()
 
             slettMottatteSoknaderJob.slettSoknaderSomErMottattAvFagsystem()
 
@@ -89,7 +89,7 @@ class SlettSoknaderMottattAvFagsystemJobTest : AbstractJobTest() {
 
             slettMottatteSoknaderJob.slettSoknaderSomErMottattAvFagsystem()
 
-            verify(exactly = 0) { readClient.getStatusForSoknader(any()) }
+            verify(exactly = 0) { fiksReadClient.getStatusForSoknader(any()) }
 
             assertThat(soknadRepository.findById(soknadId)).isNotEmpty
             assertThat(metadataRepository.findById(soknadId).get().status).isEqualTo(SoknadStatus.OPPRETTET)
