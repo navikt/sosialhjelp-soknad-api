@@ -84,6 +84,8 @@ spec:
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/ereg"
     - name: DIGISOS_API_BASEURL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/fiks/"
+    - name: FIKS_DOKUMENTLAGER_ENDPOINT_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/fiks/dokumentlager"
     - name: KODEVERK_URL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/kodeverk"
     - name: KONTOREGISTER_API_BASEURL
