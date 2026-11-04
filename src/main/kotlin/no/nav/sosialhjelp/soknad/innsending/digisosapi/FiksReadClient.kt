@@ -59,7 +59,7 @@ class FiksReadClient(
         digisosId: UUID,
     ): DigisosSak {
         val startTime = System.currentTimeMillis()
-        log.info("Henter søknad fra Fiks. digisosId=$digisosId")
+        log.debug("Henter søknad fra Fiks. digisosId={}", digisosId)
         val sak =
             try {
                 fiksWebClient
@@ -85,15 +85,7 @@ class FiksReadClient(
                 }
             }
 
-        // todo fjern logger etter testing
-        val original = sak.originalSoknadNAV
-        log.info(
-            "Hentet søknad fra Fiks. digisosId=$digisosId fiksDigisosId=${sak.fiksDigisosId} " +
-                "innsendt=${original != null} timestampSendt=${original?.timestampSendt} " +
-                "dokumentlagerId=${original?.soknadDokument?.dokumentlagerDokumentId} " +
-                "filnavn=${original?.soknadDokument?.filnavn} storrelse=${original?.soknadDokument?.storrelse} " +
-                "tid=${System.currentTimeMillis() - startTime} ms",
-        )
+        log.debug("Hentet søknad fra Fiks. digisosId={}", digisosId)
         return sak
     }
 

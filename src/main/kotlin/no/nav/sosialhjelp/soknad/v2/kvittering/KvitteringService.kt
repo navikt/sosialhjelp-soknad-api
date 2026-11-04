@@ -16,22 +16,17 @@ class KvitteringService(
     private val fiksReadClient: FiksReadClient,
     @param:Value("\${fiks_dokumentlager_endpoint_url}") private val dokumentlagerUrl: String,
 ) {
-    /**
-     * Alle avvik gir [IkkeFunnetException] (404), slik at kallere ikke kan skille «finnes ikke» fra «ikke din».
-     * Eierskap: Fiks sjekker med brukerens token, og vi sjekker i tillegg at sokerFnr er innlogget bruker.
-     * Logger aldri fnr.
-     */
     fun hentKvittering(digisosId: UUID): KvitteringDto {
         val digisosSak = fiksReadClient.getDigisosSak(digisosId)
 
         if (digisosSak.fiksDigisosId != digisosId.toString()) {
             log.warn("Fiks returnerte annen søknad enn forespurt. digisosId=$digisosId")
-            throw IkkeFunnetException("Fant ikke kvittering for digisosId=$digisosId")
+            throw IkkeFunnetException("Fant ikke søknad med digisosId=$digisosId")
         }
 
         if (digisosSak.sokerFnr != SubjectHandlerUtils.getUserIdFromToken()) {
             log.warn("Søknad tilhører ikke innlogget bruker. digisosId=$digisosId")
-            throw IkkeFunnetException("Fant ikke kvittering for digisosId=$digisosId")
+            throw IkkeFunnetException("Fant ikke søknad med digisosId=$digisosId")
         }
 
         val original =

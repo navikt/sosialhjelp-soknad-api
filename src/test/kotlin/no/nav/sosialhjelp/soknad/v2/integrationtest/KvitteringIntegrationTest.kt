@@ -36,14 +36,14 @@ class KvitteringIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `soknad som tilhorer annen bruker gir 404`() {
+    fun `soknad med feil id gir 404`() {
         every { fiksReadClient.getDigisosSak(digisosId) } returns sak(fnr = "99999999999")
 
         doGetFullResponse("/kvittering/$digisosId").expectStatus().isNotFound
     }
 
     @Test
-    fun `soknad som ikke er innsendt gir 404`() {
+    fun `soknad null gir 404`() {
         every { fiksReadClient.getDigisosSak(digisosId) } returns sak(original = null)
 
         doGetFullResponse("/kvittering/$digisosId").expectStatus().isNotFound
