@@ -8,8 +8,8 @@ import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
-import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
-import no.nav.sosialhjelp.soknad.auth.texas.NonBlockingTexasService
+import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.app.security.texas.NonBlockingTexasService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value

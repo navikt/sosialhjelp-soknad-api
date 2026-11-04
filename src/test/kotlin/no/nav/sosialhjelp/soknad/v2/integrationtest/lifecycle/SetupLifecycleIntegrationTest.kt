@@ -8,10 +8,10 @@ import io.mockk.every
 import io.mockk.slot
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService

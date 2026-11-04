@@ -1,5 +1,6 @@
-package no.nav.sosialhjelp.soknad.auth.texas
+package no.nav.sosialhjelp.soknad.app.security.texas
 
+import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonProperty
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.filter.MdcExchangeFilter
@@ -9,12 +10,12 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class TexasClient(
     @param:Value("\${token_endpoint:null}") private val tokenEndpoint: String,
     @param:Value("\${token_exchange_endpoint:null}") private val tokenExchangeEndpoint: String,
+    @param:Value("\${token_introspection_endpoint:null}") private val introspectionEndpoint: String,
     webClientBuilder: WebClient.Builder,
 ) {
     fun getToken(
@@ -43,9 +44,21 @@ class TexasClient(
         )
     }
 
+    fun validateToken(
+        identityProvider: String,
+        token: String,
+    ): TokenResponse {
+        return doFetchToken(
+            params = TokenRequestBody.ValidateRequest(identityProvider, token),
+            endpoint = introspectionEndpoint,
+            returnType = TokenResponse.ValidationResponse::class.java,
+        )
+    }
+
     private fun doFetchToken(
         params: TokenRequestBody,
         endpoint: String,
+        returnType: Class<out TokenResponse> = TokenResponse.Success::class.java,
     ): TokenResponse {
         val response =
             try {
@@ -54,7 +67,7 @@ class TexasClient(
                     .uri(endpoint)
                     .body(BodyInserters.fromValue(params))
                     .retrieve()
-                    .bodyToMono<TokenResponse.Success>()
+                    .bodyToMono(returnType)
                     .block() ?: error("Empty response from Texas")
             } catch (e: WebClientResponseException) {
                 val error = e.responseBodyAsString
@@ -96,6 +109,12 @@ sealed interface TokenRequestBody {
         @param:JsonProperty("user_token")
         val userToken: String,
     ) : TokenRequestBody
+
+    data class ValidateRequest(
+        @param:JsonProperty("identity_provider")
+        val identityProvider: String,
+        val token: String,
+    ) : TokenRequestBody
 }
 
 sealed interface TokenResponse {
@@ -105,6 +124,20 @@ sealed interface TokenResponse {
         @param:JsonProperty("expires_in")
         val expiresInSeconds: Int,
     ) : TokenResponse
+
+    data class ValidationResponse(
+        val active: Boolean,
+    ) : TokenResponse {
+        val claims: MutableMap<String, Any?> = mutableMapOf()
+
+        @JsonAnySetter
+        fun addClaim(
+            name: String,
+            value: Any?,
+        ) {
+            claims[name] = value
+        }
+    }
 
     data class Error(
         val error: TokenErrorResponse,

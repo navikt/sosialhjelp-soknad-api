@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.auth.texas
+package no.nav.sosialhjelp.soknad.app.security.texas
 
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
