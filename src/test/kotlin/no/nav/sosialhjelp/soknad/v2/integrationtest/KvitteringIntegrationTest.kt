@@ -76,7 +76,16 @@ class KvitteringIntegrationTest : AbstractIntegrationTest() {
         webTestClient
             .get()
             .uri("/kvittering/$digisosId")
-            .header(HttpHeaders.AUTHORIZATION, BEARER + issueToken(mockOAuth2Server, userId, issuer = TOKENX).serialize())
+            .header(
+                HttpHeaders.AUTHORIZATION,
+                BEARER +
+                    issueToken(
+                        mockOAuth2Server,
+                        userId,
+                        issuer = TOKENX,
+                        audience = "localhost:teamdigisos:sosialhjelp-soknad-api",
+                    ).serialize(),
+            )
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isUnauthorized
