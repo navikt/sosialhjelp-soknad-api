@@ -1,6 +1,8 @@
-package no.nav.sosialhjelp.soknad.auth.texas
+package no.nav.sosialhjelp.soknad.app.security.texas
 
+import no.nav.sosialhjelp.soknad.app.security.ValidationResult
 import org.springframework.stereotype.Service
+import kotlin.collections.component1
 
 interface TexasService {
     fun getToken(
@@ -13,6 +15,11 @@ interface TexasService {
         idProvider: IdentityProvider,
         target: String,
     ): String
+
+    fun validateToken(
+        idProvider: IdentityProvider,
+        token: String,
+    ): ValidationResult
 }
 
 @Service
@@ -25,7 +32,8 @@ class TexasServiceImpl(
     ): String =
         when (val tokenResponse = texasClient.getToken(idProvider.value, target)) {
             is TokenResponse.Success -> tokenResponse.token
-            is TokenResponse.Error -> throw IllegalStateException("Failed to fetch token from Texas: $tokenResponse")
+            is TokenResponse.Error -> error("Failed to fetch token from Texas: $tokenResponse")
+            else -> error("Ugyldig response-type: ${tokenResponse::class.simpleName}")
         }
 
     override fun exchangeToken(
@@ -35,9 +43,27 @@ class TexasServiceImpl(
     ): String =
         when (val tokenResponse = texasClient.exchangeToken(idProvider.value, target, userToken)) {
             is TokenResponse.Success -> tokenResponse.token
-            is TokenResponse.Error -> throw IllegalStateException("Failed to exchange token from Texas: $tokenResponse")
+            is TokenResponse.Error -> error("Failed to exchange token from Texas: $tokenResponse")
+            else -> error("Ugyldig response-type: ${tokenResponse::class.simpleName}")
+        }
+
+    override fun validateToken(
+        idProvider: IdentityProvider,
+        token: String,
+    ): ValidationResult =
+        when (val tokenResponse = texasClient.validateToken(idProvider.value, token)) {
+            is TokenResponse.ValidationResponse ->
+                ValidationResult(
+                    active = tokenResponse.active,
+                    identityProvider = idProvider,
+                    claims = tokenResponse.claims.toMapNotNullValues(),
+                )
+            is TokenResponse.Error -> error("Failed to validate token from Texas: $tokenResponse")
+            else -> error("Ugyldig response-type: ${tokenResponse::class.simpleName}")
         }
 }
+
+private fun MutableMap<String, Any?>.toMapNotNullValues(): Map<String, Any> = mapNotNull { (key, value) -> value?.let { v -> key to v } }.toMap()
 
 interface NonBlockingTexasService {
     suspend fun getToken(
@@ -62,8 +88,8 @@ class NonBlockingTexasServiceImpl(
     ): String =
         when (val tokenResponse = texasClient.getToken(idProvider.value, target)) {
             is TokenResponse.Success -> tokenResponse.token
-            is TokenResponse.Error ->
-                throw IllegalStateException("Failed to fetch token from Texas: $tokenResponse")
+            is TokenResponse.Error -> error("Failed to fetch token from Texas: $tokenResponse")
+            else -> error("Ugyldig response-type: ${tokenResponse::class.simpleName}")
         }
 
     override suspend fun exchangeToken(
@@ -73,7 +99,8 @@ class NonBlockingTexasServiceImpl(
     ): String =
         when (val tokenResponse = texasClient.exchangeToken(idProvider.value, target, userToken)) {
             is TokenResponse.Success -> tokenResponse.token
-            is TokenResponse.Error -> throw IllegalStateException("Failed to exchange token from Texas: $tokenResponse")
+            is TokenResponse.Error -> error("Failed to exchange token from Texas: $tokenResponse")
+            else -> error("Ugyldig response-type: ${tokenResponse::class.simpleName}")
         }
 }
 
@@ -81,4 +108,5 @@ enum class IdentityProvider(val value: String) {
     ENTRA_ID("entra_id"),
     M2M("maskinporten"),
     TOKENX("tokenx"),
+    IDPORTEN("idporten"),
 }

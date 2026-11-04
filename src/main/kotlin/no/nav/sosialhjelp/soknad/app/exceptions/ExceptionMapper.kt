@@ -150,6 +150,13 @@ class ExceptionMapper(
         return buildError(HttpStatus.CONTENT_TOO_LARGE, SoknadApiError(SoknadApiErrorType.DokumentUploadError))
     }
 
+    @ExceptionHandler(value = [DokumentUploadError::class])
+    @ResponseStatus(value = HttpStatus.CONTENT_TOO_LARGE)
+    fun handleTokenValidationError(e: DokumentUploadError): ResponseEntity<SoknadApiError> {
+        log.warn("Feil ved opplasting av dokument", e)
+        return buildError(HttpStatus.CONTENT_TOO_LARGE, SoknadApiError(SoknadApiErrorType.DokumentUploadError))
+    }
+
     @ExceptionHandler(value = [AuthorizationException::class])
     fun handleAuthorizationException(e: AuthorizationException): ResponseEntity<SoknadApiError> {
         log.info("Ikke tilgang", e)
