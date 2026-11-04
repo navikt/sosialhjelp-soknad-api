@@ -9,8 +9,7 @@ import io.mockk.slot
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
@@ -53,6 +52,7 @@ import org.springframework.test.context.ActiveProfiles
 import java.io.ByteArrayInputStream
 import java.time.LocalDate
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 
 abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @MockkSpyBean
@@ -112,9 +112,9 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     }
 
     protected fun setupMocks() {
-        StaticSubjectHandlerImpl()
+        TestSubjectHandler
             .apply { setUser(userId) }
-            .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
+            .also { TokenUtils.setNewSubjectHandler(it) }
 
         coEvery { personService.hentPerson() } returns createPersonAnswer()
         coEvery { kontonummerService.getKontonummer() } returns "12145534122"

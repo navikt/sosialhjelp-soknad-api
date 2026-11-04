@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils.getUserIdFromToken as personId
 
 @Component
 class CreateSoknadHandler(

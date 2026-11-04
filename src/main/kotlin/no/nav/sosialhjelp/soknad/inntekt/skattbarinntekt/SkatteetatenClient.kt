@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Sokedata
 import org.springframework.beans.factory.annotation.Value
@@ -62,7 +62,7 @@ class SkatteetatenClient(
 
     private fun createSokedata(): Sokedata {
         return Sokedata(
-            identifikator = SubjectHandlerUtils.getUserIdFromToken(),
+            identifikator = TokenUtils.getUserIdFromToken(),
             fom = LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()),
             tom = LocalDate.now(),
         )

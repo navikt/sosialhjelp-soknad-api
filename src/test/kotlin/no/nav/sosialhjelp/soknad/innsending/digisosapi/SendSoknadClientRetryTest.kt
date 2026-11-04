@@ -2,8 +2,7 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.netty.handler.timeout.ReadTimeoutException
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -22,6 +21,7 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Duration
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 
 class SendSoknadClientRetryTest {
     private val soknadId = UUID.randomUUID()
@@ -31,9 +31,9 @@ class SendSoknadClientRetryTest {
 
     @BeforeEach
     fun setup() {
-        StaticSubjectHandlerImpl()
+        TestSubjectHandler
             .apply { setUser("12345678910") }
-            .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
+            .also { TokenUtils.setNewSubjectHandler(it) }
 
         server =
             HttpServer.create()
@@ -50,7 +50,7 @@ class SendSoknadClientRetryTest {
     @AfterEach
     fun tearDown() {
         server.disposeNow()
-        SubjectHandlerUtils.resetSubjectHandlerImpl()
+        TokenUtils.resetSubjectHandlerImpl()
     }
 
     @Test

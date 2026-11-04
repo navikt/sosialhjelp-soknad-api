@@ -12,7 +12,7 @@ import io.mockk.verify
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
@@ -144,7 +144,7 @@ class AdressebeskyttelseInterceptorTest {
 
     @Test
     fun `HasAdressebeskyttelse skal fjerne eksisterende soknader`() {
-        mockkObject(SubjectHandlerUtils)
+        mockkObject(TokenUtils)
 
         val metadata =
             opprettSoknadMetadata()
@@ -152,8 +152,8 @@ class AdressebeskyttelseInterceptorTest {
                 .let { metadata -> opprettSoknad(id = metadata.soknadId) }
                 .also { soknad -> soknadRepository.save(soknad) }
 
-        every { SubjectHandlerUtils.getTokenOrNull() } returns "test-token"
-        every { SubjectHandlerUtils.getUserIdFromToken() } returns metadata.eierPersonId
+        every { TokenUtils.getTokenOrNull() } returns "test-token"
+        every { TokenUtils.getUserIdFromToken() } returns metadata.eierPersonId
 
         soknadService.findOpenSoknadIds(metadata.eierPersonId).also { assertThat(it).hasSize(1) }
 
@@ -172,7 +172,7 @@ class AdressebeskyttelseInterceptorTest {
         verify(exactly = 0) { personService.onSendSoknadHasAdressebeskyttelse(any()) }
         verify(exactly = 1) { personService.hasAdressebeskyttelse(any()) }
 
-        unmockkObject(SubjectHandlerUtils)
+        unmockkObject(TokenUtils)
     }
 }
 

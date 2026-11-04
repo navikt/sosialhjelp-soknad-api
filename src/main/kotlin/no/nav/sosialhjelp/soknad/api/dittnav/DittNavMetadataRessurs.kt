@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_HIGH
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_SUBSTANTIAL
 import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.http.MediaType
@@ -32,7 +32,7 @@ class DittNavMetadataRessurs(
 ) {
     @GetMapping
     fun hentPabegynteSoknaderForBruker(): List<PabegyntSoknadDto> {
-        val personId = SubjectHandlerUtils.getUserIdFromToken()
+        val personId = TokenUtils.getUserIdFromToken()
 
         return soknadService.findOpenSoknadIds(personId)
             .let { ids -> metadataService.getMetadatasForIds(ids) }

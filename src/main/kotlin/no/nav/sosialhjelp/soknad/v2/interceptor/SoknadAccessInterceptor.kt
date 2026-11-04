@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerMapping
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils.getUserIdFromToken as personId
 
 @Component
 class SoknadAccessInterceptor(
