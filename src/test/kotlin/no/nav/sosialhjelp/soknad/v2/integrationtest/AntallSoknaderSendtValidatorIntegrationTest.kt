@@ -1,8 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerService
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtException
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtValidator
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
@@ -18,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 
 class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     override var opprettSoknadBeforeEach = false
@@ -29,14 +29,14 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
         metadataRepository.deleteAll()
-        StaticSubjectHandlerImpl()
+        TestSubjectHandler
             .apply { setUser(userId) }
-            .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
+            .also { TokenUtils.setNewSubjectHandler(it) }
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandlerUtils.resetSubjectHandlerImpl()
+        TokenUtils.resetSubjectHandlerImpl()
     }
 
     @Test

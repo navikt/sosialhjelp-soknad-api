@@ -6,7 +6,7 @@ import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.sosialhjelp.soknad.app.config.KeyRequiredCache
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.app.config.cacheValueType
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils.getToken
 import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
 import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn

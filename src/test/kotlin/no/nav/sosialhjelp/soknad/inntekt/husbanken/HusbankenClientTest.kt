@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -15,6 +14,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 import java.nio.charset.StandardCharsets
 import java.time.LocalDate
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 
 internal class HusbankenClientTest {
     private val mockWebServer = MockWebServer()
@@ -24,9 +24,9 @@ internal class HusbankenClientTest {
 
     @BeforeEach
     fun setup() {
-        StaticSubjectHandlerImpl()
+        TestSubjectHandler
             .apply { setUser("123") }
-            .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
+            .also { TokenUtils.setNewSubjectHandler(it) }
     }
 
     @AfterEach

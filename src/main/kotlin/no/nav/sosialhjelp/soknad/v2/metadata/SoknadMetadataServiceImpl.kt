@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.metadata
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadFinnesIkkeException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.data.repository.findByIdOrNull
@@ -55,7 +55,7 @@ class SoknadMetadataServiceImpl(
     ): SoknadMetadata {
         return SoknadMetadata(
             soknadId = soknadId,
-            personId = SubjectHandlerUtils.getUserIdFromToken(),
+            personId = TokenUtils.getUserIdFromToken(),
             soknadType = if (isKort) SoknadType.KORT else SoknadType.STANDARD,
         )
             .let { metadataRepository.save(it) }
