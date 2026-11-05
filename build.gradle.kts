@@ -81,6 +81,10 @@ dependencies {
 
     implementation(libs.jsonassert)
 
+    testImplementation(libs.mockwebserver)
+
+    testImplementation(libs.mock.oauth2.server)
+
     // Coroutines
     implementation(libs.bundles.coroutines)
 
@@ -108,8 +112,6 @@ dependencies {
     // redis
     implementation(libs.lettuce.core)
 
-    // token validering
-    implementation(libs.token.validation.spring)
     implementation(libs.java.jwt)
 
     // Micrometer/prometheus
@@ -152,7 +154,6 @@ dependencies {
     // Test
     testImplementation(libs.bundles.spring.boot.test)
 
-    testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)
     testImplementation(libs.ninja.springmockk)

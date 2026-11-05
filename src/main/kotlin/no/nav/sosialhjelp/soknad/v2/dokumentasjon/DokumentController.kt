@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOpplysningTypeConverter
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
@@ -25,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile
 import java.util.UUID
 
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/dokument", produces = [MediaType.APPLICATION_JSON_VALUE])
 class DokumentController(
     private val mellomlagerService: MellomlagerService,

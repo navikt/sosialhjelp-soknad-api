@@ -1,6 +1,4 @@
 package no.nav.sosialhjelp.soknad.api.dittnav
-
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
@@ -20,11 +18,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @RestController
-@ProtectedWithClaims(
-    issuer = TOKENX,
-    combineWithOr = true,
-    claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4, CLAIM_ACR_LOA_HIGH, CLAIM_ACR_LOA_SUBSTANTIAL],
-)
 @RequestMapping("/dittnav/pabegynte/aktive", produces = [MediaType.APPLICATION_JSON_VALUE])
 class DittNavMetadataRessurs(
     private val metadataService: SoknadMetadataServiceImpl,
