@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.api.feiledesoknader
 
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -16,7 +15,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
-@ProtectedWithClaims("entraid")
 @RequestMapping("/admin", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdminController(
     private val soknadMetadataService: SoknadMetadataService,

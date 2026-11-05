@@ -7,6 +7,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
+import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
@@ -31,7 +32,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import org.springframework.web.reactive.function.BodyInserters
-import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT36000S")
@@ -52,8 +52,8 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
     @Autowired
     protected lateinit var metadataRepository: SoknadMetadataRepository
 
-    @Autowired
-    protected lateinit var mockOAuth2Server: MockOAuth2Server
+
+    protected val mockOAuth2Server: MockOAuth2Server = MockOAuth2Server().also { it.start(12345) }
 
     @MockkSpyBean
     protected lateinit var personIdService: PersonIdService

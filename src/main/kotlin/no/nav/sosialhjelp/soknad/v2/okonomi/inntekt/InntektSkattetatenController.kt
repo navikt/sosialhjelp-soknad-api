@@ -1,6 +1,4 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
-
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/inntekt/skattbarinntekt", produces = [MediaType.APPLICATION_JSON_VALUE])
 class InntektSkattetatenController(
     private val useCaseHandler: InntektSkatteetatenUseCaseHandler,

@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.LoggLevel
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
@@ -31,7 +30,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils.getUserIdFromToke
  * samt adressesøk.
  */
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/informasjon")
 class InformasjonRessurs(
     private val adresseSokService: AdressesokService,

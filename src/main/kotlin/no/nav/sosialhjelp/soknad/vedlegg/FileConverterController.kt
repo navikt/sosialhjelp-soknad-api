@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FileConverterService
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-@Unprotected
 @RequestMapping("/vedlegg/konverter")
 class FileConverterController(
     private val fileConverterService: FileConverterService,
