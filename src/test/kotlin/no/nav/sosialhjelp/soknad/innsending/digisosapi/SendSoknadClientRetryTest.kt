@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 import io.netty.handler.timeout.ReadTimeoutException
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -21,7 +22,6 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Duration
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
-import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 
 class SendSoknadClientRetryTest {
     private val soknadId = UUID.randomUUID()

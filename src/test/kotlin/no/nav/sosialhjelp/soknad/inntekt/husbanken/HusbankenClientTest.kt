@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.apache.commons.io.IOUtils
@@ -14,7 +15,6 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 import java.nio.charset.StandardCharsets
 import java.time.LocalDate
-import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 
 internal class HusbankenClientTest {
     private val mockWebServer = MockWebServer()

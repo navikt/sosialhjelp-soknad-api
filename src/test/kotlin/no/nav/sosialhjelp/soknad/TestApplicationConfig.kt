@@ -7,7 +7,6 @@ import org.springframework.test.context.DynamicPropertyRegistrar
 
 @TestConfiguration(proxyBeanMethods = false)
 class TestApplicationConfig {
-
     @Bean(destroyMethod = "shutdown")
     fun mockOAuth2Server(): MockOAuth2Server =
         MockOAuth2Server().apply { start() }

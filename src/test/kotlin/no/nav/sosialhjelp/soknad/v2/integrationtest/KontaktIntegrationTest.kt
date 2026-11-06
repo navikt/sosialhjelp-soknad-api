@@ -19,7 +19,6 @@ import no.nav.sosialhjelp.soknad.adressesok.AdressesokClient
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
-import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService

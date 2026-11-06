@@ -10,8 +10,11 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.sosialhjelp.soknad.TestApplicationConfig
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasClient
+import no.nav.sosialhjelp.soknad.app.security.texas.TokenResponse
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -40,7 +43,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import java.util.UUID
 
-@Import(TestCacheConfig::class)
+@Import(TestCacheConfig::class, TestApplicationConfig::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT36000S")
 @ActiveProfiles("no-redis", "test", "test-container")
@@ -66,6 +69,9 @@ class AdressebeskyttelseInterceptorTest {
     @MockkSpyBean
     private lateinit var adressebeskyttelseInterceptor: AdressebeskyttelseInterceptor
 
+    @MockkBean
+    private lateinit var texasClient: TexasClient
+
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
 
@@ -79,6 +85,17 @@ class AdressebeskyttelseInterceptorTest {
         soknadMetadataRepository.deleteAll()
         coEvery { hentPersonClient.hentAdressebeskyttelse() } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
         token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
+        every { texasClient.validateToken(any(), any()) } returns
+            TokenResponse.ValidationResponse(true)
+                .apply {
+                    claims.putAll(
+                        mapOf(
+                            "acr" to "idporten-loa-high",
+                            "sub" to userId,
+                            "aud" to "someaudience",
+                        ),
+                    )
+                }
     }
 
     @AfterEach
@@ -104,8 +121,6 @@ class AdressebeskyttelseInterceptorTest {
 
     @Test
     fun `Kall til et annet endepunkt med adressebeskyttelse skal returnere FORBIDDEN`() {
-        clearAllMocks()
-//        every { personService.hasAdressebeskyttelse(any())} returns true
         coEvery { hentPersonClient.hentAdressebeskyttelse() } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
 
         webClient.doPostFullResponse(

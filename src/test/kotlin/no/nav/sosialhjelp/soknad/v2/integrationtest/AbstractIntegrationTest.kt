@@ -3,21 +3,17 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 import com.nimbusds.jwt.SignedJWT
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
-import io.mockk.CapturingSlot
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
-import io.mockk.slot
-import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.TestApplicationConfig
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
-import no.nav.sosialhjelp.soknad.app.security.ValidationResult
-import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
-import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasClient
+import no.nav.sosialhjelp.soknad.app.security.texas.TokenResponse
 import no.nav.sosialhjelp.soknad.integrationtest.HentPersonClientMock
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
@@ -39,6 +35,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import org.springframework.web.reactive.function.BodyInserters
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestApplicationConfig::class)
@@ -73,15 +70,13 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
     protected lateinit var uploadClient: UploadClient
 
     @MockkBean
-    protected lateinit var texasService: TexasService
+    protected lateinit var texasClient: TexasClient
 
     protected lateinit var token: SignedJWT
 
     protected lateinit var soknadId: UUID
 
     protected var opprettSoknadBeforeEach = true
-
-    val identityProviderSlot: CapturingSlot<IdentityProvider> = slot()
 
     @BeforeEach
     fun before() {
@@ -91,9 +86,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
             every { personIdService.findPersonId(soknadId) } returns userId
         }
 
-        every { texasService.validateToken(capture(identityProviderSlot), any()) } answers
-                { ValidationResult(identityProviderSlot.captured, true, mapOf("acr" to "Level4", "pid" to userId)) }
-
+        setupTexasAnswer()
         setupPdlAnswers()
 
         every { uploadClient.getVedleggSpesifikasjon(any()) } returns JsonVedleggSpesifikasjon()
@@ -102,15 +95,28 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
         token =
             when (useTokenX) {
                 true -> Pair("tokenx", "localhost:teamdigisos:sosialhjelp-soknad-api")
-                false -> Pair("selvbetjening", "someaudience")
+                false -> Pair("idporten", "someaudience")
             }.let { (issuer, audience) ->
                 mockOAuth2Server.issueToken(
                     issuerId = issuer,
                     subject = userId,
                     audience = audience,
-                    claims = mapOf("acr" to "idporten-loa-high", "acr" to "Level4"),
+                    claims = mapOf("acr" to "idporten-loa-high"),
                 )
             }
+    }
+
+    protected fun setupTexasAnswer() {
+        every { texasClient.validateToken(any(), any()) } returns
+            TokenResponse.ValidationResponse(active = true)
+                .apply {
+                    claims.putAll(
+                        mapOf(
+                            "acr" to "idporten-loa-high",
+                            "sub" to userId,
+                        ),
+                    )
+                }
     }
 
     protected fun setupPdlAnswers() {
