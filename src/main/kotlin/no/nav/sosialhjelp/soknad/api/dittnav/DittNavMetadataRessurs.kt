@@ -1,12 +1,9 @@
 package no.nav.sosialhjelp.soknad.api.dittnav
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_3
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_HIGH
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_SUBSTANTIAL
-import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
@@ -14,8 +11,6 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 @RestController
 @RequestMapping("/dittnav/pabegynte/aktive", produces = [MediaType.APPLICATION_JSON_VALUE])

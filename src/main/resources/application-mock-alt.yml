@@ -63,6 +63,8 @@ azure_client_secret: clientSecret
 pdl_api_scope: dummyScope
 token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT}
 token_endpoint: ${NAIS_TOKEN_ENDPOINT}
+token_introspection_endpoint: ${NAIS_TOKEN_INTROSPECTION_ENDPOINT}
+
 
 no.nav.security.jwt.issuer:
   selvbetjening:

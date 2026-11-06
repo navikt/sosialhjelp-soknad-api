@@ -81,10 +81,6 @@ dependencies {
 
     implementation(libs.jsonassert)
 
-    testImplementation(libs.mockwebserver)
-
-    testImplementation(libs.mock.oauth2.server)
-
     // Coroutines
     implementation(libs.bundles.coroutines)
 
@@ -146,6 +142,9 @@ dependencies {
     // pdf
     implementation(libs.bundles.pdfbox)
     implementation(libs.xmpbox)
+
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.mock.oauth2.server)
 
     // testcontainers
     testImplementation(libs.testcontainers.postgres)

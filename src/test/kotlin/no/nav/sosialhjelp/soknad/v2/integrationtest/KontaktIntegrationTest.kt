@@ -78,9 +78,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     private lateinit var unleash: Unleash
 
     @MockkBean(relaxed = true)
-    private lateinit var texasService: TexasService
-
-    @MockkBean(relaxed = true)
     private lateinit var kodeverkService: KodeverkService
 
     @MockkBean

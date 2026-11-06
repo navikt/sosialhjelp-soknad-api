@@ -88,3 +88,5 @@ redis_password: foobar
 
 token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT:http://localhost:${mock-oauth2-server.port}/sosialhjelp/mock-alt-api/token/tokenx}
 token_endpoint: ${NAIS_TOKEN_ENDPOINT:http://localhost:${mock-oauth2-server.port}/sosialhjelp/mock-alt-api/token/maskinporten}
+token_introspection_endpoint: ${NAIS_TOKEN_INTROSPECTION_ENDPOINT:http://localhost:${mock-oauth2-server.port}/sosialhjelp/mock-alt-api/introspect}
+
