@@ -2,17 +2,17 @@ package no.nav.sosialhjelp.soknad.v2.interceptor
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import java.util.UUID
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiHandlerInterceptor
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerMapping
+import java.util.UUID
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
 class SoknadAccessInterceptor(
@@ -39,7 +39,6 @@ class SoknadAccessInterceptor(
 
     // TODO Midlertidig for å dobbeltsjekke acr-values fra idporten
     private fun logAcr() {
-
         runCatching {
             SpringTokenValidationContextHolder().getTokenValidationContext()
                 .getClaims("selvbetjening")
