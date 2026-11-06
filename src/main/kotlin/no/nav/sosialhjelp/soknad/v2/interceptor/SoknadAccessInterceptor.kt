@@ -2,15 +2,17 @@ package no.nav.sosialhjelp.soknad.v2.interceptor
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import java.util.UUID
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiHandlerInterceptor
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerMapping
-import java.util.UUID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
 class SoknadAccessInterceptor(
@@ -22,6 +24,9 @@ class SoknadAccessInterceptor(
         response: HttpServletResponse,
         handler: Any,
     ): Boolean {
+        // TODO Midlertidig for å dobbeltsjekke acr-values fra idporten
+        logAcr()
+
         if (request.method == "OPTIONS") return true
 
         getSoknadId(request)
@@ -30,6 +35,23 @@ class SoknadAccessInterceptor(
             ?.also { id -> checkPersonId(soknadId = id, method = request.method) }
 
         return true
+    }
+
+    // TODO Midlertidig for å dobbeltsjekke acr-values fra idporten
+    private fun logAcr() {
+
+        runCatching {
+            SpringTokenValidationContextHolder().getTokenValidationContext()
+                .getClaims("selvbetjening")
+                .getStringClaim("acr")
+        }
+            .onSuccess {
+                it?.also {
+                    if (it in listOf("Level3", "Level4")) {
+                        logger.info("Acr fra token: $it")
+                    }
+                }
+            }
     }
 
     private fun checkValidSoknadStatus(soknadId: UUID) {
@@ -54,6 +76,7 @@ class SoknadAccessInterceptor(
     }
 
     companion object {
+        private val logger by logger()
         private val OPEN_STATUS = listOf(SoknadStatus.OPPRETTET, SoknadStatus.INNSENDING_FEILET)
     }
 }
