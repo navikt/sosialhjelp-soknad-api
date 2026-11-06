@@ -22,13 +22,14 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseD
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
+import no.nav.sosialhjelp.soknad.v2.register.UserContextElement
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
-import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 
 internal class PersonServiceTest {
     companion object {

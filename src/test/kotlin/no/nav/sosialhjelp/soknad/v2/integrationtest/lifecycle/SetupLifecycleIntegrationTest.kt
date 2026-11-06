@@ -6,14 +6,8 @@ import io.mockk.CapturingSlot
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.slot
-import java.io.ByteArrayInputStream
-import java.time.LocalDate
-import java.util.UUID
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
-import no.nav.sosialhjelp.soknad.app.security.ValidationResult
-import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
-import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
@@ -55,6 +49,9 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
+import java.io.ByteArrayInputStream
+import java.time.LocalDate
+import java.util.UUID
 
 abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @MockkSpyBean

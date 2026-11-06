@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.featuretoggle
 
 import io.getunleash.Unleash
-import no.nav.sosialhjelp.soknad.app.Constants
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

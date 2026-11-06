@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.api.minesaker
 
-import java.time.LocalDateTime
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/minesaker", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -32,6 +32,7 @@ class MineSakerMetadataRessurs(
         log.debug("Ping for MineSaker")
         return "pong"
     }
+
     @GetMapping("/antallSisteDogn")
     fun hentAntallInnsendteSoknader(): AntallInnsendteSoknaderDto {
         return mineSakerService.hentInnsendteSoknaderSisteDogn()

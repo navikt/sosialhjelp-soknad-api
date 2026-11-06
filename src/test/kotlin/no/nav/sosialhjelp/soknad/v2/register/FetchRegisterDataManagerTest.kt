@@ -1,13 +1,13 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 
 class FetchRegisterDataManagerTest {
     @Test

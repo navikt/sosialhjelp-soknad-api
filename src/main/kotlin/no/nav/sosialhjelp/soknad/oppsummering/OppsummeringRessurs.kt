@@ -1,5 +1,4 @@
 package no.nav.sosialhjelp.soknad.oppsummering
-import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping

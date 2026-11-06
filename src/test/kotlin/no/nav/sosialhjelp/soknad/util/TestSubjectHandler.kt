@@ -7,7 +7,6 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication
 
 object TestSubjectHandler : SubjectHandler {
-
     private const val DEFAULT_USER = "11111111111"
     private const val DEFAULT_TOKEN = "test token"
 

@@ -68,6 +68,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         every { navEnhetService.findNavEnhetByAdresse(any()) } returns createNavEnhet()
         every { digisosApiService.getSoknaderForUser() } returns emptyList()
 
+        setupTexasAnswer()
         setupPdlAnswers()
     }
 
