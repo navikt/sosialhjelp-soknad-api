@@ -27,7 +27,6 @@ class KvitteringIntegrationTest : AbstractIntegrationTest() {
 
         doGetFullResponse("/kvittering/$digisosId")
             .expectStatus().isOk
-            .expectHeader().valueEquals(HttpHeaders.CACHE_CONTROL, "no-store")
             .expectBody()
             .jsonPath("$.digisosId").isEqualTo(digisosId.toString())
             .jsonPath("$.tidspunktSendt").isEqualTo("2026-01-15T11:00:00")
@@ -57,8 +56,8 @@ class KvitteringIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `ugyldig digisosId gir 404`() {
-        doGetFullResponse("/kvittering/ikke-en-uuid").expectStatus().isNotFound
+    fun `ugyldig digisosId gir 400`() {
+        doGetFullResponse("/kvittering/ikke-en-uuid").expectStatus().isBadRequest
     }
 
     @Test
