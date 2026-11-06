@@ -6,8 +6,13 @@ import io.mockk.CapturingSlot
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.slot
+import java.io.ByteArrayInputStream
+import java.time.LocalDate
+import java.util.UUID
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
+import no.nav.sosialhjelp.soknad.app.security.ValidationResult
+import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
@@ -31,6 +36,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrService
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.dokumenterSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.kommunenummerSlot
@@ -49,10 +55,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
-import java.io.ByteArrayInputStream
-import java.time.LocalDate
-import java.util.UUID
-import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 
 abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @MockkSpyBean
@@ -96,9 +98,6 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
 
     @MockkBean(relaxed = true)
     protected lateinit var dokumentlagerClient: DokumentlagerClient
-
-    @MockkBean(relaxed = true)
-    protected lateinit var texasService: TexasService
 
     @MockkBean(relaxed = true)
     protected lateinit var kodeverkService: KodeverkService

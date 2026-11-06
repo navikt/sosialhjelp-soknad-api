@@ -21,7 +21,7 @@ class DefaultOpaqueTokenIntrospector(private val identityProvider: IdentityProvi
                 addAuthorities(identityProvider, validationResult.claims),
             )
         }
-            // TODO Bedre feilhåndtering
+            // TODO Bedre feilhåndtering - kun for test
             .getOrElse {
                 logger.error("Noe feilet i token-validering: ${it.message}", it)
                 throw it
