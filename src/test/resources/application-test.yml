@@ -55,6 +55,7 @@ pdl_api_scope: dummyScope
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
+fiks_dokumentlager_endpoint_url: ${FIKS_DOKUMENTLAGER_ENDPOINT_URL:https://minside.fiks.test.ks.no}
 ereg_url: https://ereg/
 aareg_url: https://aareg/
 krr_url: http://krr/

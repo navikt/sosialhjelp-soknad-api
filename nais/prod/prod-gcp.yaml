@@ -120,6 +120,8 @@ spec:
       value: "https://ereg-services.prod-fss-pub.nais.io/"
     - name: DIGISOS_API_BASEURL
       value: "https://api.fiks.ks.no/"
+    - name: FIKS_DOKUMENTLAGER_ENDPOINT_URL
+      value: "https://minside.kommune.no"
     - name: KODEVERK_URL
       value: "https://kodeverk-api.nav.no"
     - name: KODEVERK_SCOPE

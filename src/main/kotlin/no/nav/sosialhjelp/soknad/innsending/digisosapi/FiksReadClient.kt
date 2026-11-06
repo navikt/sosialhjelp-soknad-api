@@ -4,13 +4,16 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksUtils.sosialhjelpJsonMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -50,6 +53,40 @@ class FiksReadClient(
         } catch (e: IOException) {
             throw IllegalStateException("Henting av søknader hos Fiks feilet", e)
         }
+    }
+
+    fun getDigisosSak(
+        digisosId: UUID,
+    ): DigisosSak {
+        val startTime = System.currentTimeMillis()
+        log.debug("Henter søknad fra Fiks. digisosId={}", digisosId)
+        val sak =
+            try {
+                fiksWebClient
+                    .get()
+                    .uri("$digisosApiEndpoint/digisos/api/v1/soknader/{digisosId}", digisosId)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, "Bearer $userToken")
+                    .retrieve()
+                    .bodyToMono<DigisosSak>()
+                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                    .block()
+                    ?: throw FiksException("Fiks - henting av søknad $digisosId ga tom respons", null)
+            } catch (e: WebClientResponseException) {
+                log.warn(
+                    "Henting av søknad fra Fiks feilet. digisosId=$digisosId status=${e.statusCode.value()} " +
+                        "tid=${System.currentTimeMillis() - startTime} ms",
+                )
+                when (e.statusCode) {
+                    HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN ->
+                        throw IkkeFunnetException("Fiks ga ${e.statusCode.value()} for digisosId=$digisosId")
+                    else ->
+                        throw FiksException("Henting av søknad $digisosId hos Fiks feilet med status ${e.statusCode.value()}", e)
+                }
+            }
+
+        log.debug("Hentet søknad fra Fiks. digisosId={}", digisosId)
+        return sak
     }
 
     fun getInnsynsfil(
@@ -145,6 +182,10 @@ class FiksReadClient(
                     else -> throw FiksException("Uventet feil ved henting av innsendingsstatus. SporingsId: $sporingsId", ex)
                 }
             }
+    }
+
+    companion object {
+        private val log by logger()
     }
 
     private val maskinportenToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
