@@ -10,28 +10,28 @@ import java.util.UUID
 class SoknadAccessIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Status OPPRETTET skal ikke returnere feil`() {
-        createMetadataAndSoknad(LocalDateTime.now(), SoknadStatus.OPPRETTET, personId = userId)
+        createMetadataAndSoknad(LocalDateTime.now(), SoknadStatus.OPPRETTET, personId = USER_ID)
             .let { soknadId -> doGetFullResponse(uri = testUrl(soknadId)) }
             .expectStatus().isOk
     }
 
     @Test
     fun `Status INNSENDING_FEILET skal ikke returnere feil`() {
-        createMetadataAndSoknad(LocalDateTime.now(), SoknadStatus.INNSENDING_FEILET, personId = userId)
+        createMetadataAndSoknad(LocalDateTime.now(), SoknadStatus.INNSENDING_FEILET, personId = USER_ID)
             .let { soknadId -> doGetFullResponse(uri = testUrl(soknadId)) }
             .expectStatus().isOk
     }
 
     @Test
     fun `Status SENDT skal returnere feil`() {
-        createMetadataAndSoknad(LocalDateTime.now(), SoknadStatus.SENDT, personId = userId)
+        createMetadataAndSoknad(LocalDateTime.now(), SoknadStatus.SENDT, personId = USER_ID)
             .let { soknadId -> doGetFullResponse(uri = testUrl(soknadId)) }
             .expectStatus().isForbidden
     }
 
     @Test
     fun `Status MOTTATT_FSL skal returnere feil`() {
-        createMetadataAndSoknad(LocalDateTime.now(), SoknadStatus.MOTTATT_FSL, personId = userId)
+        createMetadataAndSoknad(LocalDateTime.now(), SoknadStatus.MOTTATT_FSL, personId = USER_ID)
             .let { soknadId -> doGetFullResponse(uri = testUrl(soknadId)) }
             .expectStatus().isForbidden
     }

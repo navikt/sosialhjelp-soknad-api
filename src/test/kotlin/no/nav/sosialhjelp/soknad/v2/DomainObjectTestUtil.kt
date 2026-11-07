@@ -139,7 +139,7 @@ fun opprettEktefelle(): Ektefelle =
 fun opprettSoknadMetadata(
     soknadId: UUID = UUID.randomUUID(),
     status: SoknadStatus = SoknadStatus.OPPRETTET,
-    personId: String = AbstractIntegrationTest.userId,
+    personId: String = AbstractIntegrationTest.USER_ID,
     opprettetDato: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
     innsendtDato: LocalDateTime? = null,
     kommunenummer: String? = "1234",
@@ -164,7 +164,7 @@ fun opprettSoknadMetadata(
 ): SoknadMetadata =
     SoknadMetadata(
         soknadId = id,
-        personId = AbstractIntegrationTest.userId,
+        personId = AbstractIntegrationTest.USER_ID,
         status = SoknadStatus.OPPRETTET,
         soknadType = if (kort) SoknadType.KORT else SoknadType.STANDARD,
         tidspunkt =
@@ -177,7 +177,7 @@ fun opprettSoknadMetadata(
 
 fun opprettSoknad(
     id: UUID = UUID.randomUUID(),
-    eierPersonId: String = AbstractIntegrationTest.userId,
+    eierPersonId: String = AbstractIntegrationTest.USER_ID,
     begrunnelse: Begrunnelse = opprettBegrunnelse(),
 ): Soknad =
     Soknad(

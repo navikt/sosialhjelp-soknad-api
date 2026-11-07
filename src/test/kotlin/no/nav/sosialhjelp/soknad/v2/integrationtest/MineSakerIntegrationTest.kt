@@ -20,6 +20,8 @@ class MineSakerIntegrationTest : AbstractIntegrationTest(useTokenX = true) {
 
     @Test
     fun `Hente mine innsendte saker skal kun returnere SENDTE og MOTTATTE`() {
+        metadataRepository.deleteAll()
+
         listOf(
             createMetadata(SoknadStatus.MOTTATT_FSL),
             createMetadata(SoknadStatus.SENDT),
@@ -47,7 +49,7 @@ class MineSakerIntegrationTest : AbstractIntegrationTest(useTokenX = true) {
         return SoknadMetadata(
             soknadId = UUID.randomUUID(),
             status = status,
-            personId = userId,
+            personId = USER_ID,
             digisosId = UUID.randomUUID(),
             mottakerKommunenummer = "0301",
             tidspunkt = Tidspunkt(sendtInn = nowWithMillis()),

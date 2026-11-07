@@ -23,7 +23,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.UGRADERT
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
-import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest.Companion.userId
+import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest.Companion.USER_ID
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
@@ -94,9 +94,13 @@ class AdressebeskyttelseInterceptorTest {
         token =
             mockOAuth2Server.issueToken(
                 "idporten",
-                userId,
+                USER_ID,
                 idportenAudience,
-                claims = mapOf("acr" to "idporten-loa-high"),
+                claims =
+                    mapOf(
+                        "acr" to "idporten-loa-high",
+                        "client_id" to idportenAudience,
+                    ),
             )
         every { texasClient.validateToken(any(), any()) } returns
             TokenResponse.ValidationResponse(true)
@@ -104,7 +108,7 @@ class AdressebeskyttelseInterceptorTest {
                     claims.putAll(
                         mapOf(
                             "acr" to "idporten-loa-high",
-                            "sub" to userId,
+                            "sub" to USER_ID,
                             "aud" to "someaudience",
                         ),
                     )

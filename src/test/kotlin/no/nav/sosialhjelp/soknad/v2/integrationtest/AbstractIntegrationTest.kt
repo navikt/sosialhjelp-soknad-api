@@ -88,7 +88,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
         if (opprettSoknadBeforeEach) {
             soknadId = metadataRepository.save(opprettSoknadMetadata()).soknadId
             opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
-            every { personIdService.findPersonId(soknadId) } returns userId
+            every { personIdService.findPersonId(soknadId) } returns USER_ID
         }
 
         setupTexasAnswer()
@@ -104,9 +104,13 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
             }.let { (issuer, audience) ->
                 mockOAuth2Server.issueToken(
                     issuerId = issuer,
-                    subject = userId,
+                    subject = USER_ID,
                     audience = audience,
-                    claims = mapOf("acr" to "idporten-loa-high"),
+                    claims =
+                        mapOf(
+                            "acr" to "idporten-loa-high",
+                            "client_id" to audience,
+                        ),
                 )
             }
     }
@@ -118,7 +122,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
                     claims.putAll(
                         mapOf(
                             "acr" to "idporten-loa-high",
-                            "sub" to userId,
+                            "sub" to USER_ID,
                         ),
                     )
                 }
@@ -290,7 +294,19 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
             .exchange()
     }
 
+    protected fun MockOAuth2Server.issueIdPortenToken(subject: String? = null) =
+        issueToken(
+            issuerId = "idporten",
+            subject = subject ?: USER_ID,
+            audience = idportenAudience,
+            claims =
+                mapOf(
+                    "acr" to "idporten-loa-high",
+                    "client_id" to idportenAudience,
+                ),
+        )
+
     companion object {
-        val userId = "05058548523"
+        const val USER_ID = "05058548523"
     }
 }
