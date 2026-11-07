@@ -104,7 +104,6 @@ spec:
       memory: 1380Mi
   envFrom:
     - secret: fiks-integrasjon-secret
-    - secret: testbruker-skatteetaten
     - secret: sosialhjelp-soknad-api-unleash-api-token
     - secret: idporten-sosialhjelp
   env:
