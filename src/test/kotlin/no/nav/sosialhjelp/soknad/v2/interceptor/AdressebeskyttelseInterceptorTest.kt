@@ -10,7 +10,7 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.security.mock.oauth2.MockOAuth2Server
-import no.nav.sosialhjelp.soknad.TestApplicationConfig
+import no.nav.sosialhjelp.soknad.MockOAuth2Initializer
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasClient
@@ -34,17 +34,20 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import java.util.UUID
 
-@Import(TestCacheConfig::class, TestApplicationConfig::class)
+@Import(TestCacheConfig::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(initializers = [MockOAuth2Initializer::class])
 @AutoConfigureWebTestClient(timeout = "PT36000S")
 @ActiveProfiles("no-redis", "test", "test-container")
 class AdressebeskyttelseInterceptorTest {
@@ -72,6 +75,10 @@ class AdressebeskyttelseInterceptorTest {
     @MockkBean
     private lateinit var texasClient: TexasClient
 
+    @Value("\${idporten.audience}")
+    protected lateinit var idportenAudience: String
+
+    @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
 
@@ -84,7 +91,13 @@ class AdressebeskyttelseInterceptorTest {
         clearAllMocks()
         soknadMetadataRepository.deleteAll()
         coEvery { hentPersonClient.hentAdressebeskyttelse() } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
-        token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
+        token =
+            mockOAuth2Server.issueToken(
+                "idporten",
+                userId,
+                idportenAudience,
+                claims = mapOf("acr" to "idporten-loa-high"),
+            )
         every { texasClient.validateToken(any(), any()) } returns
             TokenResponse.ValidationResponse(true)
                 .apply {

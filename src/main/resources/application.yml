@@ -8,6 +8,11 @@ spring:
   servlet:
     multipart:
       max-file-size: 100MB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${IDPORTEN_ISSUER:http://localhost:8888/default}
 
 digisos:
   cache:
@@ -21,3 +26,6 @@ token_introspection_endpoint: ${NAIS_TOKEN_INTROSPECTION_ENDPOINT}
 springdoc:
   api-docs:
     enabled: true
+
+idporten:
+  audience: ${IDPORTEN_CLIENT_ID}

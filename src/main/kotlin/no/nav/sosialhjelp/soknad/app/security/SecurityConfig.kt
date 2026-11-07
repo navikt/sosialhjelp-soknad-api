@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -68,7 +69,6 @@ class SecurityConfig {
     @Order(3)
     fun defaultFilterChain(
         http: HttpSecurity,
-        defaultIntrospector: OpaqueTokenIntrospector,
     ): SecurityFilterChain =
         http
             .csrf { it.disable() }
@@ -80,12 +80,9 @@ class SecurityConfig {
                     .requestMatchers("/v3/api-docs/**", "/internal/**", "/minesaker/ping")
                     .permitAll()
                     .anyRequest()
-                    .hasAnyAuthority(
-                        "Level4",
-                        "idporten-loa-high",
-                    )
+                    .authenticated()
             }.oauth2ResourceServer { oauth2 ->
-                oauth2.opaqueToken { it.introspector(defaultIntrospector) }
+                oauth2.jwt(Customizer.withDefaults())
             }
             .build()
 

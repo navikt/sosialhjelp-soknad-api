@@ -92,3 +92,7 @@ feature.fiks.kryptering.enabled: false
 springdoc:
   api-docs:
     enabled: true
+
+idporten:
+  issuer: ${IDPORTEN_ISSUER:http://localhost:8888/default}
+  audience: ${IDPORTEN_CLIENT_ID:default}

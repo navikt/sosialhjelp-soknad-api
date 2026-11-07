@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.app.subjecthandler
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication
+import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken
 
 interface SubjectHandler {
     fun getConsumerId(): String
@@ -18,8 +18,8 @@ interface SubjectHandler {
 object DefaultSubjectHandler : SubjectHandler {
     private val securityContext: SecurityContext get() = SecurityContextHolder.getContext()
 
-    private fun requireAuthentication(): BearerTokenAuthentication? =
-        (securityContext.authentication as? BearerTokenAuthentication)
+    private fun requireAuthentication(): AbstractOAuth2TokenAuthenticationToken<*>? =
+        (securityContext.authentication as? AbstractOAuth2TokenAuthenticationToken<*>)
             ?.takeIf { it.isAuthenticated }
 
     override fun getUserIdFromToken(): String =

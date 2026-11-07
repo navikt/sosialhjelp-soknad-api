@@ -5,6 +5,11 @@ spring:
     allow-bean-definition-overriding: true
   cache:
     type: simple
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${IDPORTEN_ISSUER:http://localhost:8888/default}
 
 resilience4j:
   retry:
@@ -90,3 +95,5 @@ token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT:http://localhost:${mock-
 token_endpoint: ${NAIS_TOKEN_ENDPOINT:http://localhost:${mock-oauth2-server.port}/sosialhjelp/mock-alt-api/token/maskinporten}
 token_introspection_endpoint: ${NAIS_TOKEN_INTROSPECTION_ENDPOINT:http://localhost:${mock-oauth2-server.port}/sosialhjelp/mock-alt-api/introspect}
 
+IDPORTEN_ISSUER: http://localhost:${mock-oauth2-server.port}/default
+IDPORTEN_CLIENT_ID: testclient
