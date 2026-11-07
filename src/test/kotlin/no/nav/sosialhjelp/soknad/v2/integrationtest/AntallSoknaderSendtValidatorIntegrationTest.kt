@@ -30,7 +30,7 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     fun setup() {
         metadataRepository.deleteAll()
         TestSubjectHandler
-            .apply { setUser(userId) }
+            .apply { setUser(USER_ID) }
             .also { TokenUtils.setNewSubjectHandler(it) }
     }
 
@@ -96,8 +96,8 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `validering ignorerer soknader med status OPPRETTET og INNSENDING_FEILET`() {
-        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.OPPRETTET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
-        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.INNSENDING_FEILET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
+        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.OPPRETTET, personId = USER_ID, innsendtDato = nowWithMillis().minusHours(1)))
+        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.INNSENDING_FEILET, personId = USER_ID, innsendtDato = nowWithMillis().minusHours(1)))
         repeat(maksAntallSoknader - 1) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
 
         assertThatCode {
@@ -109,7 +109,7 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
         metadataRepository.save(
             opprettSoknadMetadata(
                 status = SoknadStatus.SENDT,
-                personId = userId,
+                personId = USER_ID,
                 innsendtDato = sendtInn,
             ),
         )

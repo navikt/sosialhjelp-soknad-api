@@ -109,7 +109,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
 
     protected fun setupMocks() {
         TestSubjectHandler
-            .apply { setUser(userId) }
+            .apply { setUser(USER_ID) }
             .also { TokenUtils.setNewSubjectHandler(it) }
 
         coEvery { personService.hentPerson() } returns createPersonAnswer()
@@ -161,7 +161,7 @@ fun createPersonAnswer(): Person {
         "Fornavnet",
         null,
         "Fornavnesen",
-        AbstractIntegrationTest.userId,
+        AbstractIntegrationTest.USER_ID,
         LocalDate.now().minusYears(30),
         "GIFT",
         listOf("NOR"),

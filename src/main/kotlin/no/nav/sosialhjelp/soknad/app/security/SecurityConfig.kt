@@ -95,9 +95,4 @@ class SecurityConfig {
     fun entraIdIntrospector(
         texasService: TexasService,
     ): OpaqueTokenIntrospector = DefaultOpaqueTokenIntrospector(IdentityProvider.ENTRA_ID, texasService)
-//
-//    @Bean
-//    fun defaultIntrospector(
-//        texasService: TexasService,
-//    ): OpaqueTokenIntrospector = DefaultOpaqueTokenIntrospector(IdentityProvider.IDPORTEN, texasService)
 }

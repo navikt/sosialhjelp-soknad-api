@@ -30,9 +30,9 @@ class DittNavIntegrationTest : AbstractIntegrationTest(useTokenX = true) {
 
     @Test
     fun `Skal returnere riktig antall open soknader`() {
-        createMetadataAndSoknad(nowMinusDays(5), SoknadStatus.OPPRETTET, personId = userId)
-        createMetadataAndSoknad(nowMinusDays(5), SoknadStatus.INNSENDING_FEILET, personId = userId)
-        createMetadataAndSoknad(nowMinusDays(5), SoknadStatus.SENDT, personId = userId)
+        createMetadataAndSoknad(nowMinusDays(5), SoknadStatus.OPPRETTET, personId = USER_ID)
+        createMetadataAndSoknad(nowMinusDays(5), SoknadStatus.INNSENDING_FEILET, personId = USER_ID)
+        createMetadataAndSoknad(nowMinusDays(5), SoknadStatus.SENDT, personId = USER_ID)
 
         doGet(uri = url, responseBodyClass = String::class.java)
             .let { jacksonObjectMapper().readValue(it) as List<PabegyntSoknadDto> }

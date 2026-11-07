@@ -22,10 +22,10 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal returnere riktige open soknader`() {
-        createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.SENDT, personId = userId)
-        createMetadataAndSoknad(nowMinusDays(10), INNSENDING_FEILET, personId = userId)
-        createMetadataAndSoknad(nowMinusDays(10), OPPRETTET, personId = userId)
-        metadataRepository.createMetadata(nowMinusDays(10), SoknadStatus.MOTTATT_FSL, personId = userId)
+        createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.SENDT, personId = USER_ID)
+        createMetadataAndSoknad(nowMinusDays(10), INNSENDING_FEILET, personId = USER_ID)
+        createMetadataAndSoknad(nowMinusDays(10), OPPRETTET, personId = USER_ID)
+        metadataRepository.createMetadata(nowMinusDays(10), SoknadStatus.MOTTATT_FSL, personId = USER_ID)
 
         val pabegyntSoknadDtos =
             doGet(
@@ -47,10 +47,10 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Finnes det soknader som er for gamle skal disse slettes og ikke returneres`() {
-        val soknadId1 = createMetadataAndSoknad(nowMinusDays(10), INNSENDING_FEILET, personId = userId)
-        val soknadId2 = createMetadataAndSoknad(nowMinusDays(10), OPPRETTET, personId = userId)
-        createMetadataAndSoknad(nowMinusDays(20), INNSENDING_FEILET, personId = userId)
-        createMetadataAndSoknad(nowMinusDays(15), OPPRETTET, personId = userId)
+        val soknadId1 = createMetadataAndSoknad(nowMinusDays(10), INNSENDING_FEILET, personId = USER_ID)
+        val soknadId2 = createMetadataAndSoknad(nowMinusDays(10), OPPRETTET, personId = USER_ID)
+        createMetadataAndSoknad(nowMinusDays(20), INNSENDING_FEILET, personId = USER_ID)
+        createMetadataAndSoknad(nowMinusDays(15), OPPRETTET, personId = USER_ID)
 
         metadataRepository.findAll().also { assertThat(it).hasSize(4) }
 
