@@ -22,9 +22,9 @@ class JwtDecoderConfig(
         val jwtDecoder = JwtDecoders.fromOidcIssuerLocation(issuer) as NimbusJwtDecoder
 
         val withAcr: OAuth2TokenValidator<Jwt> = AcrValidator()
-        val withIssuer: OAuth2TokenValidator<Jwt> = JwtValidators.createDefaultWithIssuer(issuer)
+//        val withIssuer: OAuth2TokenValidator<Jwt> = JwtValidators.createDefaultWithIssuer(issuer)
         val audienceValidator: OAuth2TokenValidator<Jwt> = AudienceValidator(audience)
-        val withAcrAndAudience: OAuth2TokenValidator<Jwt> = JwtValidators.createDefaultWithValidators(audienceValidator, withAcr, withIssuer)
+        val withAcrAndAudience: OAuth2TokenValidator<Jwt> = JwtValidators.createDefaultWithValidators(audienceValidator, withAcr)
 
         jwtDecoder.setJwtValidator(withAcrAndAudience)
         return jwtDecoder
