@@ -107,6 +107,7 @@ spec:
   envFrom:
     - secret: fiks-integrasjon-secret
     - secret: sosialhjelp-soknad-api-unleash-api-token
+    - secret: idporten-sosialhjelp
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: "prodgcp,log-kibana,leader-election"
