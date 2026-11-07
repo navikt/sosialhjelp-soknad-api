@@ -21,3 +21,7 @@ spring:
         enabled: false
       connect-timeout: 500
       timeout: 500
+
+idporten:
+  issuer: ${IDPORTEN_ISSUER:http://localhost:8888/default}
+  audience: ${IDPORTEN_CLIENT_ID:default}

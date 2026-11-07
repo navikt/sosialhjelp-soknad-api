@@ -4,7 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
-import no.nav.sosialhjelp.soknad.TestApplicationConfig
+import no.nav.sosialhjelp.soknad.MockOAuth2Initializer
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
@@ -16,12 +16,12 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Import(TestApplicationConfig::class)
+@ContextConfiguration(initializers = [MockOAuth2Initializer::class])
 @ActiveProfiles("no-redis", "test", "test-container")
 abstract class AbstractRegisterDataTest {
     @MockkBean

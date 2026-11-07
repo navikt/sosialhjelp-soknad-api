@@ -118,3 +118,5 @@ spec:
       value: "http://sosialhjelp-upload-mock"
     - name: SOSIALHJELP_UPLOAD_AUDIENCE
       value: "dev-gcp:teamdigisos:sosialhjelp-upload-mock"
+    - name: IDPORTEN_ISSUER
+      value: "https://sosiauth2.ekstern.dev.nav.no/default"
