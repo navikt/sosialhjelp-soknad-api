@@ -4,9 +4,10 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
 import io.mockk.every
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.sosialhjelp.soknad.MockOAuth2Initializer
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import org.junit.jupiter.api.BeforeEach
@@ -17,18 +18,21 @@ import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT30S")
+@ContextConfiguration(initializers = [MockOAuth2Initializer::class])
 @ActiveProfiles(profiles = ["no-redis", "test", "test-container"])
 class MineSakerMetadataRessursEndpointIT {
     companion object {
         private const val BRUKER = "11111111111"
     }
 
+    @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
-    private lateinit var mockOAuth2Server: MockOAuth2Server
+    protected lateinit var mockOAuth2Server: MockOAuth2Server
 
     @Autowired
     private lateinit var webClient: WebTestClient

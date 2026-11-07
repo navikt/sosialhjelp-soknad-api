@@ -1,6 +1,4 @@
 package no.nav.sosialhjelp.soknad.v2.familie
-
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.familie.service.Forsorger
 import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/familie/forsorgerplikt", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ForsorgerpliktController(private val forsorgerService: ForsorgerService) {
     @GetMapping

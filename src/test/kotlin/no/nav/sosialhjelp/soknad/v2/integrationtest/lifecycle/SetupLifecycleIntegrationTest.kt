@@ -8,10 +8,8 @@ import io.mockk.every
 import io.mockk.slot
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
@@ -32,6 +30,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrService
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.dokumenterSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.kommunenummerSlot
@@ -98,9 +97,6 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var dokumentlagerClient: DokumentlagerClient
 
     @MockkBean(relaxed = true)
-    protected lateinit var texasService: TexasService
-
-    @MockkBean(relaxed = true)
     protected lateinit var kodeverkService: KodeverkService
 
     @BeforeEach
@@ -112,9 +108,9 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     }
 
     protected fun setupMocks() {
-        StaticSubjectHandlerImpl()
+        TestSubjectHandler
             .apply { setUser(userId) }
-            .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
+            .also { TokenUtils.setNewSubjectHandler(it) }
 
         coEvery { personService.hentPerson() } returns createPersonAnswer()
         coEvery { kontonummerService.getKontonummer() } returns "12145534122"

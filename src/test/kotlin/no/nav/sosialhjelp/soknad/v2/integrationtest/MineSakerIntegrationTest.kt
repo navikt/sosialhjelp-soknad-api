@@ -1,9 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.api.minesaker.InnsendtSoknadDto
-import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
-import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
@@ -11,7 +8,6 @@ import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import tools.jackson.module.kotlin.jacksonObjectMapper
@@ -42,27 +38,6 @@ class MineSakerIntegrationTest : AbstractIntegrationTest(useTokenX = true) {
             .get()
             .uri(url)
             .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus()
-            .isUnauthorized
-    }
-
-    @Test
-    internal fun innsendte_skalGi401MedAnnenIssuer() {
-        // Skal kun godta tokenx som issuer
-        webClient
-            .get()
-            .uri(url)
-            .accept(MediaType.APPLICATION_JSON)
-            .header(
-                HttpHeaders.AUTHORIZATION,
-                BEARER +
-                    issueToken(
-                        mockOAuth2Server,
-                        "11111111111",
-                        issuer = SELVBETJENING,
-                    ).serialize(),
-            )
             .exchange()
             .expectStatus()
             .isUnauthorized

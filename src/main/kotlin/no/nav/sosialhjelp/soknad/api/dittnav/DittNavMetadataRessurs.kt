@@ -1,15 +1,8 @@
 package no.nav.sosialhjelp.soknad.api.dittnav
-
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_3
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_HIGH
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_SUBSTANTIAL
-import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.http.MediaType
@@ -20,11 +13,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @RestController
-@ProtectedWithClaims(
-    issuer = TOKENX,
-    combineWithOr = true,
-    claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4, CLAIM_ACR_LOA_HIGH, CLAIM_ACR_LOA_SUBSTANTIAL],
-)
 @RequestMapping("/dittnav/pabegynte/aktive", produces = [MediaType.APPLICATION_JSON_VALUE])
 class DittNavMetadataRessurs(
     private val metadataService: SoknadMetadataServiceImpl,
@@ -32,7 +20,7 @@ class DittNavMetadataRessurs(
 ) {
     @GetMapping
     fun hentPabegynteSoknaderForBruker(): List<PabegyntSoknadDto> {
-        val personId = SubjectHandlerUtils.getUserIdFromToken()
+        val personId = TokenUtils.getUserIdFromToken()
 
         return soknadService.findOpenSoknadIds(personId)
             .let { ids -> metadataService.getMetadatasForIds(ids) }

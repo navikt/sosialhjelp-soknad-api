@@ -14,7 +14,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import org.slf4j.MDC
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -67,8 +67,8 @@ class FetchRegisterDataManager(
 
     private fun createUserContextElement() =
         UserContextElement(
-            userToken = SubjectHandlerUtils.getToken(),
-            userId = SubjectHandlerUtils.getUserIdFromToken(),
+            userToken = TokenUtils.getToken(),
+            userId = TokenUtils.getUserIdFromToken(),
         )
 
     private fun runPrimaryFetcher(

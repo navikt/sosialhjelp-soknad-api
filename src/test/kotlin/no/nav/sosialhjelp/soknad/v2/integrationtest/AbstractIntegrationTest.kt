@@ -9,8 +9,11 @@ import io.mockk.just
 import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.sosialhjelp.soknad.MockOAuth2Initializer
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasClient
+import no.nav.sosialhjelp.soknad.app.security.texas.TokenResponse
 import no.nav.sosialhjelp.soknad.integrationtest.HentPersonClientMock
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
@@ -23,11 +26,13 @@ import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import org.springframework.web.reactive.function.BodyInserters
@@ -35,6 +40,7 @@ import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT36000S")
+@ContextConfiguration(initializers = [MockOAuth2Initializer::class])
 @ActiveProfiles("no-redis", "test", "test-container")
 abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false) {
     @Autowired
@@ -52,6 +58,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
     @Autowired
     protected lateinit var metadataRepository: SoknadMetadataRepository
 
+    @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
 
@@ -63,6 +70,12 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
 
     @MockkBean
     protected lateinit var uploadClient: UploadClient
+
+    @MockkBean
+    protected lateinit var texasClient: TexasClient
+
+    @Value("\${idporten.audience}")
+    protected lateinit var idportenAudience: String
 
     protected lateinit var token: SignedJWT
 
@@ -78,6 +91,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
             every { personIdService.findPersonId(soknadId) } returns userId
         }
 
+        setupTexasAnswer()
         setupPdlAnswers()
 
         every { uploadClient.getVedleggSpesifikasjon(any()) } returns JsonVedleggSpesifikasjon()
@@ -86,15 +100,28 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
         token =
             when (useTokenX) {
                 true -> Pair("tokenx", "localhost:teamdigisos:sosialhjelp-soknad-api")
-                false -> Pair("selvbetjening", "someaudience")
+                false -> Pair("idporten", idportenAudience)
             }.let { (issuer, audience) ->
                 mockOAuth2Server.issueToken(
                     issuerId = issuer,
                     subject = userId,
                     audience = audience,
-                    claims = mapOf("acr" to "idporten-loa-high", "acr" to "Level4"),
+                    claims = mapOf("acr" to "idporten-loa-high"),
                 )
             }
+    }
+
+    protected fun setupTexasAnswer() {
+        every { texasClient.validateToken(any(), any()) } returns
+            TokenResponse.ValidationResponse(active = true)
+                .apply {
+                    claims.putAll(
+                        mapOf(
+                            "acr" to "idporten-loa-high",
+                            "sub" to userId,
+                        ),
+                    )
+                }
     }
 
     protected fun setupPdlAnswers() {
