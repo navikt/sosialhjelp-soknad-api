@@ -29,4 +29,3 @@ springdoc:
 
 idporten:
   audience: ${IDPORTEN_CLIENT_ID}
-  issuer: ${IDPORTEN_ISSUER:http://localhost:8888/default}
