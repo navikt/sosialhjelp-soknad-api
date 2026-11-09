@@ -25,15 +25,6 @@ feature.fiks.kryptering.enabled: false
 
 loginservice.url: http://localhost:8181/sosialhjelp/soknad-api/local/cookie
 
-no.nav.security.jwt.issuer:
-  selvbetjening:
-    discoveryurl: http://localhost:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration
-    accepted_audience: someaudience
-    proxyurl:
-  tokenx:
-    discoveryurl: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
-    accepted_audience: localhost:teamdigisos:sosialhjelp-soknad-api
-
 # maskinporten
 maskinporten_clientid: clientid
 maskinporten_scopes: scopes

@@ -99,16 +99,6 @@ pdl_api_scope: ${PDL_API_SCOPE}
 
 loginservice.url: ${LOGINSERVICE_URL}
 
-no.nav.security.jwt.issuer:
-  selvbetjening:
-    discoveryurl: https://test.idporten.no/.well-known/openid-configuration
-    validation:
-      optional-claims: aud,nbf
-    proxyurl: ""
-  tokenx:
-    discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
-    accepted_audience: ${TOKEN_X_CLIENT_ID}
-
 # redis
 redis_host: ${REDIS_HOST_CACHE}
 redis_port: ${REDIS_PORT_CACHE}
