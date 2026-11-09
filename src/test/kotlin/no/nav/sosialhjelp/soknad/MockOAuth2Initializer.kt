@@ -23,11 +23,14 @@ class MockOAuth2Initializer : ApplicationContextInitializer<ConfigurableApplicat
         ) { server.shutdown() }
 
         val issuerUrl = server.issuerUrl("idporten")
+        val tokenXIssuerUrl = server.issuerUrl("tokenx")
 
         TestPropertyValues.of(
             "mock-oauth2-server.port=${issuerUrl.port}",
             "spring.security.oauth2.resourceserver.jwt.issuer-uri=$issuerUrl",
             "idporten.issuer=$issuerUrl",
+            "IDPORTEN_ISSUER=$issuerUrl",
+            "TOKEN_X_ISSUER=$tokenXIssuerUrl",
         ).applyTo(applicationContext)
     }
 }

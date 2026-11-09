@@ -20,7 +20,7 @@ object DefaultSubjectHandler : SubjectHandler {
     private const val TOKEN_X_ISSUER = "TOKEN_X_ISSUER"
     private const val IDPORTEN_ISSUER = "IDPORTEN_ISSUER"
 
-    private val allowedIssuers: Set<String> by lazy {
+    internal val allowedIssuers: Set<String> by lazy {
         setOf(TOKEN_X_ISSUER, IDPORTEN_ISSUER)
             .map { name ->
                 checkNotNull(System.getenv(name)?.takeIf { it.isNotBlank() }) {
