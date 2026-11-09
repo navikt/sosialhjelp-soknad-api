@@ -6,7 +6,9 @@ import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
+import io.mockk.mockkObject
 import io.mockk.runs
+import io.mockk.unmockkObject
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.MockOAuth2Initializer
@@ -15,6 +17,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasClient
 import no.nav.sosialhjelp.soknad.app.security.texas.TokenResponse
+import no.nav.sosialhjelp.soknad.app.subjecthandler.DefaultSubjectHandler
 import no.nav.sosialhjelp.soknad.integrationtest.HentPersonClientMock
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
@@ -25,6 +28,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -116,6 +120,22 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
         setupTexasAnswer()
     }
 
+    @BeforeEach
+    fun setupSubjectHandlerIssuers() {
+        mockkObject(DefaultSubjectHandler)
+
+        every { DefaultSubjectHandler.allowedIssuers } returns
+            setOf(
+                mockOAuth2Server.issuerUrl("idporten").toString(),
+                mockOAuth2Server.issuerUrl("tokenx").toString(),
+            )
+    }
+
+    @AfterEach
+    fun resetSubjectHandlerIssuers() {
+        unmockkObject(DefaultSubjectHandler)
+    }
+
     protected fun setupTexasAnswer() {
         if (useTokenX) {
             every {
@@ -127,6 +147,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
                 TokenResponse.ValidationResponse(active = true).apply {
                     claims["sub"] = token.jwtClaimsSet.subject
                     claims["acr"] = token.jwtClaimsSet.getStringClaim("acr")
+                    claims["iss"] = token.jwtClaimsSet.issuer
                 }
         }
     }
