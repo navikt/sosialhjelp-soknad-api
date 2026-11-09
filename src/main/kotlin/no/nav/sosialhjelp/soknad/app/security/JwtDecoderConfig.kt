@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.app.security
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
 import org.springframework.security.oauth2.core.OAuth2Error
 import org.springframework.security.oauth2.core.OAuth2TokenValidator
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult
@@ -21,12 +22,13 @@ class JwtDecoderConfig(
     fun jwtDecoder(): JwtDecoder {
         val jwtDecoder = JwtDecoders.fromOidcIssuerLocation(issuer) as NimbusJwtDecoder
 
-        val withAcr: OAuth2TokenValidator<Jwt> = AcrValidator()
-//        val withIssuer: OAuth2TokenValidator<Jwt> = JwtValidators.createDefaultWithIssuer(issuer)
-        val audienceValidator: OAuth2TokenValidator<Jwt> = AudienceValidator(audience)
-        val withAcrAndAudience: OAuth2TokenValidator<Jwt> = JwtValidators.createDefaultWithValidators(audienceValidator, withAcr)
+        DelegatingOAuth2TokenValidator(
+            JwtValidators.createDefaultWithIssuer(issuer),
+            AudienceValidator(audience),
+            AcrValidator(),
+        )
+            .also { jwtDecoder.setJwtValidator(it) }
 
-        jwtDecoder.setJwtValidator(withAcrAndAudience)
         return jwtDecoder
     }
 }
