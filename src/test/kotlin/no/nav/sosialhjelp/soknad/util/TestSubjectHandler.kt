@@ -11,7 +11,7 @@ object TestSubjectHandler : SubjectHandler {
     private const val DEFAULT_TOKEN = "test token"
 
     private var user = createPrincipal(DEFAULT_USER)
-    private var token = createBearerToken(DEFAULT_TOKEN)
+    private var token = createToken(DEFAULT_TOKEN)
 
     override fun getUserIdFromToken(): String =
         user.attributes["pid"] as? String
@@ -36,7 +36,7 @@ object TestSubjectHandler : SubjectHandler {
         )
     }
 
-    private fun createBearerToken(tokenValue: String): OAuth2AccessToken {
+    private fun createToken(tokenValue: String): OAuth2AccessToken {
         return OAuth2AccessToken(
             OAuth2AccessToken.TokenType.BEARER,
             tokenValue,

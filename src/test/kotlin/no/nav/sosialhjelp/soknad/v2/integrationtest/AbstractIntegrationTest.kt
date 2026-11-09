@@ -12,6 +12,7 @@ import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.MockOAuth2Initializer
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
+import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasClient
 import no.nav.sosialhjelp.soknad.app.security.texas.TokenResponse
 import no.nav.sosialhjelp.soknad.integrationtest.HentPersonClientMock
@@ -91,7 +92,6 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
             every { personIdService.findPersonId(soknadId) } returns USER_ID
         }
 
-        setupTexasAnswer()
         setupPdlAnswers()
 
         every { uploadClient.getVedleggSpesifikasjon(any()) } returns JsonVedleggSpesifikasjon()
@@ -113,19 +113,22 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
                         ),
                 )
             }
+        setupTexasAnswer()
     }
 
     protected fun setupTexasAnswer() {
-        every { texasClient.validateToken(any(), any()) } returns
-            TokenResponse.ValidationResponse(active = true)
-                .apply {
-                    claims.putAll(
-                        mapOf(
-                            "acr" to "idporten-loa-high",
-                            "sub" to USER_ID,
-                        ),
-                    )
+        if (useTokenX) {
+            every {
+                texasClient.validateToken(
+                    IdentityProvider.TOKENX.value,
+                    token.serialize(),
+                )
+            } returns
+                TokenResponse.ValidationResponse(active = true).apply {
+                    claims["sub"] = token.jwtClaimsSet.subject
+                    claims["acr"] = token.jwtClaimsSet.getStringClaim("acr")
                 }
+        }
     }
 
     protected fun setupPdlAnswers() {
