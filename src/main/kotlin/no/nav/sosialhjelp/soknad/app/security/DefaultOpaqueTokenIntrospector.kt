@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.app.security
 
-import java.time.Instant
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import org.springframework.core.codec.DecodingException
@@ -13,6 +11,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OAuth2I
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import java.time.Instant
 
 class DefaultOpaqueTokenIntrospector(private val identityProvider: IdentityProvider, private val texasService: TexasService) : OpaqueTokenIntrospector {
     override fun introspect(token: String): OAuth2AuthenticatedPrincipal =
@@ -27,7 +26,7 @@ class DefaultOpaqueTokenIntrospector(private val identityProvider: IdentityProvi
             )
         }
             .getOrElse {
-                when(it) {
+                when (it) {
                     is BadOpaqueTokenException -> throw it
                     is WebClientRequestException, is WebClientResponseException, is DecodingException ->
                         throw OAuth2IntrospectionException("Failed to introspect token for identity provider ${identityProvider.value}", it)
@@ -62,7 +61,7 @@ class DefaultOpaqueTokenIntrospector(private val identityProvider: IdentityProvi
 
 private fun Map<String, Any>.addClaims(): MutableMap<String, Any> =
     this.mapValues { (name, value) ->
-        when(name in setOf("iat", "exp", "nbf") && value is Number) {
+        when (name in setOf("iat", "exp", "nbf") && value is Number) {
             true -> Instant.ofEpochSecond(value.toLong())
             false -> value
         }

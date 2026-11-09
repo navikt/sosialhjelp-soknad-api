@@ -3,11 +3,13 @@ package no.nav.sosialhjelp.soknad.integrationtest
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.verify
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.MockOAuth2Initializer
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
-import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
+import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasClient
+import no.nav.sosialhjelp.soknad.app.security.texas.TokenResponse
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import org.junit.jupiter.api.BeforeEach
@@ -38,7 +40,7 @@ class MineSakerMetadataRessursEndpointIT {
     private lateinit var webClient: WebTestClient
 
     @MockkBean
-    private lateinit var texasService: TexasService
+    private lateinit var texasClient: TexasClient
 
     @MockkBean
     private lateinit var hentPersonClient: HentPersonClient
@@ -46,9 +48,6 @@ class MineSakerMetadataRessursEndpointIT {
     @BeforeEach
     suspend fun setup() {
         coEvery { hentPersonClient.hentAdressebeskyttelse() } returns HentPersonClientMock().hentAdressebeskyttelse()
-
-        every { texasService.getToken(any(), any()) } returns
-            issueToken(mockOAuth2Server, BRUKER, issuer = SELVBETJENING).serialize()
     }
 
     @Test
@@ -60,10 +59,14 @@ class MineSakerMetadataRessursEndpointIT {
             .exchange()
             .expectStatus()
             .isUnauthorized
+
+        verify(exactly = 0) { texasClient.validateToken(any(), any()) }
     }
 
     @Test
     internal fun innsendte_skalGi401MedAnnenIssuer() {
+        every { texasClient.validateToken(IdentityProvider.TOKENX.value, any()) } returns TokenResponse.ValidationResponse(false)
+
         // Skal kun godta tokenx som issuer
         webClient
             .get()
@@ -71,10 +74,15 @@ class MineSakerMetadataRessursEndpointIT {
             .accept(MediaType.APPLICATION_JSON)
             .header(
                 HttpHeaders.AUTHORIZATION,
-                BEARER + issueToken(mockOAuth2Server, BRUKER, issuer = SELVBETJENING).serialize(),
+                BEARER + issueToken(mockOAuth2Server, BRUKER, issuer = IdentityProvider.IDPORTEN.value).serialize(),
             )
             .exchange()
             .expectStatus()
             .isUnauthorized
+            .expectHeader()
+            .valueMatches(
+                HttpHeaders.WWW_AUTHENTICATE,
+                """Bearer .*error="invalid_token".*""",
+            )
     }
 }

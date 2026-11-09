@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.app
 
 object Constants {
-    const val SELVBETJENING = "selvbetjening"
+    const val ID_PORTEN = "idporten"
     const val CLAIM_ACR_LEVEL_3 = "acr=Level3"
     const val CLAIM_ACR_LOA_SUBSTANTIAL = "acr=idporten-loa-substantial"
     const val CLAIM_ACR_LEVEL_4 = "acr=Level4"
