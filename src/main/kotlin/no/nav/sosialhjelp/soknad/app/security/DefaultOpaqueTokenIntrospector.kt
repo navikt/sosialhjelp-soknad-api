@@ -50,8 +50,6 @@ class DefaultOpaqueTokenIntrospector(private val identityProvider: IdentityProvi
     }
 
     companion object {
-        private val logger by logger()
-
         private val supportedAcrValues =
             setOf(
                 "Level3",
