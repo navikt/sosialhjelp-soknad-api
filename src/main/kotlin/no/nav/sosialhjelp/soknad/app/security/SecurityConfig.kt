@@ -36,7 +36,7 @@ class SecurityConfig {
                 MINESAKER_BASE_PATH + INNSENDTE_PATH,
                 DITTNAV_PATH,
                 // TODO Kan fjernes?
-                "/soknad/hide/{digisosId}"
+                "/soknad/hide/{digisosId}",
             )
             .csrf { it.disable() }
             .httpBasic { it.disable() }
@@ -46,7 +46,7 @@ class SecurityConfig {
                 it
                     .requestMatchers(
                         MINESAKER_BASE_PATH + INNSENDTE_PATH,
-                        DITTNAV_PATH
+                        DITTNAV_PATH,
                     )
                     .hasAnyAuthority(
                         CLAIM_ACR_LEVEL_3,

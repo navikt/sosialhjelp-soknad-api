@@ -1,6 +1,4 @@
 package no.nav.sosialhjelp.soknad.api.dittnav
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
 import no.nav.sosialhjelp.soknad.api.dittnav.DittNavMetadataRessurs.Companion.DITTNAV_PATH
@@ -12,6 +10,8 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @RestController
 @RequestMapping(DITTNAV_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
