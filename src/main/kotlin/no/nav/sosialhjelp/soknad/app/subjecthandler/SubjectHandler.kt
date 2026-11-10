@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.app.subjecthandler
 
-import no.nav.security.token.support.core.context.TokenValidationContext
-import no.nav.security.token.support.core.context.TokenValidationContextHolder
-import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
-import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import org.springframework.stereotype.Component
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken
 
 interface SubjectHandler {
     fun getConsumerId(): String
@@ -17,69 +15,50 @@ interface SubjectHandler {
     fun getTokenOrNull(): String?
 }
 
-@Component
-class SubjectHandlerImpl(
-    private val tokenValidationContextHolder: TokenValidationContextHolder,
-) : SubjectHandler {
-    private val tokenValidationContext: TokenValidationContext
-        get() {
-            return tokenValidationContextHolder
-                .getTokenValidationContext()
-                .also {
-                    if (!it.hasValidToken()) {
-                        log.error(
-                            "Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.",
-                        )
-                        throw RuntimeException("Could not find TokenValidationContext. Possibly no token in request.")
-                    }
+object DefaultSubjectHandler : SubjectHandler {
+    private val securityContext: SecurityContext get() = SecurityContextHolder.getContext()
+    private const val TOKEN_X_ISSUER = "TOKEN_X_ISSUER"
+    private const val IDPORTEN_ISSUER = "IDPORTEN_ISSUER"
+
+    internal val allowedIssuers: Set<String> by lazy {
+        setOf(TOKEN_X_ISSUER, IDPORTEN_ISSUER)
+            .map { name ->
+                checkNotNull(System.getenv(name)?.takeIf { it.isNotBlank() }) {
+                    "Missing environment variable $name"
                 }
-        }
+            }.toSet()
+    }
+
+    private fun userAuthenticationOrNull(): AbstractOAuth2TokenAuthenticationToken<*>? {
+        val authentication =
+            securityContext.authentication as? AbstractOAuth2TokenAuthenticationToken<*>
+                ?: return null
+
+        if (!authentication.isAuthenticated) return null
+
+        val issuer =
+            authentication.tokenAttributes["iss"]?.toString()
+                ?: return null
+
+        return authentication.takeIf { issuer in allowedIssuers }
+    }
+
+    private fun requireUserAuthentication(): AbstractOAuth2TokenAuthenticationToken<*> =
+        userAuthenticationOrNull()
+            ?: throw AuthenticationCredentialsNotFoundException(
+                "No authenticated bearer token from TokenX or ID-porten",
+            )
 
     override fun getUserIdFromToken(): String =
-        when {
-            tokenValidationContext.hasTokenFor(TOKENX) -> getUserIdFromTokenWithIssuer(TOKENX)
-            else -> getUserIdFromTokenWithIssuer(SELVBETJENING)
+        requireUserAuthentication().let {
+            it.tokenAttributes["pid"] as? String
+                ?: it.tokenAttributes["sub"] as? String
+                ?: throw IllegalStateException("Could not find any userId for token in pid or sub claim")
         }
 
-    private fun getUserIdFromTokenWithIssuer(issuer: String): String {
-        val pid: String? = tokenValidationContext.getClaims(issuer).getStringClaim(CLAIM_PID)
-        val sub: String? = tokenValidationContext.getClaims(issuer).subject
-        return pid ?: sub ?: throw RuntimeException("Could not find any userId for token in pid or sub claim")
-    }
+    override fun getToken(): String = requireUserAuthentication().token.tokenValue
 
-    override fun getToken(): String =
-        getTokenOrNull() ?: throw IllegalStateException("Finnes ingen tokens (TOKENX/SELVBETJENING")
-
-    override fun getTokenOrNull(): String? =
-        tokenValidationContext.getJwtToken(TOKENX)?.encodedToken
-            ?: tokenValidationContext.getJwtToken(SELVBETJENING)?.encodedToken
+    override fun getTokenOrNull(): String? = userAuthenticationOrNull()?.token?.tokenValue
 
     override fun getConsumerId(): String = "srvsoknadsosialhje"
-
-    companion object {
-        private const val CLAIM_PID = "pid"
-        private val log by logger()
-    }
-}
-
-class StaticSubjectHandlerImpl : SubjectHandler {
-    companion object {
-        private const val DEFAULT_USER = "11111111111"
-        private const val DEFAULT_TOKEN = "token"
-    }
-
-    private var user = DEFAULT_USER
-    private var token = DEFAULT_TOKEN
-
-    override fun getUserIdFromToken(): String = this.user
-
-    override fun getToken(): String = this.token
-
-    override fun getTokenOrNull(): String? = this.token
-
-    override fun getConsumerId(): String = "StaticConsumerId"
-
-    fun setUser(user: String) {
-        this.user = user
-    }
 }

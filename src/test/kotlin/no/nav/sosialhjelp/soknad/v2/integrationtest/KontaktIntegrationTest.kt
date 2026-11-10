@@ -19,7 +19,6 @@ import no.nav.sosialhjelp.soknad.adressesok.AdressesokClient
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
@@ -76,9 +75,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @MockkBean(relaxed = true)
     private lateinit var unleash: Unleash
-
-    @MockkBean(relaxed = true)
-    private lateinit var texasService: TexasService
 
     @MockkBean(relaxed = true)
     private lateinit var kodeverkService: KodeverkService

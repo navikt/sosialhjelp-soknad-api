@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import org.springframework.http.HttpHeaders
 import org.springframework.web.reactive.function.client.WebClient
@@ -34,7 +34,7 @@ class HusbankenClient(
             ?: HusbankenResponse.Null
     }
 
-    private fun userToken() = SubjectHandlerUtils.getTokenOrNull() ?: error("Token is null, kan ikke kalle Husbanken")
+    private fun userToken() = TokenUtils.getTokenOrNull() ?: error("Token is null, kan ikke kalle Husbanken")
 }
 
 sealed interface HusbankenResponse {

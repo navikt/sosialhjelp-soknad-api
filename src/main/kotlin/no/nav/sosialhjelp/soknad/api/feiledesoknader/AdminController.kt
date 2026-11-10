@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.feiledesoknader
 
-import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.api.feiledesoknader.AdminController.Companion.ADMIN_BASE_PATH
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -16,23 +16,28 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
-@ProtectedWithClaims("entraid")
-@RequestMapping("/admin", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(ADMIN_BASE_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdminController(
     private val soknadMetadataService: SoknadMetadataService,
 ) {
-    @GetMapping("/unresolved")
+    @GetMapping(UNRESOLVED_PATH)
     fun hentIkkeMottattSoknader(): List<IkkeMottattSoknadDto> =
         soknadMetadataService
             .findOldSoknaderStatusSendt()
             .plus(soknadMetadataService.hentManueltKvittertUtSisteDag())
             .map { it.toDto() }
 
-    @PostMapping("/soknad/{soknadId}/resolve")
+    @PostMapping(RESOLVE_PATH)
     fun resolveApplication(
         @PathVariable soknadId: UUID,
     ) {
         soknadMetadataService.updateSoknadStatus(soknadId, SoknadStatus.MANUELT_KVITTERT_UT)
+    }
+
+    companion object {
+        const val ADMIN_BASE_PATH = "/admin"
+        const val UNRESOLVED_PATH = "/unresolved"
+        const val RESOLVE_PATH = "/soknad/{soknadId}/resolve"
     }
 }
 

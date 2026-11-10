@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
@@ -23,6 +24,8 @@ import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.BodyInserter
 import org.springframework.web.reactive.function.BodyInserters
 
+// TODO Fjerne?
+@Disabled("Backend no longer handling vedlegg conversion, this test is no longer relevant")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class FileConverterIntegrationTest : AbstractIntegrationTest() {
     private val endpoint: String = "/vedlegg/konverter"

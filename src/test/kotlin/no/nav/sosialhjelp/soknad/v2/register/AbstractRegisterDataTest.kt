@@ -4,8 +4,9 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.MockOAuth2Initializer
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -16,9 +17,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ContextConfiguration(initializers = [MockOAuth2Initializer::class])
 @ActiveProfiles("no-redis", "test", "test-container")
 abstract class AbstractRegisterDataTest {
     @MockkBean
@@ -39,7 +42,7 @@ abstract class AbstractRegisterDataTest {
         val soknadId = soknadMetadataRepository.save(opprettSoknadMetadata()).soknadId
         soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
-        val staticSubjectHandlerImpl = StaticSubjectHandlerImpl().apply { setUser(soknad.eierPersonId) }
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(staticSubjectHandlerImpl)
+        val staticSubjectHandlerImpl = TestSubjectHandler.apply { setUser(soknad.eierPersonId) }
+        TokenUtils.setNewSubjectHandler(staticSubjectHandlerImpl)
     }
 }

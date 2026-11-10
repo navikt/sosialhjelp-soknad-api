@@ -1,10 +1,8 @@
-
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 
 plugins {
     `jvm-test-suite`
@@ -108,8 +106,6 @@ dependencies {
     // redis
     implementation(libs.lettuce.core)
 
-    // token validering
-    implementation(libs.token.validation.spring)
     implementation(libs.java.jwt)
 
     // Micrometer/prometheus
@@ -145,6 +141,9 @@ dependencies {
     implementation(libs.bundles.pdfbox)
     implementation(libs.xmpbox)
 
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.mock.oauth2.server)
+
     // testcontainers
     testImplementation(libs.testcontainers.postgres)
     testImplementation(libs.testcontainers.junit)
@@ -152,7 +151,6 @@ dependencies {
     // Test
     testImplementation(libs.bundles.spring.boot.test)
 
-    testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)
     testImplementation(libs.ninja.springmockk)

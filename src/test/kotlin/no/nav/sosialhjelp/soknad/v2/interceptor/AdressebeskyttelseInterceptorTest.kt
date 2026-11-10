@@ -10,9 +10,12 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.sosialhjelp.soknad.MockOAuth2Initializer
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasClient
+import no.nav.sosialhjelp.soknad.app.security.texas.TokenResponse
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
@@ -20,7 +23,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.UGRADERT
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
-import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest.Companion.userId
+import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest.Companion.USER_ID
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
@@ -31,17 +34,20 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import java.util.UUID
 
 @Import(TestCacheConfig::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(initializers = [MockOAuth2Initializer::class])
 @AutoConfigureWebTestClient(timeout = "PT36000S")
 @ActiveProfiles("no-redis", "test", "test-container")
 class AdressebeskyttelseInterceptorTest {
@@ -66,6 +72,13 @@ class AdressebeskyttelseInterceptorTest {
     @MockkSpyBean
     private lateinit var adressebeskyttelseInterceptor: AdressebeskyttelseInterceptor
 
+    @MockkBean
+    private lateinit var texasClient: TexasClient
+
+    @Value("\${idporten.audience}")
+    protected lateinit var idportenAudience: String
+
+    @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
 
@@ -78,7 +91,28 @@ class AdressebeskyttelseInterceptorTest {
         clearAllMocks()
         soknadMetadataRepository.deleteAll()
         coEvery { hentPersonClient.hentAdressebeskyttelse() } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
-        token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
+        token =
+            mockOAuth2Server.issueToken(
+                "idporten",
+                USER_ID,
+                idportenAudience,
+                claims =
+                    mapOf(
+                        "acr" to "idporten-loa-high",
+                        "client_id" to idportenAudience,
+                    ),
+            )
+        every { texasClient.validateToken(any(), any()) } returns
+            TokenResponse.ValidationResponse(true)
+                .apply {
+                    claims.putAll(
+                        mapOf(
+                            "acr" to "idporten-loa-high",
+                            "sub" to USER_ID,
+                            "aud" to "someaudience",
+                        ),
+                    )
+                }
     }
 
     @AfterEach
@@ -104,8 +138,6 @@ class AdressebeskyttelseInterceptorTest {
 
     @Test
     fun `Kall til et annet endepunkt med adressebeskyttelse skal returnere FORBIDDEN`() {
-        clearAllMocks()
-//        every { personService.hasAdressebeskyttelse(any())} returns true
         coEvery { hentPersonClient.hentAdressebeskyttelse() } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
 
         webClient.doPostFullResponse(
@@ -144,7 +176,7 @@ class AdressebeskyttelseInterceptorTest {
 
     @Test
     fun `HasAdressebeskyttelse skal fjerne eksisterende soknader`() {
-        mockkObject(SubjectHandlerUtils)
+        mockkObject(TokenUtils)
 
         val metadata =
             opprettSoknadMetadata()
@@ -152,8 +184,8 @@ class AdressebeskyttelseInterceptorTest {
                 .let { metadata -> opprettSoknad(id = metadata.soknadId) }
                 .also { soknad -> soknadRepository.save(soknad) }
 
-        every { SubjectHandlerUtils.getTokenOrNull() } returns "test-token"
-        every { SubjectHandlerUtils.getUserIdFromToken() } returns metadata.eierPersonId
+        every { TokenUtils.getTokenOrNull() } returns "test-token"
+        every { TokenUtils.getUserIdFromToken() } returns metadata.eierPersonId
 
         soknadService.findOpenSoknadIds(metadata.eierPersonId).also { assertThat(it).hasSize(1) }
 
@@ -172,7 +204,7 @@ class AdressebeskyttelseInterceptorTest {
         verify(exactly = 0) { personService.onSendSoknadHasAdressebeskyttelse(any()) }
         verify(exactly = 1) { personService.hasAdressebeskyttelse(any()) }
 
-        unmockkObject(SubjectHandlerUtils)
+        unmockkObject(TokenUtils)
     }
 }
 

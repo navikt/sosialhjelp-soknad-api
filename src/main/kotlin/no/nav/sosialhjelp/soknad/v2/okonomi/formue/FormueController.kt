@@ -1,6 +1,4 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.formue
-
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/inntekt/formue")
 class FormueController(
     private val formueService: FormueService,

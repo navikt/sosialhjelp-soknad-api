@@ -6,11 +6,18 @@ import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
+import io.mockk.mockkObject
 import io.mockk.runs
+import io.mockk.unmockkObject
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.sosialhjelp.soknad.MockOAuth2Initializer
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
+import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasClient
+import no.nav.sosialhjelp.soknad.app.security.texas.TokenResponse
+import no.nav.sosialhjelp.soknad.app.subjecthandler.DefaultSubjectHandler
 import no.nav.sosialhjelp.soknad.integrationtest.HentPersonClientMock
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UploadClient
@@ -21,13 +28,16 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import org.springframework.web.reactive.function.BodyInserters
@@ -35,6 +45,7 @@ import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT36000S")
+@ContextConfiguration(initializers = [MockOAuth2Initializer::class])
 @ActiveProfiles("no-redis", "test", "test-container")
 abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false) {
     @Autowired
@@ -52,6 +63,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
     @Autowired
     protected lateinit var metadataRepository: SoknadMetadataRepository
 
+    @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
 
@@ -64,6 +76,12 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
     @MockkBean
     protected lateinit var uploadClient: UploadClient
 
+    @MockkBean
+    protected lateinit var texasClient: TexasClient
+
+    @Value("\${idporten.audience}")
+    protected lateinit var idportenAudience: String
+
     protected lateinit var token: SignedJWT
 
     protected lateinit var soknadId: UUID
@@ -75,7 +93,7 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
         if (opprettSoknadBeforeEach) {
             soknadId = metadataRepository.save(opprettSoknadMetadata()).soknadId
             opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
-            every { personIdService.findPersonId(soknadId) } returns userId
+            every { personIdService.findPersonId(soknadId) } returns USER_ID
         }
 
         setupPdlAnswers()
@@ -86,15 +104,52 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
         token =
             when (useTokenX) {
                 true -> Pair("tokenx", "localhost:teamdigisos:sosialhjelp-soknad-api")
-                false -> Pair("selvbetjening", "someaudience")
+                false -> Pair("idporten", idportenAudience)
             }.let { (issuer, audience) ->
                 mockOAuth2Server.issueToken(
                     issuerId = issuer,
-                    subject = userId,
+                    subject = USER_ID,
                     audience = audience,
-                    claims = mapOf("acr" to "idporten-loa-high", "acr" to "Level4"),
+                    claims =
+                        mapOf(
+                            "acr" to "idporten-loa-high",
+                            "client_id" to audience,
+                        ),
                 )
             }
+        setupTexasAnswer()
+    }
+
+    @BeforeEach
+    fun setupSubjectHandlerIssuers() {
+        mockkObject(DefaultSubjectHandler)
+
+        every { DefaultSubjectHandler.allowedIssuers } returns
+            setOf(
+                mockOAuth2Server.issuerUrl("idporten").toString(),
+                mockOAuth2Server.issuerUrl("tokenx").toString(),
+            )
+    }
+
+    @AfterEach
+    fun resetSubjectHandlerIssuers() {
+        unmockkObject(DefaultSubjectHandler)
+    }
+
+    protected fun setupTexasAnswer() {
+        if (useTokenX) {
+            every {
+                texasClient.validateToken(
+                    IdentityProvider.TOKENX.value,
+                    token.serialize(),
+                )
+            } returns
+                TokenResponse.ValidationResponse(active = true).apply {
+                    claims["sub"] = token.jwtClaimsSet.subject
+                    claims["acr"] = token.jwtClaimsSet.getStringClaim("acr")
+                    claims["iss"] = token.jwtClaimsSet.issuer
+                }
+        }
     }
 
     protected fun setupPdlAnswers() {
@@ -263,7 +318,19 @@ abstract class AbstractIntegrationTest(protected var useTokenX: Boolean = false)
             .exchange()
     }
 
+    protected fun MockOAuth2Server.issueIdPortenToken(subject: String? = null) =
+        issueToken(
+            issuerId = "idporten",
+            subject = subject ?: USER_ID,
+            audience = idportenAudience,
+            claims =
+                mapOf(
+                    "acr" to "idporten-loa-high",
+                    "client_id" to idportenAudience,
+                ),
+        )
+
     companion object {
-        val userId = "05058548523"
+        const val USER_ID = "05058548523"
     }
 }
