@@ -1,14 +1,15 @@
 package no.nav.sosialhjelp.soknad.api.minesaker
 
+import java.time.LocalDateTime
+import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerMetadataRessurs.Companion.MINESAKER_BASE_PATH
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
 
 @RestController
-@RequestMapping("/minesaker", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(MINESAKER_BASE_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
 class MineSakerMetadataRessurs(
     private val mineSakerService: MineSakerService,
 ) {
@@ -16,7 +17,7 @@ class MineSakerMetadataRessurs(
      * Henter informasjon om innsendte søknader via SoknadMetadataRepository.
      * På sikt vil vi hente denne informasjonen fra Fiks (endepunkt vil da høre mer hjemme i innsyn-api)
      */
-    @GetMapping("/innsendte")
+    @GetMapping(INNSENDTE_PATH)
     fun hentInnsendteSoknaderForBruker(): List<InnsendtSoknadDto> {
         return mineSakerService.hentInnsendteSoknader().map {
             InnsendtSoknadDto(
@@ -49,6 +50,8 @@ class MineSakerMetadataRessurs(
         private val log = LoggerFactory.getLogger(MineSakerMetadataRessurs::class.java)
         private const val TEMA_NAVN = "Økonomisk sosialhjelp"
         private const val TEMA_KODE_KOM = "KOM"
+        const val MINESAKER_BASE_PATH = "/minesaker"
+        const val INNSENDTE_PATH = "/innsendte"
     }
 }
 
