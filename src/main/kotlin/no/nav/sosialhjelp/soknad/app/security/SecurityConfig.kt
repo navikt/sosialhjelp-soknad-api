@@ -1,5 +1,15 @@
 package no.nav.sosialhjelp.soknad.app.security
 
+import no.nav.sosialhjelp.soknad.api.dittnav.DittNavMetadataRessurs.Companion.DITTNAV_PATH
+import no.nav.sosialhjelp.soknad.api.feiledesoknader.AdminController.Companion.ADMIN_BASE_PATH
+import no.nav.sosialhjelp.soknad.api.feiledesoknader.AdminController.Companion.RESOLVE_PATH
+import no.nav.sosialhjelp.soknad.api.feiledesoknader.AdminController.Companion.UNRESOLVED_PATH
+import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerMetadataRessurs.Companion.INNSENDTE_PATH
+import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerMetadataRessurs.Companion.MINESAKER_BASE_PATH
+import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_3
+import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
+import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_HIGH
+import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_SUBSTANTIAL
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import org.springframework.context.annotation.Bean
@@ -22,24 +32,33 @@ class SecurityConfig {
         tokenXIntrospector: OpaqueTokenIntrospector,
     ): SecurityFilterChain =
         http
-            .securityMatcher("/minesaker/innsendte", "/dittnav/pabegynte/aktive", "/soknad/hide/{digisosId}")
+            .securityMatcher(
+                MINESAKER_BASE_PATH + INNSENDTE_PATH,
+                DITTNAV_PATH,
+                // TODO Kan fjernes?
+                "/soknad/hide/{digisosId}"
+            )
             .csrf { it.disable() }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/minesaker/innsendte", "/dittnav/pabegynte/aktive")
-                    .hasAnyAuthority(
-                        "Level3",
-                        "idporten-loa-substantial",
-                        "Level4",
-                        "idporten-loa-high",
+                    .requestMatchers(
+                        MINESAKER_BASE_PATH + INNSENDTE_PATH,
+                        DITTNAV_PATH
                     )
+                    .hasAnyAuthority(
+                        CLAIM_ACR_LEVEL_3,
+                        CLAIM_ACR_LOA_SUBSTANTIAL,
+                        CLAIM_ACR_LEVEL_4,
+                        CLAIM_ACR_LOA_HIGH,
+                    )
+                    // TODO Kan fjernes?
                     .requestMatchers("/soknad/hide/{digisosId}")
                     .hasAnyAuthority(
-                        "Level4",
-                        "idporten-loa-high",
+                        CLAIM_ACR_LEVEL_4,
+                        CLAIM_ACR_LOA_HIGH,
                     )
                     .anyRequest().denyAll()
             }.oauth2ResourceServer { oauth2 ->
@@ -54,15 +73,16 @@ class SecurityConfig {
         entraIdIntrospector: OpaqueTokenIntrospector,
     ): SecurityFilterChain =
         http
-            .securityMatcher("/admin/unresolved", "/admin/soknad/{soknadId}/resolve")
+            .securityMatcher(
+                ADMIN_BASE_PATH + UNRESOLVED_PATH,
+                ADMIN_BASE_PATH + RESOLVE_PATH,
+            )
             .csrf { it.disable() }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { it.anyRequest().authenticated() }
-            .oauth2ResourceServer { oauth2 ->
-                oauth2.opaqueToken { it.introspector(entraIdIntrospector) }
-            }
+            .oauth2ResourceServer { oauth2 -> oauth2.opaqueToken { it.introspector(entraIdIntrospector) } }
             .build()
 
     @Bean

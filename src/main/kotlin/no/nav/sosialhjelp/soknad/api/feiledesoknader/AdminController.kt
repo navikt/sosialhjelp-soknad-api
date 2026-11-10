@@ -13,24 +13,31 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.api.feiledesoknader.AdminController.Companion.ADMIN_BASE_PATH
 
 @RestController
-@RequestMapping("/admin", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(ADMIN_BASE_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdminController(
     private val soknadMetadataService: SoknadMetadataService,
 ) {
-    @GetMapping("/unresolved")
+    @GetMapping(UNRESOLVED_PATH)
     fun hentIkkeMottattSoknader(): List<IkkeMottattSoknadDto> =
         soknadMetadataService
             .findOldSoknaderStatusSendt()
             .plus(soknadMetadataService.hentManueltKvittertUtSisteDag())
             .map { it.toDto() }
 
-    @PostMapping("/soknad/{soknadId}/resolve")
+    @PostMapping(RESOLVE_PATH)
     fun resolveApplication(
         @PathVariable soknadId: UUID,
     ) {
         soknadMetadataService.updateSoknadStatus(soknadId, SoknadStatus.MANUELT_KVITTERT_UT)
+    }
+
+    companion object {
+        const val ADMIN_BASE_PATH = "/admin"
+        const val UNRESOLVED_PATH = "/unresolved"
+        const val RESOLVE_PATH = "/soknad/{soknadId}/resolve"
     }
 }
 

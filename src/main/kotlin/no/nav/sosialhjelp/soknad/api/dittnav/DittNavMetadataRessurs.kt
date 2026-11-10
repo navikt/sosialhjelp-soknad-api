@@ -1,6 +1,9 @@
 package no.nav.sosialhjelp.soknad.api.dittnav
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
+import no.nav.sosialhjelp.soknad.api.dittnav.DittNavMetadataRessurs.Companion.DITTNAV_PATH
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
@@ -9,11 +12,9 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 @RestController
-@RequestMapping("/dittnav/pabegynte/aktive", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(DITTNAV_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
 class DittNavMetadataRessurs(
     private val metadataService: SoknadMetadataServiceImpl,
     private val soknadService: SoknadService,
@@ -37,6 +38,10 @@ class DittNavMetadataRessurs(
                     soknadId = it.soknadId,
                 )
             }
+    }
+
+    companion object {
+        const val DITTNAV_PATH = "/dittnav/pabegynte/aktive"
     }
 }
 
