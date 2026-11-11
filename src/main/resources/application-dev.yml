@@ -53,6 +53,7 @@ springdoc:
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
+fiks_dokumentlager_endpoint_url: ${FIKS_DOKUMENTLAGER_ENDPOINT_URL}
 ereg_url: ${EREG_URL}
 aareg_url: ${AAREG_URL}
 krr_url: ${KRR_URL}
