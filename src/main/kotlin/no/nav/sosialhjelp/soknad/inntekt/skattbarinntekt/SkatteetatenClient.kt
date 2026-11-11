@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
@@ -64,15 +63,10 @@ class SkatteetatenClient(
 
     private suspend fun createSokedata(): Sokedata {
         return Sokedata(
-            identifikator = resolveIdent(),
+            identifikator = currentUserContext().userId,
             fom = LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()),
             tom = LocalDate.now(),
         )
-    }
-
-    private suspend fun resolveIdent(): String {
-        return currentUserContext().userId
-            .let { if (MiljoUtils.isProduction()) it else System.getenv("TESTBRUKER_SKATT") ?: it }
     }
 
     private fun getMaskinportenToken(): String =
