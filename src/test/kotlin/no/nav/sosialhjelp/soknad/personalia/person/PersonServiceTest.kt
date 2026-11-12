@@ -9,6 +9,7 @@ import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper
@@ -23,7 +24,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseD
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
-import no.nav.sosialhjelp.soknad.v2.register.UserContextElement
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach

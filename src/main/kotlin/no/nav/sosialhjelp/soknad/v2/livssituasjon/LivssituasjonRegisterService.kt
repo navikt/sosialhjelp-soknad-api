@@ -27,7 +27,6 @@ class LivssituasjonRegisterService(
     }
 
     private fun removeInntektFromOkonomi(soknadId: UUID) {
-        okonomiService.removeElementFromOkonomi(soknadId, InntektType.JOBB)
         okonomiService.removeElementFromOkonomi(soknadId, InntektType.SLUTTOPPGJOER)
     }
 
@@ -35,17 +34,12 @@ class LivssituasjonRegisterService(
         soknadId: UUID,
         arbeidsforhold: List<Arbeidsforhold>,
     ) {
-        if (arbeidsforhold.hasLonnslipp()) okonomiService.addElementToOkonomi(soknadId, InntektType.JOBB)
         if (arbeidsforhold.hasSluttoppgjor()) okonomiService.addElementToOkonomi(soknadId, InntektType.SLUTTOPPGJOER)
     }
 
     private fun findOrCreate(soknadId: UUID) =
         repository.findByIdOrNull(soknadId)
             ?: repository.save(Livssituasjon(soknadId))
-}
-
-private fun List<Arbeidsforhold>.hasLonnslipp(): Boolean {
-    return any { it.slutt == null || !isBeforeNextMonth(it.slutt) }
 }
 
 private fun List<Arbeidsforhold>.hasSluttoppgjor(): Boolean {
