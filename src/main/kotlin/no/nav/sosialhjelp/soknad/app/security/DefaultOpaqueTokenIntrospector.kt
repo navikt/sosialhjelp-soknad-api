@@ -1,11 +1,13 @@
 package no.nav.sosialhjelp.soknad.app.security
 
+import no.nav.sosialhjelp.soknad.app.security.principal.CitizenPrincipal
+import no.nav.sosialhjelp.soknad.app.security.principal.EntraIdPrincipal
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import org.springframework.core.codec.DecodingException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException
 import org.springframework.security.oauth2.server.resource.introspection.BadOpaqueTokenException
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionException
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector
@@ -14,16 +16,14 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.time.Instant
 
 class DefaultOpaqueTokenIntrospector(private val identityProvider: IdentityProvider, private val texasService: TexasService) : OpaqueTokenIntrospector {
-    override fun introspect(token: String): OAuth2AuthenticatedPrincipal =
+    override fun introspect(notValidatedToken: String): OAuth2AuthenticatedPrincipal =
         runCatching {
-            val validationResult = texasService.validateToken(identityProvider, token)
-            if (!validationResult.active) {
-                throw BadOpaqueTokenException("Token is not active for identity provider ${validationResult.identityProvider}")
-            }
-            DefaultOAuth2AuthenticatedPrincipal(
-                validationResult.claims.addClaims(),
-                addAuthorities(identityProvider, validationResult.claims),
-            )
+            validateToken(notValidatedToken)
+                .let { validatedResult ->
+                    val claims = validatedResult.claims.addClaims()
+                    val authorities = addAuthorities(validatedResult.identityProvider, claims)
+                    returnPrincipal(validatedResult.token, claims, authorities)
+                }
         }
             .getOrElse {
                 when (it) {
@@ -33,6 +33,14 @@ class DefaultOpaqueTokenIntrospector(private val identityProvider: IdentityProvi
                     else -> throw OAuth2IntrospectionException("Failed to introspect token for identity provider ${identityProvider.value}", it)
                 }
             }
+
+    private fun validateToken(token: String): ValidationResult {
+        val validationResult = texasService.validateToken(identityProvider, token)
+        if (!validationResult.active) {
+            throw BadOpaqueTokenException("Token is not active for identity provider ${validationResult.identityProvider}")
+        }
+        return validationResult
+    }
 
     private fun addAuthorities(
         identityProvider: IdentityProvider,
@@ -47,6 +55,27 @@ class DefaultOpaqueTokenIntrospector(private val identityProvider: IdentityProvi
             else -> emptyList()
         }
     }
+
+    private fun returnPrincipal(
+        token: String,
+        attributes: Map<String, Any>,
+        authorities: List<SimpleGrantedAuthority>,
+    ): OAuth2AuthenticatedPrincipal =
+        when (identityProvider) {
+            IdentityProvider.IDPORTEN, IdentityProvider.TOKENX -> createCitizenPrincipal(token, attributes, authorities)
+            else -> EntraIdPrincipal(token, attributes, authorities)
+        }
+
+    private fun createCitizenPrincipal(
+        token: String,
+        attributes: Map<String, Any>,
+        authorities: List<SimpleGrantedAuthority>,
+    ): OAuth2AuthenticatedPrincipal =
+        try {
+            CitizenPrincipal(token, attributes, authorities)
+        } catch (e: OAuth2AuthenticationException) {
+            throw BadOpaqueTokenException("Invalid citizen token", e)
+        }
 
     companion object {
         private val supportedAcrValues =
@@ -70,5 +99,6 @@ private fun Map<String, Any>.addClaims(): MutableMap<String, Any> =
 data class ValidationResult(
     val identityProvider: IdentityProvider,
     val active: Boolean,
+    val token: String,
     val claims: Map<String, Any>,
 )

@@ -9,11 +9,7 @@ object TokenUtils {
 
     fun getUserIdFromToken(): String = currentSubjectHandler.getUserIdFromToken()
 
-    fun getConsumerId(): String = currentSubjectHandler.getConsumerId()
-
     fun getToken(): String = currentSubjectHandler.getToken()
-
-    fun getTokenOrNull(): String? = currentSubjectHandler.getTokenOrNull()
 
     fun setNewSubjectHandler(subjectHandler: SubjectHandler) {
         if (!MiljoUtils.isNonProduction()) {

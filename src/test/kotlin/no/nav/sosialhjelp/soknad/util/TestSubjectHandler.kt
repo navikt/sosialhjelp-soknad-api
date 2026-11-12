@@ -20,8 +20,6 @@ object TestSubjectHandler : SubjectHandler {
 
     override fun getToken(): String = token.tokenValue
 
-    override fun getTokenOrNull(): String = token.tokenValue
-
     override fun getConsumerId(): String = "StaticConsumerId"
 
     fun setUser(username: String) {

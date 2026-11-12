@@ -34,7 +34,7 @@ class HusbankenClient(
             ?: HusbankenResponse.Null
     }
 
-    private fun userToken() = TokenUtils.getTokenOrNull() ?: error("Token is null, kan ikke kalle Husbanken")
+    private fun userToken() = TokenUtils.getToken()
 }
 
 sealed interface HusbankenResponse {

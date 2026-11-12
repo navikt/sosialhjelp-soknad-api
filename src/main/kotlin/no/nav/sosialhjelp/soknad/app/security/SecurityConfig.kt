@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_3
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_HIGH
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_SUBSTANTIAL
+import no.nav.sosialhjelp.soknad.app.security.principal.CitizenPrincipal
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import org.springframework.context.annotation.Bean
@@ -18,7 +19,10 @@ import org.springframework.core.annotation.Order
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector
 import org.springframework.security.web.SecurityFilterChain
 
@@ -35,8 +39,6 @@ class SecurityConfig {
             .securityMatcher(
                 MINESAKER_BASE_PATH + INNSENDTE_PATH,
                 DITTNAV_PATH,
-                // TODO Kan fjernes?
-                "/soknad/hide/{digisosId}",
             )
             .csrf { it.disable() }
             .httpBasic { it.disable() }
@@ -51,12 +53,6 @@ class SecurityConfig {
                     .hasAnyAuthority(
                         CLAIM_ACR_LEVEL_3,
                         CLAIM_ACR_LOA_SUBSTANTIAL,
-                        CLAIM_ACR_LEVEL_4,
-                        CLAIM_ACR_LOA_HIGH,
-                    )
-                    // TODO Kan fjernes?
-                    .requestMatchers("/soknad/hide/{digisosId}")
-                    .hasAnyAuthority(
                         CLAIM_ACR_LEVEL_4,
                         CLAIM_ACR_LOA_HIGH,
                     )
@@ -102,9 +98,20 @@ class SecurityConfig {
                     .anyRequest()
                     .authenticated()
             }.oauth2ResourceServer { oauth2 ->
-                oauth2.jwt(Customizer.withDefaults())
+                oauth2.jwt(jwtCustomizer())
             }
             .build()
+
+    private fun jwtCustomizer(): Customizer<OAuth2ResourceServerConfigurer<HttpSecurity>.JwtConfigurer> {
+        val authoritiesConverter = JwtGrantedAuthoritiesConverter()
+        val authenticationConverter =
+            JwtAuthenticationConverter().apply {
+                setJwtPrincipalConverter { jwt ->
+                    CitizenPrincipal(jwt.tokenValue, jwt.claims, authoritiesConverter.convert(jwt))
+                }
+            }
+        return Customizer { it.jwtAuthenticationConverter(authenticationConverter) }
+    }
 
     @Bean
     fun tokenXIntrospector(

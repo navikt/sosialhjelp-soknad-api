@@ -4,15 +4,19 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
 import jakarta.servlet.Filter
+import jakarta.servlet.http.HttpServletRequest
+import no.nav.sosialhjelp.soknad.app.security.principal.CitizenPrincipal
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasClient
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasServiceImpl
 import no.nav.sosialhjelp.soknad.app.security.texas.TokenResponse
+import no.nav.sosialhjelp.soknad.app.subjecthandler.DefaultSubjectHandler
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
 import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -25,7 +29,11 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationServiceException
+import org.springframework.security.core.Authentication
+import org.springframework.security.oauth2.jwt.BadJwtException
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
@@ -40,6 +48,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.WebApplicationContext
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import java.security.Principal
+import java.time.Instant
 
 @SpringJUnitWebConfig(SecurityFilterChainTest.TestConfig::class)
 class SecurityFilterChainTest {
@@ -142,6 +151,38 @@ class SecurityFilterChainTest {
         verifyValidation(endpoint, TEST_TOKEN)
     }
 
+    @Test
+    fun `tokenx request provides citizen principal to subject handler`() {
+        every { texasClient.validateToken(IdentityProvider.TOKENX.value, TEST_TOKEN) } returns
+            TokenResponse.ValidationResponse(active = true).apply {
+                claims["iss"] = "https://tokenx.example"
+                claims["pid"] = "test-person"
+                claims["sub"] = TEST_SUBJECT
+                claims["acr"] = "idporten-loa-high"
+            }
+        mockMvc.perform(
+            request(HttpMethod.GET, Endpoint.INNSENDTE.uri)
+                .param("checkSubjectHandler", "true")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $TEST_TOKEN"),
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().string("test-person"))
+        verifyValidation(Endpoint.INNSENDTE, TEST_TOKEN)
+    }
+
+    @Test
+    fun `tokenx token without user identity is rejected as invalid token`() {
+        every { texasClient.validateToken(IdentityProvider.TOKENX.value, TEST_TOKEN) } returns
+            TokenResponse.ValidationResponse(active = true).apply {
+                claims["acr"] = "idporten-loa-high"
+            }
+
+        perform(Endpoint.INNSENDTE, TEST_TOKEN)
+            .andExpect(status().isUnauthorized)
+            .andExpect(header().string(HttpHeaders.WWW_AUTHENTICATE, containsString("error=\"invalid_token\"")))
+        verifyValidation(Endpoint.INNSENDTE, TEST_TOKEN)
+    }
+
     @ParameterizedTest
     @EnumSource(Endpoint::class)
     fun `unexpected validation failure propagates as an authentication service failure`(endpoint: Endpoint) {
@@ -152,6 +193,101 @@ class SecurityFilterChainTest {
         assertThat(exception).hasRootCauseInstanceOf(IllegalStateException::class.java)
 
         verifyValidation(endpoint, TEST_TOKEN)
+    }
+
+    @Test
+    fun `validated idporten jwt provides citizen principal and preserves jwt and scopes`() {
+        val jwt =
+            Jwt.withTokenValue(TEST_TOKEN)
+                .header("alg", "RS256")
+                .claim("iss", "https://idporten.example")
+                .claim("sub", TEST_SUBJECT)
+                .claim("pid", "test-person")
+                .claim("scope", "read write")
+                .issuedAt(Instant.parse("2026-01-01T00:00:00Z"))
+                .expiresAt(Instant.parse("2027-01-01T00:00:00Z"))
+                .build()
+        every { jwtDecoder.decode(TEST_TOKEN) } returns jwt
+
+        mockMvc.perform(
+            request(HttpMethod.GET, "/test/idporten")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $TEST_TOKEN"),
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().string("authenticated"))
+
+        verify(exactly = 1) { jwtDecoder.decode(TEST_TOKEN) }
+        verify(exactly = 0) { texasClient.validateToken(any(), any()) }
+    }
+
+    @Test
+    fun `idporten request provides citizen principal to subject handler`() {
+        val jwt =
+            Jwt.withTokenValue(TEST_TOKEN)
+                .header("alg", "RS256")
+                .claim("iss", "https://idporten.example")
+                .claim("sub", TEST_SUBJECT)
+                .claim("pid", "test-person")
+                .claim("scope", "read write")
+                .build()
+        every { jwtDecoder.decode(TEST_TOKEN) } returns jwt
+        mockMvc.perform(
+            request(HttpMethod.GET, "/test/idporten")
+                .param("checkSubjectHandler", "true")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $TEST_TOKEN"),
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().string("authenticated"))
+        verify(exactly = 1) { jwtDecoder.decode(TEST_TOKEN) }
+        verify(exactly = 0) { texasClient.validateToken(any(), any()) }
+    }
+
+    @Test
+    fun `idporten jwt without user identity is rejected`() {
+        val jwt =
+            Jwt.withTokenValue(TEST_TOKEN)
+                .header("alg", "RS256")
+                .claim("iss", "https://idporten.example")
+                .build()
+        every { jwtDecoder.decode(TEST_TOKEN) } returns jwt
+
+        mockMvc.perform(
+            request(HttpMethod.GET, "/test/idporten")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $TEST_TOKEN"),
+        )
+            .andExpect(status().isUnauthorized)
+            .andExpect(header().string(HttpHeaders.WWW_AUTHENTICATE, containsString("error=\"invalid_token\"")))
+    }
+
+    @Test
+    fun `rejected idporten jwt does not reach principal converter`() {
+        every { jwtDecoder.decode(TEST_TOKEN) } throws BadJwtException("Invalid JWT")
+
+        mockMvc.perform(
+            request(HttpMethod.GET, "/test/idporten")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $TEST_TOKEN"),
+        )
+            .andExpect(status().isUnauthorized)
+            .andExpect(header().string(HttpHeaders.WWW_AUTHENTICATE, containsString("error=\"invalid_token\"")))
+    }
+
+    @Test
+    fun `default chain permits public endpoints without authentication`() {
+        mockMvc.perform(request(HttpMethod.GET, "/internal/test"))
+            .andExpect(status().isOk)
+            .andExpect(content().string("public"))
+
+        verify(exactly = 0) { jwtDecoder.decode(any()) }
+        verify(exactly = 0) { texasClient.validateToken(any(), any()) }
+    }
+
+    @Test
+    fun `default chain rejects requests without authentication`() {
+        mockMvc.perform(request(HttpMethod.GET, "/test/idporten"))
+            .andExpect(status().isUnauthorized)
+
+        verify(exactly = 0) { jwtDecoder.decode(any()) }
+        verify(exactly = 0) { texasClient.validateToken(any(), any()) }
     }
 
     private fun perform(
@@ -213,7 +349,46 @@ class SecurityFilterChainTest {
             "/admin/unresolved",
             "/admin/soknad/{soknadId}/resolve",
         )
-        fun authenticated(principal: Principal): String = principal.name
+        fun authenticated(
+            principal: Principal,
+            request: HttpServletRequest,
+        ): String {
+            if (request.getParameter("checkSubjectHandler") != null) {
+                val authentication = principal as Authentication
+                assertThat(authentication.principal).isInstanceOf(CitizenPrincipal::class.java)
+                assertThat(DefaultSubjectHandler.getUserIdFromToken()).isEqualTo("test-person")
+                assertThat(DefaultSubjectHandler.getToken()).isEqualTo(TEST_TOKEN)
+            }
+            return principal.name
+        }
+
+        @RequestMapping("/test/idporten")
+        fun idporten(
+            authentication: Authentication,
+            request: HttpServletRequest,
+        ): String {
+            assertThat(authentication).isInstanceOf(JwtAuthenticationToken::class.java)
+            val jwtAuthentication = authentication as JwtAuthenticationToken
+            assertThat(jwtAuthentication.principal).isInstanceOf(CitizenPrincipal::class.java)
+            val principal = jwtAuthentication.principal as CitizenPrincipal
+            assertThat(principal.userId).isEqualTo("test-person")
+            assertThat(principal.token).isEqualTo(TEST_TOKEN)
+            assertThat(principal.attributes).isEqualTo(jwtAuthentication.token.claims)
+            assertThat(jwtAuthentication.tokenAttributes).isEqualTo(jwtAuthentication.token.claims)
+            assertThat(jwtAuthentication.isAuthenticated).isTrue()
+            assertThat(jwtAuthentication.token.tokenValue).isEqualTo(TEST_TOKEN)
+            assertThat(jwtAuthentication.name).isEqualTo(principal.userId)
+            assertThat(principal.authorities.map { it.authority }).containsExactlyInAnyOrder("SCOPE_read", "SCOPE_write")
+            assertThat(jwtAuthentication.authorities.map { it.authority }).contains("SCOPE_read", "SCOPE_write")
+            if (request.getParameter("checkSubjectHandler") != null) {
+                assertThat(DefaultSubjectHandler.getUserIdFromToken()).isEqualTo("test-person")
+                assertThat(DefaultSubjectHandler.getToken()).isEqualTo(TEST_TOKEN)
+            }
+            return "authenticated"
+        }
+
+        @RequestMapping("/internal/test")
+        fun publicEndpoint(): String = "public"
     }
 
     companion object {

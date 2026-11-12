@@ -184,7 +184,7 @@ class AdressebeskyttelseInterceptorTest {
                 .let { metadata -> opprettSoknad(id = metadata.soknadId) }
                 .also { soknad -> soknadRepository.save(soknad) }
 
-        every { TokenUtils.getTokenOrNull() } returns "test-token"
+        every { TokenUtils.getToken() } returns "test-token"
         every { TokenUtils.getUserIdFromToken() } returns metadata.eierPersonId
 
         soknadService.findOpenSoknadIds(metadata.eierPersonId).also { assertThat(it).hasSize(1) }

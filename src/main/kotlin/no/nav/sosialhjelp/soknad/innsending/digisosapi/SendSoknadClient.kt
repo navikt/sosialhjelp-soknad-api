@@ -25,7 +25,7 @@ class SendSoknadClient(
     @param:Qualifier(SendSoknadClientConfig.SEND_SOKNAD_WEB_CLIENT)
     private val fiksWebClient: WebClient,
 ) {
-    private val userToken get() = TokenUtils.getTokenOrNull() ?: error("Mangler userToken")
+    private val userToken get() = TokenUtils.getToken()
 
     fun lastOppFiler(
         soknadJson: String,

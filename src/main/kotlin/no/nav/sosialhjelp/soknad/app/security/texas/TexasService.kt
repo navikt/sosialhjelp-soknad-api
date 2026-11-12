@@ -54,6 +54,7 @@ class TexasServiceImpl(
         when (val tokenResponse = texasClient.validateToken(idProvider.value, token)) {
             is TokenResponse.ValidationResponse ->
                 ValidationResult(
+                    token = token,
                     active = tokenResponse.active,
                     identityProvider = idProvider,
                     claims = tokenResponse.claims.toMapNotNullValues(),

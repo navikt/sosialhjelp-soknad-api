@@ -188,7 +188,7 @@ class FiksReadClient(
     }
 
     private val maskinportenToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
-    private val userToken get() = TokenUtils.getTokenOrNull() ?: error("Mangler userToken")
+    private val userToken get() = TokenUtils.getToken()
 }
 
 data class FiksSoknaderStatusRequest(
