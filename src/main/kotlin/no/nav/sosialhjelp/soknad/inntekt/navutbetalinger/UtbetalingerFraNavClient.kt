@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
@@ -21,7 +22,6 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
-import kotlinx.coroutines.CancellationException
 
 interface UtbetalingerFraNavClient {
     suspend fun getUtbetalingerSiste40Dager(): UtbetalDataDto?
@@ -43,7 +43,7 @@ class NavUtbetalingerClientImpl(
         return runCatching { doRequest(request) }
             .onSuccess { logger.info("Hentet ${it?.size} utbetalinger fra utbetaldata tjeneste") }
             .getOrElse {
-                when(it) {
+                when (it) {
                     is CancellationException -> throw it
                     else -> {
                         logger.error("Hente utbetalinger fra Nav feilet", it)
