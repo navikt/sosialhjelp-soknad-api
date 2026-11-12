@@ -46,6 +46,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
@@ -105,6 +106,11 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         setupPdlAnswers()
         // @Transactional fungerer ikke helt som ønsket når man manipulerer data og gjør http-kall i samme test
         metadataRepository.deleteAll()
+    }
+
+    @AfterEach
+    protected fun teardown() {
+        TokenUtils.resetSubjectHandlerImpl()
     }
 
     protected fun setupMocks() {

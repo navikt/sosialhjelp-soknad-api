@@ -31,6 +31,7 @@ internal class HusbankenClientTest {
 
     @AfterEach
     internal fun tearDown() {
+        TokenUtils.resetSubjectHandlerImpl()
         mockWebServer.close()
     }
 

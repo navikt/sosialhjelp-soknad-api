@@ -330,7 +330,6 @@ class SecurityFilterChainTest {
     enum class Endpoint(val uri: String, val provider: IdentityProvider, val method: HttpMethod = HttpMethod.GET) {
         INNSENDTE("/minesaker/innsendte", IdentityProvider.TOKENX),
         AKTIVE("/dittnav/pabegynte/aktive", IdentityProvider.TOKENX),
-        HIDE("/soknad/hide/00000000-0000-0000-0000-000000000001", IdentityProvider.TOKENX),
         UNRESOLVED("/admin/unresolved", IdentityProvider.ENTRA_ID),
         RESOLVE("/admin/soknad/00000000-0000-0000-0000-000000000001/resolve", IdentityProvider.ENTRA_ID, HttpMethod.POST),
     }
@@ -345,7 +344,6 @@ class SecurityFilterChainTest {
         @RequestMapping(
             "/minesaker/innsendte",
             "/dittnav/pabegynte/aktive",
-            "/soknad/hide/{digisosId}",
             "/admin/unresolved",
             "/admin/soknad/{soknadId}/resolve",
         )
@@ -410,8 +408,7 @@ class SecurityFilterChainTest {
                     .map { acr ->
                         val allowed =
                             when (acr) {
-                                "Level4", "idporten-loa-high" -> true
-                                "Level3", "idporten-loa-substantial" -> endpoint != Endpoint.HIDE
+                                "Level3", "idporten-loa-substantial", "Level4", "idporten-loa-high" -> true
                                 else -> false
                             }
                         Arguments.of(endpoint, acr, if (allowed) 200 else 403)

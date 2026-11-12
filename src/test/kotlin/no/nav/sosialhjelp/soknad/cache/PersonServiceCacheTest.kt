@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseD
 import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,6 +28,11 @@ class PersonServiceCacheTest : AbstractIntegrationTest() {
     fun setup() {
         TokenUtils.setNewSubjectHandler(TestSubjectHandler)
         cacheManager.getCache(CACHE_NAME)?.clear()
+    }
+
+    @AfterEach
+    protected fun teardown() {
+        TokenUtils.resetSubjectHandlerImpl()
     }
 
     @Test

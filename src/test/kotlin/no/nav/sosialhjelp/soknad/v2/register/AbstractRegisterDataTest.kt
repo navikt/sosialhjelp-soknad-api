@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -44,5 +45,10 @@ abstract class AbstractRegisterDataTest {
 
         val staticSubjectHandlerImpl = TestSubjectHandler.apply { setUser(soknad.eierPersonId) }
         TokenUtils.setNewSubjectHandler(staticSubjectHandlerImpl)
+    }
+
+    @AfterEach
+    protected fun teardown() {
+        TokenUtils.resetSubjectHandlerImpl()
     }
 }
