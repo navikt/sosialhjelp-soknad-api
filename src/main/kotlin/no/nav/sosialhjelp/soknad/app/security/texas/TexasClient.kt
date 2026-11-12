@@ -54,7 +54,7 @@ class TexasClient(
         )
     }
 
-    private inline fun <reified T : TokenResponse>doFetchToken(
+    private inline fun <reified T : TokenResponse> doFetchToken(
         params: TokenRequestBody,
         endpoint: String,
     ): TokenResponse {
