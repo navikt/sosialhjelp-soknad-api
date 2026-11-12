@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
@@ -24,8 +25,8 @@ import java.util.UUID
 @Component
 class FiksReadClient(
     @param:Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
-    @param:Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
-    @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
+    @Value("\${integrasjonsid_fiks}") integrasjonsidFiks: String,
+    @Value("\${integrasjonpassord_fiks}") integrasjonpassordFiks: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {

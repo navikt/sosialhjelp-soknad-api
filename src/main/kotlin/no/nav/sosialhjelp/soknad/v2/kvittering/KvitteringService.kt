@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.kvittering
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -24,7 +24,7 @@ class KvitteringService(
             throw IkkeFunnetException("Fant ikke søknad med digisosId=$digisosId")
         }
 
-        if (digisosSak.sokerFnr != SubjectHandlerUtils.getUserIdFromToken()) {
+        if (digisosSak.sokerFnr != TokenUtils.getUserIdFromToken()) {
             log.warn("Søknad tilhører ikke innlogget bruker. digisosId=$digisosId")
             throw IkkeFunnetException("Fant ikke søknad med digisosId=$digisosId")
         }

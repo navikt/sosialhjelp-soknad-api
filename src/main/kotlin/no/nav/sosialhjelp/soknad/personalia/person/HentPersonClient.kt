@@ -12,10 +12,10 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_PERSON
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
-import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.NonBlockingTexasService
+import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
+import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
@@ -40,7 +40,7 @@ interface HentPersonClient {
 
 @Component
 class HentPersonClientImpl(
-    @param:Value("\${pdl_api_url}") private val baseurl: String,
+    @Value("\${pdl_api_url}") baseurl: String,
     @param:Value("\${pdl_api_scope}") private val pdlScope: String,
     @param:Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val texasService: NonBlockingTexasService,

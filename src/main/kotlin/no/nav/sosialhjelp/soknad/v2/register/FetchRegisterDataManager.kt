@@ -14,6 +14,7 @@ import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
 import org.slf4j.MDC
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation

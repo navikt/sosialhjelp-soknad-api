@@ -1,5 +1,4 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import org.springframework.http.MediaType

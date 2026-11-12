@@ -8,8 +8,8 @@ import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider.TOKENX
 import no.nav.sosialhjelp.soknad.app.security.texas.NonBlockingTexasService
+import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
-import no.nav.sosialhjelp.soknad.v2.register.currentUserContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.JacksonJsonDecoder
@@ -20,8 +20,8 @@ import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class AaregClient(
-    @param:Value("\${aareg_url}") private val aaregUrl: String,
-    @param:Value("\${aareg_audience}") private val aaregAudience: String,
+    @Value("\${aareg_url}") aaregUrl: String,
+    @Value("\${aareg_audience}") private val aaregAudience: String,
     private val texasService: NonBlockingTexasService,
     webClientBuilder: WebClient.Builder,
 ) {

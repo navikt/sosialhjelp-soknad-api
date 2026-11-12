@@ -80,7 +80,7 @@ class KvitteringIntegrationTest : AbstractIntegrationTest() {
                 BEARER +
                     issueToken(
                         mockOAuth2Server,
-                        userId,
+                        USER_ID,
                         issuer = TOKENX,
                         audience = "localhost:teamdigisos:sosialhjelp-soknad-api",
                     ).serialize(),
@@ -92,7 +92,7 @@ class KvitteringIntegrationTest : AbstractIntegrationTest() {
 
     private fun sak(
         fiksDigisosId: String = digisosId.toString(),
-        fnr: String = userId,
+        fnr: String = USER_ID,
         original: OriginalSoknadNAV? =
             OriginalSoknadNAV(
                 UUID.randomUUID().toString(),

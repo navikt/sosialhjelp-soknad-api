@@ -8,9 +8,9 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
-import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider.TOKENX
 import no.nav.sosialhjelp.soknad.app.security.texas.NonBlockingTexasService
+import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
@@ -21,6 +21,7 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
+import kotlinx.coroutines.CancellationException
 
 interface UtbetalingerFraNavClient {
     suspend fun getUtbetalingerSiste40Dager(): UtbetalDataDto?
@@ -41,8 +42,15 @@ class NavUtbetalingerClientImpl(
 
         return runCatching { doRequest(request) }
             .onSuccess { logger.info("Hentet ${it?.size} utbetalinger fra utbetaldata tjeneste") }
-            .onFailure { logger.error("Hente utbetalinger fra Nav feilet", it) }
-            .getOrNull()
+            .getOrElse {
+                when(it) {
+                    is CancellationException -> throw it
+                    else -> {
+                        logger.error("Hente utbetalinger fra Nav feilet", it)
+                        null
+                    }
+                }
+            }
             ?.let { UtbetalDataDto(it, false) }
     }
 

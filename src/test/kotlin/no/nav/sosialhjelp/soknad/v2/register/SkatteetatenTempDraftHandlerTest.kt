@@ -3,8 +3,9 @@ package no.nav.sosialhjelp.soknad.v2.register
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler.setUser
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
@@ -25,8 +26,7 @@ internal class SkatteetatenTempDraftHandlerTest {
 
     @BeforeEach
     fun setUp() {
-        val subjectHandler = StaticSubjectHandlerImpl().apply { setUser(UUID.randomUUID().toString()) }
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(subjectHandler)
+        TokenUtils.setNewSubjectHandler(TestSubjectHandler).apply { setUser(UUID.randomUUID().toString()) }
         okonomiService = mockk(relaxed = true)
         skatteetatenFetcher = mockk(relaxed = true)
         handler = SkatteetatenTempDraftHandler(okonomiService, skatteetatenFetcher)
@@ -34,7 +34,7 @@ internal class SkatteetatenTempDraftHandlerTest {
 
     @AfterEach
     fun tearDown() {
-        SubjectHandlerUtils.resetSubjectHandlerImpl()
+        TokenUtils.resetSubjectHandlerImpl()
     }
 
     @Test
