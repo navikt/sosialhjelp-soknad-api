@@ -22,7 +22,7 @@ class TexasClient(
         identityProvider: String,
         target: String,
     ): TokenResponse {
-        return doFetchToken(
+        return doFetchToken<TokenResponse.Success>(
             params = TokenRequestBody.GetRequest(identityProvider, target),
             endpoint = tokenEndpoint,
         )
@@ -33,7 +33,7 @@ class TexasClient(
         target: String,
         userToken: String,
     ): TokenResponse {
-        return doFetchToken(
+        return doFetchToken<TokenResponse.Success>(
             params =
                 TokenRequestBody.ExchangeRequest(
                     identityProvider = identityProvider,
@@ -48,17 +48,15 @@ class TexasClient(
         identityProvider: String,
         token: String,
     ): TokenResponse {
-        return doFetchToken(
+        return doFetchToken<TokenResponse.ValidationResponse>(
             params = TokenRequestBody.ValidateRequest(identityProvider, token),
             endpoint = introspectionEndpoint,
-            returnType = TokenResponse.ValidationResponse::class.java,
         )
     }
 
-    private fun doFetchToken(
+    private inline fun <reified T : TokenResponse>doFetchToken(
         params: TokenRequestBody,
         endpoint: String,
-        returnType: Class<out TokenResponse> = TokenResponse.Success::class.java,
     ): TokenResponse {
         val response =
             try {
@@ -67,7 +65,7 @@ class TexasClient(
                     .uri(endpoint)
                     .body(BodyInserters.fromValue(params))
                     .retrieve()
-                    .bodyToMono(returnType)
+                    .bodyToMono(T::class.java)
                     .block() ?: error("Empty response from Texas")
             } catch (e: WebClientResponseException) {
                 val error = e.responseBodyAsString
