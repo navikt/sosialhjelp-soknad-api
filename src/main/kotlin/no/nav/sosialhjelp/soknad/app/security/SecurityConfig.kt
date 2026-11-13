@@ -41,6 +41,7 @@ class SecurityConfig {
                 DITTNAV_PATH,
             )
             .csrf { it.disable() }
+            .cors { it.disable() }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
@@ -73,6 +74,7 @@ class SecurityConfig {
                 ADMIN_BASE_PATH + UNRESOLVED_PATH,
                 ADMIN_BASE_PATH + RESOLVE_PATH,
             )
+            .cors { it.disable() }
             .csrf { it.disable() }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
@@ -88,6 +90,7 @@ class SecurityConfig {
     ): SecurityFilterChain =
         http
             .csrf { it.disable() }
+            .cors { it.disable() }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
