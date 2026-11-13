@@ -7,8 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
@@ -24,6 +23,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseD
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -90,7 +90,7 @@ internal class PersonServiceTest {
 
     @BeforeEach
     internal fun setUp() {
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        TokenUtils.setNewSubjectHandler(TestSubjectHandler)
         every { mockPersonDto.forelderBarnRelasjon } returns null
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns emptyList()
@@ -98,7 +98,7 @@ internal class PersonServiceTest {
 
     @AfterEach
     internal fun tearDown() {
-        SubjectHandlerUtils.resetSubjectHandlerImpl()
+        TokenUtils.resetSubjectHandlerImpl()
         clearAllMocks()
     }
 

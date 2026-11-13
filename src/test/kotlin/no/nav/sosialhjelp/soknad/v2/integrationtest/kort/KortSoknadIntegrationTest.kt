@@ -68,6 +68,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         every { navEnhetService.findNavEnhetByAdresse(any()) } returns createNavEnhet()
         every { digisosApiService.getSoknaderForUser() } returns emptyList()
 
+        setupTexasAnswer()
         setupPdlAnswers()
     }
 
@@ -287,7 +288,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         return SoknadMetadata(
             soknadId = UUID.randomUUID(),
             soknadType = soknadType,
-            personId = userId,
+            personId = USER_ID,
             status = soknadStatus,
             mottakerKommunenummer = mottakerKommunenummer,
             digisosId = UUID.randomUUID(),

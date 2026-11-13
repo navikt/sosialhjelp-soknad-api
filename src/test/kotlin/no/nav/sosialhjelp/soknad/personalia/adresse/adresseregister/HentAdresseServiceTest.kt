@@ -3,11 +3,11 @@ package no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.Bydel
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkelNummer
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkeladresseDto
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -37,12 +37,12 @@ internal class HentAdresseServiceTest {
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        TokenUtils.setNewSubjectHandler(TestSubjectHandler)
     }
 
     @AfterEach
     internal fun tearDown() {
-        SubjectHandlerUtils.resetSubjectHandlerImpl()
+        TokenUtils.resetSubjectHandlerImpl()
     }
 
     @Test

@@ -490,7 +490,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     private fun CapturedValues.assertSoknadJson() {
         objectMapper.readValue(soknadJsonSlot.captured, JsonSoknad::class.java)
             .also { jsonSoknad ->
-                assertThat(jsonSoknad.data.personalia.personIdentifikator.verdi).isEqualTo(userId)
+                assertThat(jsonSoknad.data.personalia.personIdentifikator.verdi).isEqualTo(USER_ID)
                 assertThat(jsonSoknad.mottaker.enhetsnummer).isNotNull()
             }
     }

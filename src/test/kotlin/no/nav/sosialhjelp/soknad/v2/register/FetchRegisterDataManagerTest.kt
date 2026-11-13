@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -35,7 +35,7 @@ class FetchRegisterDataManagerTest {
         val manager = FetchRegisterDataManager(listOf(primaryFetcher, firstFetcher, secondFetcher))
 
         try {
-            SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+            TokenUtils.setNewSubjectHandler(TestSubjectHandler)
             manager.runAllRegisterDataFetchers(UUID.randomUUID())
 
             assertTrue(firstFetcherStarted.await(5, TimeUnit.SECONDS))
@@ -45,7 +45,7 @@ class FetchRegisterDataManagerTest {
             assertTrue(secondFetcherStarted.await(5, TimeUnit.SECONDS))
         } finally {
             finishFirstFetcher.countDown()
-            SubjectHandlerUtils.resetSubjectHandlerImpl()
+            TokenUtils.resetSubjectHandlerImpl()
         }
     }
 }

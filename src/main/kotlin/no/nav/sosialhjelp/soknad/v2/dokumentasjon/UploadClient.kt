@@ -6,9 +6,9 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.app.client.config.soknadJacksonMapper
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.metrics.Vedleggstatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
@@ -39,7 +39,7 @@ class UploadClient(
             .build()
 
     fun getVedleggSpesifikasjon(soknadId: UUID): JsonVedleggSpesifikasjon {
-        val userToken = SubjectHandlerUtils.getToken()
+        val userToken = TokenUtils.getToken()
         val tokenXToken = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, uploadAudience)
 
         val spec =
@@ -83,7 +83,8 @@ class UploadClient(
         vedleggType: OpplysningType,
         soknadId: UUID,
     ) {
-        val tokenXToken = texasService.exchangeToken(SubjectHandlerUtils.getToken(), IdentityProvider.TOKENX, uploadAudience)
+        val userToken = TokenUtils.getToken()
+        val tokenXToken = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, uploadAudience)
 
         webClient
             .delete()
@@ -106,7 +107,7 @@ class UploadClient(
         soknadId: UUID,
         keepMellomlagring: Boolean = false,
     ) {
-        val userToken = SubjectHandlerUtils.getToken()
+        val userToken = TokenUtils.getToken()
         val tokenXToken = texasService.exchangeToken(userToken, IdentityProvider.TOKENX, uploadAudience)
 
         webClient

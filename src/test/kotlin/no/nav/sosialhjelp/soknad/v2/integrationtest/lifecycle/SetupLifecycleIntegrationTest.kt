@@ -8,10 +8,8 @@ import io.mockk.every
 import io.mockk.slot
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksReadClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
@@ -32,6 +30,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrService
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.dokumenterSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.kommunenummerSlot
@@ -47,6 +46,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
@@ -98,9 +98,6 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var dokumentlagerClient: DokumentlagerClient
 
     @MockkBean(relaxed = true)
-    protected lateinit var texasService: TexasService
-
-    @MockkBean(relaxed = true)
     protected lateinit var kodeverkService: KodeverkService
 
     @BeforeEach
@@ -111,10 +108,15 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         metadataRepository.deleteAll()
     }
 
+    @AfterEach
+    protected fun teardown() {
+        TokenUtils.resetSubjectHandlerImpl()
+    }
+
     protected fun setupMocks() {
-        StaticSubjectHandlerImpl()
-            .apply { setUser(userId) }
-            .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
+        TestSubjectHandler
+            .apply { setUser(USER_ID) }
+            .also { TokenUtils.setNewSubjectHandler(it) }
 
         coEvery { personService.hentPerson() } returns createPersonAnswer()
         coEvery { kontonummerService.getKontonummer() } returns "12145534122"
@@ -165,7 +167,7 @@ fun createPersonAnswer(): Person {
         "Fornavnet",
         null,
         "Fornavnesen",
-        AbstractIntegrationTest.userId,
+        AbstractIntegrationTest.USER_ID,
         LocalDate.now().minusYears(30),
         "GIFT",
         listOf("NOR"),

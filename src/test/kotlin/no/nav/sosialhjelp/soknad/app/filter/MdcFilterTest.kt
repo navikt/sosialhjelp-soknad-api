@@ -5,8 +5,8 @@ import jakarta.servlet.ServletRequest
 import jakarta.servlet.ServletResponse
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_PATH
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_SOKNAD_ID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -24,12 +24,12 @@ internal class MdcFilterTest {
 
     @BeforeEach
     fun setUp() {
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        TokenUtils.setNewSubjectHandler(TestSubjectHandler)
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandlerUtils.resetSubjectHandlerImpl()
+        TokenUtils.resetSubjectHandlerImpl()
     }
 
     @Test

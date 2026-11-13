@@ -1,6 +1,4 @@
 package no.nav.sosialhjelp.soknad.v2.bostotte
-
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
@@ -21,7 +19,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/inntekt/bostotte", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BostotteController(
     private val bostotteUseCaseHandler: BostotteUseCaseHandler,

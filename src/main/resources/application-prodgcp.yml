@@ -95,18 +95,6 @@ azure_client_id: ${AZURE_APP_CLIENT_ID}
 azure_client_secret: ${AZURE_APP_CLIENT_SECRET}
 pdl_api_scope: ${PDL_API_SCOPE}
 
-no.nav.security.jwt.issuer:
-  selvbetjening:
-    discoveryurl: https://idporten.no/.well-known/openid-configuration
-    validation:
-      optional-claims: aud,nbf
-  tokenx:
-    discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
-    accepted_audience: ${TOKEN_X_CLIENT_ID}
-  entraid:
-    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-    accepted_audience: ${AZURE_APP_CLIENT_ID}
-
 # redis
 redis_host: ${REDIS_HOST_CACHE}
 redis_port: ${REDIS_PORT_CACHE}

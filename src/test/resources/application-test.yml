@@ -5,6 +5,11 @@ spring:
     allow-bean-definition-overriding: true
   cache:
     type: simple
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${IDPORTEN_ISSUER:http://localhost:8888/default}
 
 resilience4j:
   retry:
@@ -19,15 +24,6 @@ fiks.nokkelfil: svarut_public_test.pem
 feature.fiks.kryptering.enabled: false
 
 loginservice.url: http://localhost:8181/sosialhjelp/soknad-api/local/cookie
-
-no.nav.security.jwt.issuer:
-  selvbetjening:
-    discoveryurl: http://localhost:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration
-    accepted_audience: someaudience
-    proxyurl:
-  tokenx:
-    discoveryurl: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
-    accepted_audience: localhost:teamdigisos:sosialhjelp-soknad-api
 
 # maskinporten
 maskinporten_clientid: clientid
@@ -89,3 +85,7 @@ redis_password: foobar
 
 token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT:http://localhost:${mock-oauth2-server.port}/sosialhjelp/mock-alt-api/token/tokenx}
 token_endpoint: ${NAIS_TOKEN_ENDPOINT:http://localhost:${mock-oauth2-server.port}/sosialhjelp/mock-alt-api/token/maskinporten}
+token_introspection_endpoint: ${NAIS_TOKEN_INTROSPECTION_ENDPOINT:http://localhost:${mock-oauth2-server.port}/sosialhjelp/mock-alt-api/introspect}
+
+IDPORTEN_ISSUER: http://localhost:${mock-oauth2-server.port}/default
+IDPORTEN_CLIENT_ID: testclient

@@ -96,8 +96,6 @@ spec:
       value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt/login"
     - name: MASKINPORTEN_WELL_KNOWN_URL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/maskinporten"
-    - name: OIDC_ISSUER_SELVBETJENING_DISCOVERYURL
-      value: "https://sosiauth2.ekstern.dev.nav.no/default/.well-known/openid-configuration"
     - name: NORG_URL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/norg_endpoint_url"
     - name: SOKNAD_BOSTOTTE_URL
@@ -114,7 +112,11 @@ spec:
       value: "http://sosialhjelp-texas-mock/api/v1/token/exchange"
     - name: NAIS_TOKEN_ENDPOINT
       value: "http://sosialhjelp-texas-mock/api/v1/token"
+    - name: NAIS_TOKEN_INTROSPECTION_ENDPOINT
+      value: "http://sosialhjelp-texas-mock/api/v1/introspect"
     - name: SOSIALHJELP_UPLOAD_URL
       value: "http://sosialhjelp-upload-mock"
     - name: SOSIALHJELP_UPLOAD_AUDIENCE
       value: "dev-gcp:teamdigisos:sosialhjelp-upload-mock"
+    - name: IDPORTEN_ISSUER
+      value: "https://sosiauth2.ekstern.dev.nav.no/default"

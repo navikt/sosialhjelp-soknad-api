@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.netty.handler.timeout.ReadTimeoutException
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -25,7 +25,7 @@ class SendSoknadClient(
     @param:Qualifier(SendSoknadClientConfig.SEND_SOKNAD_WEB_CLIENT)
     private val fiksWebClient: WebClient,
 ) {
-    private val userToken get() = SubjectHandlerUtils.getTokenOrNull() ?: error("Mangler userToken")
+    private val userToken get() = TokenUtils.getToken()
 
     fun lastOppFiler(
         soknadJson: String,

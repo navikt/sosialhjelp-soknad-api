@@ -64,14 +64,7 @@ azure_client_secret: clientSecret
 pdl_api_scope: dummyScope
 token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT}
 token_endpoint: ${NAIS_TOKEN_ENDPOINT}
-
-no.nav.security.jwt.issuer:
-  selvbetjening:
-    discoveryurl: ${OIDC_ISSUER_SELVBETJENING_DISCOVERYURL:http://localhost:8888/default/.well-known/openid-configuration}
-    accepted_audience: default
-  tokenx:
-    discoveryurl: ${TOKEN_X_WELL_KNOWN_URL:http://localhost:8888/tokenx/.well-known/openid-configuration}
-    accepted_audience: dev-gcp:teamdigisos:sosialhjelp-soknad-api-mock
+token_introspection_endpoint: ${NAIS_TOKEN_INTROSPECTION_ENDPOINT}
 
 loginservice.url: ${LOGINSERVICE_URL:http://localhost:3008/sosialhjelp/mock-alt/login}
 
@@ -91,3 +84,7 @@ feature.fiks.kryptering.enabled: false
 springdoc:
   api-docs:
     enabled: true
+
+idporten:
+  issuer: ${IDPORTEN_ISSUER:http://localhost:8888/default}
+  audience: ${IDPORTEN_CLIENT_ID:default}

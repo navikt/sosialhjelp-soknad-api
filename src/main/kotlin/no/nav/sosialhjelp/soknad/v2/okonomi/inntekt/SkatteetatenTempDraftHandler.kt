@@ -3,8 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
@@ -24,7 +23,16 @@ class SkatteetatenTempDraftHandler(
         if (okonomiService.getBekreftelser(soknadId).any { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }) return
         if (okonomiService.getInntekter(soknadId).any { it.type == InntektType.UTBETALING_SKATTEETATEN }) return
 
-        runBlocking(Dispatchers.IO + MDCContext(MDC.getCopyOfContextMap()) + UserContextElement(getToken(), getUserIdFromToken())) {
+        runBlocking(
+            Dispatchers.IO +
+                MDCContext(
+                    MDC.getCopyOfContextMap(),
+                ) +
+                UserContextElement(
+                    TokenUtils.getToken(),
+                    TokenUtils.getUserIdFromToken(),
+                ),
+        ) {
             skatteetatenFetcher.fetchAndSave(soknadId)
         }
     }

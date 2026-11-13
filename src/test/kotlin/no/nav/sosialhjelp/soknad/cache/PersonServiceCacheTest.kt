@@ -2,15 +2,16 @@ package no.nav.sosialhjelp.soknad.cache
 
 import io.mockk.coEvery
 import io.mockk.coVerify
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.personalia.person.AdressebeskyttelseCacheConfig.Companion.CACHE_NAME
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,8 +26,13 @@ class PersonServiceCacheTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun setup() {
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        TokenUtils.setNewSubjectHandler(TestSubjectHandler)
         cacheManager.getCache(CACHE_NAME)?.clear()
+    }
+
+    @AfterEach
+    protected fun teardown() {
+        TokenUtils.resetSubjectHandlerImpl()
     }
 
     @Test

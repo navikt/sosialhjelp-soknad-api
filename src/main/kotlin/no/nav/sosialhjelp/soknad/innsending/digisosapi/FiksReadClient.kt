@@ -7,9 +7,9 @@ import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksUtils.sosialhjelpJsonMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -25,8 +25,8 @@ import java.util.UUID
 @Component
 class FiksReadClient(
     @param:Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
-    @param:Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
-    @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
+    @Value("\${integrasjonsid_fiks}") integrasjonsidFiks: String,
+    @Value("\${integrasjonpassord_fiks}") integrasjonpassordFiks: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
@@ -189,7 +189,7 @@ class FiksReadClient(
     }
 
     private val maskinportenToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
-    private val userToken get() = SubjectHandlerUtils.getTokenOrNull() ?: error("Mangler userToken")
+    private val userToken get() = TokenUtils.getToken()
 }
 
 data class FiksSoknaderStatusRequest(
