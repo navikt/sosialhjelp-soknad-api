@@ -1,8 +1,8 @@
 {
   "collection": "nav-pilot",
-  "version": "2026.11.11-094753-968a115",
+  "version": "2026.11.20-125605-3cee7c7",
   "scope": "repo",
-  "source_sha": "e493cefdc144fb09b1824dc56fcfbc28130c2c9a",
+  "source_sha": "9d9333d9e285eab14741cb3b02f5f77176da9bca",
   "installed_at": "2026-06-04T12:42:23Z",
   "files": [
     {
@@ -234,6 +234,10 @@
       "hash": "68b1ffff9f769c0a"
     },
     {
+      "path": ".github/skills/mcp-server-authoring/",
+      "hash": "d5bd23612defb37c"
+    },
+    {
       "path": ".github/skills/nais/",
       "hash": "2171eb3c7681210f",
       "revision": "e493cefdc144fb09b1824dc56fcfbc28130c2c9a"
@@ -270,8 +274,8 @@
     },
     {
       "path": ".github/skills/observability-debugging/",
-      "hash": "d09dd467d7ce45a7",
-      "revision": "a873eab96bbe29df8c1f5d50fea2c2c151d44820"
+      "hash": "b68cd05f7cf865e7",
+      "revision": "9d9333d9e285eab14741cb3b02f5f77176da9bca"
     },
     {
       "path": ".github/skills/observability-setup/",
@@ -294,6 +298,10 @@
       "revision": "e493cefdc144fb09b1824dc56fcfbc28130c2c9a"
     },
     {
+      "path": ".github/skills/repo-baseline-audit/",
+      "hash": "f45887dfe8b2f49c"
+    },
+    {
       "path": ".github/skills/repo-pii-audit/",
       "hash": "6e3eb9adae55c238"
     },
@@ -303,8 +311,8 @@
     },
     {
       "path": ".github/skills/security-owasp/",
-      "hash": "6c2dc64c5fe6b81e",
-      "revision": "e493cefdc144fb09b1824dc56fcfbc28130c2c9a"
+      "hash": "c020e45389dad61d",
+      "revision": "9d9333d9e285eab14741cb3b02f5f77176da9bca"
     },
     {
       "path": ".github/skills/security-review/",
