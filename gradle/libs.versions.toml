@@ -33,7 +33,7 @@ ninja-springmockk = "5.0.1"
 jsonassert = "1.5.3"
 netty = "4.2.21.Final"
 okhttp3 = "5.5.1"
-mock-oauth2-server = "6.1.5"
+mock-oauth2-server = "7.0.1"
 
 [libraries]
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
