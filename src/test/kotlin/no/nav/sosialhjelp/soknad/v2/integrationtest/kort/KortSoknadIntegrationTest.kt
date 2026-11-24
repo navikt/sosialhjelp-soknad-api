@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.kort
 
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
-import io.getunleash.Unleash
-import io.getunleash.UnleashContext
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
@@ -64,7 +62,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         every { uploadClient.delete(any()) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto("", emptyList())
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
-        every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
         every { navEnhetService.findNavEnhetByAdresse(any()) } returns createNavEnhet()
         every { digisosApiService.getSoknaderForUser() } returns emptyList()
 
@@ -340,9 +337,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
-
-    @MockkBean
-    private lateinit var unleash: Unleash
 
     @MockkSpyBean
     private lateinit var kortSoknadUseCaseHandler: KortSoknadUseCaseHandler
