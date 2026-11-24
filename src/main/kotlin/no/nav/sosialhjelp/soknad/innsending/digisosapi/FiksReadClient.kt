@@ -21,7 +21,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class FiksReadClient(
-    @param:Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
+    @Value("\${digisos_api_baseurl}") digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") integrasjonpassordFiks: String,
     private val texasService: TexasService,
@@ -65,6 +65,22 @@ class FiksReadClient(
                 }
                 throw FiksException("Uventet feil ved henting av søknad $digisosId hos Fiks", e)
             }.also { log.debug("Hentet søknad fra Fiks. digisosId={}", digisosId) }
+    }
+
+    fun getDigisosSakMedSporingsId(
+        digisosId: UUID,
+    ): DigisosSak {
+        val sporingsId = UUID.randomUUID().toString()
+        return runCatching { doGet<DigisosSak>(PATH_DIGISOSSAK.plus("?sporingsId=$sporingsId"), maskinportenToken, digisosId.toString()) }
+            .getOrElse { e ->
+                if (e is WebClientResponseException) {
+                    when (e.statusCode) {
+                        HttpStatus.NOT_FOUND -> throw IkkeFunnetException("DigisosSak Not Found: ${e.responseBodyAsString}", e)
+                        else -> throw FiksException("Henting av DigisosSak $digisosId hos Fiks feilet: ${e.responseBodyAsString}",e)
+                    }
+                }
+                throw FiksException("Uventet feil ved henting av søknad $digisosId hos Fiks", e)
+            }
     }
 
     fun getInnsynsfil(
@@ -132,8 +148,6 @@ class FiksReadClient(
             .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
             .block()
             ?: throw FiksException("Fiks - noe uventet feilet ved henting av innsendingstatus for søknader. Response er null?", null)
-
-
 
     companion object {
         private val log by logger()
