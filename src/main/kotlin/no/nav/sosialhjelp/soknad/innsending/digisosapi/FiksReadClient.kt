@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
+import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sosialhjelp.api.fiks.DigisosSak
-import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksUtils.sosialhjelpJsonMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.HttpStatus
@@ -19,8 +18,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
-import java.io.IOException
-import java.util.UUID
 
 @Component
 class FiksReadClient(
@@ -30,127 +27,71 @@ class FiksReadClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    private val fiksWebClient = FiksUtils.createFiksWebClient(webClientBuilder, integrasjonsidFiks, integrasjonpassordFiks)
+    private val fiksWebClient = FiksUtils.createFiksWebClient(
+        webClientBuilder.baseUrl(digisosApiEndpoint+BASE_PATH),
+        integrasjonsidFiks,
+        integrasjonpassordFiks
+    )
 
     fun getSoknader(): List<DigisosSak> {
-        val startTime = System.currentTimeMillis()
-        return try {
-            fiksWebClient
-                .get()
-                .uri("$digisosApiEndpoint/digisos/api/v1/soknader/soknader")
-                .accept(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, "Bearer $userToken")
-                .retrieve()
-                .bodyToMono<List<DigisosSak>>()
-                .block()
-                ?: throw FiksException(
-                    message = "Fiks - noe uventet feilet ved henting av søknader. Response er null?",
-                    cause = null,
-                )
-        } catch (e: WebClientResponseException) {
-            val errorResponse = e.responseBodyAsString
-            throw IllegalStateException("Henting av søknader hos Fiks feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse")
-        } catch (e: IOException) {
-            throw IllegalStateException("Henting av søknader hos Fiks feilet", e)
-        }
+        return runCatching { doGet<List<DigisosSak>>(PATH_SOKNADER, userToken) }
+            .getOrElse { e ->
+                when (e) {
+                    is WebClientResponseException -> {
+                        val errorResponse = e.responseBodyAsString
+                        throw FiksException("Henting av søknader hos Fiks feilet med status ${e.statusCode} og response: $errorResponse", e)
+                    }
+                    else -> throw FiksException("Henting av søknader hos Fiks feilet", e)
+                }
+            }
     }
 
     fun getDigisosSak(
         digisosId: UUID,
     ): DigisosSak {
-        val startTime = System.currentTimeMillis()
         log.debug("Henter søknad fra Fiks. digisosId={}", digisosId)
-        val sak =
-            try {
-                fiksWebClient
-                    .get()
-                    .uri("$digisosApiEndpoint/digisos/api/v1/soknader/{digisosId}", digisosId)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header(AUTHORIZATION, "Bearer $userToken")
-                    .retrieve()
-                    .bodyToMono<DigisosSak>()
-                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                    .block()
-                    ?: throw FiksException("Fiks - henting av søknad $digisosId ga tom respons", null)
-            } catch (e: WebClientResponseException) {
-                log.warn(
-                    "Henting av søknad fra Fiks feilet. digisosId=$digisosId status=${e.statusCode.value()} " +
-                        "tid=${System.currentTimeMillis() - startTime} ms",
-                )
-                when (e.statusCode) {
-                    HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN ->
-                        throw IkkeFunnetException("Fiks ga ${e.statusCode.value()} for digisosId=$digisosId")
-                    else ->
-                        throw FiksException("Henting av søknad $digisosId hos Fiks feilet med status ${e.statusCode.value()}", e)
-                }
-            }
 
-        log.debug("Hentet søknad fra Fiks. digisosId={}", digisosId)
-        return sak
+        return runCatching { doGet<DigisosSak>(PATH_DIGISOSSAK, userToken, digisosId.toString()) }
+            .getOrElse { e ->
+                if (e is WebClientResponseException) {
+                    when (e.statusCode) {
+                        HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN -> throw IkkeFunnetException("Fiks ga ${e.statusCode.value()}: ${e.responseBodyAsString}")
+                        else ->
+                            throw FiksException(
+                                "Henting av søknad $digisosId hos Fiks feilet med status ${e.statusCode.value()}"
+                                ,e
+                            )
+                    }
+                }
+                throw FiksException("Uventet feil ved henting av søknad $digisosId hos Fiks", e)
+            }.also { log.debug("Hentet søknad fra Fiks. digisosId={}", digisosId) }
     }
 
     fun getInnsynsfil(
         digisosId: String,
         dokumentLagerId: String,
-    ): JsonDigisosSoker {
-        val startTime = System.currentTimeMillis()
-        return try {
-            fiksWebClient
-                .get()
-                .uri(
-                    "$digisosApiEndpoint/digisos/api/v1/soknader/{digisosId}/dokumenter/{dokumentlagerId}",
-                    digisosId,
-                    dokumentLagerId,
-                )
-                .accept(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, "Bearer $userToken")
-                .retrieve()
-                .bodyToMono<JsonDigisosSoker>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .block()
-                ?: throw FiksException("Fiks - noe uventet feilet ved henting av innsynsfil. Response er null?", null)
-        } catch (e: WebClientResponseException) {
-            val errorResponse = sosialhjelpJsonMapper.readValue(e.responseBodyAsString, ErrorMessage::class.java)
-            throw IllegalStateException("Henting av innsynsfil hos Fiks feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse")
-        } catch (e: IOException) {
-            throw IllegalStateException("Henting av innsynsfil hos Fiks feilet", e)
-        }
-    }
+    ): JsonDigisosSoker =
+        runCatching { doGet<JsonDigisosSoker>(PATH_INNSYNSFIL, userToken, digisosId, dokumentLagerId) }
+            .getOrElse { e ->
+                if (e is WebClientResponseException) {
+                    throw FiksException("Henting av innsynsfil hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}", e)
+                }
+                throw FiksException("Henting av innsynsfil hos Fiks feilet", e)
+            }
 
     fun getStatusForSoknader(
         digisosIdListe: List<UUID>,
     ): FiksSoknadStatusListe {
-        val startTime = System.currentTimeMillis()
-
         val sporingsId = UUID.randomUUID().toString()
-        val fiksSoknaderStatusRequest = FiksSoknaderStatusRequest(digisosIdListe)
 
-        return try {
-            fiksWebClient
-                .post()
-                .uri("$digisosApiEndpoint/digisos/api/v1/nav/soknader/status".plus("?sporingsId=$sporingsId"))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, "BEARER $maskinportenToken")
-                .bodyValue(fiksSoknaderStatusRequest)
-                .retrieve()
-                .bodyToMono<FiksSoknadStatusListe>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .block()
-                ?: throw FiksException(
-                    message = "Fiks - noe uventet feilet ved henting av status for søknader. Response er null?",
-                    cause = null,
-                )
-        } catch (e: WebClientResponseException) {
-            val errorResponse = e.responseBodyAsString
-            throw IllegalStateException(
-                "Henting av status for søknader hos Fiks feilet etter " +
-                    "${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} " +
-                    "og response: $errorResponse. SporingsId: $sporingsId",
-            )
-        } catch (e: IOException) {
-            throw IllegalStateException("Henting av status for søknader hos Fiks feilet. SporingsId: $sporingsId", e)
-        }
+        return runCatching { doPost<FiksSoknadStatusListe>(FiksSoknaderStatusRequest(digisosIdListe), PATH_STATUS_SOKNADER.plus("?sporingsId=$sporingsId")) }
+            .getOrElse { e ->
+                when (e) {
+                    is WebClientResponseException ->
+                        throw FiksException("Henting av status for søknader hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}. SporingsId: $sporingsId", e)
+                    else -> throw FiksException("Henting av status for søknader hos Fiks feilet. SporingsId: $sporingsId", e)
+                }
+            }
     }
 
     fun getInnsendingsstatus(
@@ -158,23 +99,7 @@ class FiksReadClient(
     ): List<InnsendingStatusDto> {
         val sporingsId = UUID.randomUUID().toString()
 
-        return runCatching {
-            fiksWebClient
-                .post()
-                .uri("$digisosApiEndpoint/digisos/api/v1/nav/soknader/innsendingsstatus".plus("?sporingsId=$sporingsId"))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, "BEARER $maskinportenToken")
-                .bodyValue(InnsendingsstatusRequest(soknadIds))
-                .retrieve()
-                .bodyToMono<List<InnsendingStatusDto>>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .block()
-                ?: throw FiksException(
-                    message = "Fiks - noe uventet feilet ved henting av innsendingstatus for søknader. Response er null?",
-                    cause = null,
-                )
-        }
+        return runCatching { doPost<List<InnsendingStatusDto>>(InnsendingsstatusRequest(soknadIds), PATH_STATUS_INNSENDING.plus("?sporingsId=$sporingsId")) }
             .getOrElse { ex ->
                 when (ex) {
                     is WebClientResponseException ->
@@ -184,8 +109,40 @@ class FiksReadClient(
             }
     }
 
+    private inline fun <reified T: Any> doGet(uri: String, token: String, vararg variables: String?): T =
+        fiksWebClient.get()
+            .uri(uri, *variables)
+            .accept(MediaType.APPLICATION_JSON)
+            .header(AUTHORIZATION, "Bearer $token")
+            .retrieve()
+            .bodyToMono<T>()
+            .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+            .block()
+            ?: throw FiksException("Fiks - noe uventet feilet ved henting av data fra $uri. Response er null?", null)
+
+    private inline fun <reified T: Any> doPost(body: Any, uri: String): T =
+        fiksWebClient.post()
+            .uri(uri)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(AUTHORIZATION, "BEARER $maskinportenToken")
+            .bodyValue(body)
+            .retrieve()
+            .bodyToMono<T>()
+            .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+            .block()
+            ?: throw FiksException("Fiks - noe uventet feilet ved henting av innsendingstatus for søknader. Response er null?", null)
+
+
+
     companion object {
         private val log by logger()
+        private const val BASE_PATH = "/digisos/api/v1"
+        private const val PATH_SOKNADER = "/soknader/soknader"
+        private const val PATH_DIGISOSSAK = "/soknader/{digisosId}"
+        private const val PATH_INNSYNSFIL = "/soknader/{digisosId}/dokumenter/{dokumentlagerId}"
+        private const val PATH_STATUS_SOKNADER = "/nav/soknader/status"
+        private const val PATH_STATUS_INNSENDING = "/nav/soknader/innsendingsstatus"
     }
 
     private val maskinportenToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
