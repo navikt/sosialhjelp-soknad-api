@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
-import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.util.UUID
 
 @Component
 class FiksReadClient(
@@ -27,11 +27,12 @@ class FiksReadClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    private val fiksWebClient = FiksUtils.createFiksWebClient(
-        webClientBuilder.baseUrl(digisosApiEndpoint+BASE_PATH),
-        integrasjonsidFiks,
-        integrasjonpassordFiks
-    )
+    private val fiksWebClient =
+        FiksUtils.createFiksWebClient(
+            webClientBuilder.baseUrl(digisosApiEndpoint + BASE_PATH),
+            integrasjonsidFiks,
+            integrasjonpassordFiks,
+        )
 
     fun getSoknader(): List<DigisosSak> {
         return runCatching { doGet<List<DigisosSak>>(PATH_SOKNADER, userToken) }
@@ -58,8 +59,8 @@ class FiksReadClient(
                         HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN -> throw IkkeFunnetException("Fiks ga ${e.statusCode.value()}: ${e.responseBodyAsString}")
                         else ->
                             throw FiksException(
-                                "Henting av søknad $digisosId hos Fiks feilet med status ${e.statusCode.value()}"
-                                ,e
+                                "Henting av søknad $digisosId hos Fiks feilet med status ${e.statusCode.value()}",
+                                e,
                             )
                     }
                 }
@@ -76,7 +77,7 @@ class FiksReadClient(
                 if (e is WebClientResponseException) {
                     when (e.statusCode) {
                         HttpStatus.NOT_FOUND -> throw IkkeFunnetException("DigisosSak Not Found: ${e.responseBodyAsString}", e)
-                        else -> throw FiksException("Henting av DigisosSak $digisosId hos Fiks feilet: ${e.responseBodyAsString}",e)
+                        else -> throw FiksException("Henting av DigisosSak $digisosId hos Fiks feilet: ${e.responseBodyAsString}", e)
                     }
                 }
                 throw FiksException("Uventet feil ved henting av søknad $digisosId hos Fiks", e)
@@ -125,7 +126,11 @@ class FiksReadClient(
             }
     }
 
-    private inline fun <reified T: Any> doGet(uri: String, token: String, vararg variables: String?): T =
+    private inline fun <reified T : Any> doGet(
+        uri: String,
+        token: String,
+        vararg variables: String?,
+    ): T =
         fiksWebClient.get()
             .uri(uri, *variables)
             .accept(MediaType.APPLICATION_JSON)
@@ -136,7 +141,10 @@ class FiksReadClient(
             .block()
             ?: throw FiksException("Fiks - noe uventet feilet ved henting av data fra $uri. Response er null?", null)
 
-    private inline fun <reified T: Any> doPost(body: Any, uri: String): T =
+    private inline fun <reified T : Any> doPost(
+        body: Any,
+        uri: String,
+    ): T =
         fiksWebClient.post()
             .uri(uri)
             .accept(MediaType.APPLICATION_JSON)
