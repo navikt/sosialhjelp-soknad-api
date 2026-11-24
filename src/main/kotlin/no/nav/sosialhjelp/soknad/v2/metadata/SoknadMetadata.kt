@@ -71,9 +71,9 @@ enum class SoknadStatus {
 
 private fun SoknadMetadata.validate() {
     if (status in listOf(SoknadStatus.SENDT, SoknadStatus.MOTTATT_FSL, SoknadStatus.MANUELT_KVITTERT_UT)) {
-        if (tidspunkt.sendtInn == null) error("Mangler innsendt dato for ferdig søknad.")
-        if (mottakerKommunenummer == null) error("Mangler mottaker for ferdig søknad.")
-        if (digisosId == null) error("Mangler digisosId for ferdig søknad.")
+        if (tidspunkt.sendtInn == null) error("Mangler innsendt dato for innsendt søknad.")
+        if (mottakerKommunenummer == null) error("Mangler mottaker for innsendt søknad.")
+        if (digisosId == null) error("Mangler digisosId for innsendt søknad.")
         if (mottakerKommunenummer.length != 4) error("Kommunenummer ikke 4 siffer")
     }
 }

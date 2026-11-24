@@ -31,7 +31,7 @@ class SlettSoknaderMottattAvFagsystemJob(
         metadatas
             .mapNotNull { metadata -> metadata.getDigisosId() }
             .let { digisosIdsSendt -> digisosApiService.getDigisosIdsStatusMottatt(digisosIdsSendt) }
-            .let { digisosIdsMottatt -> metadatas.findSoknadIdsStatusMottatt(digisosIdsMottatt) }
+            .let { digisosIdsMottatt -> metadatas.findSoknadIdsForDigisosIds(digisosIdsMottatt) }
             .also { soknadIdsMottatt -> handleMottatteIds(soknadIdsMottatt) }
     }
 
@@ -40,7 +40,7 @@ class SlettSoknaderMottattAvFagsystemJob(
     private fun SoknadMetadata.getDigisosId(): UUID? =
         digisosId.also { if (digisosId == null) logger.error("DigisosId er null for $soknadId") }
 
-    private fun List<SoknadMetadata>.findSoknadIdsStatusMottatt(digisosIds: List<UUID>): List<UUID> {
+    private fun List<SoknadMetadata>.findSoknadIdsForDigisosIds(digisosIds: List<UUID>): List<UUID> {
         return this
             .filter { digisosIds.contains(it.digisosId) }
             .map { it.soknadId }
