@@ -18,8 +18,7 @@ class SjekkStatusSendtJob(
     private val metadataJobService: SoknadMetadataService,
     private val metricsService: SoknadMottattMetricsService,
     private val fiksReadClient: FiksReadClient,
-): AbstractJob(leaderElection, JOB_NAME, logger) {
-
+) : AbstractJob(leaderElection, JOB_NAME, logger) {
     @Scheduled(cron = "0 0 */4 * * MON-FRI")
     fun doCheckSoknaderStatusSendt() {
         doInJob {
@@ -62,4 +61,3 @@ class SjekkStatusSendtJob(
         private val JOB_NAME = "Sjekk soknader ikke mottatt av FS"
     }
 }
-

@@ -31,8 +31,6 @@ interface DigisosApiJobService {
     fun getDigisosIdsStatusMottatt(digisosIds: List<UUID>): List<UUID>
 
     fun checkSoknaderMottatt(soknadIds: List<UUID>): List<InnsendingStatusDto>
-
-
 }
 
 @Component
