@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt
 
-import io.getunleash.Unleash
-import io.getunleash.UnleashContext
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -25,7 +23,6 @@ class KortSoknadUseCaseHandler(
     private val uploadClient: UploadClient,
     private val digisosApiService: DigisosApiService,
     private val metadataService: SoknadMetadataServiceImpl,
-    private val unleash: Unleash,
     private val environment: Environment,
 ) {
     fun resolveKortSoknad(
@@ -45,11 +42,7 @@ class KortSoknadUseCaseHandler(
 
         val kommunenummer = nyMottaker?.getMottakerKommunenummerOrNull() ?: return
 
-        val qualifiesForKort =
-            when {
-                isKortSoknadNotEnabled(kommunenummer) -> false
-                else -> isQualifiedFromFiks(kommunenummer)
-            }
+        val qualifiesForKort = isQualifiedFromFiks(kommunenummer)
 
         when (qualifiesForKort) {
             true -> kortSoknadService.isTransitioningToKort(soknadId)
@@ -76,14 +69,6 @@ class KortSoknadUseCaseHandler(
         logger.warn("Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
         return null
     }
-
-    fun isEnabled(kommunenummer: String?): Boolean {
-        val context = kommunenummer?.let { UnleashContext.builder().addProperty("kommunenummer", it).build() } ?: UnleashContext.builder().build()
-        return unleash.isEnabled("sosialhjelp.soknad.kort_soknad", context, false)
-    }
-
-    // semantisk convenience
-    private fun isKortSoknadNotEnabled(kommunenummer: String?) = !isEnabled(kommunenummer)
 
     fun isQualifiedFromFiks(
         kommunenummer: String,
