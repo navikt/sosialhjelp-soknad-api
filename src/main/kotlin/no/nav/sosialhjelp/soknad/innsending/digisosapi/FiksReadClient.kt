@@ -39,8 +39,8 @@ class FiksReadClient(
             .getOrElse { e ->
                 when (e) {
                     is WebClientResponseException -> {
-                        val errorResponse = e.responseBodyAsString
-                        throw FiksException("Henting av søknader hos Fiks feilet med status ${e.statusCode} og response: $errorResponse", e)
+                        log.error("Henting av søknader hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}", e)
+                        throw FiksException("Henting av søknader hos Fiks feilet med status ${e.statusCode}", e)
                     }
                     else -> throw FiksException("Henting av søknader hos Fiks feilet", e)
                 }
@@ -56,7 +56,10 @@ class FiksReadClient(
             .getOrElse { e ->
                 if (e is WebClientResponseException) {
                     when (e.statusCode) {
-                        HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN -> throw IkkeFunnetException("Fiks ga ${e.statusCode.value()}: ${e.responseBodyAsString}")
+                        HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN -> {
+                            log.error("Henting av søknad hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}", e)
+                            throw IkkeFunnetException("Fiks ga ${e.statusCode.value()} ved henting av søknad $digisosId", e)
+                        }
                         else ->
                             throw FiksException(
                                 "Henting av søknad $digisosId hos Fiks feilet med status ${e.statusCode.value()}",
@@ -91,7 +94,8 @@ class FiksReadClient(
         runCatching { doGet<JsonDigisosSoker>(PATH_INNSYNSFIL, userToken, digisosId, dokumentLagerId) }
             .getOrElse { e ->
                 if (e is WebClientResponseException) {
-                    throw FiksException("Henting av innsynsfil hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}", e)
+                    log.error("Henting av innsynsfil hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}", e)
+                    throw FiksException("Henting av innsynsfil hos Fiks feilet med status ${e.statusCode}", e)
                 }
                 throw FiksException("Henting av innsynsfil hos Fiks feilet", e)
             }
@@ -104,8 +108,10 @@ class FiksReadClient(
         return runCatching { doPost<FiksSoknadStatusListe>(FiksSoknaderStatusRequest(digisosIdListe), PATH_STATUS_SOKNADER.plus("?sporingsId=$sporingsId")) }
             .getOrElse { e ->
                 when (e) {
-                    is WebClientResponseException ->
-                        throw FiksException("Henting av status for søknader hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}. SporingsId: $sporingsId", e)
+                    is WebClientResponseException -> {
+                        log.error("Henting av status for søknader hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}. SporingsId: $sporingsId", e)
+                        throw FiksException("Henting av status for søknader hos Fiks feilet med status ${e.statusCode}. SporingsId: $sporingsId", e)
+                    }
                     else -> throw FiksException("Henting av status for søknader hos Fiks feilet. SporingsId: $sporingsId", e)
                 }
             }
@@ -119,8 +125,10 @@ class FiksReadClient(
         return runCatching { doPost<List<InnsendingStatusDto>>(InnsendingsstatusRequest(soknadIds), PATH_STATUS_INNSENDING.plus("?sporingsId=$sporingsId")) }
             .getOrElse { ex ->
                 when (ex) {
-                    is WebClientResponseException ->
-                        throw FiksException("Feil ved henting av innsendingsstatus: ${ex.responseBodyAsString}. SporingsId: $sporingsId", ex)
+                    is WebClientResponseException -> {
+                        log.error("Feil ved henting av innsendingsstatus: ${ex.responseBodyAsString}. SporingsId: $sporingsId", ex)
+                        throw FiksException("Feil ved henting av innsendingsstatus. SporingsId: $sporingsId", ex)
+                    }
                     else -> throw FiksException("Uventet feil ved henting av innsendingsstatus. SporingsId: $sporingsId", ex)
                 }
             }
