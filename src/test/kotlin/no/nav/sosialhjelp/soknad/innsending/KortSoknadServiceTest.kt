@@ -34,7 +34,6 @@ class KortSoknadServiceTest {
             uploadClient = mockk(relaxed = true),
             digisosApiService = digisosApiService,
             metadataService = mockk(relaxed = true),
-            unleash = mockk(relaxed = true),
             environment = mockk<Environment> { every { activeProfiles } returns emptyArray() },
         )
 
