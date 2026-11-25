@@ -63,7 +63,7 @@ class FiksReadClient(
         digisosId: UUID,
     ): DigisosSak {
         val sporingsId = UUID.randomUUID().toString()
-        return runCatching { doGet<DigisosSak>(PATH_DIGISOSSAK.plus("?sporingsId=$sporingsId"), maskinportenToken, digisosId.toString()) }
+        return runCatching { doGet<DigisosSak>(PATH_DIGOSSAK_MED_SPORINGSID, maskinportenToken, digisosId.toString(), sporingsId) }
             .getOrElse { e ->
                 when (e) {
                     is WebClientResponseException.NotFound, is WebClientResponseException.Forbidden ->
@@ -146,6 +146,7 @@ class FiksReadClient(
         private const val BASE_PATH = "/digisos/api/v1"
         private const val PATH_SOKNADER = "/soknader/soknader"
         private const val PATH_DIGISOSSAK = "/soknader/{digisosId}"
+        private const val PATH_DIGOSSAK_MED_SPORINGSID = "/nav/soknader/{digisosId}?sporingsId={sporingsId}"
         private const val PATH_INNSYNSFIL = "/soknader/{digisosId}/dokumenter/{dokumentlagerId}"
         private const val PATH_STATUS_SOKNADER = "/nav/soknader/status"
         private const val PATH_STATUS_INNSENDING = "/nav/soknader/innsendingsstatus"
