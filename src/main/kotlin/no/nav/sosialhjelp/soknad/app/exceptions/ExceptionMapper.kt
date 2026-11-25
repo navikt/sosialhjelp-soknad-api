@@ -170,6 +170,7 @@ class ExceptionMapper(
         }
     }
 
+    // Sørger for at alle andre unntak som ikke er håndtert ikke lekker ut til klienten, men logges og returnerer 500
     @ExceptionHandler(Throwable::class)
     fun handleThrowable(e: Throwable): ResponseEntity<*> {
         log.error("Noe uventet feilet: ${e.message}", e)

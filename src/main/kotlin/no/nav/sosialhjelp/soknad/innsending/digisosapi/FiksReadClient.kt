@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -38,11 +37,8 @@ class FiksReadClient(
         return runCatching { doGet<List<DigisosSak>>(PATH_SOKNADER, userToken) }
             .getOrElse { e ->
                 when (e) {
-                    is WebClientResponseException -> {
-                        log.error("Henting av søknader hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}", e)
-                        throw FiksException("Henting av søknader hos Fiks feilet med status ${e.statusCode}", e)
-                    }
-                    else -> throw FiksException("Henting av søknader hos Fiks feilet", e)
+                    is WebClientResponseException -> throw FiksException("Henting av søknader feilet: ${e.responseBodyAsString}", e)
+                    else -> throw e
                 }
             }
     }
@@ -50,25 +46,17 @@ class FiksReadClient(
     fun getDigisosSak(
         digisosId: UUID,
     ): DigisosSak {
-        log.debug("Henter søknad fra Fiks. digisosId={}", digisosId)
+        log.debug("Henter søknad. digisosId={}", digisosId)
 
         return runCatching { doGet<DigisosSak>(PATH_DIGISOSSAK, userToken, digisosId.toString()) }
             .getOrElse { e ->
-                if (e is WebClientResponseException) {
-                    when (e.statusCode) {
-                        HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN -> {
-                            log.error("Henting av søknad hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}", e)
-                            throw IkkeFunnetException("Fiks ga ${e.statusCode.value()} ved henting av søknad $digisosId", e)
-                        }
-                        else ->
-                            throw FiksException(
-                                "Henting av søknad $digisosId hos Fiks feilet med status ${e.statusCode.value()}",
-                                e,
-                            )
-                    }
+                when (e) {
+                    is WebClientResponseException.NotFound, is WebClientResponseException.Forbidden ->
+                        throw IkkeFunnetException("Hente digisosSak feilet: ${e.responseBodyAsString}", e)
+                    is WebClientResponseException -> throw FiksException("Henting av $digisosId feilet: ${e.responseBodyAsString}", e)
+                    else -> throw e
                 }
-                throw FiksException("Uventet feil ved henting av søknad $digisosId hos Fiks", e)
-            }.also { log.debug("Hentet søknad fra Fiks. digisosId={}", digisosId) }
+            }.also { log.debug("Hentet søknad. digisosId={}", digisosId) }
     }
 
     fun getDigisosSakMedSporingsId(
@@ -77,13 +65,12 @@ class FiksReadClient(
         val sporingsId = UUID.randomUUID().toString()
         return runCatching { doGet<DigisosSak>(PATH_DIGISOSSAK.plus("?sporingsId=$sporingsId"), maskinportenToken, digisosId.toString()) }
             .getOrElse { e ->
-                if (e is WebClientResponseException) {
-                    when (e.statusCode) {
-                        HttpStatus.NOT_FOUND -> throw IkkeFunnetException("DigisosSak Not Found: ${e.responseBodyAsString}", e)
-                        else -> throw FiksException("Henting av DigisosSak $digisosId hos Fiks feilet: ${e.responseBodyAsString}", e)
-                    }
+                when (e) {
+                    is WebClientResponseException.NotFound, is WebClientResponseException.Forbidden ->
+                        throw IkkeFunnetException("Hente digisosSak feilet: ${e.responseBodyAsString}. SporingsId: $sporingsId", e)
+                    is WebClientResponseException -> throw FiksException("Henting av $digisosId feilet: ${e.responseBodyAsString}. SporingsId: $sporingsId", e)
+                    else -> throw e
                 }
-                throw FiksException("Uventet feil ved henting av søknad $digisosId hos Fiks", e)
             }
     }
 
@@ -93,11 +80,8 @@ class FiksReadClient(
     ): JsonDigisosSoker =
         runCatching { doGet<JsonDigisosSoker>(PATH_INNSYNSFIL, userToken, digisosId, dokumentLagerId) }
             .getOrElse { e ->
-                if (e is WebClientResponseException) {
-                    log.error("Henting av innsynsfil hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}", e)
-                    throw FiksException("Henting av innsynsfil hos Fiks feilet med status ${e.statusCode}", e)
-                }
-                throw FiksException("Henting av innsynsfil hos Fiks feilet", e)
+                if (e is WebClientResponseException) throw FiksException("Henting av innsynsfil feilet: ${e.responseBodyAsString}", e)
+                throw e
             }
 
     fun getStatusForSoknader(
@@ -105,15 +89,10 @@ class FiksReadClient(
     ): FiksSoknadStatusListe {
         val sporingsId = UUID.randomUUID().toString()
 
-        return runCatching { doPost<FiksSoknadStatusListe>(FiksSoknaderStatusRequest(digisosIdListe), PATH_STATUS_SOKNADER.plus("?sporingsId=$sporingsId")) }
+        return runCatching { doPost<FiksSoknadStatusListe>(body = FiksSoknaderStatusRequest(digisosIdListe), uri = PATH_STATUS_SOKNADER.plus("?sporingsId=$sporingsId")) }
             .getOrElse { e ->
-                when (e) {
-                    is WebClientResponseException -> {
-                        log.error("Henting av status for søknader hos Fiks feilet med status ${e.statusCode} og response: ${e.responseBodyAsString}. SporingsId: $sporingsId", e)
-                        throw FiksException("Henting av status for søknader hos Fiks feilet med status ${e.statusCode}. SporingsId: $sporingsId", e)
-                    }
-                    else -> throw FiksException("Henting av status for søknader hos Fiks feilet. SporingsId: $sporingsId", e)
-                }
+                if (e is WebClientResponseException) throw FiksException("Henting av status for søknader hos Fiks feilet: ${e.responseBodyAsString}. SporingsId: $sporingsId", e)
+                throw FiksException("Uventet feil ved henting av status for søknader hos Fiks. SporingsId: $sporingsId", e)
             }
     }
 
@@ -122,13 +101,10 @@ class FiksReadClient(
     ): List<InnsendingStatusDto> {
         val sporingsId = UUID.randomUUID().toString()
 
-        return runCatching { doPost<List<InnsendingStatusDto>>(InnsendingsstatusRequest(soknadIds), PATH_STATUS_INNSENDING.plus("?sporingsId=$sporingsId")) }
+        return runCatching { doPost<List<InnsendingStatusDto>>(body = InnsendingsstatusRequest(soknadIds), uri = PATH_STATUS_INNSENDING.plus("?sporingsId=$sporingsId")) }
             .getOrElse { ex ->
                 when (ex) {
-                    is WebClientResponseException -> {
-                        log.error("Feil ved henting av innsendingsstatus: ${ex.responseBodyAsString}. SporingsId: $sporingsId", ex)
-                        throw FiksException("Feil ved henting av innsendingsstatus. SporingsId: $sporingsId", ex)
-                    }
+                    is WebClientResponseException -> throw FiksException("Feil ved henting av innsendingsstatus: ${ex.responseBodyAsString}. SporingsId: $sporingsId", ex)
                     else -> throw FiksException("Uventet feil ved henting av innsendingsstatus. SporingsId: $sporingsId", ex)
                 }
             }
@@ -147,7 +123,7 @@ class FiksReadClient(
             .bodyToMono<T>()
             .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
             .block()
-            ?: throw FiksException("Fiks - noe uventet feilet ved henting av data fra $uri. Response er null?", null)
+            ?: error("Fiks - noe uventet feilet ved henting av data fra $uri. Response er null?")
 
     private inline fun <reified T : Any> doPost(
         body: Any,
@@ -157,13 +133,13 @@ class FiksReadClient(
             .uri(uri)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
-            .header(AUTHORIZATION, "BEARER $maskinportenToken")
+            .header(AUTHORIZATION, "Bearer $maskinportenToken")
             .bodyValue(body)
             .retrieve()
             .bodyToMono<T>()
             .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
             .block()
-            ?: throw FiksException("Fiks - noe uventet feilet ved henting av innsendingstatus for søknader. Response er null?", null)
+            ?: error("Fiks - noe uventet feilet ved henting av innsendingstatus for søknader. Response er null?")
 
     companion object {
         private val log by logger()
