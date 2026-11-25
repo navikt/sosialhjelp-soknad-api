@@ -19,7 +19,8 @@ class SjekkStatusSendtJob(
     private val metricsService: SoknadMottattMetricsService,
     private val fiksReadClient: FiksReadClient,
 ) : AbstractJob(leaderElection, JOB_NAME, logger) {
-    @Scheduled(cron = "0 0 */4 * * MON-FRI")
+    // TODO Hver 4 time
+    @Scheduled(cron = "0 0 */1 * * MON-FRI")
     fun doCheckSoknaderStatusSendt() {
         doInJob {
             val soknaderTooOld = metadataJobService.findOldSoknaderStatusSendt()
