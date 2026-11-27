@@ -1,8 +1,8 @@
 {
   "collection": "nav-pilot",
-  "version": "2026.11.22-213601-500cc6a",
+  "version": "2026.11.26-212607-aa4bfa8",
   "scope": "repo",
-  "source_sha": "c9a073f63ddcf5a7378f856223f64bf92285176a",
+  "source_sha": "aa4bfa85d39eca61d9e714fca3e6c43678065ce5",
   "installed_at": "2026-06-04T12:42:23Z",
   "files": [
     {
@@ -31,12 +31,13 @@
     },
     {
       "path": ".github/agents/nav-pilot-opus.agent.md",
-      "hash": "9589574e7c94010a"
+      "hash": "c2cfb4f3122115e0",
+      "revision": "aa4bfa85d39eca61d9e714fca3e6c43678065ce5"
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "a6d797b0efe8bbfb",
-      "revision": "e493cefdc144fb09b1824dc56fcfbc28130c2c9a"
+      "hash": "c4a2067e7b34ece2",
+      "revision": "aa4bfa85d39eca61d9e714fca3e6c43678065ce5"
     },
     {
       "path": ".github/agents/research.agent.md",
@@ -120,7 +121,8 @@
     },
     {
       "path": ".github/instructions/output-style.instructions.md",
-      "hash": "919ebcfd22f06b2e"
+      "hash": "cd7eac017f0d4d2a",
+      "revision": "aa4bfa85d39eca61d9e714fca3e6c43678065ce5"
     },
     {
       "path": ".github/instructions/performance.instructions.md",
@@ -223,8 +225,8 @@
     },
     {
       "path": ".github/skills/klarsprak/",
-      "hash": "0c29527df9da7db7",
-      "revision": "c9a073f63ddcf5a7378f856223f64bf92285176a"
+      "hash": "9f7800ba6bd013c1",
+      "revision": "aa4bfa85d39eca61d9e714fca3e6c43678065ce5"
     },
     {
       "path": ".github/skills/kotlin-app-config/",
@@ -236,7 +238,8 @@
     },
     {
       "path": ".github/skills/mcp-server-authoring/",
-      "hash": "4ec45295bc50f87f"
+      "hash": "8b05d3e8aa2e35b7",
+      "revision": "aa4bfa85d39eca61d9e714fca3e6c43678065ce5"
     },
     {
       "path": ".github/skills/nais/",
