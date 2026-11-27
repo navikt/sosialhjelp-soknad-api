@@ -8,9 +8,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUt
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.removeDokumentFromDokumentasjon
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import org.springframework.context.annotation.Profile
@@ -62,38 +59,6 @@ class SoknadMottakerValidator(
                 "Kommune $kommunenummer har midlertidig deaktivert mottak av søknader",
             )
         }
-    }
-}
-
-@Component
-class DocumentValidator(
-    private val dokumentasjonRepository: DokumentasjonRepository,
-    private val mellomlagerService: MellomlagerService,
-) : SoknadValidator {
-    override fun validate(soknadId: UUID) {
-        validateDocumentsExistsInMellomlager(soknadId)
-    }
-
-    private fun validateDocumentsExistsInMellomlager(soknadId: UUID) {
-        val filIdsMellomlager = mellomlagerService.getAllDokumenterMetadata(soknadId).map { it.filId }
-
-        runCatching {
-            dokumentasjonRepository.findAllBySoknadId(soknadId)
-                .forEach { dokumentasjon ->
-                    dokumentasjon.dokumenter.forEach { dokument ->
-                        when (filIdsMellomlager.find { it == dokument.dokumentId.toString() }) {
-                            null -> {
-                                logger.error(
-                                    "Dokument(${dokument.dokumentId}) på dokumentasjon(type=${dokumentasjon.type}) " +
-                                        "mangler i FIKS mellomlager. Sletter.",
-                                )
-                                dokumentasjonRepository.removeDokumentFromDokumentasjon(soknadId, dokument.dokumentId)
-                            }
-                        }
-                    }
-                }
-        }
-            .getOrElse { throw IllegalStateException("Feil ved validering av dokumenter hos mellomlager", it) }
     }
 
     companion object {

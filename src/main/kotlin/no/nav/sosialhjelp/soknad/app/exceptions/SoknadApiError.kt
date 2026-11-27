@@ -32,9 +32,6 @@ data class SoknadApiError(
                 SoknadApiErrorType.PlanlagtNedetid to "nedetid",
                 SoknadApiErrorType.PdfGenereringFeilet to "pdf_generering",
                 SoknadApiErrorType.NotFound to "soknad_not_found",
-                SoknadApiErrorType.DokumentKonverteringFeilet to "filkonvertering_error",
-                SoknadApiErrorType.DokumentUploadDuplicateFilename to "duplikat_fil",
-                SoknadApiErrorType.DokumentUploadTooLarge to "vedlegg.opplasting.feil.forStor",
                 SoknadApiErrorType.SoknadUpdateConflict to "web_application_error",
             )
 
@@ -47,11 +44,8 @@ data class SoknadApiError(
                 SoknadApiErrorType.PlanlagtNedetid to "Søknaden har planlagt nedetid nå",
                 SoknadApiErrorType.PdfGenereringFeilet to "Rendering av søknad til PDF mislyktes",
                 SoknadApiErrorType.NotFound to "Ingen søknad med denne behandlingsId funnet",
-                SoknadApiErrorType.DokumentUploadDuplicateFilename to "Fil er allerede lastet opp",
                 SoknadApiErrorType.SoknadAlleredeSendt to "Søknaden er allerede sendt inn",
                 SoknadApiErrorType.Forbidden to "Ikke tilgang til ressurs",
-                SoknadApiErrorType.DokumentUploadError to "Feil ved opplasting av dokument",
-                SoknadApiErrorType.DokumentUploadTooLarge to "Kunne ikke lagre fil fordi total filstørrelse er for stor",
                 SoknadApiErrorType.SoknadUpdateConflict to "Samtidig oppdatering av søknad",
             )
     }

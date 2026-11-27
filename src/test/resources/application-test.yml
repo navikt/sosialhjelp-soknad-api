@@ -69,13 +69,9 @@ kontoregister_api_baseurl: https://sokos-kontoregister-person.dev.intern.nav.no
 soknad.bostotte.url: http://bostotte.url
 norg_url: https://norg.url/enhet
 skatteetaten_api_baseurl: https://skatteetatenurl
-clamav_url: virusscan_not_enabled
-
-fil-konvertering_url: ${GOTENBERG_URL:https://konvertering-til-pdf.intern.dev.nav.no}
 
 # Feature-toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:local}
-virusscan_enabled: false
 scheduler.disable: false
 
 integrasjonsid_fiks: ${INTEGRASJONSID_FIKS:integrasjonsid_fiks}

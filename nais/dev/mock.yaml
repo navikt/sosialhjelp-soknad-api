@@ -54,7 +54,6 @@ spec:
         - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
       rules:
         - application: sosialhjelp-mock-alt-api-mock
-        - application: sosialhjelp-konvertering-til-pdf
         - application: sosialhjelp-upload-mock
         - application: sosialhjelp-texas-mock
   resources:
@@ -106,8 +105,6 @@ spec:
       value: "https://sosiauth2.ekstern.dev.nav.no/tokenx/.well-known/openid-configuration"
     - name: ENVIRONMENT_NAME
       value: "mock"
-    - name: GOTENBERG_URL
-      value: "http://sosialhjelp-konvertering-til-pdf/"
     - name: NAIS_TOKEN_EXCHANGE_ENDPOINT
       value: "http://sosialhjelp-texas-mock/api/v1/token/exchange"
     - name: NAIS_TOKEN_ENDPOINT

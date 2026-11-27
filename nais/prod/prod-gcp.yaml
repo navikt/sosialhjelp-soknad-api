@@ -62,13 +62,10 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: clamav
-          namespace: nais-system
         - application: digdir-krr-proxy
           namespace: team-rocket
         - application: sokos-kontoregister-person
           namespace: okonomi
-        - application: sosialhjelp-konvertering-til-pdf
         - application: sosialhjelp-upload
         - application: norg2
           namespace: org
@@ -114,8 +111,6 @@ spec:
       value: "prod-fss:arbeidsforhold:aareg-services-nais"
     - name: AAREG_URL
       value: "https://aareg-services.prod-fss-pub.nais.io/api"
-    - name: CLAMAV_URL
-      value: "http://clamav.nais-system/scan"
     - name: EREG_URL
       value: "https://ereg-services.prod-fss-pub.nais.io/"
     - name: DIGISOS_API_BASEURL
@@ -160,8 +155,6 @@ spec:
       value: "https://maskinporten.no/.well-known/oauth-authorization-server"
     - name: SWAGGER_ENABLED
       value: "true"
-    - name: GOTENBERG_URL
-      value: "http://sosialhjelp-konvertering-til-pdf/"
     - name: SOSIALHJELP_UPLOAD_URL
       value: "http://sosialhjelp-upload"
     - name: SOSIALHJELP_UPLOAD_AUDIENCE

@@ -15,7 +15,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
@@ -485,17 +484,6 @@ fun createBostotteSaker(): List<BostotteSak> =
 fun opprettDokumentasjon(
     id: UUID = UUID.randomUUID(),
     soknadId: UUID,
-    status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
+    status: DokumentasjonStatus = DokumentasjonStatus.FORVENTET,
     type: OpplysningType = UtgiftType.UTGIFTER_STROM,
-    dokumenter: Set<DokumentRef> = opprettDokumenter(dokumentIds = listOf(UUID.randomUUID())),
-): Dokumentasjon = Dokumentasjon(id, soknadId, type, status, dokumenter)
-
-fun opprettDokumenter(dokumentIds: List<UUID>): Set<DokumentRef> =
-    dokumentIds
-        .map {
-            DokumentRef(
-                dokumentId = it,
-                filnavn = "utskrift_brukskonto$dokumentIds.pdf",
-            )
-        }
-        .toSet()
+): Dokumentasjon = Dokumentasjon(id, soknadId, type, status)

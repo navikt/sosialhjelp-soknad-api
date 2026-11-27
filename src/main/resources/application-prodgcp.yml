@@ -64,8 +64,6 @@ kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL}
 norg_url: ${NORG_URL}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL}
-clamav_url: ${CLAMAV_URL}
-fil-konvertering_url: ${GOTENBERG_URL}
 
 integrasjonsid_fiks: ${INTEGRASJONSID_FIKS}
 integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS}
@@ -114,7 +112,6 @@ redis_password: ${REDIS_PASSWORD_CACHE}
 
 # feature toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-fss}
-virusscan_enabled: true
 scheduler.disable: ${SCHEDULER_DISABLE}
 sendsoknad.batch.enabled: true
 feature.fiks.kryptering.enabled: true

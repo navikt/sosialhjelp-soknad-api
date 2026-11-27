@@ -20,12 +20,6 @@ enum class SoknadApiErrorType {
     // Ingen søknad med denne behandlingsId funnet
     NotFound,
 
-    // En fil med samme filnavn eksisterer allerede i søknad
-    DokumentUploadDuplicateFilename,
-
-    // En feil oppstod ved filkonvertering
-    DokumentKonverteringFeilet,
-
     // Validering av inputdata mislyktes
     UgyldigInput,
 
@@ -40,19 +34,6 @@ enum class SoknadApiErrorType {
 
     // Søknad er allerede sendt inn
     SoknadAlleredeSendt,
-
-    // Feil ved opplasting av dokument
-    DokumentUploadError,
-
-    // Kunne ikke lagre fil fordi total filstørrelse er for stor
-    DokumentUploadTooLarge,
-
-    // Dokument ikke-støttet mediatype
-    DokumentUploadUnsupportedMediaType,
-
-    DokumentUploadFileEncrypted,
-
-    DokumentUploadPossibleVirus,
 
     // Samtidig oppdatering av søknad
     SoknadUpdateConflict,

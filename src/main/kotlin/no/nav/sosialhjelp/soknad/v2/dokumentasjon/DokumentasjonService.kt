@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
@@ -9,7 +7,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
@@ -41,39 +38,11 @@ interface DokumentasjonService {
     ): Dokumentasjon?
 }
 
-interface DokumentRefService {
-    fun getRef(
-        soknadId: UUID,
-        dokumentId: UUID,
-    ): DokumentRef?
-
-    fun addRef(
-        soknadId: UUID,
-        type: OpplysningType,
-        fiksFilId: UUID,
-        filnavn: String,
-    )
-
-    fun removeRef(
-        soknadId: UUID,
-        dokumentId: UUID,
-    )
-}
-
 @Service
 class DokumentasjonServiceImpl(
     private val dokumentasjonRepository: DokumentasjonRepository,
     private val uploadClient: UploadClient,
-) : DokumentasjonService, DokumentRefService {
-    @Transactional(readOnly = true)
-    override fun getRef(
-        soknadId: UUID,
-        dokumentId: UUID,
-    ): DokumentRef? =
-        dokumentasjonRepository.findAllBySoknadId(soknadId)
-            .flatMap { it.dokumenter }
-            .find { it.dokumentId == dokumentId }
-
+) : DokumentasjonService {
     @Transactional
     override fun opprettDokumentasjon(
         soknadId: UUID,
@@ -150,35 +119,4 @@ class DokumentasjonServiceImpl(
             InntektType.BARNEBIDRAG_MOTTAR,
             UtgiftType.BARNEBIDRAG_BETALER,
         )
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    override fun addRef(
-        soknadId: UUID,
-        type: OpplysningType,
-        fiksFilId: UUID,
-        filnavn: String,
-    ) {
-        dokumentasjonRepository.findBySoknadIdAndType(soknadId, type)
-            ?.run {
-                copy(
-                    status = DokumentasjonStatus.LASTET_OPP,
-                    dokumenter = dokumenter.plus(DokumentRef(fiksFilId, filnavn)),
-                )
-            }
-            ?.also { dokumentasjonRepository.save(it) }
-            ?: throw IkkeFunnetException("Dokumentasjon for type ${type.name} finnes ikke")
-    }
-
-    @Transactional
-    override fun removeRef(
-        soknadId: UUID,
-        dokumentId: UUID,
-    ) {
-        dokumentasjonRepository.removeDokumentFromDokumentasjon(soknadId, dokumentId)
-            ?: logger.warn("Dokument($dokumentId) ble ikke funnet på noe Dokumentasjon. Slettet tidligere?")
-    }
-
-    companion object {
-        private val logger by logger()
-    }
 }

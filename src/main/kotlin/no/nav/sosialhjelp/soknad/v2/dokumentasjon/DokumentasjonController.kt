@@ -44,22 +44,12 @@ data class DokumentasjonDto(
     val type: DokumentasjonType,
     val gruppe: VedleggGruppe = type.opplysningType.group,
     val dokumentasjonStatus: DokumentasjonStatus,
-    val dokumenter: List<DokumentDto>,
-)
-
-data class DokumentDto(
-    val dokumentId: UUID,
-    val filnavn: String,
 )
 
 private fun Dokumentasjon.toDokumentasjonDto(): DokumentasjonDto {
     return DokumentasjonDto(
         type = type.toDokumentasjonType(),
         dokumentasjonStatus = status,
-        dokumenter =
-            dokumenter.map { dokument ->
-                DokumentDto(dokumentId = dokument.dokumentId, filnavn = dokument.filnavn)
-            },
     )
 }
 

@@ -32,8 +32,6 @@ utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL:http://${mock-alt-api-host}:8
 kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/husbanken}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/skatteetaten/}
-clamav_url: virusscan_not_enabled
-fil-konvertering_url: ${GOTENBERG_URL:https://konvertering-til-pdf.intern.dev.nav.no}
 
 integrasjonsid_fiks: id1
 integrasjonpassord_fiks: pw1
@@ -73,8 +71,6 @@ no.nav.security.jwt.issuer:
     accepted_audience: dev-gcp:teamdigisos:sosialhjelp-soknad-api-mock
 
 loginservice.url: ${LOGINSERVICE_URL:http://localhost:3008/sosialhjelp/mock-alt/login}
-
-virusscan_enabled: false
 
 # redis
 redis_host: ${REDIS_HOST:localhost}

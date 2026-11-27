@@ -1,17 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import com.ninjasquad.springmockk.MockkBean
-import io.mockk.every
-import io.mockk.just
-import io.mockk.runs
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonInput
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus.LASTET_OPP
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus.LEVERT_TIDLIGERE
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.ForventetDokumentasjonDto
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
@@ -27,13 +20,9 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var dokumentasjonService: DokumentasjonService
 
-    @MockkBean
-    private lateinit var mellomlagerService: MellomlagerService
-
     @BeforeEach
     fun setUp() {
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
-        every { mellomlagerService.deleteDokument(soknadId, any()) } just runs
     }
 
     @Test
@@ -86,38 +75,6 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 assertThat(it).isNotNull()
                 assertThat(it!!.status).isEqualTo(LEVERT_TIDLIGERE)
             }
-    }
-
-    @Test
-    fun `Sette status til LEVERT TIDLIGERE skal fjerne alle dokumenter`() {
-        dokumentasjonService.opprettDokumentasjon(soknadId, InntektType.JOBB)
-            .run {
-                copy(
-                    status = LASTET_OPP,
-                    dokumenter =
-                        setOf(
-                            DokumentRef(UUID.randomUUID(), "fil1.pdf"),
-                            DokumentRef(UUID.randomUUID(), "fil2.pdf"),
-                        ),
-                )
-            }
-            .also { dokumentasjonService.updateDokumentasjon(it) }
-
-        doGet(uri = getUrl(soknadId), responseBodyClass = ForventetDokumentasjonDto::class.java)
-            .also { dto ->
-                assertThat(dto.dokumentasjon)
-                    .hasSize(1)
-                    .allMatch { it.dokumenter.size == 2 }
-            }
-
-        doPut(
-            uri = getUrl(soknadId),
-            requestBody = DokumentasjonInput(DokumentasjonType.JOBB, true),
-            responseBodyClass = ForventetDokumentasjonDto::class.java,
-        ).also { dto -> assertThat(dto.dokumentasjon.first().dokumenter).isEmpty() }
-
-        dokumentasjonService.findDokumentasjonByType(soknadId, InntektType.JOBB)
-            .also { assertThat(it!!.dokumenter).isEmpty() }
     }
 
     companion object {

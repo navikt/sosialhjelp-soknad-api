@@ -31,7 +31,7 @@ class DokumentasjonStatusUseCaseHandler(
     }
 
     private fun handleHasLevert(dokumentasjon: Dokumentasjon) {
-        dokumentasjon.copy(status = LEVERT_TIDLIGERE, dokumenter = emptySet())
+        dokumentasjon.copy(status = LEVERT_TIDLIGERE)
             .also { dokumentasjonService.updateDokumentasjon(it) }
 
         uploadClient.delete(dokumentasjon.type, dokumentasjon.soknadId)

@@ -1,10 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMediaType
-import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FileConversionException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
@@ -18,18 +14,6 @@ class ExceptionMapperTest {
     fun `skal gi 409 Conflict ved SamtidigOppdateringException`() {
         val responseEntity = exceptionMapper.handleConflictExceptions(SamtidigOppdateringException("foo"))
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.CONFLICT)
-    }
-
-    @Test
-    fun `skal gi 415 Unsupported Media Type ved UgyldigOpplastingTypeException`() {
-        val responseEntity = exceptionMapper.handleSoknadApiException(DokumentUploadUnsupportedMediaType("foo"))
-        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    }
-
-    @Test
-    fun `skal gi 413 Payload Too Large ved OpplastingException`() {
-        val responseEntity = exceptionMapper.handleDokumentUploadError(DokumentUploadError("foo"))
-        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.CONTENT_TOO_LARGE)
     }
 
     @Test
@@ -57,24 +41,6 @@ class ExceptionMapperTest {
                 TjenesteUtilgjengeligException(message = "feil", throwable = RuntimeException()),
             )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE)
-    }
-
-    @Test
-    fun `Skal gi 406 Not Acceptable hvis fil er lastet opp allerede`() {
-        val responseEntity =
-            exceptionMapper.handleSoknadApiException(
-                DokumentUploadDuplicateFilename(),
-            )
-        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.NOT_ACCEPTABLE)
-    }
-
-    @Test
-    fun `Skal gi 400 Bad Request hvis konvertering fil feiler`() {
-        val responseEntity =
-            exceptionMapper.handleSoknadApiException(
-                FileConversionException(HttpStatus.BAD_REQUEST, "Feil ved konvertering"),
-            )
-        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
     }
 
     @Test
