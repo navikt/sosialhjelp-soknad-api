@@ -4,8 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.metrics.Vedleggstatus
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.DokumentasjonToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.toVedleggStatusString
@@ -25,7 +25,7 @@ class DokumentasjonToJsonMapperTest {
     fun `Dokumentasjon uten match i upload-respons mappes med status og tom filliste`() {
         val dokList =
             listOf(
-                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = UtgiftType.UTGIFTER_STROM, status = DokumentasjonStatus.FORVENTET, dokumenter = emptySet()),
+                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = UtgiftType.UTGIFTER_STROM, status = DokumentasjonStatus.FORVENTET),
             )
         val uploadVedlegg = JsonVedleggSpesifikasjon(emptyList())
 
@@ -44,11 +44,11 @@ class DokumentasjonToJsonMapperTest {
         val tilleggsinfo = type.getVedleggTillegginfoString()
         val uploadFil = JsonFiler("kvittering.pdf")
         val uploadVedleggItem =
-            JsonVedlegg(type.getVedleggTypeString(), tilleggsinfo, status = DokumentasjonStatus.LASTET_OPP.toVedleggStatusString(), filer = listOf(uploadFil), hendelseType = JsonVedlegg.HendelseType.SOKNAD)
+            JsonVedlegg(type.getVedleggTypeString(), tilleggsinfo, status = Vedleggstatus.LastetOpp.name, filer = listOf(uploadFil), hendelseType = JsonVedlegg.HendelseType.SOKNAD)
 
         val dokList =
             listOf(
-                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = type, status = DokumentasjonStatus.LASTET_OPP, dokumenter = emptySet()),
+                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = type, status = DokumentasjonStatus.FORVENTET),
             )
         val uploadVedlegg = JsonVedleggSpesifikasjon(listOf(uploadVedleggItem))
 
@@ -67,12 +67,12 @@ class DokumentasjonToJsonMapperTest {
         val noMatchType = InntektType.STUDIELAN_INNTEKT
 
         val uploadVedleggItem =
-            JsonVedlegg(matchType.getVedleggTypeString(), matchType.getVedleggTillegginfoString(), status = DokumentasjonStatus.LASTET_OPP.toVedleggStatusString(), filer = listOf(JsonFiler("fil.pdf")))
+            JsonVedlegg(matchType.getVedleggTypeString(), matchType.getVedleggTillegginfoString(), status = Vedleggstatus.LastetOpp.name, filer = listOf(JsonFiler("fil.pdf")))
 
         val dokList =
             listOf(
-                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = matchType, status = DokumentasjonStatus.LASTET_OPP, dokumenter = emptySet()),
-                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = noMatchType, status = DokumentasjonStatus.FORVENTET, dokumenter = emptySet()),
+                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = matchType, status = DokumentasjonStatus.FORVENTET),
+                opprettDokumentasjon(soknadId = UUID.randomUUID(), type = noMatchType, status = DokumentasjonStatus.FORVENTET),
             )
         val uploadVedlegg = JsonVedleggSpesifikasjon(listOf(uploadVedleggItem))
 
@@ -82,7 +82,7 @@ class DokumentasjonToJsonMapperTest {
         assertThat(vedlegg).hasSize(2)
 
         val matched = vedlegg.find { it.type == matchType.getVedleggTypeString() }!!
-        assertThat(matched.status).isEqualTo(DokumentasjonStatus.LASTET_OPP.toVedleggStatusString())
+        assertThat(matched.status).isEqualTo(Vedleggstatus.LastetOpp.name)
         assertThat(matched.filer.map { it.filnavn }).contains("fil.pdf")
 
         val unmatched = vedlegg.find { it.type == noMatchType.getVedleggTypeString() }!!
@@ -91,40 +91,10 @@ class DokumentasjonToJsonMapperTest {
     }
 
     @Test
-    fun `Kategori med filer fra både gammelt og nytt opplastingssystem viser begge filer`() {
-        val type = UtgiftType.UTGIFTER_STROM
-        val gammelFil = "gammel-kvittering.pdf"
-        val nyFil = "ny-kvittering.pdf"
-
-        // Fil lastet opp på gammelt vis — finnes i lokal DB
-        val dokList =
-            listOf(
-                opprettDokumentasjon(
-                    soknadId = UUID.randomUUID(),
-                    type = type,
-                    status = DokumentasjonStatus.LASTET_OPP,
-                    dokumenter = setOf(DokumentRef(dokumentId = UUID.randomUUID(), filnavn = gammelFil)),
-                ),
-            )
-
-        // Fil lastet opp via TUS etter at feature-flagget ble skrudd på
-        val tusVedleggItem =
-            JsonVedlegg(type.getVedleggTypeString(), type.getVedleggTillegginfoString(), status = DokumentasjonStatus.LASTET_OPP.toVedleggStatusString(), filer = listOf(JsonFiler(nyFil)), hendelseType = JsonVedlegg.HendelseType.SOKNAD)
-        val uploadVedlegg = JsonVedleggSpesifikasjon(listOf(tusVedleggItem))
-
-        val mappedJson = DokumentasjonToJsonMapper.doMapping(dokList, uploadVedlegg, json)
-
-        val vedlegg = requireNotNull(mappedJson.vedlegg).vedlegg.orEmpty()
-        assertThat(vedlegg).hasSize(1)
-        val filerNavn = vedlegg[0].filer.map { it.filnavn }
-        assertThat(filerNavn).containsExactly(nyFil, gammelFil)
-    }
-
-    @Test
     fun `Ekstra vedlegg fra upload som ikke finnes lokalt inkluderes i resultatet`() {
         val extraType = UtgiftType.UTGIFTER_STROM
         val extraVedlegg =
-            JsonVedlegg(extraType.getVedleggTypeString(), extraType.getVedleggTillegginfoString(), status = DokumentasjonStatus.LASTET_OPP.toVedleggStatusString())
+            JsonVedlegg(extraType.getVedleggTypeString(), extraType.getVedleggTillegginfoString(), status = Vedleggstatus.LastetOpp.name)
 
         val uploadVedlegg = JsonVedleggSpesifikasjon(listOf(extraVedlegg))
 
@@ -133,62 +103,5 @@ class DokumentasjonToJsonMapperTest {
         val vedlegg = requireNotNull(mappedJson.vedlegg).vedlegg.orEmpty()
         assertThat(vedlegg).hasSize(1)
         assertThat(vedlegg[0]).isSameAs(extraVedlegg)
-    }
-
-    @Test
-    fun `Legacy-mapping - Dokumentasjon skal mappes til JsonVedlegg med filer fra dokumenter`() {
-        val json2 = createJsonInternalSoknadWithInitializedSuperObjects()
-        val dokList =
-            listOf(
-                opprettDokumentasjon(
-                    soknadId = UUID.randomUUID(),
-                    type = UtgiftType.UTGIFTER_STROM,
-                    status = DokumentasjonStatus.FORVENTET,
-                    dokumenter = emptySet(),
-                ),
-                opprettDokumentasjon(
-                    soknadId = UUID.randomUUID(),
-                    type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-                    dokumenter =
-                        setOf(
-                            DokumentRef(dokumentId = UUID.randomUUID(), filnavn = "ett filnavn"),
-                        ),
-                ),
-                opprettDokumentasjon(
-                    soknadId = UUID.randomUUID(),
-                    type = InntektType.STUDIELAN_INNTEKT,
-                    dokumenter = emptySet(),
-                ),
-            )
-
-        val mappedJson = DokumentasjonToJsonMapper.doMappingLegacy(dokList, json2)
-
-        requireNotNull(mappedJson.vedlegg).also { jsonVedleggSpek ->
-            assertThat(jsonVedleggSpek.vedlegg).hasSize(3)
-
-            dokList.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.let { dokumentasjon ->
-                assertThat(jsonVedleggSpek.vedlegg.orEmpty()).anyMatch {
-                    it.type == dokumentasjon.type.getVedleggTypeString() &&
-                        it.status == dokumentasjon.status.toVedleggStatusString() &&
-                        it.filer.size == dokumentasjon.dokumenter.size
-                }
-            }
-
-            dokList.find { it.type == UtgiftType.UTGIFTER_STROM }!!.let { dokumentasjon ->
-                assertThat(jsonVedleggSpek.vedlegg.orEmpty()).anyMatch {
-                    it.type == dokumentasjon.type.getVedleggTypeString() &&
-                        it.status == dokumentasjon.status.toVedleggStatusString() &&
-                        it.filer.isEmpty()
-                }
-            }
-
-            dokList.find { it.type == InntektType.STUDIELAN_INNTEKT }!!.let { dokumentasjon ->
-                assertThat(jsonVedleggSpek.vedlegg.orEmpty()).anyMatch {
-                    it.type == dokumentasjon.type.getVedleggTypeString() &&
-                        it.status == dokumentasjon.status.toVedleggStatusString() &&
-                        it.filer.isEmpty()
-                }
-            }
-        }
     }
 }

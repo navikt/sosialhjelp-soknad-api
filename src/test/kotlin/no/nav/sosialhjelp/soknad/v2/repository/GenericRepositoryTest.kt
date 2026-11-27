@@ -101,7 +101,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
         val dbId = UUID.randomUUID()
         dokumentasjonRepository.verifyCRUDOperations(
             originalEntity = opprettDokumentasjon(id = dbId, soknadId = soknad.id),
-            updatedEntity = opprettDokumentasjon(id = dbId, soknadId = soknad.id).copy(status = DokumentasjonStatus.LASTET_OPP),
+            updatedEntity = opprettDokumentasjon(id = dbId, soknadId = soknad.id).copy(status = DokumentasjonStatus.LEVERT_TIDLIGERE),
         )
     }
 

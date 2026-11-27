@@ -12,19 +12,11 @@ data class Dokumentasjon(
     val soknadId: UUID,
     val type: OpplysningType,
     val status: DokumentasjonStatus = DokumentasjonStatus.FORVENTET,
-    val dokumenter: Set<DokumentRef> = emptySet(),
 ) : DomainRoot {
     override fun getDbId() = id
 }
 
-@Table
-data class DokumentRef(
-    val dokumentId: UUID,
-    val filnavn: String,
-)
-
 enum class DokumentasjonStatus {
-    LASTET_OPP,
     FORVENTET,
     LEVERT_TIDLIGERE,
 }

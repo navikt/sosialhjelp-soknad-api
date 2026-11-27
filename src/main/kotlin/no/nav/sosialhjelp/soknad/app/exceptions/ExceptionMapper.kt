@@ -8,12 +8,6 @@ import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.UgyldigTelefonnummerException
 import no.nav.sosialhjelp.soknad.v2.lifecycle.MottakPabegyntException
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadFileEncrypted
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadPossibleVirus
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMediaType
-import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FileConversionException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -26,7 +20,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.context.request.WebRequest
-import org.springframework.web.multipart.MaxUploadSizeExceededException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.net.URI
 import java.time.LocalDateTime
@@ -44,7 +37,7 @@ class ExceptionMapper(
         request: WebRequest,
     ): ResponseEntity<Any> {
         log.error("Returning HTTP 400 Bad Request. message: ${ex.message}, cause: ${ex.cause}", ex)
-        return buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.DokumentUploadError))
+        return buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput))
     }
 
     @ExceptionHandler(SosialhjelpSoknadApiException::class)
@@ -84,31 +77,6 @@ class ExceptionMapper(
                 log.error("Kall til PDL feilet", e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.PdlKallFeilet))
             }
-            is DokumentUploadDuplicateFilename -> {
-                log.info("Bruker lastet opp allerede opplastet fil")
-                buildError(
-                    HttpStatus.NOT_ACCEPTABLE,
-                    SoknadApiError(SoknadApiErrorType.DokumentUploadDuplicateFilename),
-                )
-            }
-            is DokumentUploadUnsupportedMediaType -> {
-                log.warn("UgyldigOpplastingTypeException", e)
-                buildError(
-                    HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-                    SoknadApiError(SoknadApiErrorType.DokumentUploadUnsupportedMediaType, e),
-                )
-            }
-            is DokumentUploadFileEncrypted -> {
-                log.warn("DokumentUploadFileEncrypted", e)
-                buildError(
-                    HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-                    SoknadApiError(SoknadApiErrorType.DokumentUploadFileEncrypted, e),
-                )
-            }
-            is FileConversionException -> {
-                log.warn("Filkonverteringsfeil: ${e.message}", e)
-                buildError(e.httpStatus, SoknadApiError(SoknadApiErrorType.DokumentKonverteringFeilet, e))
-            }
             is OkonomiElementFinnesIkkeException -> {
                 log.error("Feil ved oppdatering av okonomi-element: ${e.message}", e)
                 buildError(HttpStatus.NOT_FOUND, SoknadApiError(SoknadApiErrorType.NotFound, e))
@@ -138,13 +106,6 @@ class ExceptionMapper(
                 buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError, e))
             }
         }
-
-    @ExceptionHandler(value = [DokumentUploadError::class])
-    @ResponseStatus(value = HttpStatus.CONTENT_TOO_LARGE)
-    fun handleDokumentUploadError(e: DokumentUploadError): ResponseEntity<SoknadApiError> {
-        log.warn("Feil ved opplasting av dokument", e)
-        return buildError(HttpStatus.CONTENT_TOO_LARGE, SoknadApiError(SoknadApiErrorType.DokumentUploadError))
-    }
 
     @ExceptionHandler(value = [AuthorizationException::class])
     fun handleAuthorizationException(e: AuthorizationException): ResponseEntity<SoknadApiError> {
@@ -200,12 +161,6 @@ class ExceptionMapper(
         )
     }
 
-    @ExceptionHandler(value = [DokumentUploadPossibleVirus::class])
-    fun handleDokumentUploadPossibleVirus(e: DokumentUploadPossibleVirus): ResponseEntity<SoknadApiError> {
-        log.warn("Mulig virusfunn ved opplasting", e)
-        return buildError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, SoknadApiError(SoknadApiErrorType.DokumentUploadPossibleVirus))
-    }
-
     @ExceptionHandler(InnsendingFeiletException::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     fun handleInnsendingFeiletException(e: InnsendingFeiletException): ResponseEntity<InnsendingFeiletError> {
@@ -218,16 +173,6 @@ class ExceptionMapper(
     fun handleSoknadLifecycleException(e: SoknadLifecycleException): ResponseEntity<SoknadApiError> {
         log.error("Ukjent feil for søknad", e)
         return buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError))
-    }
-
-    override fun handleMaxUploadSizeExceededException(
-        ex: MaxUploadSizeExceededException,
-        headers: HttpHeaders,
-        status: HttpStatusCode,
-        request: WebRequest,
-    ): ResponseEntity<Any> {
-        log.warn("Feilet opplasting", ex)
-        return buildError(HttpStatus.CONTENT_TOO_LARGE, SoknadApiError(SoknadApiErrorType.DokumentUploadTooLarge))
     }
 
     companion object {

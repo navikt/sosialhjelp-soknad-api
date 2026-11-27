@@ -23,35 +23,3 @@ interface DokumentasjonRepository :
     @Query("DELETE FROM dokumentasjon WHERE soknad_id = :soknadId")
     fun deleteAllBySoknadId(soknadId: UUID)
 }
-
-fun DokumentasjonRepository.removeDokumentFromDokumentasjon(
-    soknadId: UUID,
-    dokumentId: UUID,
-): Dokumentasjon? =
-    findDokumentasjonForDokumentOrNull(soknadId, dokumentId)
-        ?.removeDokument(dokumentId)
-        ?.updateDokumentasjon()
-        ?.let { dokumentasjon -> save(dokumentasjon) }
-
-private fun DokumentasjonRepository.findDokumentasjonForDokumentOrNull(
-    soknadId: UUID,
-    dokumentId: UUID,
-): Dokumentasjon? = findAllBySoknadId(soknadId).find { dokumentasjon -> dokumentasjon.hasDokument(dokumentId) }
-
-private fun Dokumentasjon.hasDokument(dokumentId: UUID): Boolean = dokumenter.map { it.dokumentId }.contains(dokumentId)
-
-private fun Dokumentasjon.removeDokument(dokumentId: UUID): Dokumentasjon =
-    dokumenter
-        .find { it.dokumentId == dokumentId }
-        ?.let { dokument -> copy(dokumenter = dokumenter.minus(dokument)) }
-        ?: error("Dokument finnes ikke på Dokumentasjon")
-
-private fun Dokumentasjon.updateDokumentasjon(): Dokumentasjon {
-    return when {
-        status == DokumentasjonStatus.LEVERT_TIDLIGERE -> clearDokumenter()
-        dokumenter.isEmpty() -> copy(status = DokumentasjonStatus.FORVENTET)
-        else -> copy(status = DokumentasjonStatus.LASTET_OPP)
-    }
-}
-
-private fun Dokumentasjon.clearDokumenter(): Dokumentasjon = copy(dokumenter = emptySet())

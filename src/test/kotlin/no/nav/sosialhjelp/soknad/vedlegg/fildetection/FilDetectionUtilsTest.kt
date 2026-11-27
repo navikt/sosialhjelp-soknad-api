@@ -8,30 +8,27 @@ import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.JPG_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PNG_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.TIF_FILE
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.io.File
 
 internal class FilDetectionUtilsTest {
     @Test
     fun `Test detect returnerer pdf`() {
-        val tikaType = getAndDetectExampleFile(PDF_FILE)
-        assertThat(tikaType.name).isEqualTo("PDF")
+        val mimeType = detectMimeType(PDF_FILE.readBytes())
+        assertThat(mimeType).isEqualTo("application/pdf")
     }
 
     @Test
     fun `Test detect returnerer png`() {
-        val tikaType = getAndDetectExampleFile(PNG_FILE)
-        assertThat(tikaType.name).isEqualTo("PNG")
+        val mimeType = detectMimeType(PNG_FILE.readBytes())
+        assertThat(mimeType).isEqualTo("image/png")
     }
 
     @Test
     fun `Test detect returnerer jpg`() {
-        val tikaType = getAndDetectExampleFile(JPG_FILE)
-        assertThat(tikaType.name).isEqualTo("JPEG")
+        val mimeType = detectMimeType(JPG_FILE.readBytes())
+        assertThat(mimeType).isEqualTo("image/jpeg")
     }
 
     @Test
@@ -62,18 +59,5 @@ internal class FilDetectionUtilsTest {
     fun `Test detect returnerer bmp`() {
         val mimeType = detectMimeType(BMP_FILE.readBytes())
         assertThat(mimeType).isEqualTo("image/bmp")
-    }
-
-    @Test
-    fun `Test filtype som ikke stottes`() {
-        val tempFile = File.createTempFile("test", "file")
-        val mimeType = detectMimeType(tempFile.readBytes())
-        val tikaType = FileDetectionUtils.mapToTikaType(mimeType)
-        assertThat(tikaType.name).isEqualTo("UNKNOWN")
-    }
-
-    private fun getAndDetectExampleFile(exampleFile: File): TikaFileType {
-        val mimeType = detectMimeType(exampleFile.readBytes())
-        return FileDetectionUtils.mapToTikaType(mimeType)
     }
 }

@@ -1,13 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
-import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
-import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -25,17 +21,6 @@ interface MellomlagerService {
         soknadId: UUID,
         dokumentId: UUID,
     ): MellomlagretDokument
-
-    fun uploadDokument(
-        soknadId: UUID,
-        data: ByteArray,
-        orginaltFilnavn: String,
-    ): MellomlagretDokument
-
-    fun deleteDokument(
-        soknadId: UUID,
-        dokumentId: UUID,
-    )
 }
 
 // Eksterne kall skal aldri inngå i en transaksjon
@@ -43,7 +28,6 @@ interface MellomlagerService {
 @Service
 class FiksDokumentService(
     private val mellomlagringClient: MellomlagringClient,
-    private val virusScanner: VirusScanner,
 ) : MellomlagerService {
     override fun getAllDokumenterMetadata(soknadId: UUID): List<MellomlagretDokument> =
         mellomlagringClient.hentDokumenterMetadata(soknadId.toString())
@@ -71,38 +55,6 @@ class FiksDokumentService(
                     dokumentId.toString(),
                 ),
         )
-    }
-
-    override fun uploadDokument(
-        soknadId: UUID,
-        data: ByteArray,
-        orginaltFilnavn: String,
-    ): MellomlagretDokument {
-        virusScanner.scan(filnavn = orginaltFilnavn, data = data, soknadId = soknadId)
-
-        val nyttFilnavn = VedleggUtils.validerFilOgReturnerNyttFilnavn(orginaltFilnavn, data)
-
-        return mellomlagringClient.lastOppDokument(
-            navEksternId = soknadId.toString(),
-            filnavn = nyttFilnavn,
-            data = data,
-        )
-            .let { dto -> dto.mellomlagringMetadataList?.firstOrNull() }?.toMellomlagretDokument(data)
-            ?: throw FiksException("Klarte ikke å laste opp dokument: Dto er null", null)
-    }
-
-    override fun deleteDokument(
-        soknadId: UUID,
-        dokumentId: UUID,
-    ) {
-        mellomlagringClient.hentDokumenterMetadata(soknadId.toString())
-            ?.let { dto -> dto.mellomlagringMetadataList?.find { it.filId == dokumentId.toString() } }
-            ?.also { metadata -> mellomlagringClient.slettDokument(soknadId.toString(), metadata.filId) }
-            ?: logger.warn("Kunne ikke finne dokument for sletting $dokumentId")
-    }
-
-    companion object {
-        private val logger by logger()
     }
 }
 

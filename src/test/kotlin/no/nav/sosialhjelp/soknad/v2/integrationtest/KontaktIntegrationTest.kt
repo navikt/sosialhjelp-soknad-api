@@ -24,7 +24,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoSe
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
@@ -55,7 +54,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDate
-import java.util.UUID
 
 class KontaktIntegrationTest : AbstractIntegrationTest() {
     @Autowired
@@ -251,8 +249,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             Dokumentasjon(
                 soknadId = lagretSoknad.id,
                 type = FormueType.FORMUE_BSU,
-                status = DokumentasjonStatus.LASTET_OPP,
-                dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf")),
+                status = DokumentasjonStatus.FORVENTET,
             ),
         )
 
@@ -383,8 +380,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             Dokumentasjon(
                 soknadId = lagretSoknad.id,
                 type = AnnenDokumentasjonType.BEHOV,
-                status = DokumentasjonStatus.LASTET_OPP,
-                dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf")),
+                status = DokumentasjonStatus.FORVENTET,
             ),
         )
 
@@ -394,7 +390,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
         every { uploadClient.delete(lagretSoknad.id) } just runs
-        every { mellomlagringClient.slettDokument(any(), any()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
 
         every { fiksReadClient.getSoknader() } returns
@@ -423,8 +418,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id).find { it.type == AnnenDokumentasjonType.BEHOV }!!
             .run {
                 copy(
-                    status = DokumentasjonStatus.LASTET_OPP,
-                    dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf")),
+                    status = DokumentasjonStatus.FORVENTET,
                 )
             }
             .also { dokumentasjonRepository.save(it) }
