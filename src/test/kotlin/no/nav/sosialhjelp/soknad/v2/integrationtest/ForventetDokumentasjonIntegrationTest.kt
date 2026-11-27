@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
+import io.mockk.verify
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonInput
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus.LEVERT_TIDLIGERE
@@ -75,6 +76,19 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 assertThat(it).isNotNull()
                 assertThat(it!!.status).isEqualTo(LEVERT_TIDLIGERE)
             }
+    }
+
+    @Test
+    fun `Sette status til LEVERT TIDLIGERE skal slette opplastede dokumenter i upload`() {
+        dokumentasjonService.opprettDokumentasjon(soknadId, InntektType.JOBB)
+
+        doPut(
+            uri = getUrl(soknadId),
+            requestBody = DokumentasjonInput(DokumentasjonType.JOBB, true),
+            responseBodyClass = ForventetDokumentasjonDto::class.java,
+        )
+
+        verify(exactly = 1) { uploadClient.delete(InntektType.JOBB, soknadId) }
     }
 
     companion object {

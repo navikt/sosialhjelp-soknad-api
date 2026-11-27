@@ -53,6 +53,15 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             .also { bytes -> assertThat(bytes).isEqualTo(pdfFil.readBytes()) }
     }
 
+    @Test
+    fun `Skal returnere 404 nar dokument ikke finnes i mellomlagring`() {
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(soknad.id.toString(), emptyList())
+
+        doGetFullResponse(uri = getUrl(soknad.id, UUID.randomUUID()))
+            .expectStatus().isNotFound
+    }
+
     private val pdfFil = ExampleFileRepository.PDF_FILE
 
     companion object {
