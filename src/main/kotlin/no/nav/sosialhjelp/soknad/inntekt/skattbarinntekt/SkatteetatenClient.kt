@@ -1,12 +1,13 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.app.security.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
+import no.nav.sosialhjelp.soknad.app.subjecthandler.currentUserContext
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Sokedata
 import org.springframework.beans.factory.annotation.Value
@@ -21,7 +22,7 @@ import java.time.format.DateTimeFormatter
 
 @Component
 class SkatteetatenClient(
-    @param:Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
+    @Value("\${skatteetaten_api_baseurl}") baseurl: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
@@ -30,10 +31,10 @@ class SkatteetatenClient(
             .baseUrl(baseurl)
             .build()
 
-    fun hentSkattbarinntekt(): SkattbarInntektResponse =
+    suspend fun hentSkattbarinntekt(): SkattbarInntektResponse =
         runCatching { doHentSkattbarInntekt(createSokedata()) }.getOrElse { e -> handleError(e) }
 
-    private fun doHentSkattbarInntekt(sokedata: Sokedata): SkattbarInntektResponse {
+    private suspend fun doHentSkattbarInntekt(sokedata: Sokedata): SkattbarInntektResponse {
         return skatteetatenWebClient.get()
             .uri(
                 "{personidentifikator}/inntekter?fraOgMed={fom}&tilOgMed={tom}",
@@ -45,7 +46,7 @@ class SkatteetatenClient(
             .header(HttpHeaders.AUTHORIZATION, BEARER + getMaskinportenToken())
             .retrieve()
             .bodyToMono<SkattbarInntekt>()
-            .block()
+            .awaitSingleOrNull()
             ?.let { SkattbarInntektResponse.Success(it) }
             ?: error("Respons fra Skatteetaten er null?")
     }
@@ -60,9 +61,9 @@ class SkatteetatenClient(
             else -> SkattbarInntektResponse.Error("Klarer ikke hente skatteopplysninger", e)
         }
 
-    private fun createSokedata(): Sokedata {
+    private suspend fun createSokedata(): Sokedata {
         return Sokedata(
-            identifikator = SubjectHandlerUtils.getUserIdFromToken(),
+            identifikator = currentUserContext().userId,
             fom = LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()),
             tom = LocalDate.now(),
         )

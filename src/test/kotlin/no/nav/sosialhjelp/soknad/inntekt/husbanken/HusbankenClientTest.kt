@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.apache.commons.io.IOUtils
@@ -24,13 +24,14 @@ internal class HusbankenClientTest {
 
     @BeforeEach
     fun setup() {
-        StaticSubjectHandlerImpl()
+        TestSubjectHandler
             .apply { setUser("123") }
-            .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
+            .also { TokenUtils.setNewSubjectHandler(it) }
     }
 
     @AfterEach
     internal fun tearDown() {
+        TokenUtils.resetSubjectHandlerImpl()
         mockWebServer.close()
     }
 

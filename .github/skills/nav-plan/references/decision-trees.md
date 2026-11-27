@@ -7,11 +7,11 @@
 | Caller | Auth-mekanisme | Nais-konfigurasjon |
 |--------|---------------|-------------------|
 | Innbygger via nettleser | ID-porten | `idporten.enabled: true` |
-| Saksbehandler via nettleser | Azure AD | `azure.application.enabled: true` |
+| Saksbehandler via nettleser | Entra ID | `azure.application.enabled: true` |
 | Annen Nav-tjeneste med brukerkontext | TokenX | `tokenx.enabled: true` |
-| Annen Nav-tjeneste uten brukerkontext | Azure AD client_credentials | `azure.application.enabled: true` |
+| Annen Nav-tjeneste uten brukerkontext | Entra ID client_credentials | `azure.application.enabled: true` |
 | Ekstern partner/system | Maskinporten | `maskinporten.enabled: true` |
-| Intern batch/cron | Azure AD client_credentials | `azure.application.enabled: true` |
+| Intern batch/cron | Entra ID client_credentials | `azure.application.enabled: true` |
 
 ### Steg 2: Token-validering og exchange
 
@@ -89,7 +89,7 @@ class VedtakRiver(rapidsConnection: RapidsConnection) : River.PacketListener {
 # Dev (Nais)
 gcp:
   sqlInstances:
-    - type: POSTGRES_15
+    - type: POSTGRES_18
       tier: db-f1-micro
       databases:
         - name: myapp-db
@@ -97,7 +97,7 @@ gcp:
 # Prod (Nais)
 gcp:
   sqlInstances:
-    - type: POSTGRES_15
+    - type: POSTGRES_18
       tier: db-custom-1-3840
       diskAutoresize: true
       highAvailability: true
@@ -377,7 +377,7 @@ Hva slags endring er dette?
 │       ✅ Rask feedback, isolert, billig
 │       Dekk: normalflyt, edge cases, feilhåndtering
 │
-├── API-endring (nytt endepunkt, endret kontrakt)
+├── API-endring (nytt endpoint, endret kontrakt)
 │   ├── Controller-slice-test (@WebMvcTest / ktor testApplication)
 │   │   Dekk: routing, validering, serialisering, feilkoder
 │   │
@@ -468,7 +468,7 @@ Hva påvirker endringen din?
 1. Direkte avhengigheter
    ├── Hvem kaller mitt API?
    │   Sjekk: accessPolicy.inbound i Nais-manifest
-   │   Sjekk: Søk etter tjeneste-/endepunktnavnet i navikt org
+   │   Sjekk: Søk etter tjeneste-/endpointnavnet i navikt org
    │
    ├── Hvem konsumerer mine Kafka-hendelser?
    │   Sjekk: Rapids & Rivers validate() med min @event_name

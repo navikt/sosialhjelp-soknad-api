@@ -1,20 +1,14 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
-
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/inntekt/skattbarinntekt", produces = [MediaType.APPLICATION_JSON_VALUE])
 class InntektSkattetatenController(
     private val useCaseHandler: InntektSkatteetatenUseCaseHandler,
@@ -28,18 +22,8 @@ class InntektSkattetatenController(
                 SkattbarInntektDto(
                     inntektSkatteetaten = it.inntekt?.toInntektFraOrganisasjonDtos() ?: emptyList(),
                     inntektFraSkatteetatenFeilet = it.getFailed,
-                    samtykke = it.samtykke?.toSamtykkeDto(),
                 )
             }
-    }
-
-    @PutMapping("/samtykke")
-    fun updateSamtykke(
-        @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody samtykke: Boolean,
-    ): SkattbarInntektDto {
-        useCaseHandler.updateSamtykke(soknadId, samtykke)
-        return getSkattbarInntekt(soknadId)
     }
 }
 
@@ -77,21 +61,13 @@ private fun Utbetaling.toUtbetalingDto(): UtbetalingFraSkatteetatenDto {
     )
 }
 
-private fun Bekreftelse.toSamtykkeDto() = SamtykkeDto(verdi, samtykkeTidspunkt = tidspunkt.toString())
-
 data class SkattbarInntektDto(
     val inntektSkatteetaten: List<InntektFraOrganisasjonDto>,
     val inntektFraSkatteetatenFeilet: Boolean? = null,
-    val samtykke: SamtykkeDto? = null,
 )
 
 data class InntektFraOrganisasjonDto(
     val organisasjoner: List<OrganisasjonDto>,
-)
-
-data class SamtykkeDto(
-    val verdi: Boolean,
-    val samtykkeTidspunkt: String,
 )
 
 data class OrganisasjonDto(

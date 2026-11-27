@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerService
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils
+import no.nav.sosialhjelp.soknad.util.TestSubjectHandler
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtException
 import no.nav.sosialhjelp.soknad.v2.AntallSoknaderSendtValidator
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
@@ -29,14 +29,14 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
         metadataRepository.deleteAll()
-        StaticSubjectHandlerImpl()
-            .apply { setUser(userId) }
-            .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
+        TestSubjectHandler
+            .apply { setUser(USER_ID) }
+            .also { TokenUtils.setNewSubjectHandler(it) }
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandlerUtils.resetSubjectHandlerImpl()
+        TokenUtils.resetSubjectHandlerImpl()
     }
 
     @Test
@@ -96,8 +96,8 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `validering ignorerer soknader med status OPPRETTET og INNSENDING_FEILET`() {
-        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.OPPRETTET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
-        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.INNSENDING_FEILET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
+        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.OPPRETTET, personId = USER_ID, innsendtDato = nowWithMillis().minusHours(1)))
+        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.INNSENDING_FEILET, personId = USER_ID, innsendtDato = nowWithMillis().minusHours(1)))
         repeat(maksAntallSoknader - 1) { sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1)) }
 
         assertThatCode {
@@ -109,7 +109,7 @@ class AntallSoknaderSendtValidatorIntegrationTest : AbstractIntegrationTest() {
         metadataRepository.save(
             opprettSoknadMetadata(
                 status = SoknadStatus.SENDT,
-                personId = userId,
+                personId = USER_ID,
                 innsendtDato = sendtInn,
             ),
         )

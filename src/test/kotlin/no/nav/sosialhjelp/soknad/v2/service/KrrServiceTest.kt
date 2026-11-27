@@ -4,10 +4,10 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.test.runTest
+import no.nav.sosialhjelp.soknad.app.subjecthandler.UserContextElement
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KontaktInfoResponse
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrClient
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrService
-import no.nav.sosialhjelp.soknad.v2.register.UserContextElement
 import no.nav.sosialhjelp.soknad.v2.service.KrrServiceTest.Companion.MOBILNUMMER
 import no.nav.sosialhjelp.soknad.v2.service.KrrServiceTest.Companion.PERSON_ID
 import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService

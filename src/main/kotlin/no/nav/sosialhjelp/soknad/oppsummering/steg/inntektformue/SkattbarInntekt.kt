@@ -1,12 +1,10 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -14,8 +12,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Svar
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
-import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.getBekreftelse
-import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue
 
 class SkattbarInntekt {
     fun getAvsnitt(
@@ -34,18 +30,8 @@ class SkattbarInntekt {
         opplysninger: JsonOkonomiopplysninger,
         fikkFeilMotSkatteetaten: Boolean,
     ): List<Sporsmal> {
-        val harSkatteetatenSamtykke = harBekreftelseTrue(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE)
         val sporsmal = mutableListOf<Sporsmal>()
-        if (!harSkatteetatenSamtykke) {
-            sporsmal.add(
-                Sporsmal(
-                    tittel = "utbetalinger.inntekt.skattbar.mangler_samtykke",
-                    erUtfylt = true,
-                    felt = null,
-                ),
-            )
-        }
-        if (harSkatteetatenSamtykke && fikkFeilMotSkatteetaten) {
+        if (fikkFeilMotSkatteetaten) {
             sporsmal.add(
                 Sporsmal(
                     tittel = "utbetalinger.skattbar.kontaktproblemer.oppsummering",
@@ -54,11 +40,7 @@ class SkattbarInntekt {
                 ),
             )
         }
-        if (harSkatteetatenSamtykke && !fikkFeilMotSkatteetaten) {
-            getBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE)
-                ?.let { bekreftelsesTidspunktSporsmal(it) }
-                ?.let { sporsmal.add(it) }
-
+        if (!fikkFeilMotSkatteetaten) {
             sporsmal.add(
                 Sporsmal(
                     tittel = "utbetalinger.inntekt.skattbar.inntekt.tittel",
@@ -68,20 +50,6 @@ class SkattbarInntekt {
             )
         }
         return sporsmal
-    }
-
-    private fun bekreftelsesTidspunktSporsmal(skatteetatenBekreftelse: JsonOkonomibekreftelse): Sporsmal {
-        return Sporsmal(
-            tittel = "utbetalinger.inntekt.skattbar.har_gitt_samtykke",
-            erUtfylt = true,
-            felt =
-                listOf(
-                    Felt(
-                        type = Type.TEKST,
-                        svar = createSvar(skatteetatenBekreftelse.bekreftelsesDato, SvarType.TIDSPUNKT),
-                    ),
-                ),
-        )
     }
 
     private fun skattbarInntektFelter(utbetalinger: List<JsonOkonomiOpplysningUtbetaling>?): List<Felt> {

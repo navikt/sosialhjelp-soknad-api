@@ -103,8 +103,8 @@ spec:
       memory: 1380Mi
   envFrom:
     - secret: fiks-integrasjon-secret
-    - secret: testbruker-skatteetaten
     - secret: sosialhjelp-soknad-api-unleash-api-token
+    - secret: idporten-sosialhjelp
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: "preprod,log-kibana"
@@ -116,6 +116,8 @@ spec:
       value: "https://ereg-services.dev-fss-pub.nais.io/"
     - name: DIGISOS_API_BASEURL
       value: "https://api.fiks.test.ks.no/"
+    - name: FIKS_DOKUMENTLAGER_ENDPOINT_URL
+      value: "https://minside.fiks.test.ks.no"
     - name: KODEVERK_URL
       value: "https://kodeverk-api.nav.no"
     - name: KODEVERK_SCOPE

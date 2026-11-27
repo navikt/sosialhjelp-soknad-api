@@ -53,6 +53,7 @@ springdoc:
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
+fiks_dokumentlager_endpoint_url: ${FIKS_DOKUMENTLAGER_ENDPOINT_URL}
 ereg_url: ${EREG_URL}
 aareg_url: ${AAREG_URL}
 krr_url: ${KRR_URL}
@@ -96,16 +97,6 @@ azure_client_secret: ${AZURE_APP_CLIENT_SECRET}
 pdl_api_scope: ${PDL_API_SCOPE}
 
 loginservice.url: ${LOGINSERVICE_URL}
-
-no.nav.security.jwt.issuer:
-  selvbetjening:
-    discoveryurl: https://test.idporten.no/.well-known/openid-configuration
-    validation:
-      optional-claims: aud,nbf
-    proxyurl: ""
-  tokenx:
-    discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
-    accepted_audience: ${TOKEN_X_CLIENT_ID}
 
 # redis
 redis_host: ${REDIS_HOST_CACHE}

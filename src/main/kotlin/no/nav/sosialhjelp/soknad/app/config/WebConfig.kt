@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-@Profile("!no-interceptor)")
+@Profile("!no-interceptor")
 class WebConfig(
     private val soknadApiInterceptors: List<SoknadApiHandlerInterceptor>,
 ) : WebMvcConfigurer {

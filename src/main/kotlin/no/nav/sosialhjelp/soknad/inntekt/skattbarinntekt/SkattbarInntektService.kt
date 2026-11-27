@@ -15,7 +15,7 @@ import java.time.LocalDate
 class SkattbarInntektService(
     private val skatteetatenClient: SkatteetatenClient,
 ) {
-    fun hentInntekt(): List<Utbetaling> {
+    suspend fun hentInntekt(): List<Utbetaling> {
         logger.info("Henter skattbar inntekt fra Skatteetaten")
 
         val skattbarInntekt =

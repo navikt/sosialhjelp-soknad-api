@@ -1,12 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.coEvery
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektResponse
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
@@ -34,7 +32,7 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @BeforeEach
     fun mockAnswer() {
-        every { skatteetatenClient.hentSkattbarinntekt() } returns readResponseFromPath()
+        coEvery { skatteetatenClient.hentSkattbarinntekt() } returns readResponseFromPath()
     }
 
     @Test
@@ -47,7 +45,6 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
                 responseBodyClass = SkattbarInntektDto::class.java,
             )
 
-        assertThat(dto.samtykke?.verdi).isTrue()
         assertThat(dto.inntektFraSkatteetatenFeilet).isFalse()
 
         assertThat(dto.inntektSkatteetaten).hasSize(inntekt.inntektDetaljer.detaljer.size)
@@ -83,7 +80,6 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
                 responseBodyClass = SkattbarInntektDto::class.java,
             )
 
-        assertThat(dto.samtykke?.verdi).isTrue()
         assertThat(dto.inntektFraSkatteetatenFeilet).isFalse()
 
         assertThat(dto.inntektSkatteetaten).hasSize(1)
@@ -110,76 +106,8 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
             }
     }
 
-    @Test
-    fun `Sette samtykke til true skal trigge innhenting av data`() {
-        okonomiService.getBekreftelser(soknad.id).let { assertThat(it).isEmpty() }
-        okonomiService.getInntekter(soknad.id).let { assertThat(it).isEmpty() }
-
-        doPut(
-            uri = updateUrl(soknad.id),
-            requestBody = true,
-            responseBodyClass = SkattbarInntektDto::class.java,
-        ).also {
-            assertThat(it.samtykke?.verdi).isTrue()
-            assertThat(it.inntektSkatteetaten).hasSize(2)
-        }
-
-        verify(exactly = 1) { skatteetatenClient.hentSkattbarinntekt() }
-
-        okonomiService.getBekreftelser(soknad.id).let { bekreftelser ->
-            assertThat(bekreftelser.toList())
-                .hasSize(1)
-                .allMatch { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }
-        }
-
-        okonomiService.getInntekter(soknad.id).let { inntekter ->
-            assertThat(inntekter.toList()).hasSize(1).allMatch { it.type == InntektType.UTBETALING_SKATTEETATEN }
-            assertThat(inntekter.first().inntektDetaljer.detaljer).hasSize(2)
-        }
-    }
-
-    @Test
-    fun `Endre samtykke til false skal slette data`() {
-        opprettDataForInntektSkatt()
-
-        okonomiService.getBekreftelser(soknad.id).let { assertThat(it).hasSize(1) }
-        okonomiService.getInntekter(soknad.id).let { assertThat(it).hasSize(1) }
-
-        doPut(
-            uri = updateUrl(soknad.id),
-            requestBody = false,
-            responseBodyClass = SkattbarInntektDto::class.java,
-        ).also {
-            assertThat(it.samtykke?.verdi).isFalse()
-            assertThat(it.inntektFraSkatteetatenFeilet).isFalse()
-            assertThat(it.inntektSkatteetaten).isEmpty()
-        }
-
-        assertThat(okonomiService.getBekreftelser(soknad.id).toList())
-            .hasSize(1).allMatch { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }
-
-        assertThat(okonomiService.getInntekter(soknad.id).toList())
-            .hasSize(1).allMatch { it.type == InntektType.JOBB }
-    }
-
-    @Test
-    fun `Oppdatere allerede satt samtykke skal ikke trigge ny innhenting`() {
-        opprettDataForInntektSkatt()
-
-        doPut(
-            uri = updateUrl(soknad.id),
-            requestBody = true,
-            responseBodyClass = SkattbarInntektDto::class.java,
-        ).also {
-            assertThat(it.samtykke?.verdi).isTrue()
-        }
-
-        verify(exactly = 0) { skatteetatenClient.hentSkattbarinntekt() }
-    }
-
     private fun opprettDataForInntektSkatt(utbetalinger: List<Utbetaling> = utbetalingerForskjelligePeriode()): Inntekt {
         integrasjonStatusService.setInntektSkatteetatenStatus(soknad.id, false)
-        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE, true)
         okonomiService.addElementToOkonomi(
             soknadId = soknad.id,
             opplysning =
@@ -249,8 +177,6 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     companion object {
         private fun skattUrl(soknadId: UUID) = "/soknad/$soknadId/inntekt/skattbarinntekt"
-
-        private fun updateUrl(soknadId: UUID) = "/soknad/$soknadId/inntekt/skattbarinntekt/samtykke"
     }
 
     private fun readResponseFromPath(path: String = "/skatt/InntektOgSkattToMaanederToArbeidsgivere.json"): SkattbarInntektResponse {

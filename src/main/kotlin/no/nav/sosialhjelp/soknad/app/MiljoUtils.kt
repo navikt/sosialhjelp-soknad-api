@@ -23,6 +23,7 @@ object MiljoUtils {
     // Omvendt boolean-logikk er ikke pent - håndterer det ett sted istedetfor rundt omkring i koden ellers
     fun isProduction(): Boolean = !isNonProduction()
 
+    // Denne funker bare hvis man eksplisitt har satt opp den miljøvariabelen.
     fun isMockAltProfil(): Boolean {
         val value = System.getenv(SPRING_PROFILES_ACTIVE) ?: ""
         return value.contains("mock-alt")

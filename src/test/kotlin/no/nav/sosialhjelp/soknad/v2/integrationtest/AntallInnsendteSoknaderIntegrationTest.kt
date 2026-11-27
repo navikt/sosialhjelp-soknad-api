@@ -49,8 +49,8 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
 
     @Test
     fun `antallSisteDogn inkluderer ikke soknader med status OPPRETTET eller INNSENDING_FEILET`() {
-        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.OPPRETTET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
-        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.INNSENDING_FEILET, personId = userId, innsendtDato = nowWithMillis().minusHours(1)))
+        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.OPPRETTET, personId = USER_ID, innsendtDato = nowWithMillis().minusHours(1)))
+        metadataRepository.save(opprettSoknadMetadata(status = SoknadStatus.INNSENDING_FEILET, personId = USER_ID, innsendtDato = nowWithMillis().minusHours(1)))
         sendtSoknadForBruker(sendtInn = nowWithMillis().minusHours(1))
 
         doGet(URL, AntallInnsendteSoknaderDto::class.java).also {
@@ -121,7 +121,7 @@ class AntallInnsendteSoknaderIntegrationTest : AbstractIntegrationTest(useTokenX
         metadataRepository.save(
             opprettSoknadMetadata(
                 status = SoknadStatus.SENDT,
-                personId = userId,
+                personId = USER_ID,
                 innsendtDato = sendtInn,
             ),
         )

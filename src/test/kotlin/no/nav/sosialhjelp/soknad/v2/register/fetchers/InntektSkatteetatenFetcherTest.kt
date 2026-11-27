@@ -2,7 +2,9 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkSpyBean
+import io.mockk.coEvery
 import io.mockk.every
+import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektResponse
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
@@ -19,16 +21,16 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
     private lateinit var inntektSkatteetatenFetcher: InntektSkatteetatenFetcher
 
     @Test
-    fun `Hente utbetalinger skal returneres riktig`() {
+    suspend fun `Hente utbetalinger skal returneres riktig`() {
         createAnswerForSkatteetatenClient()
 
         inntektSkatteetatenFetcher.fetchInntekt().also { assertThat(it).hasSize(2) }
     }
 
     @Test
-    fun `Clienten returnerer null skal kaste exception`() {
-        every { skatteetatenClient.hentSkattbarinntekt() } returns SkattbarInntektResponse.Error("Feil", SkatteetatenException("error"))
-        assertThatThrownBy { inntektSkatteetatenFetcher.fetchInntekt() }.isInstanceOf(SkatteetatenException::class.java)
+    suspend fun `Clienten returnerer null skal kaste exception`() {
+        coEvery { skatteetatenClient.hentSkattbarinntekt() } returns SkattbarInntektResponse.Error("Feil", SkatteetatenException("error"))
+        assertThatThrownBy { runBlocking { inntektSkatteetatenFetcher.fetchInntekt() } }.isInstanceOf(SkatteetatenException::class.java)
     }
 
     @MockkSpyBean
@@ -41,7 +43,7 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
     private lateinit var skatteetatenClient: SkatteetatenClient
 
     private fun createAnswerForSkatteetatenClient() {
-        every { skattbarInntektService.hentInntekt() } returns defaultResponseForSkattbarInntektService()
+        coEvery { skattbarInntektService.hentInntekt() } returns defaultResponseForSkattbarInntektService()
         every { organisasjonService.hentOrgNavn(any()) } returns "Navn på arbeidsgiver"
     }
 }

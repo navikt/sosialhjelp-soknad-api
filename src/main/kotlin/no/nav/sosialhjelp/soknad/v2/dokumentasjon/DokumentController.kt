@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/dokument", produces = [MediaType.APPLICATION_JSON_VALUE])
 class DokumentController(
     private val mellomlagerService: MellomlagerService,

@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.fiksServiceConnectionProvider
-import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.app.security.texas.TexasService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,9 +15,9 @@ import java.time.Duration
 
 @Configuration
 class MellomlagringConfig(
-    @param:Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
-    @param:Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
-    @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
+    @Value("\${digisos_api_baseurl}") digisosApiEndpoint: String,
+    @Value("\${integrasjonsid_fiks}") integrasjonsidFiks: String,
+    @Value("\${integrasjonpassord_fiks}") integrasjonpassordFiks: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {

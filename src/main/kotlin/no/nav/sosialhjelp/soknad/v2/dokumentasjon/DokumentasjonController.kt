@@ -1,6 +1,4 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
-
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/dokumentasjon/forventet")
 class DokumentasjonController(
     private val handler: DokumentasjonStatusUseCaseHandler,

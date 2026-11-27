@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.api.minesaker
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
+import no.nav.sosialhjelp.soknad.app.subjecthandler.TokenUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService

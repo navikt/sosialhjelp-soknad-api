@@ -1,9 +1,5 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
-import no.nav.security.token.support.core.exceptions.IssuerConfigurationException
-import no.nav.security.token.support.core.exceptions.JwtTokenMissingException
-import no.nav.security.token.support.core.exceptions.MetaDataNotAvailableException
-import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
@@ -135,6 +131,7 @@ class ExceptionMapper(
         }
     }
 
+    // Sørger for at alle andre unntak som ikke er håndtert ikke lekker ut til klienten, men logges og returnerer 500
     @ExceptionHandler(Throwable::class)
     fun handleThrowable(e: Throwable): ResponseEntity<*> {
         log.error("Noe uventet feilet: ${e.message}", e)
@@ -162,19 +159,6 @@ class ExceptionMapper(
                 e = SosialhjelpSoknadApiException(message = e.message, cause = e),
             ),
         )
-    }
-
-    @ExceptionHandler(value = [JwtTokenUnauthorizedException::class, JwtTokenMissingException::class])
-    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    fun handleJwtTokenExceptions(e: RuntimeException): ResponseEntity<UnauthorizedMelding> {
-        log.error("Bruker er ikke autentisert (enda). Sender 401 med loginurl.", e)
-        return loginserviceUrl?.let { buildError(HttpStatus.UNAUTHORIZED, UnauthorizedMelding(it)) } ?: buildError(HttpStatus.UNAUTHORIZED)
-    }
-
-    @ExceptionHandler(value = [MetaDataNotAvailableException::class, IssuerConfigurationException::class])
-    fun handleTokenValidationConfigurationExceptions(e: RuntimeException): ResponseEntity<SoknadApiError> {
-        log.error("Klarer ikke hente metadata fra discoveryurl eller problemer ved konfigurering av issuer. Feilmelding: ${e.message}")
-        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError))
     }
 
     @ExceptionHandler(InnsendingFeiletException::class)

@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataServiceImpl
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.http.HttpHeaders
@@ -22,7 +21,6 @@ import java.util.UUID
  * som direkte opererer/muterer data.
  */
 @RestController
-@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadLifecycleController(
     private val soknadLifecycleService: SoknadLifecycleUseCaseHandler,

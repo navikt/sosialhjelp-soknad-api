@@ -13,7 +13,8 @@ class SjekkStatusMottattJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
 ) : AbstractJob(leaderElection, "Sjekke status MOTTATT_FSL", logger) {
-    @Scheduled(cron = "0 30 */2 * * *")
+    // En fail-safe i tilfelle SlettSoknaderMottattAvFagsystemJob ikke kjører som den skal. Sletter alle soknader med status MOTTATT_FSL
+    @Scheduled(cron = "0 0 0 * * *")
     fun sjekkStatusMottatt() = doInJob { doSjekkStatusMottatt() }
 
     private fun doSjekkStatusMottatt() {
